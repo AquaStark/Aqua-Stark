@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-## 📜 [Contracts] Issue Title
+## 📜 [Frontend] Issue Title
 
 ### 📝 Description  
 _A brief explanation of the issue related to Cairo smart contracts._
