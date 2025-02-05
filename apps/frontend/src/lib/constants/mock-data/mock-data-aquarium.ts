@@ -15,5 +15,11 @@ const mockFishData = [
     }
   ];
   
+  export const mockAquariums = [
+    { id: "1", name: "My First Aquarium" },
+    { id: "2", name: "Second Aquarium", locked: true },
+    { id: "3", name: "Tropical Paradise", locked: true }
+  ];  
+
   export default mockFishData;
   
