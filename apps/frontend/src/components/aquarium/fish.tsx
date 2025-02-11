@@ -15,7 +15,7 @@ type FishProps = {
 export default function Fish({ id, name, image, position, nftMetadata }: FishProps) {
   return (
     <div className="absolute" style={{ left: `${position.x}%`, top: `${position.y}%` }}>
-      <img src={image} alt={name} className="w-16 h-16 transition-transform duration-500" />
+      <img src={image} alt={name} className="w-40 h-40 transition-transform duration-500" />
       <div className="text-white text-xs text-center mt-1">
         <p>{name}</p>
         <p>Rarity: {nftMetadata.rarity}</p>

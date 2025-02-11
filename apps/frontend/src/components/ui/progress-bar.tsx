@@ -7,8 +7,8 @@ type ProgressBarProps = {
 
 export default function ProgressBar({ percentage, color }: ProgressBarProps) {
   return (
-    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-      <div className={`${color} h-2.5 rounded-full`} style={{ width: `${percentage}%` }}></div>
+    <div className="w-full bg-transparent h-full">
+      <div className={`${color} h-full rounded-full`} style={{ width: `${percentage}%` }}></div>
     </div>
   );
 }
