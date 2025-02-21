@@ -1,6 +1,7 @@
 import React from "react";
 
-type ButtonColor = "blue" | "red" | "green" | "yellow" | "teal" | "inactive";
+type ButtonColor = "blue" | "red" | "green" | "yellow" | "teal" | "inactive" ;
+
 
 const buttonVariants: Record<ButtonColor, { normal: string; hover: string; active: string }> = {
   blue: {
