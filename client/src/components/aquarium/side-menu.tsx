@@ -1,5 +1,5 @@
-import Button from "../ui/button"; // Import the existing Button component
-import { ButtonColor } from "../ui/button-large";
+import Button from "@/components/ui/button"; 
+import { ButtonColor } from "@/components/ui/button-large";
 
 export default function SideMenu() {
   return (
@@ -22,8 +22,7 @@ export default function SideMenu() {
             )}
 </Button>
 
-         {/*   <span className="mt-2 text-white text-sm">{item.label}</span>Label outside the button */}
-        </div>
+           </div>
       ))}
     </div>
   );
