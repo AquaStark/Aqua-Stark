@@ -52,5 +52,45 @@ export const fishStatusBarColors = {
     else if (level < 75) return "neutral";
     else return "happy";
   };
+  export const mockFeaturedFish = [
+    {
+      name: "REDGLOW",
+      image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish3-LOteAGqWGR4lDQ8VBBAlRSUByZL2KX.png",
+      price: 1500,
+    },
+    {
+      name: "BLUESHINE",
+      image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish1-ioYn5CvkJkCHPwgx1jBGoqibnAu5to.png",
+      price: 2000,
+    },
+    {
+      name: "TROPICORAL",
+      image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish2-D0YdqsjY0OgI0AZg98FS0Sq7zMm2Fe.png",
+      price: 2500,
+    },
+  ]
+  export const mockGameFeatures = [
+    {
+      title: "Collect Unique Fish",
+      description: "Discover and collect over 100 species of fish with different rarities and special abilities.",
+      icon: "🐠",
+    },
+    {
+      title: "Customize Your Aquarium",
+      description: "Decorate your aquarium with plants, rocks, castles, and many more objects to create the perfect habitat.",
+      icon: "🏰",
+    },
+    {
+      title: "Feed and Care for Your Fish",
+      description: "Keep your fish happy and healthy with different types of food and special care.",
+      icon: "🍽️",
+    },
+    {
+      title: "Compete with Friends",
+      description: "Show off your collection to your friends and compete to have the most impressive aquarium.",
+      icon: "🏆",
+    },
+  ]
+    
 
 export default mockFishData;
