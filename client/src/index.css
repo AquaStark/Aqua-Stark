@@ -33,6 +33,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
     font-family: "Nunito", sans-serif;
@@ -40,9 +41,19 @@
 }
 
 @layer utilities {
+
   /* Efectos de botones de juego */
   .game-button {
     @apply relative overflow-hidden transition-all duration-200 transform hover:scale-105 active:scale-95;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2), 0 -2px 0 rgba(255, 255, 255, 0.2) inset, 0 2px 0 rgba(255, 255, 255, 0.2) inset;
+  }
+
+  .game-button:hover {
+    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2), 0 -2px 0 rgba(255, 255, 255, 0.3) inset, 0 2px 0 rgba(255, 255, 255, 0.3) inset;
+  }
+
+  .game-button:active {
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2), 0 -1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 0 rgba(255, 255, 255, 0.2) inset;
     box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2),
       0 -2px 0 rgba(255, 255, 255, 0.2) inset,
       0 2px 0 rgba(255, 255, 255, 0.2) inset;
@@ -74,12 +85,10 @@
 
   /* Efectos de agua */
   .water-effect {
-    background: linear-gradient(
-      180deg,
-      rgba(0, 119, 255, 0.2) 0%,
-      rgba(0, 119, 255, 0.1) 50%,
-      rgba(0, 119, 255, 0.05) 100%
-    );
+    background: linear-gradient(180deg,
+        rgba(0, 119, 255, 0.2) 0%,
+        rgba(0, 119, 255, 0.1) 50%,
+        rgba(0, 119, 255, 0.05) 100%);
   }
 
   /* Animaciones de burbujas */
@@ -98,9 +107,11 @@
       transform: translateY(100vh) scale(1);
       opacity: 0.8;
     }
+
     50% {
       opacity: 0.4;
     }
+
     100% {
       transform: translateY(-20vh) scale(1.2);
       opacity: 0;
@@ -116,6 +127,7 @@
       transform: translateY(100vh);
       opacity: 0.7;
     }
+
     100% {
       transform: translateY(-100px);
       opacity: 0;
@@ -134,10 +146,12 @@
   }
 
   @keyframes light-pulse {
+
     0%,
     100% {
       opacity: 0.5;
     }
+
     50% {
       opacity: 0.8;
     }
@@ -158,6 +172,7 @@
       transform: scale(0);
       opacity: 1;
     }
+
     100% {
       transform: scale(4);
       opacity: 0;
@@ -169,6 +184,7 @@
     0% {
       background-position: 0 0;
     }
+
     100% {
       background-position: 20px 20px;
     }
@@ -182,9 +198,11 @@
     0% {
       transform: translateY(0px);
     }
+
     50% {
       transform: translateY(-10px);
     }
+
     100% {
       transform: translateY(0px);
     }
@@ -209,15 +227,28 @@
     animation-delay: var(--delay, 0s);
   }
 
+  .container-default {
+    margin-inline: 1.5rem;
+    max-width: 1240px;
+  }
+
+  @media screen and (min-width: 1220px) {
+    .container-default {
+      margin-inline: auto;
+    }
+  }
+
   @keyframes background-float {
     0% {
       transform: translateY(100%) translateX(0) scale(1);
       opacity: 0.7;
     }
+
     50% {
       transform: translateY(50%) translateX(var(--drift, 0)) scale(1.1);
       opacity: 0.5;
     }
+
     100% {
       transform: translateY(-20%) translateX(calc(var(--drift, 0) * 2))
         scale(1.2);
@@ -230,12 +261,10 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-      0deg,
-      rgba(0, 119, 255, 0.05) 0%,
-      rgba(0, 119, 255, 0.1) 50%,
-      rgba(0, 119, 255, 0.05) 100%
-    );
+    background: linear-gradient(0deg,
+        rgba(0, 119, 255, 0.05) 0%,
+        rgba(0, 119, 255, 0.1) 50%,
+        rgba(0, 119, 255, 0.05) 100%);
     animation: water-move 10s ease-in-out infinite alternate;
   }
 
@@ -243,9 +272,11 @@
     0% {
       transform: translateY(0) scaleY(1);
     }
+
     50% {
       transform: translateY(-5px) scaleY(1.02);
     }
+
     100% {
       transform: translateY(0) scaleY(1);
     }
@@ -268,12 +299,15 @@
       transform: translate(0, 0) rotate(0deg);
       opacity: 0;
     }
+
     10% {
       opacity: 0.8;
     }
+
     90% {
       opacity: 0.6;
     }
+
     100% {
       transform: translate(var(--float-x, 100px), var(--float-y, -100px))
         rotate(360deg);
