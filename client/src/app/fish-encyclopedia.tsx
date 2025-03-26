@@ -1,6 +1,8 @@
+import { FishCatalog } from "@/components/encyclopedia/fish-catalog";
 import { Header } from "@/components/encyclopedia/header";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ChevronDown, Filter, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
 
@@ -15,6 +17,7 @@ type Page = "Catalog" | "Habitats" | "Collection"
 export function FishEncyclopedia() {
     const [bubbles, setBubbles] = useState<Bubble[]>([])
     const [activeCategory, setActiveCategory] = useState<Page>("Catalog")
+    const [searchQuery, setSearchQuery] = useState("")
 
 
     useEffect(() => {
@@ -60,8 +63,7 @@ export function FishEncyclopedia() {
             <div className="relative z-20 ">
                 <Header />
                 <div className="container mx-auto px-4 py-6">
-
-                    <div className="flex flex-1 gap-2 mb-6 bg-blue-800/50 p-1 rounded-lg">
+                    <div className="flex flex-1 gap-2 mb-4 bg-blue-800/50 p-1 rounded-lg">
                         {["Catalog", "Habitats", "Collection"].map((category) => (
                             <Button
                                 key={category}
@@ -73,6 +75,31 @@ export function FishEncyclopedia() {
                             </Button>
                         ))}
                     </div>
+                    <div className="flex items-center gap-4 mb-4">
+                        <div className="relative flex-1">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-300" size={18} />
+                            <input
+                                type="text"
+                                placeholder="Search by name or scientific name..."
+                                className="w-full bg-blue-900/50 border border-blue-700 rounded-md py-2 pl-10 pr-4 text-white placeholder:text-blue-300"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </div>
+                        <button className="bg-blue-900/50 border border-blue-700 rounded-md px-4 py-2 flex items-center gap-2">
+                            <Filter size={18} />
+                            <span>Filters</span>
+                            <ChevronDown size={16} />
+                        </button>
+                        <button className="bg-blue-900/50 border border-blue-700 rounded-md px-4 py-2 flex items-center gap-2">
+                            <span>Sort by: Name</span>
+                            <ChevronDown size={16} />
+                        </button>
+                    </div>
+
+                    {activeCategory === "Catalog" ? <FishCatalog query={searchQuery} /> : null}
+                    {activeCategory === "Habitats" ? <p>Habitats</p> : null}
+                    {activeCategory === "Collection" ? <p>Collection</p> : null}
                 </div>
             </div>
         </main>
