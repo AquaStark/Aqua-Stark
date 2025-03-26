@@ -1,8 +1,11 @@
+import { Filter } from "@/components/encyclopedia/filter";
 import { FishCatalog } from "@/components/encyclopedia/fish-catalog";
 import { Header } from "@/components/encyclopedia/header";
+import { Sort } from "@/components/encyclopedia/sort";
+import { FilterOptions, Page, SortOption } from "@/components/encyclopedia/types";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Filter, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
 
@@ -13,11 +16,19 @@ type Bubble = {
     duration: number
     delay: number
 }
-type Page = "Catalog" | "Habitats" | "Collection"
+
 export function FishEncyclopedia() {
     const [bubbles, setBubbles] = useState<Bubble[]>([])
     const [activeCategory, setActiveCategory] = useState<Page>("Catalog")
     const [searchQuery, setSearchQuery] = useState("")
+    const [sortBy, setSortBy] = useState<SortOption>("name-asc")
+    const [filters, setFilters] = useState<FilterOptions>({
+        habitat: [],
+        diet: [],
+        temperament: [],
+        careLevel: [],
+    })
+
 
 
     useEffect(() => {
@@ -86,18 +97,11 @@ export function FishEncyclopedia() {
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </div>
-                        <button className="bg-blue-900/50 border border-blue-700 rounded-md px-4 py-2 flex items-center gap-2">
-                            <Filter size={18} />
-                            <span>Filters</span>
-                            <ChevronDown size={16} />
-                        </button>
-                        <button className="bg-blue-900/50 border border-blue-700 rounded-md px-4 py-2 flex items-center gap-2">
-                            <span>Sort by: Name</span>
-                            <ChevronDown size={16} />
-                        </button>
+                        <Filter filters={filters} setFilters={setFilters} />
+                        <Sort sort={sortBy} setSort={setSortBy} />
                     </div>
 
-                    {activeCategory === "Catalog" ? <FishCatalog query={searchQuery} /> : null}
+                    {activeCategory === "Catalog" ? <FishCatalog query={searchQuery} filters={filters} setFilters={setFilters} sortBy={sortBy} /> : null}
                     {activeCategory === "Habitats" ? <p>Habitats</p> : null}
                     {activeCategory === "Collection" ? <p>Collection</p> : null}
                 </div>

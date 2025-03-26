@@ -1,21 +1,140 @@
 import { fishData, type Fish } from "@/data/mock-fish-encyclopedia";
-import { Bookmark } from "lucide-react"
-import { useState } from "react";
+import { Bookmark, X } from "lucide-react"
+import { useMemo, useState } from "react";
 import FishModal from "./fish-modal";
+import { FilterCategory, FilterOptions, SortOption } from "./types";
+
+
+
 type Props = {
     query: string;
+    filters: FilterOptions;
+    setFilters: React.Dispatch<React.SetStateAction<FilterOptions>>;
+    sortBy: SortOption
+
 }
 
+export function FishCatalog({ query, filters, setFilters, sortBy }: Props) {
+    const filteredFish = useMemo(() => {
+        return fishData
+            .filter((fish) => {
+                // Search filter
+                if (
+                    query &&
+                    !fish.name.toLowerCase().includes(query.toLowerCase()) &&
+                    !fish.scientificName.toLowerCase().includes(query.toLowerCase())
+                ) {
+                    return false
+                }
+
+                // Skip other filters for locked fish
+                if (!fish.unlocked) return true
+
+                // Apply category filters
+                if (filters.habitat.length > 0 && !filters.habitat.includes(fish.habitat || "")) {
+                    return false
+                }
+                if (filters.diet.length > 0 && !filters.diet.includes(fish.diet || "")) {
+                    return false
+                }
+                if (filters.temperament.length > 0 && !filters.temperament.includes(fish.temperament || "")) {
+                    return false
+                }
+                if (filters.careLevel.length > 0 && !filters.careLevel.includes(fish.careLevel || "")) {
+                    return false
+                }
+
+                return true
+            })
+            .sort((a, b) => {
+                // Handle locked fish
+                if (!a.unlocked && !b.unlocked) return 0
+                if (!a.unlocked) return 1
+                if (!b.unlocked) return -1
+
+                // Apply sorting
+                switch (sortBy) {
+                    case "name-asc":
+                        return a.name.localeCompare(b.name)
+                    case "name-desc":
+                        return b.name.localeCompare(a.name)
+                    case "rarity":
+                        const rarityOrder = { new: 0, rare: 1, common: 2, undefined: 3 }
+                        return (
+                            (rarityOrder[a.rarity as keyof typeof rarityOrder] || 3) -
+                            (rarityOrder[b.rarity as keyof typeof rarityOrder] || 3)
+                        )
+                    case "newest":
+                        // This would ideally use a date field, but we'll simulate with the id for now
+                        return b.id.localeCompare(a.id)
+                    default:
+                        return a.name.localeCompare(b.name)
+                }
+            })
+    }, [query, filters, sortBy]);
+
+    const activeFilterCount = useMemo(() => {
+        return Object.values(filters).reduce((count, filterArray) => count + filterArray.length, 0)
+    }, [filters])
 
 
-export function FishCatalog({ query }: Props) {
-    const filteredFish = fishData.filter((fish) => fish.name.toLowerCase().includes(query.toLowerCase()))
+    const clearFilters = () => {
+        setFilters({
+            habitat: [],
+            diet: [],
+            temperament: [],
+            careLevel: [],
+        })
+    }
+
+    const removeFilter = (category: FilterCategory, value: string) => {
+        setFilters((prev) => ({
+            ...prev,
+            [category]: prev[category].filter((item) => item !== value),
+        }))
+    }
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredFish.map((fish) => (
-                <FishCard key={fish.id} fish={fish} />
-            ))}
-            {query}
+        <div>
+            {activeFilterCount > 0 && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                    {Object.entries(filters).map(([category, values]) =>
+                        values.map((value) => (
+                            <div
+                                key={`${category}-${value}`}
+                                className="inline-flex items-center px-3 py-1 rounded-full bg-blue-700 hover:bg-blue-600 text-sm text-white"
+                            >
+                                {value}
+                                <button
+                                    className="ml-1.5 hover:text-blue-300"
+                                    onClick={() => removeFilter(category as FilterCategory, value)}
+                                >
+                                    <X size={14} />
+                                </button>
+                            </div>
+                        )),
+                    )}
+                    <button onClick={clearFilters} className="text-xs text-blue-300 hover:text-white px-2 py-1">
+                        Clear All
+                    </button>
+                </div>
+            )}
+
+            {/* Results count */}
+            <div className="mb-4 text-sm text-blue-300">
+                Showing {filteredFish.length} {filteredFish.length === 1 ? "fish" : "fishes"}
+            </div>
+            {
+                filteredFish.length > 1 ? (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {filteredFish.map((fish) => (
+                        <FishCard key={fish.id} fish={fish} />
+                    ))}
+                </div>) : (
+                    <div className="bg-blue-900/50 rounded-lg p-8 text-center">
+                        <div className="text-lg font-medium mb-2">No fish found</div>
+                        <p className="text-blue-300">Try adjusting your search or filters to find what you're looking for.</p>
+                    </div>
+                )
+            }
         </div>
     )
 }
