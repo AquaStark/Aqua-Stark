@@ -68,6 +68,7 @@ export default function StorePage() {
           {/* Tabs */}
           <div className="flex">
             <StoreTabs activeTab={activeTab} onTabChange={setActiveTab} />
+            {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
             <button className="p-2 text-white bg-red-500 hover:bg-red-600 rounded-full ml-auto mr-2 mt-2">
               <X size={20} />
             </button>

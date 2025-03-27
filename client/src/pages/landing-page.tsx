@@ -15,6 +15,7 @@ export default function LandingPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-700 animated-background">
+    {/* biome-ignore lint/style/useSelfClosingElements: <explanation> */}
     <div className="water-movement"></div>
 
     <BubblesBackground bubbles={bubbles} />

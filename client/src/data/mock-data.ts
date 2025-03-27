@@ -254,3 +254,4 @@ export const mockGameMilestones = [
 ];
 
 export default mockFishData;
+

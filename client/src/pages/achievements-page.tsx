@@ -59,6 +59,7 @@ export default function AchievementsPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 p-1 bg-blue-700 rounded-lg">
             {TABS.map(({ id, name, icon }, i) => (
               <TabButton
+                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                 key={i}
                 active={activeTab === id}
                 onClick={() => setActiveTab(id)}

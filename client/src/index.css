@@ -316,6 +316,103 @@
   }
 }
 
+
+@keyframes bubble {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-1000px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+.bubble {
+  position: absolute;
+  bottom: -100px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  animation: bubble 10s infinite;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Different sizes for bubbles */
+.bubble.small {
+  width: 10px;
+  height: 10px;
+  animation-duration: 8s;
+}
+
+.bubble.medium {
+  width: 20px;
+  height: 20px;
+  animation-duration: 12s;
+}
+
+.bubble.large {
+  width: 30px;
+  height: 30px;
+  animation-duration: 15s;
+}
+
+/* Randomize bubble positions and delays */
+.bubble:nth-child(1) {
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.bubble:nth-child(2) {
+  left: 20%;
+  animation-delay: 2s;
+}
+
+.bubble:nth-child(3) {
+  left: 30%;
+  animation-delay: 4s;
+}
+
+.bubble:nth-child(4) {
+  left: 40%;
+  animation-delay: 1s;
+}
+
+.bubble:nth-child(5) {
+  left: 50%;
+  animation-delay: 3s;
+}
+
+.bubble:nth-child(6) {
+  left: 60%;
+  animation-delay: 5s;
+}
+
+.bubble:nth-child(7) {
+  left: 70%;
+  animation-delay: 2s;
+}
+
+.bubble:nth-child(8) {
+  left: 80%;
+  animation-delay: 4s;
+}
+
+.bubble:nth-child(9) {
+  left: 90%;
+  animation-delay: 1s;
+}
+
+.bubble:nth-child(10) {
+  left: 95%;
+  animation-delay: 3s;
+}
+
 .milestone-card:hover {
   --tw-scale-x: 1.01;
   --tw-scale-y: 1.01;
@@ -323,3 +420,4 @@
     rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
     scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
+
