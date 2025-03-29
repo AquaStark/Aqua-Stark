@@ -73,7 +73,7 @@ export default function BreedingLaboratory() {
   
 
   return (
-    <div className="relative w-full  h-auto overflow-hidden bg-gradient-to-b from-blue-500 to-blue-700 animated-background text-white p-4 md:p-6">
+    <div className="relative w-full  h-full overflow-hidden bg-gradient-to-b from-blue-500 to-blue-700 animated-background text-white p-4 md:p-6">
        <div className="water-movement"></div>
       
             {backgroundBubbles.map((bubble) => (
@@ -129,7 +129,7 @@ export default function BreedingLaboratory() {
             ))}
 
       {/* Header */}
-    <div className="absolute top-0 w-full left-0 ">
+    <div className="lg:absolute top-0 w-full left-0 ">
     <div className="flex flex-col md:text-left p-4  w-full md:flex-row items-center justify-around bg-blue-800/50  space-y-4 md:space-y-0">
         <button className="flex items-center text-white">
           <FaArrowLeft className="mr-2" /> Back to Game
@@ -152,7 +152,7 @@ export default function BreedingLaboratory() {
     </div>
 
       {/* Navigation */}
-      <div className="flex lg:justify-between  p-6 rounded-lg w-full max-w-5xl mx-auto font-sans  flex-wrap space-x-2 md:space-x-6 mt-16 bg-blue-800/50 px-3 py-4 text-center items-center">
+      <div className="lg:grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 md:mt-20 sm:mt-20 justify-between  p-6 rounded-lg w-full max-w-5xl mx-auto font-sans  flex-wrap space-x-2 md:space-x-6 mt-16 bg-blue-800/50 px-3 py-4 text-center items-center">
         <button className="text-white transform hover:scale-105 transition-all duration-200">❤️ Breeding</button>
         <button className="text-white transform hover:scale-105 transition-all duration-200">✨ Genetics</button>
         <button className="text-white transform hover:scale-105 transition-all duration-200">🔬 Discoveries</button>
