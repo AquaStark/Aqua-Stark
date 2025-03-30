@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom"
 import LandingPage from "./pages/landing-page"
 import GamePage from "./pages/game-page"
 import StorePage from "./pages/storage-page"
-import LaboratoryPage from "./pages/breading-laboratory"
+import LaboratoryPage from "./pages/breading-laboratory-page"
 
 
 import { Routes, Route } from "react-router-dom";

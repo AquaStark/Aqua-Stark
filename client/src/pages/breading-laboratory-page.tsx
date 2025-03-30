@@ -1,14 +1,11 @@
 "use client"
 
 
-import BreadingLaboratoryPage from '@/components/BreadingLaboratory'
+import BreadingLaboratory from '@/components/breading-laboratory'
 import { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
-import { ShoppingBag, Wallet, Coins } from "lucide-react"
-import { FishTank } from "@/components/fish-tank"
-import fish1 from "@/../public/fish/fish1.png"
-import fish2 from "@/../public/fish/fish2.png"
-import fish3 from "@/../public/fish/fish3.png"
+import fish1 from "@/components/fish/fish1.png"
+import fish2 from "@/components/fish/fish2.png"
+import fish3 from "@/components/fish/fish3.png"
 
 const BreadingLaboratoryPage = () => {
     const [bubbles, setBubbles] = useState<Array<{ id: number; size: number; left: number; animationDuration: number }>>(
@@ -125,7 +122,7 @@ const BreadingLaboratoryPage = () => {
                     />
                   ))}
 
-      < BreadingLaboratoryPage/>
+      < BreadingLaboratory/>
 
       <div className="relative mt-4 p-6 md:p-10 rounded-lg w-full max-w-5xl mx-auto font-sans w-ull overflow-hidden bg-blue-800/50 text-white ">
 
