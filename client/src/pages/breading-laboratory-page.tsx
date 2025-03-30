@@ -1,7 +1,7 @@
 "use client"
 
 
-import BreadingLaboratory from '@/components/BreadingLaboratory'
+import BreadingLaboratoryPage from '@/components/BreadingLaboratory'
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { ShoppingBag, Wallet, Coins } from "lucide-react"
@@ -125,7 +125,7 @@ const BreadingLaboratoryPage = () => {
                     />
                   ))}
 
-      < BreadingLaboratory/>
+      < BreadingLaboratoryPage/>
 
       <div className="relative mt-4 p-6 md:p-10 rounded-lg w-full max-w-5xl mx-auto font-sans w-ull overflow-hidden bg-blue-800/50 text-white ">
 
