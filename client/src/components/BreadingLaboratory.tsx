@@ -5,9 +5,8 @@ import type React from "react"
 import { Button } from "@/components/ui/button"
 import fish1 from "../../public/fish/fish1.png"
 import fish2 from "../../public/fish/fish2.png"
-import fish3 from "../../public/fish/fish3.png"
 
-export default function BreedingLaboratory() {
+export default function BreadingLaboratory() {
   
   
 
