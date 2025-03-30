@@ -33,6 +33,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
     font-family: "Nunito", sans-serif;
@@ -40,44 +41,64 @@
 }
 
 @layer utilities {
+
   /* Efectos de botones de juego */
   .game-button {
     @apply relative overflow-hidden transition-all duration-200 transform hover:scale-105 active:scale-95;
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2), 0 -2px 0 rgba(255, 255, 255, 0.2) inset, 0 2px 0 rgba(255, 255, 255, 0.2)
-      inset;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2), 0 -2px 0 rgba(255, 255, 255, 0.2) inset, 0 2px 0 rgba(255, 255, 255, 0.2) inset;
   }
 
   .game-button:hover {
-    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2), 0 -2px 0 rgba(255, 255, 255, 0.3) inset, 0 2px 0 rgba(255, 255, 255, 0.3)
-      inset;
+    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2), 0 -2px 0 rgba(255, 255, 255, 0.3) inset, 0 2px 0 rgba(255, 255, 255, 0.3) inset;
   }
 
   .game-button:active {
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2), 0 -1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 0 rgba(255, 255, 255, 0.2)
-      inset;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2), 0 -1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2),
+      0 -2px 0 rgba(255, 255, 255, 0.2) inset,
+      0 2px 0 rgba(255, 255, 255, 0.2) inset;
+  }
+
+  .game-button:hover {
+    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2),
+      0 -2px 0 rgba(255, 255, 255, 0.3) inset,
+      0 2px 0 rgba(255, 255, 255, 0.3) inset;
+  }
+
+  .game-button:active {
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2),
+      0 -1px 0 rgba(255, 255, 255, 0.2) inset,
+      0 1px 0 rgba(255, 255, 255, 0.2) inset;
   }
 
   /* Contenedor de juego con efecto de cristal */
   .game-container {
     @apply bg-blue-500/20 backdrop-blur-sm border-2 rounded-xl;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    border-image: linear-gradient(to bottom right, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1)) 1;
+    border-image: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.4),
+        rgba(255, 255, 255, 0.1)
+      )
+      1;
   }
 
   /* Efectos de agua */
   .water-effect {
-    background: linear-gradient(
-      180deg,
-      rgba(0, 119, 255, 0.2) 0%,
-      rgba(0, 119, 255, 0.1) 50%,
-      rgba(0, 119, 255, 0.05) 100%
-    );
+    background: linear-gradient(180deg,
+        rgba(0, 119, 255, 0.2) 0%,
+        rgba(0, 119, 255, 0.1) 50%,
+        rgba(0, 119, 255, 0.05) 100%);
   }
 
   /* Animaciones de burbujas */
   .bubble {
     @apply absolute rounded-full pointer-events-none;
-    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+    background: radial-gradient(
+      circle at 30% 30%,
+      rgba(255, 255, 255, 0.8),
+      rgba(255, 255, 255, 0.2)
+    );
     animation: float-up var(--duration) ease-in infinite;
   }
 
@@ -86,9 +107,11 @@
       transform: translateY(100vh) scale(1);
       opacity: 0.8;
     }
+
     50% {
       opacity: 0.4;
     }
+
     100% {
       transform: translateY(-20vh) scale(1.2);
       opacity: 0;
@@ -104,6 +127,7 @@
       transform: translateY(100vh);
       opacity: 0.7;
     }
+
     100% {
       transform: translateY(-100px);
       opacity: 0;
@@ -112,15 +136,22 @@
 
   /* Efecto de rayos de luz */
   .light-rays {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      transparent 100%
+    );
     animation: light-pulse 8s ease-in-out infinite;
   }
 
   @keyframes light-pulse {
+
     0%,
     100% {
       opacity: 0.5;
     }
+
     50% {
       opacity: 0.8;
     }
@@ -128,7 +159,11 @@
 
   /* Efecto de ondas de agua */
   .water-ripple {
-    background: radial-gradient(circle at center, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+    background: radial-gradient(
+      circle at center,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
     animation: ripple 4s linear infinite;
   }
 
@@ -137,6 +172,7 @@
       transform: scale(0);
       opacity: 1;
     }
+
     100% {
       transform: scale(4);
       opacity: 0;
@@ -148,6 +184,7 @@
     0% {
       background-position: 0 0;
     }
+
     100% {
       background-position: 20px 20px;
     }
@@ -161,9 +198,11 @@
     0% {
       transform: translateY(0px);
     }
+
     50% {
       transform: translateY(-10px);
     }
+
     100% {
       transform: translateY(0px);
     }
@@ -177,11 +216,26 @@
 
   .background-bubble {
     position: absolute;
-    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+    background: radial-gradient(
+      circle at 30% 30%,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.1)
+    );
     border-radius: 50%;
     pointer-events: none;
     animation: background-float var(--duration, 15s) ease-in infinite;
     animation-delay: var(--delay, 0s);
+  }
+
+  .container-default {
+    margin-inline: 1.5rem;
+    max-width: 1240px;
+  }
+
+  @media screen and (min-width: 1220px) {
+    .container-default {
+      margin-inline: auto;
+    }
   }
 
   @keyframes background-float {
@@ -189,12 +243,15 @@
       transform: translateY(100%) translateX(0) scale(1);
       opacity: 0.7;
     }
+
     50% {
       transform: translateY(50%) translateX(var(--drift, 0)) scale(1.1);
       opacity: 0.5;
     }
+
     100% {
-      transform: translateY(-20%) translateX(calc(var(--drift, 0) * 2)) scale(1.2);
+      transform: translateY(-20%) translateX(calc(var(--drift, 0) * 2))
+        scale(1.2);
       opacity: 0;
     }
   }
@@ -204,12 +261,10 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-      0deg,
-      rgba(0, 119, 255, 0.05) 0%,
-      rgba(0, 119, 255, 0.1) 50%,
-      rgba(0, 119, 255, 0.05) 100%
-    );
+    background: linear-gradient(0deg,
+        rgba(0, 119, 255, 0.05) 0%,
+        rgba(0, 119, 255, 0.1) 50%,
+        rgba(0, 119, 255, 0.05) 100%);
     animation: water-move 10s ease-in-out infinite alternate;
   }
 
@@ -217,9 +272,11 @@
     0% {
       transform: translateY(0) scaleY(1);
     }
+
     50% {
       transform: translateY(-5px) scaleY(1.02);
     }
+
     100% {
       transform: translateY(0) scaleY(1);
     }
@@ -242,16 +299,125 @@
       transform: translate(0, 0) rotate(0deg);
       opacity: 0;
     }
+
     10% {
       opacity: 0.8;
     }
+
     90% {
       opacity: 0.6;
     }
+
     100% {
-      transform: translate(var(--float-x, 100px), var(--float-y, -100px)) rotate(360deg);
+      transform: translate(var(--float-x, 100px), var(--float-y, -100px))
+        rotate(360deg);
       opacity: 0;
     }
   }
+}
+
+
+@keyframes bubble {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-1000px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+.bubble {
+  position: absolute;
+  bottom: -100px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  animation: bubble 10s infinite;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Different sizes for bubbles */
+.bubble.small {
+  width: 10px;
+  height: 10px;
+  animation-duration: 8s;
+}
+
+.bubble.medium {
+  width: 20px;
+  height: 20px;
+  animation-duration: 12s;
+}
+
+.bubble.large {
+  width: 30px;
+  height: 30px;
+  animation-duration: 15s;
+}
+
+/* Randomize bubble positions and delays */
+.bubble:nth-child(1) {
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.bubble:nth-child(2) {
+  left: 20%;
+  animation-delay: 2s;
+}
+
+.bubble:nth-child(3) {
+  left: 30%;
+  animation-delay: 4s;
+}
+
+.bubble:nth-child(4) {
+  left: 40%;
+  animation-delay: 1s;
+}
+
+.bubble:nth-child(5) {
+  left: 50%;
+  animation-delay: 3s;
+}
+
+.bubble:nth-child(6) {
+  left: 60%;
+  animation-delay: 5s;
+}
+
+.bubble:nth-child(7) {
+  left: 70%;
+  animation-delay: 2s;
+}
+
+.bubble:nth-child(8) {
+  left: 80%;
+  animation-delay: 4s;
+}
+
+.bubble:nth-child(9) {
+  left: 90%;
+  animation-delay: 1s;
+}
+
+.bubble:nth-child(10) {
+  left: 95%;
+  animation-delay: 3s;
+}
+
+.milestone-card:hover {
+  --tw-scale-x: 1.01;
+  --tw-scale-y: 1.01;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y))
+    rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
+    scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 

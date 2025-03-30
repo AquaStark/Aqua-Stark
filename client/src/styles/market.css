@@ -1,0 +1,47 @@
+/* Bubble animation */
+.bubble {
+    position: absolute;
+    bottom: -100px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    animation: bubble-rise var(--duration, 10s) ease-in infinite;
+    pointer-events: none;
+  }
+  
+  @keyframes bubble-rise {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.5;
+    }
+    100% {
+      transform: translateY(-100vh) scale(1.5);
+      opacity: 0;
+    }
+  }
+  
+  /* Fade in animation */
+  .animate-in {
+    animation-duration: 0.3s;
+    animation-timing-function: ease-out;
+    animation-fill-mode: both;
+  }
+  
+  .fade-in-50 {
+    animation-name: fade-in-50;
+  }
+  
+  @keyframes fade-in-50 {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  
