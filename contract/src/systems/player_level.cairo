@@ -92,12 +92,15 @@ mod tests {
     use super::player_level;
     use super::IPlayerLevel;
     use dojo::world::IWorldDispatcher;
+    use dojo::test_utils::spawn_test_world;
     use super::super::components::player_level::PlayerLevel;
+    use super::IPlayerLevelDispatcher;
+    use super::IPlayerLevelDispatcherTrait;
 
     #[test]
     fn test_grant_experience() {
         // Initialize world and systems
-        let world = setup_world();
+        let world = spawn_test_world();
         let player_id = 1;
 
         // Initialize player level
@@ -108,8 +111,10 @@ mod tests {
         };
         set!(world, (initial_player_level));
 
+        // Deploy player level system
+        let contract = IPlayerLevelDispatcher { contract_address: world.contract_address };
+        
         // Grant experience
-        let contract = setup_contract();
         let new_level = contract.grant_experience(player_id, 150);
         
         // Verify level up
