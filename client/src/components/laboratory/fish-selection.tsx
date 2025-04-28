@@ -1,14 +1,17 @@
-"use client"
-import { motion } from "framer-motion"
-import { cn } from "@/lib/utils"
-import type { Fish } from "@/types/fish"
+"use client";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import type { Fish } from "@/types/fish";
 
 interface FishSelectionProps {
-  filteredFish: Fish[]
-  onSelectFish: (fish: Fish) => void
+  filteredFish: Fish[];
+  onSelectFish: (fish: Fish) => void;
 }
 
-export function FishSelection({ filteredFish, onSelectFish }: FishSelectionProps) {
+export function FishSelection({
+  filteredFish,
+  onSelectFish,
+}: FishSelectionProps) {
   return (
     <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 overflow-hidden">
       <div className="p-4 border-b border-blue-700/50">
@@ -24,7 +27,11 @@ export function FishSelection({ filteredFish, onSelectFish }: FishSelectionProps
               onClick={() => onSelectFish(fish)}
             >
               <div className="relative w-16 h-16 mr-3 flex-shrink-0">
-                <img src={fish.image || "/placeholder.svg"} alt={fish.name} className="w-full h-full object-contain" />
+                <img
+                  src={fish.image || "/placeholder.svg"}
+                  alt={fish.name}
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div className="flex-1">
                 <div className="flex justify-between items-start">
@@ -47,8 +54,12 @@ export function FishSelection({ filteredFish, onSelectFish }: FishSelectionProps
                       >
                         {fish.rarity}
                       </span>
-                      <span className="text-blue-200 text-xs ml-2">Gen {fish.generation}</span>
-                      <span className="text-blue-200 text-xs ml-2">Lvl {fish.level}</span>
+                      <span className="text-blue-200 text-xs ml-2">
+                        Gen {fish.generation}
+                      </span>
+                      <span className="text-blue-200 text-xs ml-2">
+                        Lvl {fish.level}
+                      </span>
                     </div>
                   </div>
                   {fish.breedingCooldown && (
@@ -70,6 +81,5 @@ export function FishSelection({ filteredFish, onSelectFish }: FishSelectionProps
         </div>
       </div>
     </div>
-  )
+  );
 }
-

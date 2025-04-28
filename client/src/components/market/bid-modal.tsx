@@ -1,46 +1,60 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Coins, Clock, Plus, Minus } from "lucide-react"
-import { useMarketStore } from "@/store/market-store"
-import { RarityBadge } from "@/components/market/rarity-badge"
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Coins, Clock, Plus, Minus } from "lucide-react";
+import { useMarketStore } from "@/store/market-store";
+import { RarityBadge } from "@/components/market/rarity-badge";
 
 export function BidModal() {
-  const { selectedFish, showBidModal, setShowBidModal, bidAmount, setBidAmount } = useMarketStore()
-  const [error, setError] = useState("")
+  const {
+    selectedFish,
+    showBidModal,
+    setShowBidModal,
+    bidAmount,
+    setBidAmount,
+  } = useMarketStore();
+  const [error, setError] = useState("");
 
-  if (!selectedFish || !selectedFish.auction) return null
+  if (!selectedFish || !selectedFish.auction) return null;
 
-  const minBid = selectedFish.auction.currentBid + 100
+  const minBid = selectedFish.auction.currentBid + 100;
 
   const handleBidChange = (value: number) => {
     if (value < minBid) {
-      setError(`Bid must be at least ${minBid} coins`)
+      setError(`Bid must be at least ${minBid} coins`);
     } else {
-      setError("")
+      setError("");
     }
-    setBidAmount(value)
-  }
+    setBidAmount(value);
+  };
 
   const handleSubmit = () => {
     if (bidAmount < minBid) {
-      setError(`Bid must be at least ${minBid} coins`)
-      return
+      setError(`Bid must be at least ${minBid} coins`);
+      return;
     }
 
     // In a real app, this would submit the bid to an API
-    alert(`Bid of ${bidAmount} coins placed on ${selectedFish.name}!`)
-    setShowBidModal(false)
-  }
+    alert(`Bid of ${bidAmount} coins placed on ${selectedFish.name}!`);
+    setShowBidModal(false);
+  };
 
   return (
     <Dialog open={showBidModal} onOpenChange={setShowBidModal}>
       <DialogContent className="bg-blue-900/95 border-blue-700 text-white max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-center">Place a Bid</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-center">
+            Place a Bid
+          </DialogTitle>
         </DialogHeader>
 
         <div className="flex items-center space-x-4 mb-4">
@@ -55,7 +69,9 @@ export function BidModal() {
             <h3 className="font-bold">{selectedFish.name}</h3>
             <div className="flex items-center space-x-2 mt-1">
               <RarityBadge rarity={selectedFish.rarity} />
-              <span className="text-xs text-blue-300">Level {selectedFish.level}</span>
+              <span className="text-xs text-blue-300">
+                Level {selectedFish.level}
+              </span>
             </div>
           </div>
         </div>
@@ -65,7 +81,9 @@ export function BidModal() {
             <span className="text-blue-200">Current bid:</span>
             <div className="flex items-center">
               <Coins className="h-4 w-4 text-yellow-400 mr-1" />
-              <span className="font-bold">{selectedFish.auction.currentBid}</span>
+              <span className="font-bold">
+                {selectedFish.auction.currentBid}
+              </span>
             </div>
           </div>
           <div className="flex justify-between items-center">
@@ -78,7 +96,9 @@ export function BidModal() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-blue-200 mb-2">Your bid (minimum {minBid} coins):</label>
+          <label className="block text-blue-200 mb-2">
+            Your bid (minimum {minBid} coins):
+          </label>
           <div className="flex items-center">
             <Button
               variant="outline"
@@ -113,12 +133,14 @@ export function BidModal() {
           <Button variant="outline" onClick={() => setShowBidModal(false)}>
             Cancel
           </Button>
-          <Button className="bg-amber-500 hover:bg-amber-600" onClick={handleSubmit}>
+          <Button
+            className="bg-amber-500 hover:bg-amber-600"
+            onClick={handleSubmit}
+          >
             Place Bid
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-

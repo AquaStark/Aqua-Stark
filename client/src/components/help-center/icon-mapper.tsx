@@ -19,7 +19,7 @@ import type { IconType } from "@/types/help-types";
 
 export function getIcon(
   iconType: IconType,
-  size: "small" | "regular" = "regular"
+  size: "small" | "regular" = "regular",
 ) {
   const className = size === "small" ? "h-5 w-5" : "h-6 w-6";
 

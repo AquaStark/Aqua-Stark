@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { LaboratoryTabs } from "@/components/laboratory/laboratory-tabs"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Beaker, Search } from "lucide-react"
-import { BubblesBackground } from "@/components/bubble-background"
-import { fishCollection } from "@/data/fish-data"
-import "@/styles/laboratory.css"
-import { Footer } from "@/components/layout/footer"
-import { PageHeader } from "@/components/layout/page-header"
-import { useBubbles } from "@/hooks/use-bubbles"
+import { useState } from "react";
+import { LaboratoryTabs } from "@/components/laboratory/laboratory-tabs";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Beaker, Search } from "lucide-react";
+import { BubblesBackground } from "@/components/bubble-background";
+import { fishCollection } from "@/data/fish-data";
+import "@/styles/laboratory.css";
+import { Footer } from "@/components/layout/footer";
+import { PageHeader } from "@/components/layout/page-header";
+import { useBubbles } from "@/hooks/use-bubbles";
 
 export default function LaboratoryPage() {
-  const [activeTab, setActiveTab] = useState("breeding")
-  const [searchQuery, setSearchQuery] = useState("")
-  const bubbles = useBubbles()
+  const [activeTab, setActiveTab] = useState("breeding");
+  const [searchQuery, setSearchQuery] = useState("");
+  const bubbles = useBubbles();
 
   const filteredFish = searchQuery
     ? fishCollection.filter(
@@ -23,7 +23,7 @@ export default function LaboratoryPage() {
           fish.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           fish.rarity.toLowerCase().includes(searchQuery.toLowerCase()),
       )
-    : fishCollection
+    : fishCollection;
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background">
@@ -63,5 +63,5 @@ export default function LaboratoryPage() {
 
       <Footer />
     </div>
-  )
+  );
 }

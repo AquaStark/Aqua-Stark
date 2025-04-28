@@ -9,7 +9,7 @@ import {
   Clock,
   User,
   Sparkles,
-  History
+  History,
 } from "lucide-react";
 
 export default function CommunityEvents() {
@@ -23,13 +23,13 @@ export default function CommunityEvents() {
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold">Community Events</h2>
         <Button
-              variant="outline"
-              className="bg-blue-800 border-blue-700 text-white hover:bg-blue-700 hover:text-white 
+          variant="outline"
+          className="bg-blue-800 border-blue-700 text-white hover:bg-blue-700 hover:text-white 
                          transition-all duration-300 hover:scale-105 hover:shadow-md hover:shadow-blue-900/50"
-            >
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
+        >
+          <Filter className="h-4 w-4 mr-2" />
+          Filter
+        </Button>
       </div>
 
       {/* Active Event */}
@@ -74,7 +74,9 @@ export default function CommunityEvents() {
                     <strong className="text-white block">Date</strong>
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
-                      <span>{activeEvent.startDate} - {activeEvent.endDate}</span>
+                      <span>
+                        {activeEvent.startDate} - {activeEvent.endDate}
+                      </span>
                     </div>
                   </div>
 
@@ -118,53 +120,53 @@ export default function CommunityEvents() {
             Upcoming Events
           </h3>
 
-    {/* Usamos grid de 2 columnas para que cada evento sea más ancho */}
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {upcomingEvents.map((event) => (
-        <div
-          key={event.id}
-          className="
+          {/* Usamos grid de 2 columnas para que cada evento sea más ancho */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {upcomingEvents.map((event) => (
+              <div
+                key={event.id}
+                className="
             bg-white/10 rounded p-4 relative
             shadow-md shadow-blue-900/40
             transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-900/70
             flex flex-col
           "
-        >
-          {/* Etiqueta "Coming Soon" */}
-          <span className="absolute top-2 left-2 bg-blue-500 text-white text-sm px-2 py-1 rounded-full font-semibold">
-            Coming Soon
-          </span>
-
-          {/* Imagen grande arriba */}
-          <div className="w-full h-40 bg-white/10 rounded flex items-center justify-center mb-3">
-            <p className="text-gray-400">[ Event Image ]</p>
-          </div>
-
-          {/* Título */}
-          <h4 className="text-white font-semibold text-lg mb-1">
-            {event.name}
-          </h4>
-
-          {/* Descripción */}
-          <p className="text-sm text-gray-300 mb-4">
-            {event.description}
-          </p>
-
-          {/* Parte de abajo: fecha (a la izquierda) y botón "Remind Me" (derecha) */}
-          <div className="flex items-center justify-between mt-auto text-blue-200 text-sm">
-            {/* Fecha */}
-            <div>
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                <span>
-                  {event.startDate} - {event.endDate}
+              >
+                {/* Etiqueta "Coming Soon" */}
+                <span className="absolute top-2 left-2 bg-blue-500 text-white text-sm px-2 py-1 rounded-full font-semibold">
+                  Coming Soon
                 </span>
-              </div>
-            </div>
 
-            {/* Botón Remind Me */}
-            <Button
-  className="
+                {/* Imagen grande arriba */}
+                <div className="w-full h-40 bg-white/10 rounded flex items-center justify-center mb-3">
+                  <p className="text-gray-400">[ Event Image ]</p>
+                </div>
+
+                {/* Título */}
+                <h4 className="text-white font-semibold text-lg mb-1">
+                  {event.name}
+                </h4>
+
+                {/* Descripción */}
+                <p className="text-sm text-gray-300 mb-4">
+                  {event.description}
+                </p>
+
+                {/* Parte de abajo: fecha (a la izquierda) y botón "Remind Me" (derecha) */}
+                <div className="flex items-center justify-between mt-auto text-blue-200 text-sm">
+                  {/* Fecha */}
+                  <div>
+                    <div className="flex items-center gap-1">
+                      <Calendar className="w-4 h-4" />
+                      <span>
+                        {event.startDate} - {event.endDate}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Botón Remind Me */}
+                  <Button
+                    className="
     bg-white/10 text-white 
     hover:bg-white/20 
     transition-colors 
@@ -172,73 +174,74 @@ export default function CommunityEvents() {
     px-3 py-1
     rounded
   "
->
-  Remind Me
-</Button>
+                  >
+                    Remind Me
+                  </Button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      ))}
-    </div>
-  </div>
-)} 
+      )}
 
-{pastEvents.length > 0 && (
+      {pastEvents.length > 0 && (
         <div className="space-y-4">
           <h3 className="text-lg font-bold flex items-center gap-2">
             <History className="w-5 h-5 text-blue-200" />
             Past Events
           </h3>
-    {/* Contenedor al 50% del ancho */}
-    <div className="max-w-[50%]">
-      {pastEvents.slice(0, 1).map((event) => (
-        <div
-          key={event.id}
-          className="relative bg-white/10 rounded p-4 flex flex-col md:flex-row gap-4"
-        >
-          <span className="absolute top-2 left-2 bg-gray-500 text-white text-sm px-2 py-1 rounded-full font-semibold">
-            Ended
-          </span>
+          {/* Contenedor al 50% del ancho */}
+          <div className="max-w-[50%]">
+            {pastEvents.slice(0, 1).map((event) => (
+              <div
+                key={event.id}
+                className="relative bg-white/10 rounded p-4 flex flex-col md:flex-row gap-4"
+              >
+                <span className="absolute top-2 left-2 bg-gray-500 text-white text-sm px-2 py-1 rounded-full font-semibold">
+                  Ended
+                </span>
 
-          <div className="w-full md:w-2/5 h-40 bg-white/10 rounded flex items-center justify-center">
-            <p className="text-gray-400">[ Event Image ]</p>
-          </div>
+                <div className="w-full md:w-2/5 h-40 bg-white/10 rounded flex items-center justify-center">
+                  <p className="text-gray-400">[ Event Image ]</p>
+                </div>
 
-          <div className="flex-1 flex flex-col justify-center">
-            <h4 className="text-white font-semibold text-lg mb-2">
-              {event.name}
-            </h4>
-            <div className="flex items-center justify-between text-blue-200 text-sm mb-2">
-            {/* Fecha */}
-            <div className="flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              <span>{event.startDate} - {event.endDate}</span>
-            </div>
+                <div className="flex-1 flex flex-col justify-center">
+                  <h4 className="text-white font-semibold text-lg mb-2">
+                    {event.name}
+                  </h4>
+                  <div className="flex items-center justify-between text-blue-200 text-sm mb-2">
+                    {/* Fecha */}
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-4 h-4" />
+                      <span>
+                        {event.startDate} - {event.endDate}
+                      </span>
+                    </div>
 
-            {/* # participated */}
-            <div className="flex items-center gap-1">
-              <User className="w-4 h-4" />
-              <span>{event.participants} participated</span>
-            </div>
-          </div>
+                    {/* # participated */}
+                    <div className="flex items-center gap-1">
+                      <User className="w-4 h-4" />
+                      <span>{event.participants} participated</span>
                     </div>
                   </div>
-                ))}
+                </div>
               </div>
+            ))}
+          </div>
 
-    {/* Botón en el centro, fuera del contenedor al 50% */}
-    <div className="flex justify-center mt-2">
-      <button
-        className="
+          {/* Botón en el centro, fuera del contenedor al 50% */}
+          <div className="flex justify-center mt-2">
+            <button
+              className="
           text-blue-200 font-semibold hover:underline
           transition-colors
         "
-      >
-        View All Past Events &gt;
-      </button>
-    </div>
-  </div>
-)}
-
+            >
+              View All Past Events &gt;
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

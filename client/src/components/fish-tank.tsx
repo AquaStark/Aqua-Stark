@@ -1,13 +1,15 @@
-import type React from "react"
+import type React from "react";
 
 interface FishTankProps {
-  children: React.ReactNode
-  className?: string
+  children: React.ReactNode;
+  className?: string;
 }
 
 export function FishTank({ children, className = "" }: FishTankProps) {
   return (
-    <div className={`relative w-full h-48 flex items-center justify-center ${className}`}>
+    <div
+      className={`relative w-full h-48 flex items-center justify-center ${className}`}
+    >
       {/* Background layer of the tank */}
       <div className="absolute inset-0 z-0">
         <img
@@ -37,6 +39,5 @@ export function FishTank({ children, className = "" }: FishTankProps) {
         className="absolute inset-0 w-full h-full object-contain z-20 pointer-events-none mix-blend-overlay"
       />
     </div>
-  )
+  );
 }
-

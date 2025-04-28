@@ -2,8 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { UserPlus } from "lucide-react";
-import { mockFriends, mockSuggestions } from '@/data/mock-community';
-
+import { mockFriends, mockSuggestions } from "@/data/mock-community";
 
 export default function CommunityFriends() {
   return (

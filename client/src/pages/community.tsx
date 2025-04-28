@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Search, Users } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { BubblesBackground } from "@/components/bubble-background"
-import { useBubbles } from "@/hooks/use-bubbles"
-import { PageHeader } from "@/components/layout/page-header"
-import { Footer } from "@/components/layout/footer"
-import { CommunityTabs } from "@/components/community/community-tabs"
+import { useState } from "react";
+import { Search, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { BubblesBackground } from "@/components/bubble-background";
+import { useBubbles } from "@/hooks/use-bubbles";
+import { PageHeader } from "@/components/layout/page-header";
+import { Footer } from "@/components/layout/footer";
+import { CommunityTabs } from "@/components/community/community-tabs";
 
 export default function CommunityPage() {
-  const [activeTab, setActiveTab] = useState("gallery")
-  const bubbles = useBubbles()
+  const [activeTab, setActiveTab] = useState("gallery");
+  const bubbles = useBubbles();
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background">
@@ -46,5 +46,5 @@ export default function CommunityPage() {
 
       <Footer />
     </div>
-  )
+  );
 }

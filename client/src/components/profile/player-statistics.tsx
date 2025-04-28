@@ -1,12 +1,18 @@
-import { BarChart2, Fish, Sparkles, Stethoscope, ChartColumnBig } from "lucide-react"
+import {
+  BarChart2,
+  Fish,
+  Sparkles,
+  Stethoscope,
+  ChartColumnBig,
+} from "lucide-react";
 
 interface PlayerStatisticsProps {
   playerStats: {
-    fishFed: number
-    decorationsPlaced: number
-    fishBred: number
-    aquariumsCreated: number
-  }
+    fishFed: number;
+    decorationsPlaced: number;
+    fishBred: number;
+    aquariumsCreated: number;
+  };
 }
 
 export function PlayerStatistics({ playerStats }: PlayerStatisticsProps) {
@@ -60,11 +66,15 @@ export function PlayerStatistics({ playerStats }: PlayerStatisticsProps) {
                 {stat.icon}
               </div>
             </div>
-            <div className="text-center text-sm text-blue-300">{stat.label}</div>
-            <div className="text-center text-2xl font-bold animate-count">{stat.value}</div>
+            <div className="text-center text-sm text-blue-300">
+              {stat.label}
+            </div>
+            <div className="text-center text-2xl font-bold animate-count">
+              {stat.value}
+            </div>
           </div>
         ))}
       </div>
     </div>
-  )
+  );
 }

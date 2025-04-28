@@ -1,37 +1,40 @@
-import React, { useEffect, useRef } from "react"
-import { X } from "lucide-react"
-import { GameButton } from "./game-button"
+import React, { useEffect, useRef } from "react";
+import { X } from "lucide-react";
+import { GameButton } from "./game-button";
 
 interface TipsPopupProps {
-  show: boolean
-  onClose: () => void
-  onToggle: () => void
+  show: boolean;
+  onClose: () => void;
+  onToggle: () => void;
 }
 
 export function TipsPopup({ show, onClose, onToggle }: TipsPopupProps) {
-  const popupRef = useRef<HTMLDivElement>(null)
+  const popupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (popupRef.current && !popupRef.current.contains(event.target as Node)) {
-        onClose()
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target as Node)
+      ) {
+        onClose();
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [onClose])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
 
   useEffect(() => {
     if (show) {
       const timer = setTimeout(() => {
-        onClose()
-      }, 8000)
-      return () => clearTimeout(timer)
+        onClose();
+      }, 8000);
+      return () => clearTimeout(timer);
     }
-  }, [show, onClose])
+  }, [show, onClose]);
 
   return (
     <div className="relative">
@@ -53,12 +56,16 @@ export function TipsPopup({ show, onClose, onToggle }: TipsPopupProps) {
               <span className="text-xl mr-2">💡</span>
               <h3 className="text-white font-bold">Tip of the day</h3>
             </div>
-            <button onClick={onClose} className="text-white/80 hover:text-white">
+            <button
+              onClick={onClose}
+              className="text-white/80 hover:text-white"
+            >
               <X size={16} />
             </button>
           </div>
           <p className="text-white/90 text-sm">
-            Feed your fish regularly to keep them healthy and happy. Well-fed fish grow faster and have more vibrant colors.
+            Feed your fish regularly to keep them healthy and happy. Well-fed
+            fish grow faster and have more vibrant colors.
           </p>
           <div className="mt-3 flex justify-end">
             <span className="text-xs text-white/70">Tap to close</span>
@@ -76,5 +83,5 @@ export function TipsPopup({ show, onClose, onToggle }: TipsPopupProps) {
         </div>
       )}
     </div>
-  )
-} 
+  );
+}

@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { useBubbles } from "@/hooks/use-bubbles"
-import { Navbar } from "@/components/landing/navbar"
-import { HeroSection } from "@/components/landing/hero-section"
-import { FeaturedFish } from "@/components/landing/featured-fish"
-import { FishStatusTips } from "@/components/landing/fish-status-tips"
-import { ReadyToPlay } from "@/components/landing/ready-to-play"
-import { Footer } from "@/components/layout/footer"
-import { BubblesBackground } from "@/components/bubble-background"
+import { useBubbles } from "@/hooks/use-bubbles";
+import { Navbar } from "@/components/landing/navbar";
+import { HeroSection } from "@/components/landing/hero-section";
+import { FeaturedFish } from "@/components/landing/featured-fish";
+import { FishStatusTips } from "@/components/landing/fish-status-tips";
+import { ReadyToPlay } from "@/components/landing/ready-to-play";
+import { Footer } from "@/components/layout/footer";
+import { BubblesBackground } from "@/components/bubble-background";
 
 export default function LandingPage() {
   const bubbles = useBubbles({
@@ -35,6 +35,5 @@ export default function LandingPage() {
 
       <Footer />
     </div>
-  )
+  );
 }
-

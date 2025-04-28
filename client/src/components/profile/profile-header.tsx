@@ -1,14 +1,17 @@
-import { ArrowLeft, Coins } from "lucide-react"
-import { Link } from "react-router-dom"
-import { Button } from "@/components/ui/button"
+import { ArrowLeft, Coins } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 interface ProfileHeaderProps {
-  currency: number
+  currency: number;
 }
 
 export function ProfileHeader({ currency }: ProfileHeaderProps) {
   return (
-    <header className="flex items-center justify-between mb-6 animate-fadeDown" style={{ animationDelay: "0.1s" }}>
+    <header
+      className="flex items-center justify-between mb-6 animate-fadeDown"
+      style={{ animationDelay: "0.1s" }}
+    >
       <Button
         asChild
         variant="link"
@@ -27,5 +30,5 @@ export function ProfileHeader({ currency }: ProfileHeaderProps) {
         <span className="font-bold">{currency.toLocaleString()}</span>
       </div>
     </header>
-  )
+  );
 }

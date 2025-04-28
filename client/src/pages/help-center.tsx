@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { Search } from "lucide-react"
-import { featuredTopics } from "@/data/help-center-data"
-import HelpCenterSidebar from "@/components/help-center/help-sidebar"
-import HelpMainContent from "@/components/help-center/help-main-content"
-import { BubblesBackground } from "@/components/bubble-background"
-import { useBubbles } from "@/hooks/use-bubbles"
-import { PageHeader } from "@/components/layout/page-header"
-import { Footer } from "@/components/layout/footer"
-import { Input } from "@/components/ui/input"
-import { useHelpCenter } from "@/hooks/use-help-center"
+import { Search } from "lucide-react";
+import { featuredTopics } from "@/data/help-center-data";
+import HelpCenterSidebar from "@/components/help-center/help-sidebar";
+import HelpMainContent from "@/components/help-center/help-main-content";
+import { BubblesBackground } from "@/components/bubble-background";
+import { useBubbles } from "@/hooks/use-bubbles";
+import { PageHeader } from "@/components/layout/page-header";
+import { Footer } from "@/components/layout/footer";
+import { Input } from "@/components/ui/input";
+import { useHelpCenter } from "@/hooks/use-help-center";
 
 function HelpCenter() {
   const {
@@ -23,9 +23,9 @@ function HelpCenter() {
     handleTopicClick,
     handleFeaturedTopicClick,
     handleClose,
-  } = useHelpCenter()
+  } = useHelpCenter();
 
-  const bubbles = useBubbles()
+  const bubbles = useBubbles();
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background">
@@ -69,7 +69,7 @@ function HelpCenter() {
 
       <Footer />
     </div>
-  )
+  );
 }
 
-export default HelpCenter
+export default HelpCenter;

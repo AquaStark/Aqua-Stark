@@ -1,41 +1,41 @@
 export const mockAquariums = [
   {
     id: 1,
-    name: 'Tropical Paradise',
-    owner: 'CoralQueen',
-    timePosted: '3 days ago',
+    name: "Tropical Paradise",
+    owner: "CoralQueen",
+    timePosted: "3 days ago",
     likes: 120,
     comments: 45,
     featured: true,
-    imageUrl: '/textures/backgrounds/Bg2.svg',
+    imageUrl: "/textures/backgrounds/Bg2.svg",
   },
   {
     id: 2,
-    name: 'Deep Blue Mystery',
-    owner: 'ReefMaster',
+    name: "Deep Blue Mystery",
+    owner: "ReefMaster",
     likes: 89,
     comments: 12,
-    imageUrl: '/textures/backgrounds/Bg2.svg',
+    imageUrl: "/textures/backgrounds/Bg2.svg",
   },
   {
     id: 3,
-    name: 'Neon Reef Collection',
-    owner: 'AquaLover',
+    name: "Neon Reef Collection",
+    owner: "AquaLover",
     likes: 50,
     comments: 8,
-    imageUrl: '/textures/backgrounds/Bg2.svg',
+    imageUrl: "/textures/backgrounds/Bg2.svg",
   },
   {
     id: 4,
-    name: 'Ancient Sunken Aquarium',
-    owner: 'TreasureHunter',
+    name: "Ancient Sunken Aquarium",
+    owner: "TreasureHunter",
     likes: 78,
     comments: 14,
-    imageUrl: '/textures/backgrounds/Bg2.svg',
+    imageUrl: "/textures/backgrounds/Bg2.svg",
   },
   // ... más acuarios
 ];
-  
+
 export const mockFriends = [
   { username: "CoralQueen", level: 20, isOnline: true },
   { username: "FishMaster99", level: 15, isOnline: false },
@@ -47,7 +47,7 @@ export const mockSuggestions = [
   { username: "AquaFriend2", level: 7, isOnline: true },
   { username: "AquaFriend3", level: 9, isOnline: false },
 ];
-  
+
 export const popularCategories = [
   "Breeding",
   "Decorations",
@@ -104,7 +104,7 @@ export const recentDiscussions = [
     timestamp: "3 days ago",
   },
 ];
-  
+
 export const mockEvents = [
   {
     id: 1,

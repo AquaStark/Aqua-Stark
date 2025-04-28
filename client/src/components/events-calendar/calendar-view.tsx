@@ -13,13 +13,13 @@ export function CalendarView({ events = [], onEventClick }: CalendarViewProps) {
 
   const prevMonth = () => {
     setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1),
     );
   };
 
   const nextMonth = () => {
     setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1),
     );
   };
 
@@ -31,14 +31,14 @@ export function CalendarView({ events = [], onEventClick }: CalendarViewProps) {
   const daysInMonth = new Date(
     currentDate.getFullYear(),
     currentDate.getMonth() + 1,
-    0
+    0,
   ).getDate();
 
   // Get first day of month (0 = Sunday, 1 = Monday, etc.)
   const firstDayOfMonth = new Date(
     currentDate.getFullYear(),
     currentDate.getMonth(),
-    1
+    1,
   ).getDay();
 
   // Create calendar days array

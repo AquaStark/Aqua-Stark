@@ -2,14 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @font-face {
-    font-family: "Poppins-ExtraBold";
-    src: url("@/assets/gui/fonts/Poppins-ExtraBold.ttf") format("truetype");
-    font-weight: 800;
-    font-style: normal;
-  }
-  
-  html, body {
-    font-family: "Poppins-ExtraBold", sans-serif;
-  }
+  font-family: "Poppins-ExtraBold";
+  src: url("@/assets/gui/fonts/Poppins-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+}
+
+html,
+body {
+  font-family: "Poppins-ExtraBold", sans-serif;
+}

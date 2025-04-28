@@ -1,9 +1,17 @@
-"use client"
-import { Coins } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { FishTank } from "@/components/fish-tank"
+"use client";
+import { Coins } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { FishTank } from "@/components/fish-tank";
 
-export function FishCardComponent({ name, image, price }: { name: string; image: string; price: number }) {
+export function FishCardComponent({
+  name,
+  image,
+  price,
+}: {
+  name: string;
+  image: string;
+  price: number;
+}) {
   return (
     <div className="bg-blue-600 rounded-3xl overflow-hidden shadow-xl border-2 border-blue-400 transform hover:scale-105 transition-all duration-200">
       <div className="p-4 text-center">
@@ -31,5 +39,5 @@ export function FishCardComponent({ name, image, price }: { name: string; image:
         </div>
       </div>
     </div>
-  )
+  );
 }

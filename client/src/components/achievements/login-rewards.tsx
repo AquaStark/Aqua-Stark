@@ -27,7 +27,7 @@ const formatTypeToName = (str: string) => {
     .split("_")
     .map(
       (word: string) =>
-        word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
     )
     .join(" ");
 };
@@ -41,7 +41,7 @@ export function LoginRewards({ data }: { data: LoginReward[] }) {
       const tomorrow = new Date(
         now.getFullYear(),
         now.getMonth(),
-        now.getDate() + 1
+        now.getDate() + 1,
       );
       const diff = tomorrow.getTime() - now.getTime();
       const hours = Math.floor(diff / (1000 * 60 * 60));
@@ -93,7 +93,7 @@ export function LoginRewards({ data }: { data: LoginReward[] }) {
               {data.filter((reward) => !reward.collected)[1].qty}
               <span className="ml-1 font-sans text-sm font-light text-blue-100">
                 {formatTypeToName(
-                  data.filter((reward) => !reward.collected)[1].type
+                  data.filter((reward) => !reward.collected)[1].type,
                 )}
               </span>
             </p>
@@ -190,10 +190,10 @@ function CalendarDay({ reward }: { reward: LoginReward }) {
         reward.collected
           ? "bg-blue-800 font-sans text-sm font-light text-blue-600"
           : reward.current_day
-          ? "bg-blue-500/40 border border-blue-300 text-blue-200"
-          : reward.special
-          ? "bg-blue-800/40 text-blue-200 border border-yellow-400"
-          : "bg-blue-800/40 text-blue-200"
+            ? "bg-blue-500/40 border border-blue-300 text-blue-200"
+            : reward.special
+              ? "bg-blue-800/40 text-blue-200 border border-yellow-400"
+              : "bg-blue-800/40 text-blue-200",
       )}
     >
       {reward.special && (

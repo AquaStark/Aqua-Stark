@@ -1,4 +1,14 @@
-import { ShoppingBag, Calendar, Coins, Gem, Utensils, FlaskConical, RefreshCw, Egg, ChevronRight } from "lucide-react"
+import {
+  ShoppingBag,
+  Calendar,
+  Coins,
+  Gem,
+  Utensils,
+  FlaskConical,
+  RefreshCw,
+  Egg,
+  ChevronRight,
+} from "lucide-react";
 
 export function PurchaseHistory() {
   return (
@@ -92,7 +102,9 @@ export function PurchaseHistory() {
           </div>
           <div className="flex items-center">
             <Coins className="w-4 h-4 mr-1 text-green-400" />
-            <span className="font-bold text-green-400 animate-pulse-slow">+500</span>
+            <span className="font-bold text-green-400 animate-pulse-slow">
+              +500
+            </span>
           </div>
         </div>
 
@@ -129,5 +141,5 @@ export function PurchaseHistory() {
         </button>
       </div>
     </div>
-  )
+  );
 }

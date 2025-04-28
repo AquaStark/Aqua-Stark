@@ -1,12 +1,12 @@
-import { Trophy, Fish, Check, Lock } from "lucide-react"
+import { Trophy, Fish, Check, Lock } from "lucide-react";
 
 interface AchievementsProps {
   stats: {
     achievements: {
-      completed: number
-      total: number
-    }
-  }
+      completed: number;
+      total: number;
+    };
+  };
 }
 
 export function Achievements({ stats }: AchievementsProps) {
@@ -24,7 +24,9 @@ export function Achievements({ stats }: AchievementsProps) {
       <div className="h-2 bg-blue-900 rounded-full overflow-hidden mb-6">
         <div
           className="h-full bg-gradient-to-r from-yellow-400 to-yellow-300 animate-expandWidth"
-          style={{ width: `${(stats.achievements.completed / stats.achievements.total) * 100}%` }}
+          style={{
+            width: `${(stats.achievements.completed / stats.achievements.total) * 100}%`,
+          }}
         />
       </div>
 
@@ -65,7 +67,9 @@ export function Achievements({ stats }: AchievementsProps) {
               </div>
               <div className="flex-1">
                 <h4 className="font-medium">Novice Collector</h4>
-                <p className="text-xs text-blue-300">Collect 10 different fish species</p>
+                <p className="text-xs text-blue-300">
+                  Collect 10 different fish species
+                </p>
               </div>
               <div className="text-xs text-blue-300">Mar 10, 2025</div>
             </div>
@@ -79,7 +83,9 @@ export function Achievements({ stats }: AchievementsProps) {
               </div>
               <div className="flex-1">
                 <h4 className="text-blue-300">Advanced Collector</h4>
-                <p className="text-xs text-blue-300">Collect 50 different fish species</p>
+                <p className="text-xs text-blue-300">
+                  Collect 50 different fish species
+                </p>
               </div>
             </div>
 
@@ -92,7 +98,9 @@ export function Achievements({ stats }: AchievementsProps) {
               </div>
               <div className="flex-1">
                 <h4 className="text-blue-300">Master Collector</h4>
-                <p className="text-xs text-blue-300">Collect all 100 fish species</p>
+                <p className="text-xs text-blue-300">
+                  Collect all 100 fish species
+                </p>
               </div>
             </div>
           </div>
@@ -119,7 +127,9 @@ export function Achievements({ stats }: AchievementsProps) {
               </div>
               <div className="flex-1">
                 <h4 className="font-medium">Aquarium Starter</h4>
-                <p className="text-xs text-blue-300">Create your first aquarium</p>
+                <p className="text-xs text-blue-300">
+                  Create your first aquarium
+                </p>
               </div>
               <div className="text-xs text-blue-300">Feb 16, 2025</div>
             </div>
@@ -133,7 +143,9 @@ export function Achievements({ stats }: AchievementsProps) {
               </div>
               <div className="flex-1">
                 <h4 className="font-medium">Fish Breeder</h4>
-                <p className="text-xs text-blue-300">Successfully breed 20 fish</p>
+                <p className="text-xs text-blue-300">
+                  Successfully breed 20 fish
+                </p>
               </div>
             </div>
 
@@ -146,12 +158,14 @@ export function Achievements({ stats }: AchievementsProps) {
               </div>
               <div className="flex-1">
                 <h4 className="text-blue-300">Legendary Hunter</h4>
-                <p className="text-xs text-blue-300">Collect all legendary fish</p>
+                <p className="text-xs text-blue-300">
+                  Collect all legendary fish
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,29 +1,43 @@
-import { Button } from "@/components/ui/button"
-import { Coins } from "lucide-react"
-import { FishTank } from "@/components/fish-tank"
+import { Button } from "@/components/ui/button";
+import { Coins } from "lucide-react";
+import { FishTank } from "@/components/fish-tank";
 
-export default function StoreItem({ name, image, price, rarity }: { name: string; image: string; price: number; rarity: string }) {
+export default function StoreItem({
+  name,
+  image,
+  price,
+  rarity,
+}: {
+  name: string;
+  image: string;
+  price: number;
+  rarity: string;
+}) {
   const rarityColor = () => {
     switch (rarity.toLowerCase()) {
       case "common":
-        return "bg-gray-500"
+        return "bg-gray-500";
       case "rare":
-        return "bg-blue-500"
+        return "bg-blue-500";
       case "legendary":
-        return "bg-purple-500"
+        return "bg-purple-500";
       case "special":
-        return "bg-orange-500"
+        return "bg-orange-500";
       default:
-        return "bg-gray-500"
+        return "bg-gray-500";
     }
-  }
+  };
 
   return (
     <div className="bg-blue-600 rounded-3xl overflow-hidden shadow-xl border-2 border-blue-400 transform hover:scale-105 transition-all duration-200">
       <div className="p-4 text-center">
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-xl font-bold text-white">{name}</h3>
-          <span className={`text-xs font-bold text-white px-2 py-1 rounded-full ${rarityColor()}`}>{rarity}</span>
+          <span
+            className={`text-xs font-bold text-white px-2 py-1 rounded-full ${rarityColor()}`}
+          >
+            {rarity}
+          </span>
         </div>
         <div className="relative mx-auto w-full h-48 bg-blue-400/50 rounded-2xl mb-4 flex items-center justify-center overflow-hidden">
           <div className="absolute inset-0 rounded-2xl border-2 border-blue-300/50"></div>
@@ -48,5 +62,5 @@ export default function StoreItem({ name, image, price, rarity }: { name: string
         </div>
       </div>
     </div>
-  )
+  );
 }

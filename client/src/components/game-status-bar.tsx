@@ -68,7 +68,7 @@ export function GameStatusBar({
       <div
         className={cn(
           "relative z-10 flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br shadow-lg",
-          color
+          color,
         )}
       >
         {typeof icon === "string" ? (
@@ -93,7 +93,7 @@ export function GameStatusBar({
           <div
             className={cn(
               "absolute top-0 left-0 h-full rounded-full transition-all duration-500 overflow-hidden",
-              isIncreasing ? "animate-pulse" : ""
+              isIncreasing ? "animate-pulse" : "",
             )}
             style={{ width: `${percentage}%` }}
           >

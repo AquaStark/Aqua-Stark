@@ -1,8 +1,8 @@
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface StoreTabsProps {
-  activeTab: string
-  onTabChange: (tab: string) => void
+  activeTab: string;
+  onTabChange: (tab: string) => void;
 }
 
 export function StoreTabs({ activeTab, onTabChange }: StoreTabsProps) {
@@ -15,5 +15,5 @@ export function StoreTabs({ activeTab, onTabChange }: StoreTabsProps) {
         <TabsTrigger value="others">Others</TabsTrigger>
       </TabsList>
     </Tabs>
-  )
+  );
 }

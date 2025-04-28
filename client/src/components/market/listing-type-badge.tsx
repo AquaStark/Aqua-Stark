@@ -1,7 +1,7 @@
-import { Gavel, RefreshCw, Tag } from "lucide-react"
+import { Gavel, RefreshCw, Tag } from "lucide-react";
 
 interface ListingTypeBadgeProps {
-  type: "sale" | "auction" | "exchange"
+  type: "sale" | "auction" | "exchange";
 }
 
 export function ListingTypeBadge({ type }: ListingTypeBadgeProps) {
@@ -11,7 +11,7 @@ export function ListingTypeBadge({ type }: ListingTypeBadgeProps) {
         <Gavel className="h-3 w-3 mr-1" />
         Auction
       </div>
-    )
+    );
   }
 
   if (type === "exchange") {
@@ -20,7 +20,7 @@ export function ListingTypeBadge({ type }: ListingTypeBadgeProps) {
         <RefreshCw className="h-3 w-3 mr-1" />
         Exchange
       </div>
-    )
+    );
   }
 
   return (
@@ -28,6 +28,5 @@ export function ListingTypeBadge({ type }: ListingTypeBadgeProps) {
       <Tag className="h-3 w-3 mr-1" />
       Sale
     </div>
-  )
+  );
 }
-

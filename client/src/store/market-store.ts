@@ -1,24 +1,24 @@
-import { create } from "zustand"
-import type { Fish, MarketFilter } from "../types/market"
+import { create } from "zustand";
+import type { Fish, MarketFilter } from "../types/market";
 
 interface MarketState {
-  selectedFish: Fish | null
-  showBidModal: boolean
-  showOfferModal: boolean
-  showListingModal: boolean
-  bidAmount: number
-  filters: MarketFilter
-  showFilters: boolean
+  selectedFish: Fish | null;
+  showBidModal: boolean;
+  showOfferModal: boolean;
+  showListingModal: boolean;
+  bidAmount: number;
+  filters: MarketFilter;
+  showFilters: boolean;
 
   // Actions
-  setSelectedFish: (fish: Fish | null) => void
-  setShowBidModal: (show: boolean) => void
-  setShowOfferModal: (show: boolean) => void
-  setShowListingModal: (show: boolean) => void
-  setBidAmount: (amount: number) => void
-  setFilters: (filters: Partial<MarketFilter>) => void
-  setShowFilters: (show: boolean) => void
-  resetFilters: () => void
+  setSelectedFish: (fish: Fish | null) => void;
+  setShowBidModal: (show: boolean) => void;
+  setShowOfferModal: (show: boolean) => void;
+  setShowListingModal: (show: boolean) => void;
+  setBidAmount: (amount: number) => void;
+  setFilters: (filters: Partial<MarketFilter>) => void;
+  setShowFilters: (show: boolean) => void;
+  resetFilters: () => void;
 }
 
 const defaultFilters: MarketFilter = {
@@ -29,7 +29,7 @@ const defaultFilters: MarketFilter = {
   traits: [],
   listingType: "all",
   sort: "newest",
-}
+};
 
 export const useMarketStore = create<MarketState>((set) => ({
   selectedFish: null,
@@ -52,5 +52,4 @@ export const useMarketStore = create<MarketState>((set) => ({
     })),
   setShowFilters: (show) => set({ showFilters: show }),
   resetFilters: () => set({ filters: defaultFilters }),
-}))
-
+}));

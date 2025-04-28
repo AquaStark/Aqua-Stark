@@ -1,17 +1,20 @@
-"use client"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { FishTank } from "@/components/fish-tank"
-import { FishIcon } from "lucide-react"
-import type { Fish } from "@/types/fish"
-import { fishCollection } from "@/data/fish-data"
+"use client";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { FishTank } from "@/components/fish-tank";
+import { FishIcon } from "lucide-react";
+import type { Fish } from "@/types/fish";
+import { fishCollection } from "@/data/fish-data";
 
 interface FishDetailsProps {
-  selectedFish: Fish | null
-  onSelectForBreeding: (fish: Fish, role: "father" | "mother") => void
+  selectedFish: Fish | null;
+  onSelectForBreeding: (fish: Fish, role: "father" | "mother") => void;
 }
 
-export function FishDetails({ selectedFish, onSelectForBreeding }: FishDetailsProps) {
+export function FishDetails({
+  selectedFish,
+  onSelectForBreeding,
+}: FishDetailsProps) {
   return (
     <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 overflow-hidden">
       <div className="p-4 border-b border-blue-700/50">
@@ -29,7 +32,9 @@ export function FishDetails({ selectedFish, onSelectForBreeding }: FishDetailsPr
                 />
               </FishTank>
             </div>
-            <h3 className="text-xl font-bold text-white">{selectedFish.name}</h3>
+            <h3 className="text-xl font-bold text-white">
+              {selectedFish.name}
+            </h3>
             <div className="flex items-center mt-1">
               <span
                 className={cn(
@@ -47,8 +52,12 @@ export function FishDetails({ selectedFish, onSelectForBreeding }: FishDetailsPr
               >
                 {selectedFish.rarity}
               </span>
-              <span className="text-blue-200 text-xs ml-2">Generation {selectedFish.generation}</span>
-              <span className="text-blue-200 text-xs ml-2">Level {selectedFish.level}</span>
+              <span className="text-blue-200 text-xs ml-2">
+                Generation {selectedFish.generation}
+              </span>
+              <span className="text-blue-200 text-xs ml-2">
+                Level {selectedFish.level}
+              </span>
             </div>
           </div>
 
@@ -57,7 +66,9 @@ export function FishDetails({ selectedFish, onSelectForBreeding }: FishDetailsPr
             <div className="grid grid-cols-2 gap-2">
               {Object.entries(selectedFish.traits).map(([trait, value]) => (
                 <div key={trait} className="bg-blue-700/30 rounded-lg p-2">
-                  <div className="text-xs text-blue-300 capitalize">{trait}</div>
+                  <div className="text-xs text-blue-300 capitalize">
+                    {trait}
+                  </div>
                   <div className="text-white">{value}</div>
                 </div>
               ))}
@@ -72,13 +83,17 @@ export function FishDetails({ selectedFish, onSelectForBreeding }: FishDetailsPr
                   <div>
                     <div className="text-xs text-blue-300">Father</div>
                     <div className="text-white">
-                      {fishCollection.find((f) => f.id === selectedFish.parents?.father)?.name || "Unknown"}
+                      {fishCollection.find(
+                        (f) => f.id === selectedFish.parents?.father,
+                      )?.name || "Unknown"}
                     </div>
                   </div>
                   <div>
                     <div className="text-xs text-blue-300">Mother</div>
                     <div className="text-white">
-                      {fishCollection.find((f) => f.id === selectedFish.parents?.mother)?.name || "Unknown"}
+                      {fishCollection.find(
+                        (f) => f.id === selectedFish.parents?.mother,
+                      )?.name || "Unknown"}
                     </div>
                   </div>
                 </div>
@@ -90,14 +105,20 @@ export function FishDetails({ selectedFish, onSelectForBreeding }: FishDetailsPr
             <Button
               className="flex-1 bg-pink-600 hover:bg-pink-700 text-white"
               onClick={() => onSelectForBreeding(selectedFish, "father")}
-              disabled={!!selectedFish.breedingCooldown && selectedFish.breedingCooldown !== "Ready"}
+              disabled={
+                !!selectedFish.breedingCooldown &&
+                selectedFish.breedingCooldown !== "Ready"
+              }
             >
               Select as Father
             </Button>
             <Button
               className="flex-1 bg-pink-600 hover:bg-pink-700 text-white"
               onClick={() => onSelectForBreeding(selectedFish, "mother")}
-              disabled={!!selectedFish.breedingCooldown && selectedFish.breedingCooldown !== "Ready"}
+              disabled={
+                !!selectedFish.breedingCooldown &&
+                selectedFish.breedingCooldown !== "Ready"
+              }
             >
               Select as Mother
             </Button>
@@ -108,13 +129,15 @@ export function FishDetails({ selectedFish, onSelectForBreeding }: FishDetailsPr
           <div className="w-20 h-20 rounded-full bg-blue-700/30 flex items-center justify-center mx-auto mb-4">
             <FishIcon className="h-10 w-10 text-blue-400/70" />
           </div>
-          <h4 className="text-lg font-bold text-white mb-2">No Fish Selected</h4>
+          <h4 className="text-lg font-bold text-white mb-2">
+            No Fish Selected
+          </h4>
           <p className="text-blue-200 text-sm">
-            Select a fish from the list to view its details and use it for breeding.
+            Select a fish from the list to view its details and use it for
+            breeding.
           </p>
         </div>
       )}
     </div>
-  )
+  );
 }
-

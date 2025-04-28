@@ -1,90 +1,97 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import { FishTank } from "@/components/fish-tank"
-import { X, Heart, Clock, AlertTriangle, Plus } from "lucide-react"
-import { cn } from "@/lib/utils"
-import type { Fish, BreedingPair } from "@/types/fish"
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { FishTank } from "@/components/fish-tank";
+import { X, Heart, Clock, AlertTriangle, Plus } from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { Fish, BreedingPair } from "@/types/fish";
 
 interface BreedingTankProps {
-  breedingPair: BreedingPair
-  onReset: () => void
-  breedingResults: any[]
+  breedingPair: BreedingPair;
+  onReset: () => void;
+  breedingResults: any[];
 }
 
-export function BreedingTank({ breedingPair, onReset, breedingResults }: BreedingTankProps) {
-  const [isBreeding, setIsBreeding] = useState(false)
-  const [breedingProgress, setBreedingProgress] = useState(0)
-  const [breedingResult, setBreedingResult] = useState<Fish | null>(null)
-  const [showBreedingResult, setShowBreedingResult] = useState(false)
-  const [showCompatibilityWarning, setShowCompatibilityWarning] = useState(false)
-  const breedingTimerRef = useRef<number | null>(null)
+export function BreedingTank({
+  breedingPair,
+  onReset,
+  breedingResults,
+}: BreedingTankProps) {
+  const [isBreeding, setIsBreeding] = useState(false);
+  const [breedingProgress, setBreedingProgress] = useState(0);
+  const [breedingResult, setBreedingResult] = useState<Fish | null>(null);
+  const [showBreedingResult, setShowBreedingResult] = useState(false);
+  const [showCompatibilityWarning, setShowCompatibilityWarning] =
+    useState(false);
+  const breedingTimerRef = useRef<number | null>(null);
 
   // Start breeding process
   const startBreeding = () => {
     // Check if both fish are selected
     if (!breedingPair.father || !breedingPair.mother) {
-      return
+      return;
     }
 
     // Check compatibility (for demo, just check if they're the same species)
     if (breedingPair.father.id === breedingPair.mother.id) {
-      setShowCompatibilityWarning(true)
-      return
+      setShowCompatibilityWarning(true);
+      return;
     }
 
-    setIsBreeding(true)
-    setBreedingProgress(0)
+    setIsBreeding(true);
+    setBreedingProgress(0);
 
     // Simulate breeding process with timer
     breedingTimerRef.current = window.setInterval(() => {
       setBreedingProgress((prev) => {
-        const newProgress = prev + 1
+        const newProgress = prev + 1;
         if (newProgress >= 100) {
           // Breeding complete
           if (breedingTimerRef.current) {
-            clearInterval(breedingTimerRef.current)
+            clearInterval(breedingTimerRef.current);
           }
 
           // For demo, just use one of the existing breeding results
-          const resultIndex = Math.floor(Math.random() * breedingResults.length)
-          setBreedingResult(breedingResults[resultIndex] || null)
+          const resultIndex = Math.floor(
+            Math.random() * breedingResults.length,
+          );
+          setBreedingResult(breedingResults[resultIndex] || null);
 
           setTimeout(() => {
-            setIsBreeding(false)
-            setShowBreedingResult(true)
-          }, 500)
+            setIsBreeding(false);
+            setShowBreedingResult(true);
+          }, 500);
 
-          return 100
+          return 100;
         }
-        return newProgress
-      })
-    }, 100) // Update every 100ms for a total of 10 seconds
-  }
+        return newProgress;
+      });
+    }, 100); // Update every 100ms for a total of 10 seconds
+  };
 
   // Reset breeding process
   const resetBreeding = () => {
     if (breedingTimerRef.current) {
-      clearInterval(breedingTimerRef.current)
+      clearInterval(breedingTimerRef.current);
     }
-    setIsBreeding(false)
-    setBreedingProgress(0)
-    setBreedingResult(null)
-    setShowBreedingResult(false)
-    setShowCompatibilityWarning(false)
-    onReset()
-  }
+    setIsBreeding(false);
+    setBreedingProgress(0);
+    setBreedingResult(null);
+    setShowBreedingResult(false);
+    setShowCompatibilityWarning(false);
+    onReset();
+  };
 
   // Clean up timer on unmount
   useEffect(() => {
     return () => {
       if (breedingTimerRef.current) {
-        clearInterval(breedingTimerRef.current)
+        clearInterval(breedingTimerRef.current);
       }
-    }
-  }, [])
+    };
+  }, []);
 
   return (
     <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 overflow-hidden">
@@ -123,7 +130,9 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
           </div>
 
           <div className="text-center mb-6">
-            <h4 className="font-bold text-white text-lg">{breedingResult?.name}</h4>
+            <h4 className="font-bold text-white text-lg">
+              {breedingResult?.name}
+            </h4>
             <div className="flex justify-center items-center mt-1">
               <span
                 className={cn(
@@ -141,23 +150,36 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
               >
                 {breedingResult?.rarity}
               </span>
-              <span className="text-blue-200 text-xs ml-2">Gen {breedingResult?.generation}</span>
+              <span className="text-blue-200 text-xs ml-2">
+                Gen {breedingResult?.generation}
+              </span>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 w-full mb-6">
             {breedingResult?.traits &&
               Object.entries(breedingResult.traits).map(([trait, value]) => (
-                <div key={trait} className="bg-blue-700/30 rounded-lg p-2 text-center">
-                  <div className="text-xs text-blue-300 capitalize">{trait}</div>
+                <div
+                  key={trait}
+                  className="bg-blue-700/30 rounded-lg p-2 text-center"
+                >
+                  <div className="text-xs text-blue-300 capitalize">
+                    {trait}
+                  </div>
                   <div className="text-white">{value}</div>
                 </div>
               ))}
           </div>
 
           <div className="flex gap-3">
-            <Button className="bg-green-500 hover:bg-green-600 text-white">Add to Aquarium</Button>
-            <Button variant="outline" className="border-blue-600 text-blue-200" onClick={resetBreeding}>
+            <Button className="bg-green-500 hover:bg-green-600 text-white">
+              Add to Aquarium
+            </Button>
+            <Button
+              variant="outline"
+              className="border-blue-600 text-blue-200"
+              onClick={resetBreeding}
+            >
               Breed Again
             </Button>
           </div>
@@ -165,8 +187,12 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
       ) : isBreeding ? (
         <div className="p-6 flex flex-col items-center">
           <div className="text-center mb-6">
-            <h3 className="text-xl font-bold text-white mb-2">Breeding in Progress</h3>
-            <p className="text-blue-200">Please wait while the fish are breeding...</p>
+            <h3 className="text-xl font-bold text-white mb-2">
+              Breeding in Progress
+            </h3>
+            <p className="text-blue-200">
+              Please wait while the fish are breeding...
+            </p>
           </div>
 
           <div className="relative w-full h-40 mb-6">
@@ -221,9 +247,12 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
                       className="w-full h-full object-contain"
                     />
                   </div>
-                  <div className="font-bold text-white">{breedingPair.father.name}</div>
+                  <div className="font-bold text-white">
+                    {breedingPair.father.name}
+                  </div>
                   <div className="text-xs text-blue-200">
-                    {breedingPair.father.rarity} • Gen {breedingPair.father.generation}
+                    {breedingPair.father.rarity} • Gen{" "}
+                    {breedingPair.father.generation}
                   </div>
                 </div>
               ) : (
@@ -246,9 +275,12 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
                       className="w-full h-full object-contain"
                     />
                   </div>
-                  <div className="font-bold text-white">{breedingPair.mother.name}</div>
+                  <div className="font-bold text-white">
+                    {breedingPair.mother.name}
+                  </div>
                   <div className="text-xs text-blue-200">
-                    {breedingPair.mother.rarity} • Gen {breedingPair.mother.generation}
+                    {breedingPair.mother.rarity} • Gen{" "}
+                    {breedingPair.mother.generation}
                   </div>
                 </div>
               ) : (
@@ -264,9 +296,12 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
             <div className="bg-orange-500/20 border border-orange-400/30 rounded-lg p-3 mb-6 flex items-start">
               <AlertTriangle className="h-5 w-5 text-orange-400 mr-2 flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-bold text-orange-100">Compatibility Warning</h4>
+                <h4 className="font-bold text-orange-100">
+                  Compatibility Warning
+                </h4>
                 <p className="text-orange-200 text-sm">
-                  These fish may not be compatible for breeding. Try selecting different fish for better results.
+                  These fish may not be compatible for breeding. Try selecting
+                  different fish for better results.
                 </p>
               </div>
             </div>
@@ -283,6 +318,5 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
         </div>
       )}
     </div>
-  )
+  );
 }
-

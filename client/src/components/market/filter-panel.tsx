@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Slider } from "@/components/ui/slider"
-import { RefreshCw } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { useMarketStore } from "@/store/market-store"
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { RefreshCw } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useMarketStore } from "@/store/market-store";
 
 export function FilterPanel() {
-  const { filters, setFilters, resetFilters } = useMarketStore()
+  const { filters, setFilters, resetFilters } = useMarketStore();
 
   return (
     <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 p-4 animate-in fade-in-50 duration-200">
@@ -16,32 +16,34 @@ export function FilterPanel() {
         <div>
           <h3 className="font-bold text-white mb-2">Rarity</h3>
           <div className="grid grid-cols-2 gap-2">
-            {["Common", "Uncommon", "Rare", "Epic", "Legendary"].map((rarity) => (
-              <Button
-                key={rarity}
-                variant="outline"
-                size="sm"
-                className={cn(
-                  "border-blue-600/50 text-blue-100",
-                  filters.rarity.includes(rarity)
-                    ? "bg-blue-700/70 border-blue-500/70"
-                    : "bg-blue-800/30 hover:bg-blue-700/50",
-                )}
-                onClick={() => {
-                  if (filters.rarity.includes(rarity)) {
-                    setFilters({
-                      rarity: filters.rarity.filter((r) => r !== rarity),
-                    })
-                  } else {
-                    setFilters({
-                      rarity: [...filters.rarity, rarity],
-                    })
-                  }
-                }}
-              >
-                {rarity}
-              </Button>
-            ))}
+            {["Common", "Uncommon", "Rare", "Epic", "Legendary"].map(
+              (rarity) => (
+                <Button
+                  key={rarity}
+                  variant="outline"
+                  size="sm"
+                  className={cn(
+                    "border-blue-600/50 text-blue-100",
+                    filters.rarity.includes(rarity)
+                      ? "bg-blue-700/70 border-blue-500/70"
+                      : "bg-blue-800/30 hover:bg-blue-700/50",
+                  )}
+                  onClick={() => {
+                    if (filters.rarity.includes(rarity)) {
+                      setFilters({
+                        rarity: filters.rarity.filter((r) => r !== rarity),
+                      });
+                    } else {
+                      setFilters({
+                        rarity: [...filters.rarity, rarity],
+                      });
+                    }
+                  }}
+                >
+                  {rarity}
+                </Button>
+              ),
+            )}
           </div>
         </div>
 
@@ -57,7 +59,7 @@ export function FilterPanel() {
                 setFilters({
                   minPrice: value[0],
                   maxPrice: value[1],
-                })
+                });
               }}
               className="mb-4"
             />
@@ -91,7 +93,7 @@ export function FilterPanel() {
                 onClick={() => {
                   setFilters({
                     listingType: type.value as any,
-                  })
+                  });
                 }}
               >
                 {type.label}
@@ -104,7 +106,16 @@ export function FilterPanel() {
         <div>
           <h3 className="font-bold text-white mb-2">Traits</h3>
           <div className="grid grid-cols-2 gap-2">
-            {["Blue", "Red", "Green", "Gold", "Spotted", "Striped", "Long", "Bioluminescent"].map((trait) => (
+            {[
+              "Blue",
+              "Red",
+              "Green",
+              "Gold",
+              "Spotted",
+              "Striped",
+              "Long",
+              "Bioluminescent",
+            ].map((trait) => (
               <Button
                 key={trait}
                 variant="outline"
@@ -119,11 +130,11 @@ export function FilterPanel() {
                   if (filters.traits.includes(trait)) {
                     setFilters({
                       traits: filters.traits.filter((t) => t !== trait),
-                    })
+                    });
                   } else {
                     setFilters({
                       traits: [...filters.traits, trait],
-                    })
+                    });
                   }
                 }}
               >
@@ -157,7 +168,7 @@ export function FilterPanel() {
                 onClick={() => {
                   setFilters({
                     sort: option.value as any,
-                  })
+                  });
                 }}
               >
                 {option.label}
@@ -179,6 +190,5 @@ export function FilterPanel() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

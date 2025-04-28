@@ -1,20 +1,15 @@
-"use client"
+"use client";
 
-import {
-  CalendarDays,
-  Image,
-  MessageSquare,
-  Users,
-} from "lucide-react"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import CommunityGallery from "./community-gallery"
-import CommunityFriends from "./community-friends"
-import CommunityForum from "./community-forum"
-import CommunityEvents from "./community-events"
+import { CalendarDays, Image, MessageSquare, Users } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import CommunityGallery from "./community-gallery";
+import CommunityFriends from "./community-friends";
+import CommunityForum from "./community-forum";
+import CommunityEvents from "./community-events";
 
 interface CommunityTabsProps {
-  activeTab: string
-  setActiveTab: (value: string) => void
+  activeTab: string;
+  setActiveTab: (value: string) => void;
 }
 
 export function CommunityTabs({ activeTab, setActiveTab }: CommunityTabsProps) {
@@ -69,5 +64,5 @@ export function CommunityTabs({ activeTab, setActiveTab }: CommunityTabsProps) {
         <CommunityEvents />
       </TabsContent>
     </Tabs>
-  )
+  );
 }

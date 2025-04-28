@@ -1,11 +1,11 @@
-"use client"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Search, Filter, Sparkles } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { FishTank } from "@/components/fish-tank"
-import { breedingResults } from "@/data/fish-data"
-import { fishCollection } from "@/data/fish-data"
+"use client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search, Filter, Sparkles } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { FishTank } from "@/components/fish-tank";
+import { breedingResults } from "@/data/fish-data";
+import { fishCollection } from "@/data/fish-data";
 
 export function DiscoveriesTab() {
   return (
@@ -21,7 +21,10 @@ export function DiscoveriesTab() {
             />
             <Search className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-blue-300/70" />
           </div>
-          <Button variant="outline" className="bg-blue-800/50 border-blue-700/50 text-white hover:bg-blue-700/70">
+          <Button
+            variant="outline"
+            className="bg-blue-800/50 border-blue-700/50 text-white hover:bg-blue-700/70"
+          >
             <Filter className="h-4 w-4 mr-2" />
             Filter
           </Button>
@@ -33,14 +36,20 @@ export function DiscoveriesTab() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-blue-700/30 rounded-lg p-3 text-center">
             <div className="text-sm text-blue-300">Total Discoveries</div>
-            <div className="text-2xl font-bold text-white">{breedingResults.length}</div>
+            <div className="text-2xl font-bold text-white">
+              {breedingResults.length}
+            </div>
           </div>
           <div className="bg-blue-700/30 rounded-lg p-3 text-center">
             <div className="text-sm text-blue-300">Rare+ Discoveries</div>
             <div className="text-2xl font-bold text-white">
               {
-                breedingResults.filter((r) => r.rarity === "Rare" || r.rarity === "Epic" || r.rarity === "Legendary")
-                  .length
+                breedingResults.filter(
+                  (r) =>
+                    r.rarity === "Rare" ||
+                    r.rarity === "Epic" ||
+                    r.rarity === "Legendary",
+                ).length
               }
             </div>
           </div>
@@ -85,7 +94,7 @@ export function DiscoveriesTab() {
         </div>
       </div>
     </>
-  )
+  );
 }
 
 function DiscoveryCard({ result }) {
@@ -98,7 +107,11 @@ function DiscoveryCard({ result }) {
     >
       <div className="relative h-40 bg-blue-800/50">
         <FishTank className="h-40">
-          <img src={result.image || "/placeholder.svg"} alt={result.name} className="w-24 h-24 object-contain" />
+          <img
+            src={result.image || "/placeholder.svg"}
+            alt={result.name}
+            className="w-24 h-24 object-contain"
+          />
         </FishTank>
         <div className="absolute top-2 right-2 bg-blue-900/70 backdrop-blur-sm px-2 py-1 rounded text-xs text-blue-100">
           Discovered: {result.discovered}
@@ -129,8 +142,11 @@ function DiscoveryCard({ result }) {
           <div className="flex items-center text-xs">
             <span className="text-blue-300 w-16">Parents:</span>
             <span className="text-white">
-              {fishCollection.find((f) => f.id === result.parents.father)?.name || "Unknown"} ×{" "}
-              {fishCollection.find((f) => f.id === result.parents.mother)?.name || "Unknown"}
+              {fishCollection.find((f) => f.id === result.parents.father)
+                ?.name || "Unknown"}{" "}
+              ×{" "}
+              {fishCollection.find((f) => f.id === result.parents.mother)
+                ?.name || "Unknown"}
             </span>
           </div>
 
@@ -144,12 +160,15 @@ function DiscoveryCard({ result }) {
           </div>
         </div>
 
-        <Button size="sm" className="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white">
+        <Button
+          size="sm"
+          className="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white"
+        >
           View Details
         </Button>
       </div>
     </div>
-  )
+  );
 }
 
 function UndiscoveredCard({ index }) {
@@ -166,7 +185,9 @@ function UndiscoveredCard({ index }) {
       <div className="p-3">
         <div className="flex justify-between items-start">
           <h4 className="font-bold text-white">???</h4>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-600/50 text-blue-100">Unknown</span>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-blue-600/50 text-blue-100">
+            Unknown
+          </span>
         </div>
 
         <div className="mt-2 space-y-1">
@@ -182,11 +203,13 @@ function UndiscoveredCard({ index }) {
           </div>
         </div>
 
-        <Button size="sm" className="w-full mt-3 bg-purple-600 hover:bg-purple-700 text-white">
+        <Button
+          size="sm"
+          className="w-full mt-3 bg-purple-600 hover:bg-purple-700 text-white"
+        >
           Research
         </Button>
       </div>
     </div>
-  )
+  );
 }
-

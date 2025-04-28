@@ -1,37 +1,45 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { useMarketStore } from "@/store/market-store"
-import { RarityBadge } from "@/components/market/rarity-badge"
-import { mockFishData } from "@/data/market-data"
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { useMarketStore } from "@/store/market-store";
+import { RarityBadge } from "@/components/market/rarity-badge";
+import { mockFishData } from "@/data/market-data";
 
 export function OfferModal() {
-  const { selectedFish, showOfferModal, setShowOfferModal } = useMarketStore()
-  const [selectedOffer, setSelectedOffer] = useState<number | null>(null)
+  const { selectedFish, showOfferModal, setShowOfferModal } = useMarketStore();
+  const [selectedOffer, setSelectedOffer] = useState<number | null>(null);
 
-  if (!selectedFish || !selectedFish.exchange) return null
+  if (!selectedFish || !selectedFish.exchange) return null;
 
   // Filter user's fish that could be offered
-  const myFish = mockFishData.slice(0, 3) // In a real app, this would be the user's fish
+  const myFish = mockFishData.slice(0, 3); // In a real app, this would be the user's fish
 
   const handleSubmit = () => {
     if (selectedOffer === null) {
-      alert("Please select a fish to offer")
-      return
+      alert("Please select a fish to offer");
+      return;
     }
 
     // In a real app, this would submit the offer to an API
-    alert(`Offer sent for ${selectedFish.name}!`)
-    setShowOfferModal(false)
-  }
+    alert(`Offer sent for ${selectedFish.name}!`);
+    setShowOfferModal(false);
+  };
 
   return (
     <Dialog open={showOfferModal} onOpenChange={setShowOfferModal}>
       <DialogContent className="bg-blue-900/95 border-blue-700 text-white max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-center">Make an Offer</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-center">
+            Make an Offer
+          </DialogTitle>
         </DialogHeader>
 
         <div className="flex items-center space-x-4 mb-4">
@@ -46,7 +54,9 @@ export function OfferModal() {
             <h3 className="font-bold">{selectedFish.name}</h3>
             <div className="flex items-center space-x-2 mt-1">
               <RarityBadge rarity={selectedFish.rarity} />
-              <span className="text-xs text-blue-300">Level {selectedFish.level}</span>
+              <span className="text-xs text-blue-300">
+                Level {selectedFish.level}
+              </span>
             </div>
           </div>
         </div>
@@ -55,7 +65,10 @@ export function OfferModal() {
           <h4 className="font-medium text-blue-200 mb-2">Looking for:</h4>
           <div className="flex flex-wrap gap-2">
             {selectedFish.exchange.lookingFor.map((trait, index) => (
-              <span key={index} className="text-xs px-2 py-1 bg-blue-700/50 rounded-full text-blue-100">
+              <span
+                key={index}
+                className="text-xs px-2 py-1 bg-blue-700/50 rounded-full text-blue-100"
+              >
                 {trait}
               </span>
             ))}
@@ -63,7 +76,9 @@ export function OfferModal() {
         </div>
 
         <div className="mb-4">
-          <h4 className="font-medium text-blue-200 mb-2">Select a fish to offer:</h4>
+          <h4 className="font-medium text-blue-200 mb-2">
+            Select a fish to offer:
+          </h4>
           <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
             {myFish.map((fish) => (
               <div
@@ -86,14 +101,18 @@ export function OfferModal() {
                   <h5 className="font-medium">{fish.name}</h5>
                   <div className="flex items-center space-x-2 mt-0.5">
                     <RarityBadge rarity={fish.rarity} />
-                    <span className="text-xs text-blue-300">Level {fish.level}</span>
+                    <span className="text-xs text-blue-300">
+                      Level {fish.level}
+                    </span>
                   </div>
                 </div>
               </div>
             ))}
 
             {myFish.length === 0 && (
-              <div className="text-center py-4 text-blue-300">You don't have any fish to offer</div>
+              <div className="text-center py-4 text-blue-300">
+                You don't have any fish to offer
+              </div>
             )}
           </div>
         </div>
@@ -112,6 +131,5 @@ export function OfferModal() {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-

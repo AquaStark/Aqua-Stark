@@ -1,20 +1,24 @@
-"use client"
+"use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Heart, Dna, Sparkles, FileText } from "lucide-react"
-import { BreedingTab } from "@/components/laboratory/tabs/breeding-tab"
-import { GeneticsTab } from "@/components/laboratory/tabs/genetics-tab"
-import { DiscoveriesTab } from "@/components/laboratory/tabs/discoveries-tab"
-import { GenealogyTab } from "@/components/laboratory/tabs/genealogy-tab"
-import type { Fish } from "@/types/fish"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Heart, Dna, Sparkles, FileText } from "lucide-react";
+import { BreedingTab } from "@/components/laboratory/tabs/breeding-tab";
+import { GeneticsTab } from "@/components/laboratory/tabs/genetics-tab";
+import { DiscoveriesTab } from "@/components/laboratory/tabs/discoveries-tab";
+import { GenealogyTab } from "@/components/laboratory/tabs/genealogy-tab";
+import type { Fish } from "@/types/fish";
 
 interface LaboratoryTabsProps {
-  activeTab: string
-  setActiveTab: (tab: string) => void
-  filteredFish: Fish[]
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+  filteredFish: Fish[];
 }
 
-export function LaboratoryTabs({ activeTab, setActiveTab, filteredFish }: LaboratoryTabsProps) {
+export function LaboratoryTabs({
+  activeTab,
+  setActiveTab,
+  filteredFish,
+}: LaboratoryTabsProps) {
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
       <TabsList className="grid grid-cols-4 mb-6 bg-blue-800/50 border border-blue-700/50">
@@ -64,5 +68,5 @@ export function LaboratoryTabs({ activeTab, setActiveTab, filteredFish }: Labora
         <GenealogyTab />
       </TabsContent>
     </Tabs>
-  )
+  );
 }

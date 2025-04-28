@@ -1,8 +1,8 @@
-"use client"
-import { Button } from "@/components/ui/button"
-import { FileText } from "lucide-react"
-import { motion } from "framer-motion"
-import { fishCollection } from "@/data/fish-data"
+"use client";
+import { Button } from "@/components/ui/button";
+import { FileText } from "lucide-react";
+import { motion } from "framer-motion";
+import { fishCollection } from "@/data/fish-data";
 
 export function GenealogyTab() {
   return (
@@ -39,7 +39,9 @@ export function GenealogyTab() {
                   </div>
                   <div className="text-center">
                     <div className="font-bold text-white">{fish.name}</div>
-                    <div className="text-xs text-blue-200">Generation {fish.generation}</div>
+                    <div className="text-xs text-blue-200">
+                      Generation {fish.generation}
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -63,20 +65,32 @@ export function GenealogyTab() {
                   <div className="flex gap-4">
                     <div className="genealogy-node">
                       <div className="relative w-16 h-16 mb-2">
-                        <img src="/placeholder.svg" alt="Unknown" className="w-full h-full object-contain opacity-50" />
+                        <img
+                          src="/placeholder.svg"
+                          alt="Unknown"
+                          className="w-full h-full object-contain opacity-50"
+                        />
                       </div>
                       <div className="text-center">
                         <div className="font-bold text-white/50">Unknown</div>
-                        <div className="text-xs text-blue-200/50">Generation 0</div>
+                        <div className="text-xs text-blue-200/50">
+                          Generation 0
+                        </div>
                       </div>
                     </div>
                     <div className="genealogy-node">
                       <div className="relative w-16 h-16 mb-2">
-                        <img src="/placeholder.svg" alt="Unknown" className="w-full h-full object-contain opacity-50" />
+                        <img
+                          src="/placeholder.svg"
+                          alt="Unknown"
+                          className="w-full h-full object-contain opacity-50"
+                        />
                       </div>
                       <div className="text-center">
                         <div className="font-bold text-white/50">Unknown</div>
-                        <div className="text-xs text-blue-200/50">Generation 0</div>
+                        <div className="text-xs text-blue-200/50">
+                          Generation 0
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -85,20 +99,32 @@ export function GenealogyTab() {
                   <div className="flex gap-4">
                     <div className="genealogy-node">
                       <div className="relative w-16 h-16 mb-2">
-                        <img src="/placeholder.svg" alt="Unknown" className="w-full h-full object-contain opacity-50" />
+                        <img
+                          src="/placeholder.svg"
+                          alt="Unknown"
+                          className="w-full h-full object-contain opacity-50"
+                        />
                       </div>
                       <div className="text-center">
                         <div className="font-bold text-white/50">Unknown</div>
-                        <div className="text-xs text-blue-200/50">Generation 0</div>
+                        <div className="text-xs text-blue-200/50">
+                          Generation 0
+                        </div>
                       </div>
                     </div>
                     <div className="genealogy-node">
                       <div className="relative w-16 h-16 mb-2">
-                        <img src="/placeholder.svg" alt="Unknown" className="w-full h-full object-contain opacity-50" />
+                        <img
+                          src="/placeholder.svg"
+                          alt="Unknown"
+                          className="w-full h-full object-contain opacity-50"
+                        />
                       </div>
                       <div className="text-center">
                         <div className="font-bold text-white/50">Unknown</div>
-                        <div className="text-xs text-blue-200/50">Generation 0</div>
+                        <div className="text-xs text-blue-200/50">
+                          Generation 0
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -118,7 +144,9 @@ export function GenealogyTab() {
                       />
                     </div>
                     <div className="text-center">
-                      <div className="font-bold text-white">Celestial Glowfin</div>
+                      <div className="font-bold text-white">
+                        Celestial Glowfin
+                      </div>
                       <div className="text-xs text-blue-200">Generation 1</div>
                       <div className="mt-1 text-xs px-2 py-0.5 rounded-full bg-amber-500/50 text-amber-100 inline-block">
                         Legendary
@@ -136,7 +164,9 @@ export function GenealogyTab() {
                       />
                     </div>
                     <div className="text-center">
-                      <div className="font-bold text-white">Crimson Flasher</div>
+                      <div className="font-bold text-white">
+                        Crimson Flasher
+                      </div>
                       <div className="text-xs text-blue-200">Generation 1</div>
                       <div className="mt-1 text-xs px-2 py-0.5 rounded-full bg-purple-500/50 text-purple-100 inline-block">
                         Epic
@@ -157,7 +187,9 @@ export function GenealogyTab() {
                     />
                   </div>
                   <div className="text-center">
-                    <div className="font-bold text-white text-lg">Azure Drifter</div>
+                    <div className="font-bold text-white text-lg">
+                      Azure Drifter
+                    </div>
                     <div className="text-sm text-blue-200">Generation 2</div>
                     <div className="mt-1 text-xs px-2 py-0.5 rounded-full bg-gray-500/50 text-gray-100 inline-block">
                       Common
@@ -167,16 +199,65 @@ export function GenealogyTab() {
               </div>
 
               {/* Connecting lines */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: -1 }}>
+              <svg
+                className="absolute inset-0 w-full h-full pointer-events-none"
+                style={{ zIndex: -1 }}
+              >
                 {/* Lines from grandparents to parents */}
-                <line x1="25%" y1="8%" x2="33.3%" y2="33%" stroke="#4B5563" strokeWidth="2" strokeDasharray="5,5" />
-                <line x1="33.3%" y1="8%" x2="33.3%" y2="33%" stroke="#4B5563" strokeWidth="2" strokeDasharray="5,5" />
-                <line x1="66.7%" y1="8%" x2="66.7%" y2="33%" stroke="#4B5563" strokeWidth="2" strokeDasharray="5,5" />
-                <line x1="75%" y1="8%" x2="66.7%" y2="33%" stroke="#4B5563" strokeWidth="2" strokeDasharray="5,5" />
+                <line
+                  x1="25%"
+                  y1="8%"
+                  x2="33.3%"
+                  y2="33%"
+                  stroke="#4B5563"
+                  strokeWidth="2"
+                  strokeDasharray="5,5"
+                />
+                <line
+                  x1="33.3%"
+                  y1="8%"
+                  x2="33.3%"
+                  y2="33%"
+                  stroke="#4B5563"
+                  strokeWidth="2"
+                  strokeDasharray="5,5"
+                />
+                <line
+                  x1="66.7%"
+                  y1="8%"
+                  x2="66.7%"
+                  y2="33%"
+                  stroke="#4B5563"
+                  strokeWidth="2"
+                  strokeDasharray="5,5"
+                />
+                <line
+                  x1="75%"
+                  y1="8%"
+                  x2="66.7%"
+                  y2="33%"
+                  stroke="#4B5563"
+                  strokeWidth="2"
+                  strokeDasharray="5,5"
+                />
 
                 {/* Lines from parents to child */}
-                <line x1="33.3%" y1="50%" x2="50%" y2="75%" stroke="#4B5563" strokeWidth="2" />
-                <line x1="66.7%" y1="50%" x2="50%" y2="75%" stroke="#4B5563" strokeWidth="2" />
+                <line
+                  x1="33.3%"
+                  y1="50%"
+                  x2="50%"
+                  y2="75%"
+                  stroke="#4B5563"
+                  strokeWidth="2"
+                />
+                <line
+                  x1="66.7%"
+                  y1="50%"
+                  x2="50%"
+                  y2="75%"
+                  stroke="#4B5563"
+                  strokeWidth="2"
+                />
               </svg>
             </div>
           </div>
@@ -226,21 +307,28 @@ export function GenealogyTab() {
               <h4 className="font-bold text-white mb-3">Special Traits</h4>
               <div className="bg-blue-700/30 rounded-lg p-4">
                 <p className="text-blue-200 mb-4">
-                  The Azure Drifter did not inherit any special traits from its parents, despite the father having the
-                  Bioluminescent trait and the mother having the Fast trait.
+                  The Azure Drifter did not inherit any special traits from its
+                  parents, despite the father having the Bioluminescent trait
+                  and the mother having the Fast trait.
                 </p>
 
                 <div className="space-y-2">
                   <div className="flex items-center">
-                    <div className="w-32 text-sm text-blue-300">Father's Special:</div>
+                    <div className="w-32 text-sm text-blue-300">
+                      Father's Special:
+                    </div>
                     <div className="text-white">Bioluminescent</div>
                   </div>
                   <div className="flex items-center">
-                    <div className="w-32 text-sm text-blue-300">Mother's Special:</div>
+                    <div className="w-32 text-sm text-blue-300">
+                      Mother's Special:
+                    </div>
                     <div className="text-white">Fast</div>
                   </div>
                   <div className="flex items-center">
-                    <div className="w-32 text-sm text-blue-300">Offspring Special:</div>
+                    <div className="w-32 text-sm text-blue-300">
+                      Offspring Special:
+                    </div>
                     <div className="text-white">None</div>
                   </div>
                 </div>
@@ -249,20 +337,27 @@ export function GenealogyTab() {
                   <div className="flex items-start">
                     <Info className="h-5 w-5 text-blue-300 mr-2 flex-shrink-0 mt-0.5" />
                     <div>
-                      <h5 className="font-bold text-white">Special Trait Inheritance</h5>
+                      <h5 className="font-bold text-white">
+                        Special Trait Inheritance
+                      </h5>
                       <p className="text-blue-200 text-sm">
-                        Special traits have only a 20-30% chance of being passed down to offspring. Try breeding this
-                        fish with another special trait fish to increase the chances of special trait inheritance.
+                        Special traits have only a 20-30% chance of being passed
+                        down to offspring. Try breeding this fish with another
+                        special trait fish to increase the chances of special
+                        trait inheritance.
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <h4 className="font-bold text-white mt-6 mb-3">Breeding Recommendations</h4>
+              <h4 className="font-bold text-white mt-6 mb-3">
+                Breeding Recommendations
+              </h4>
               <div className="bg-blue-700/30 rounded-lg p-4">
                 <p className="text-blue-200 mb-4">
-                  Based on the genetic analysis, here are some recommended breeding pairs for this fish:
+                  Based on the genetic analysis, here are some recommended
+                  breeding pairs for this fish:
                 </p>
 
                 <div className="space-y-3">
@@ -276,7 +371,9 @@ export function GenealogyTab() {
                     </div>
                     <div>
                       <div className="text-white text-sm">Royal Crowntail</div>
-                      <div className="text-xs text-blue-300">Chance for rare pattern inheritance</div>
+                      <div className="text-xs text-blue-300">
+                        Chance for rare pattern inheritance
+                      </div>
                     </div>
                   </div>
 
@@ -290,7 +387,9 @@ export function GenealogyTab() {
                     </div>
                     <div>
                       <div className="text-white text-sm">Golden Shimmer</div>
-                      <div className="text-xs text-blue-300">Potential for special trait activation</div>
+                      <div className="text-xs text-blue-300">
+                        Potential for special trait activation
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -300,7 +399,7 @@ export function GenealogyTab() {
         </div>
       </div>
     </>
-  )
+  );
 }
 
 function TraitInheritanceBar({ trait, value, father, mother, result, colors }) {
@@ -321,7 +420,7 @@ function TraitInheritanceBar({ trait, value, father, mother, result, colors }) {
         <div>Result: {result}</div>
       </div>
     </div>
-  )
+  );
 }
 
 function Info(props) {
@@ -342,6 +441,5 @@ function Info(props) {
       <path d="M12 16v-4" />
       <path d="M12 8h.01" />
     </svg>
-  )
+  );
 }
-

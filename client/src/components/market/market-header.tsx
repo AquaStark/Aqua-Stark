@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom"
-import { ArrowLeft, Coins } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Link } from "react-router-dom";
+import { ArrowLeft, Coins } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function MarketHeader() {
   return (
@@ -8,7 +8,10 @@ export function MarketHeader() {
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center">
           <Link to="/game" className="mr-4">
-            <Button variant="ghost" className="text-white hover:bg-blue-700/50 rounded-full">
+            <Button
+              variant="ghost"
+              className="text-white hover:bg-blue-700/50 rounded-full"
+            >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Game
             </Button>
@@ -23,6 +26,5 @@ export function MarketHeader() {
         </div>
       </div>
     </header>
-  )
+  );
 }
-

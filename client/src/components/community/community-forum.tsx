@@ -4,8 +4,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Sparkles, Eye, MessageSquare } from "lucide-react";
-import { popularCategories, recentDiscussions } from '@/data/mock-community';
-
+import { popularCategories, recentDiscussions } from "@/data/mock-community";
 
 export default function CommunityForum() {
   const [searchQuery, setSearchQuery] = useState("");

@@ -1,14 +1,14 @@
-import { useState } from "react"
-import { BubblesBackground } from "@/components/bubble-background"
-import { useBubbles } from "@/hooks/use-bubbles"
-import { PageHeader } from "@/components/layout/page-header"
-import { Footer } from "@/components/layout/footer"
-import { Trophy } from "lucide-react"
-import { AchievementsTabs } from "@/components/achievements/achievements-tabs"
+import { useState } from "react";
+import { BubblesBackground } from "@/components/bubble-background";
+import { useBubbles } from "@/hooks/use-bubbles";
+import { PageHeader } from "@/components/layout/page-header";
+import { Footer } from "@/components/layout/footer";
+import { Trophy } from "lucide-react";
+import { AchievementsTabs } from "@/components/achievements/achievements-tabs";
 
 export default function AchievementsPage() {
-  const bubbles = useBubbles()
-  const [activeTab, setActiveTab] = useState("achievements")
+  const bubbles = useBubbles();
+  const [activeTab, setActiveTab] = useState("achievements");
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background">
@@ -32,5 +32,5 @@ export default function AchievementsPage() {
 
       <Footer />
     </div>
-  )
+  );
 }

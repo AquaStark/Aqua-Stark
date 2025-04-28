@@ -1,42 +1,44 @@
 /* Bubble animation */
 .bubble {
-    position: absolute;
-    background: radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 100%);
-    border-radius: 50%;
-    animation: bubble-rise var(--duration, 10s) ease-in infinite;
-    z-index: 1;
+  position: absolute;
+  background: radial-gradient(
+    circle at 70% 70%,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-radius: 50%;
+  animation: bubble-rise var(--duration, 10s) ease-in infinite;
+  z-index: 1;
+}
+
+@keyframes bubble-rise {
+  0% {
+    transform: translateY(100vh) scale(0.8);
+    opacity: 0.2;
   }
-  
-  @keyframes bubble-rise {
-    0% {
-      transform: translateY(100vh) scale(0.8);
-      opacity: 0.2;
-    }
-    20% {
-      opacity: 0.6;
-    }
-    50% {
-      opacity: 0.4;
-    }
-    80% {
-      opacity: 0.2;
-    }
-    100% {
-      transform: translateY(-100px) scale(1.2);
-      opacity: 0;
-    }
+  20% {
+    opacity: 0.6;
   }
-  
-  /* Genealogy tree styles */
-  .genealogy-node {
-    position: relative;
-    z-index: 2;
-    background-color: rgba(30, 64, 175, 0.3);
-    border-radius: 0.75rem;
-    padding: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  50% {
+    opacity: 0.4;
   }
-  
-  
+  80% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: translateY(-100px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* Genealogy tree styles */
+.genealogy-node {
+  position: relative;
+  z-index: 2;
+  background-color: rgba(30, 64, 175, 0.3);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

@@ -1,10 +1,10 @@
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { ChevronDown, ChevronUp, Filter, Lock, Search, X } from "lucide-react"
-import { useEncyclopedia } from "@/hooks/use-encyclopedia"
-import { cn } from "@/lib/utils"
-import { motion } from "framer-motion"
-import { FishTank } from "@/components/fish-tank"
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, ChevronUp, Filter, Lock, Search, X } from "lucide-react";
+import { useEncyclopedia } from "@/hooks/use-encyclopedia";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { FishTank } from "@/components/fish-tank";
 
 export default function EncyclopediaCatalog() {
   const {
@@ -15,7 +15,7 @@ export default function EncyclopediaCatalog() {
     sortedFish,
     handleFishClick,
     resetFilters,
-  } = useEncyclopedia()
+  } = useEncyclopedia();
 
   return (
     <>
@@ -27,7 +27,9 @@ export default function EncyclopediaCatalog() {
               placeholder="Search by name or scientific name..."
               className="bg-blue-700/50 border-blue-600/50 text-white placeholder:text-blue-300/70 pr-8 w-full"
               value={filters.search}
-              onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+              onChange={(e) =>
+                setFilters({ ...filters, search: e.target.value })
+              }
             />
             <Search className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-blue-300/70" />
           </div>
@@ -40,12 +42,18 @@ export default function EncyclopediaCatalog() {
           >
             <Filter className="h-4 w-4 mr-2" />
             Filters
-            {showFilters ? <ChevronUp className="ml-2 h-4 w-4" /> : <ChevronDown className="ml-2 h-4 w-4" />}
+            {showFilters ? (
+              <ChevronUp className="ml-2 h-4 w-4" />
+            ) : (
+              <ChevronDown className="ml-2 h-4 w-4" />
+            )}
           </Button>
           <select
             className="bg-blue-800/50 border border-blue-700/50 text-white rounded-md px-3 py-2 flex-1 md:flex-none"
             value={filters.sort}
-            onChange={(e) => setFilters({ ...filters, sort: e.target.value as any })}
+            onChange={(e) =>
+              setFilters({ ...filters, sort: e.target.value as any })
+            }
           >
             <option value="name">Sort by Name</option>
             <option value="rarity">Sort by Rarity</option>
@@ -101,11 +109,17 @@ export default function EncyclopediaCatalog() {
                 </div>
               </div>
               <div className="p-4">
-                <h3 className="font-bold text-white">{fish.discovered ? fish.name : "Unknown Species"}</h3>
+                <h3 className="font-bold text-white">
+                  {fish.discovered ? fish.name : "Unknown Species"}
+                </h3>
                 {fish.discovered ? (
-                  <p className="text-blue-300 text-sm italic">{fish.scientificName}</p>
+                  <p className="text-blue-300 text-sm italic">
+                    {fish.scientificName}
+                  </p>
                 ) : (
-                  <p className="text-blue-300 text-sm italic">This species has not been discovered yet.</p>
+                  <p className="text-blue-300 text-sm italic">
+                    This species has not been discovered yet.
+                  </p>
                 )}
               </div>
             </motion.div>
@@ -116,7 +130,9 @@ export default function EncyclopediaCatalog() {
               <Search className="h-8 w-8 text-blue-300" />
             </div>
             <h3 className="text-xl font-bold text-white mb-2">No fish found</h3>
-            <p className="text-blue-200 mb-4">Try adjusting your filters or search criteria</p>
+            <p className="text-blue-200 mb-4">
+              Try adjusting your filters or search criteria
+            </p>
             <Button
               variant="outline"
               className="border-blue-600/50 text-blue-100 hover:bg-blue-700/50"
@@ -129,5 +145,5 @@ export default function EncyclopediaCatalog() {
         )}
       </div>
     </>
-  )
+  );
 }

@@ -1,12 +1,12 @@
-import { TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Book, Droplet, BarChart3 } from "lucide-react"
-import { useEncyclopedia } from "@/hooks/use-encyclopedia"
-import EncyclopediaCatalog from "@/components/encyclopedia/encyclopedia-catalog"
-import EncyclopediaHabitats from "@/components/encyclopedia/encyclopedia-habitats"
-import EncyclopediaStats from "@/components/encyclopedia/encyclopedia-stats"
+import { TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Book, Droplet, BarChart3 } from "lucide-react";
+import { useEncyclopedia } from "@/hooks/use-encyclopedia";
+import EncyclopediaCatalog from "@/components/encyclopedia/encyclopedia-catalog";
+import EncyclopediaHabitats from "@/components/encyclopedia/encyclopedia-habitats";
+import EncyclopediaStats from "@/components/encyclopedia/encyclopedia-stats";
 
 export default function EncyclopediaTabs() {
-  useEncyclopedia()
+  useEncyclopedia();
 
   return (
     <>
@@ -44,5 +44,5 @@ export default function EncyclopediaTabs() {
         <EncyclopediaStats />
       </TabsContent>
     </>
-  )
+  );
 }

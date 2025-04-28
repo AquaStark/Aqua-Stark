@@ -39,7 +39,7 @@ function formatTimeLeft(dateString: string): string {
     return `${diffDays} day${diffDays > 1 ? "s" : ""}`;
   } else {
     const diffHours = Math.floor(
-      (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
     );
     if (diffHours > 0) {
       return `${diffHours} hour${diffHours > 1 ? "s" : ""}`;
@@ -67,7 +67,7 @@ export function ListEventView({
     ? events.filter(
         (event) =>
           event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          event.description.toLowerCase().includes(searchQuery.toLowerCase())
+          event.description.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     : events;
 
@@ -75,15 +75,15 @@ export function ListEventView({
     (event) =>
       new Date(event.startDate) <= new Date() &&
       new Date(event.endDate) >= new Date() &&
-      !event.featured
+      !event.featured,
   );
 
   const upcomingEvents = filteredEvents.filter(
-    (event) => new Date(event.startDate) > new Date()
+    (event) => new Date(event.startDate) > new Date(),
   );
 
   const pastEvents = filteredEvents.filter(
-    (event) => new Date(event.endDate) < new Date()
+    (event) => new Date(event.endDate) < new Date(),
   );
 
   return (
@@ -172,7 +172,7 @@ export function ListEventView({
                             <Gift className="w-3 h-3 mr-1" />
                             <span className="text-blue-100">{reward}</span>
                           </div>
-                        )
+                        ),
                       )}
                     </div>
                   </div>

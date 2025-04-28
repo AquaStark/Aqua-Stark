@@ -1,28 +1,37 @@
-import { Clock, Fish, Star, Medal } from "lucide-react"
+import { Clock, Fish, Star, Medal } from "lucide-react";
 
 interface ProfileCardProps {
-  username: string
-  level: number
-  joinDate: string
+  username: string;
+  level: number;
+  joinDate: string;
   experience: {
-    current: number
-    total: number
-  }
+    current: number;
+    total: number;
+  };
   stats: {
-    playTime: string
-    fishCollected: number
-    totalFish: number
-    specialFish: number
+    playTime: string;
+    fishCollected: number;
+    totalFish: number;
+    specialFish: number;
     achievements: {
-      completed: number
-      total: number
-    }
-  }
+      completed: number;
+      total: number;
+    };
+  };
 }
 
-export function ProfileCard({ username, level, joinDate, experience, stats }: ProfileCardProps) {
+export function ProfileCard({
+  username,
+  level,
+  joinDate,
+  experience,
+  stats,
+}: ProfileCardProps) {
   return (
-    <div className="bg-blue-800 rounded-xl p-6 mb-6 shadow-lg animate-fadeIn" style={{ animationDelay: "0.2s" }}>
+    <div
+      className="bg-blue-800 rounded-xl p-6 mb-6 shadow-lg animate-fadeIn"
+      style={{ animationDelay: "0.2s" }}
+    >
       <div className="flex items-start">
         {/* Level Circle */}
         <div className="relative mr-6">
@@ -53,7 +62,9 @@ export function ProfileCard({ username, level, joinDate, experience, stats }: Pr
             <div className="h-2 bg-blue-900 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-blue-400 to-blue-300 animate-expandWidth"
-                style={{ width: `${(experience.current / experience.total) * 100}%` }}
+                style={{
+                  width: `${(experience.current / experience.total) * 100}%`,
+                }}
               />
             </div>
           </div>
@@ -86,7 +97,11 @@ export function ProfileCard({ username, level, joinDate, experience, stats }: Pr
                 delay: 0.6,
               },
             ].map((stat, index) => (
-              <div key={index} className="text-center animate-fadeIn" style={{ animationDelay: `${stat.delay}s` }}>
+              <div
+                key={index}
+                className="text-center animate-fadeIn"
+                style={{ animationDelay: `${stat.delay}s` }}
+              >
                 <div className="flex justify-center mb-1">{stat.icon}</div>
                 <div className="text-sm text-blue-200">{stat.label}</div>
                 <div className="font-bold">{stat.value}</div>
@@ -96,5 +111,5 @@ export function ProfileCard({ username, level, joinDate, experience, stats }: Pr
         </div>
       </div>
     </div>
-  )
+  );
 }

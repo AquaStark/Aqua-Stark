@@ -1,41 +1,42 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { Clock, Check, Coins } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { RarityBadge } from "@/components/market/rarity-badge"
-import { ListingTypeBadge } from "@/components/market/listing-type-badge"
-import type { Fish } from "@/types/market"
-import { useMarketStore } from "@/store/market-store"
-import type React from "react"
+import { motion } from "framer-motion";
+import { Clock, Check, Coins } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { RarityBadge } from "@/components/market/rarity-badge";
+import { ListingTypeBadge } from "@/components/market/listing-type-badge";
+import type { Fish } from "@/types/market";
+import { useMarketStore } from "@/store/market-store";
+import type React from "react";
 
 interface FishCardProps {
-  fish: Fish
-  onClick?: () => void
+  fish: Fish;
+  onClick?: () => void;
 }
 
 export function FishCard({ fish, onClick }: FishCardProps) {
-  const { setSelectedFish, setShowBidModal, setShowOfferModal } = useMarketStore()
+  const { setSelectedFish, setShowBidModal, setShowOfferModal } =
+    useMarketStore();
 
   const handleClick = () => {
     if (onClick) {
-      onClick()
+      onClick();
     } else {
-      setSelectedFish(fish)
+      setSelectedFish(fish);
     }
-  }
+  };
 
   const handleBidClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setSelectedFish(fish)
-    setShowBidModal(true)
-  }
+    e.stopPropagation();
+    setSelectedFish(fish);
+    setShowBidModal(true);
+  };
 
   const handleOfferClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setSelectedFish(fish)
-    setShowOfferModal(true)
-  }
+    e.stopPropagation();
+    setSelectedFish(fish);
+    setShowOfferModal(true);
+  };
 
   return (
     <motion.div
@@ -94,13 +95,17 @@ export function FishCard({ fish, onClick }: FishCardProps) {
           <div className="flex items-center mr-3">
             <div className="relative w-5 h-5 rounded-full overflow-hidden mr-1">
               <img
-                src={fish.seller?.avatar || "/placeholder.svg?height=50&width=50"}
+                src={
+                  fish.seller?.avatar || "/placeholder.svg?height=50&width=50"
+                }
                 alt={fish.seller?.name || ""}
                 className="absolute inset-0 w-full h-full object-cover"
               />
             </div>
             <span className="text-blue-200 text-xs">{fish.seller?.name}</span>
-            {fish.seller?.verified && <Check className="h-3 w-3 text-blue-400 ml-1" />}
+            {fish.seller?.verified && (
+              <Check className="h-3 w-3 text-blue-400 ml-1" />
+            )}
           </div>
           <span className="text-blue-300 text-xs flex items-center">
             <Clock className="h-3 w-3 mr-1" />
@@ -114,7 +119,10 @@ export function FishCard({ fish, onClick }: FishCardProps) {
               <Coins className="h-4 w-4 text-yellow-400 mr-1" />
               <span className="text-white font-bold">{fish.price}</span>
             </div>
-            <Button size="sm" className="bg-green-500 hover:bg-green-600 text-white">
+            <Button
+              size="sm"
+              className="bg-green-500 hover:bg-green-600 text-white"
+            >
               Buy Now
             </Button>
           </div>
@@ -125,15 +133,23 @@ export function FishCard({ fish, onClick }: FishCardProps) {
             <div>
               <div className="flex items-center">
                 <Coins className="h-4 w-4 text-yellow-400 mr-1" />
-                <span className="text-white font-bold">{fish.auction.currentBid}</span>
-                <span className="text-blue-300 text-xs ml-1">({fish.auction.bids} bids)</span>
+                <span className="text-white font-bold">
+                  {fish.auction.currentBid}
+                </span>
+                <span className="text-blue-300 text-xs ml-1">
+                  ({fish.auction.bids} bids)
+                </span>
               </div>
               <div className="text-blue-300 text-xs flex items-center mt-1">
                 <Clock className="h-3 w-3 mr-1" />
                 Ends in {fish.auction.endsIn}
               </div>
             </div>
-            <Button size="sm" className="bg-amber-500 hover:bg-amber-600 text-white" onClick={handleBidClick}>
+            <Button
+              size="sm"
+              className="bg-amber-500 hover:bg-amber-600 text-white"
+              onClick={handleBidClick}
+            >
               Place Bid
             </Button>
           </div>
@@ -145,18 +161,25 @@ export function FishCard({ fish, onClick }: FishCardProps) {
               <div className="text-blue-200 text-xs">Looking for:</div>
               <div className="flex flex-wrap gap-1 mt-1">
                 {fish.exchange.lookingFor.map((trait, index) => (
-                  <span key={index} className="text-xs px-2 py-0.5 bg-blue-700/50 rounded-full text-blue-100">
+                  <span
+                    key={index}
+                    className="text-xs px-2 py-0.5 bg-blue-700/50 rounded-full text-blue-100"
+                  >
                     {trait}
                   </span>
                 ))}
               </div>
             </div>
-            <Button size="sm" className="bg-purple-500 hover:bg-purple-600 text-white" onClick={handleOfferClick}>
+            <Button
+              size="sm"
+              className="bg-purple-500 hover:bg-purple-600 text-white"
+              onClick={handleOfferClick}
+            >
               Offer
             </Button>
           </div>
         )}
       </div>
     </motion.div>
-  )
+  );
 }

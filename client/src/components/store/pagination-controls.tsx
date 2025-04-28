@@ -1,14 +1,20 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-function PageButton({ children, active }: { children: React.ReactNode; active?: boolean }) {
+function PageButton({
+  children,
+  active,
+}: {
+  children: React.ReactNode;
+  active?: boolean;
+}) {
   return (
     <button
       className={cn(
         "w-8 h-8 rounded-full font-bold",
         active
           ? "bg-blue-400 text-white"
-          : "bg-blue-700 text-white hover:bg-blue-600"
+          : "bg-blue-700 text-white hover:bg-blue-600",
       )}
     >
       {children}
