@@ -10,7 +10,11 @@ import TradingMarketPage from "./pages/trading-market";
 import CommunityPage from "./pages/community";
 import MyProfile from "./pages/my-profile";
 import EncyclopediaPage from "./pages/encyclopedia";
+ feat/food-tab
 import FoodTab from "./components/food-tab/FoodTab";
+
+import Error404Page from "./pages/404";
+ main
 
 function App() {
   return (
@@ -27,7 +31,11 @@ function App() {
       <Route path="/community" element={<CommunityPage />} />
       <Route path="/my-profile" element={<MyProfile />} />
       <Route path="/storage-page" element={<StorePage />} />
+ feat/food-tab
       <Route path="/food-tab" element={<FoodTab />} />
+
+      <Route path="*" element={<Error404Page />} />
+ main
     </Routes>
   );
 }

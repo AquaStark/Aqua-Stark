@@ -12,6 +12,15 @@ export function StoreCategories({
   return (
     <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
       <CategoryButton
+ feat/food-tab
+
+        active={activeCategory === "all"}
+        onClick={() => onCategoryChange("all")}
+      >
+        ALL
+      </CategoryButton>
+      <CategoryButton
+ main
         active={activeCategory === "specials"}
         onClick={() => onCategoryChange("specials")}
       >
