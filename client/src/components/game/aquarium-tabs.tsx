@@ -38,7 +38,7 @@ export function AquariumTabs({
   onAquariumSelect,
 }: AquariumTabsProps) {
   return (
-    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/90 to-transparent p-4">
+    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/90 to-transparent z-20 p-4">
       <div className="flex justify-between items-end">
         <div className="flex gap-2">
           {aquariums.map((aquarium) => (

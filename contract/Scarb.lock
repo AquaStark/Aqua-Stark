@@ -3,8 +3,8 @@ version = 1
 
 [[package]]
 name = "dojo"
-version = "1.1.1"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.1.1#dba10f26191bce47bb442ddc626ba7c6e2d8c160"
+version = "1.4.0"
+source = "git+https://github.com/dojoengine/dojo.git?tag=v1.4.0#22ef7101e84429f4f06fa634f927dd6ad2c48752"
 dependencies = [
  "dojo_plugin",
 ]
@@ -12,15 +12,15 @@ dependencies = [
 [[package]]
 name = "dojo_cairo_test"
 version = "1.0.12"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.1.1#dba10f26191bce47bb442ddc626ba7c6e2d8c160"
+source = "git+https://github.com/dojoengine/dojo.git?tag=v1.4.0#22ef7101e84429f4f06fa634f927dd6ad2c48752"
 dependencies = [
  "dojo",
 ]
 
 [[package]]
 name = "dojo_plugin"
-version = "2.9.2"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.1.1#dba10f26191bce47bb442ddc626ba7c6e2d8c160"
+version = "2.9.4"
+source = "git+https://github.com/dojoengine/dojo.git?tag=v1.4.0#22ef7101e84429f4f06fa634f927dd6ad2c48752"
 
 [[package]]
 name = "dojo_starter"
@@ -28,4 +28,44 @@ version = "1.1.0"
 dependencies = [
  "dojo",
  "dojo_cairo_test",
+ "openzeppelin_token",
 ]
+
+[[package]]
+name = "openzeppelin_access"
+version = "1.0.0"
+source = "git+https://github.com/openzeppelin/cairo-contracts?tag=v1.0.0#755ce1adbf8d89ed23fbb8daa328fcbeab7c6424"
+dependencies = [
+ "openzeppelin_introspection",
+ "openzeppelin_utils",
+]
+
+[[package]]
+name = "openzeppelin_account"
+version = "1.0.0"
+source = "git+https://github.com/openzeppelin/cairo-contracts?tag=v1.0.0#755ce1adbf8d89ed23fbb8daa328fcbeab7c6424"
+dependencies = [
+ "openzeppelin_introspection",
+ "openzeppelin_utils",
+]
+
+[[package]]
+name = "openzeppelin_introspection"
+version = "1.0.0"
+source = "git+https://github.com/openzeppelin/cairo-contracts?tag=v1.0.0#755ce1adbf8d89ed23fbb8daa328fcbeab7c6424"
+
+[[package]]
+name = "openzeppelin_token"
+version = "1.0.0"
+source = "git+https://github.com/openzeppelin/cairo-contracts?tag=v1.0.0#755ce1adbf8d89ed23fbb8daa328fcbeab7c6424"
+dependencies = [
+ "openzeppelin_access",
+ "openzeppelin_account",
+ "openzeppelin_introspection",
+ "openzeppelin_utils",
+]
+
+[[package]]
+name = "openzeppelin_utils"
+version = "1.0.0"
+source = "git+https://github.com/openzeppelin/cairo-contracts?tag=v1.0.0#755ce1adbf8d89ed23fbb8daa328fcbeab7c6424"

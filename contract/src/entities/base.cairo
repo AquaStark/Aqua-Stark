@@ -9,6 +9,14 @@ pub struct Id {
     pub nonce: u64,
 }
 
+#[derive(Copy, Drop, Serde, Debug, PartialEq, Introspect)]
+pub struct Bid {
+    pub id: u32,
+    pub bid_amount: u256,
+    pub bidder: ContractAddress,
+}
+
+
 // Events
 #[derive(Drop, Serde)]
 #[dojo::event]
@@ -117,6 +125,46 @@ pub struct FishAgeUpdated {
     pub new_age: u32,
 }
 
+// Auction Events
+#[derive(Drop, Serde)]
+#[dojo::event]
+pub struct AuctionCreated {
+    #[key]
+    pub id: u64,
+    pub fish_id: u64,
+    pub creator: ContractAddress,
+    pub start_price: u256,
+    pub end_date: u64,
+}
+
+#[derive(Drop, Serde)]
+#[dojo::event]
+pub struct NewBid {
+    #[key]
+    pub auction_id: u64,
+    pub bidder: ContractAddress,
+    pub bid_amount: u256,
+}
+
+#[derive(Drop, Serde)]
+#[dojo::event]
+pub struct AuctionCanceled {
+    #[key]
+    pub auction_id: u64,
+    pub creator: ContractAddress,
+    pub timestamp: u64,
+}
+
+#[derive(Drop, Serde)]
+#[dojo::event]
+pub struct AuctionCompleted {
+    #[key]
+    pub auction_id: u64,
+    pub winner: ContractAddress,
+    pub final_price: u256,
+}
+
+
 // Custom Errors
 pub mod CustomErrors {
     pub const NOT_OWNER: felt252 = 'CALLER NOT OWNER';
@@ -128,4 +176,14 @@ pub mod CustomErrors {
     pub const INVALID_HEALTH: felt252 = 'INVALID HEALTH VALUE';
     pub const INVALID_HUNGER: felt252 = 'INVALID HUNGER VALUE';
     pub const INVALID_GROWTH: felt252 = 'INVALID GROWTH VALUE';
+    pub const INVALID_BID: felt252 = 'INVALID BID';
+    pub const INVALID_START_PRICE: felt252 = 'INVALID START PRICE';
+    pub const END_DATE_IN_PAST: felt252 = 'END DATE IN PAST';
+    pub const INVALID_TOKEN: felt252 = 'INVALID TOKEN';
+    pub const TOKEN_TRANSFER_FAILED: felt252 = 'TOKEN TRANSFER FAILED';
+    pub const CANNOT_CANCEL_AUCTION: felt252 = 'CANNOT CANCEL AUCTION';
+    pub const AUCTION_COMPLETED: felt252 = 'AUCTION ALREADY COMPLETED';
+    pub const AUCTION_CANCELED: felt252 = 'AUCTION ALREADY CANCELED';
+    pub const AUCTION_NOT_ENDED: felt252 = 'AUCTION NOT ENDED';
+    pub const AUCTION_ENDED: felt252 = 'AUCTION ENDED';
 }

@@ -77,6 +77,23 @@ impl Vec2Impl of Vec2Trait {
     }
 }
 
+#[derive(Serde, Copy, Drop, Introspect, PartialEq, Debug)]
+pub enum AuctionStatus {
+    Active,
+    Cancelled,
+    Completed,
+}
+
+impl AuctionStatusIntoFelt252 of Into<AuctionStatus, felt252> {
+    fn into(self: AuctionStatus) -> felt252 {
+        match self {
+            AuctionStatus::Active => 1,
+            AuctionStatus::Cancelled => 2,
+            AuctionStatus::Completed => 3,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::{Vec2, Vec2Trait};

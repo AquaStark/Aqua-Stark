@@ -6,7 +6,11 @@ import EncyclopediaHabitats from "@/components/encyclopedia/encyclopedia-habitat
 import EncyclopediaStats from "@/components/encyclopedia/encyclopedia-stats";
 
 export default function EncyclopediaTabs() {
+ feat/food-tab
   useEncyclopedia();
+
+  const encyclopediaState = useEncyclopedia()
+ main
 
   return (
     <>
@@ -36,9 +40,16 @@ export default function EncyclopediaTabs() {
           <span className="hidden md:inline font-medium">Collection Stats</span>
         </TabsTrigger>
       </TabsList>
-
       <TabsContent value="catalog" className="space-y-6">
-        <EncyclopediaCatalog />
+        <EncyclopediaCatalog
+          filters={encyclopediaState.filters}
+          setFilters={encyclopediaState.setFilters}
+          showFilters={encyclopediaState.showFilters}
+          setShowFilters={encyclopediaState.setShowFilters}
+          sortedFish={encyclopediaState.sortedFish}
+          handleFishClick={encyclopediaState.handleFishClick}
+          resetFilters={encyclopediaState.resetFilters}
+        />
       </TabsContent>
       <TabsContent value="habitats" className="space-y-6">
         <EncyclopediaHabitats />
@@ -47,5 +58,10 @@ export default function EncyclopediaTabs() {
         <EncyclopediaStats />
       </TabsContent>
     </>
+ feat/food-tab
   );
 }
+
+  )
+}
+ main

@@ -2,14 +2,16 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Clock, Coins, X } from "lucide-react";
+import { Clock, Coins, Filter, Search, SlidersHorizontal, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { fishData } from "@/data/mock-game";
+import { miscItems, bundles } from "@/data/mock-store";
 import { StoreHeader } from "@/components/store/store-header";
 import { StoreTabs } from "@/components/store/store-tabs";
 import { StoreCategories } from "@/components/store/store-categories";
 import { StoreGrid } from "@/components/store/store-grid";
+import { BundleGrid } from "@/components/store/bundle-grid";
 import { PaginationControls } from "@/components/store/pagination-controls";
 import { CartSidebar } from "@/components/store/cart-sidebar";
 import { CheckoutModal } from "@/components/store/checkout-modal";
@@ -19,6 +21,7 @@ import { StoreCarousel } from "@/components/store/store-carousel";
 export default function StorePage() {
   const [activeTab, setActiveTab] = useState("fish");
   const [activeCategory, setActiveCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [bubbles, setBubbles] = useState<
     Array<{
       id: number;
@@ -61,11 +64,64 @@ export default function StorePage() {
     return () => clearInterval(intervalId);
   }, []);
 
-  const filteredItems = fishData.filter(
-    (item) =>
-      activeCategory === "all" ||
-      item.rarity.toLowerCase() === activeCategory.toLowerCase()
+  // Get the correct items based on the active tab
+  const getTabItems = () => {
+    switch (activeTab) {
+      case "fish":
+        return fishData;
+      case "food":
+        // In a real implementation, these would come from their own data files
+        return [];
+      case "decorations":
+        // In a real implementation, these would come from their own data files
+        return [];
+      case "others":
+        return miscItems;
+      default:
+        return fishData;
+    }
+  };
+
+  // Filter items based on the active category and search query
+  const filteredItems = getTabItems().filter(
+    (item) => {
+      // Apply category filter
+      const categoryMatch = 
+        activeCategory === "all" ||
+        (item.rarity && item.rarity.toLowerCase() === activeCategory.toLowerCase()) ||
+        (activeCategory === "on-sale" && bundles.some(bundle => 
+          bundle.items.includes(item.name) || 
+          bundle.items.some(bundleItem => bundleItem.includes(item.name))
+        ));
+        
+      // Apply search filter
+      const searchMatch = !searchQuery || 
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item.category && item.category.toLowerCase().includes(searchQuery.toLowerCase()));
+      
+      return categoryMatch && searchMatch;
+    }
   );
+
+  // Check if we should show bundles (only in Others tab)
+  const shouldShowBundles = activeTab === "others";
+
+  // Get the title for the current tab
+  const getTabTitle = () => {
+    switch (activeTab) {
+      case "fish":
+        return "Fish Collection";
+      case "food":
+        return "Fish Food";
+      case "decorations":
+        return "Aquarium Decorations";
+      case "others":
+        return "Aquarium Accessories";
+      default:
+        return "Products";
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-500 to-blue-700 relative overflow-hidden">
@@ -144,11 +200,40 @@ export default function StorePage() {
               )}
             </AnimatePresence>
 
+            {/* Tab Title */}
+            <h2 className="text-2xl font-bold text-white mb-4">{getTabTitle()}</h2>
+
+            {/* Search and Filter Row */}
+            <div className="flex items-center gap-4 mb-6">
+              <div className="relative flex-grow">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-300" size={20} />
+                <input 
+                  type="text" 
+                  placeholder="Search products..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-blue-700/50 border border-blue-400/30 rounded-lg py-2 pl-10 pr-4 text-white placeholder-blue-300"
+                />
+              </div>
+              <button className="bg-blue-700 text-white rounded-lg px-4 py-2 flex items-center">
+                <Filter className="mr-2" size={18} />
+                Filters
+              </button>
+              <button className="bg-blue-700 text-white rounded-lg px-4 py-2 flex items-center">
+                <SlidersHorizontal className="mr-2" size={18} />
+                Sort
+              </button>
+            </div>
+
             <StoreCategories
               activeCategory={activeCategory}
               onCategoryChange={setActiveCategory}
             />
 
+            {/* Bundles section (only shown in Others tab) */}
+            {shouldShowBundles && <BundleGrid bundles={bundles} />}
+
+            {/* Regular items grid */}
             <StoreGrid items={filteredItems} />
 
             <PaginationControls />

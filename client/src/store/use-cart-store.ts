@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { v4 as uuidv4 } from "uuid";
 
 interface CartItem {
   id: string;
@@ -13,12 +14,12 @@ interface CartStore {
   items: CartItem[];
   recentlyViewed: CartItem[];
   isOpen: boolean;
-  addItem: (item: Omit<CartItem, "quantity">) => void;
+  addItem: (item: Omit<CartItem, "quantity" | "id"> & { id?: string }) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
   toggleCart: () => void;
-  addToRecentlyViewed: (item: Omit<CartItem, "quantity">) => void;
+  addToRecentlyViewed: (item: Omit<CartItem, "quantity" | "id"> & { id?: string }) => void;
   checkoutStep: "cart" | "confirm" | "processing" | "success";
   setCheckoutStep: (step: CartStore["checkoutStep"]) => void;
   processCheckout: () => Promise<void>;
@@ -30,16 +31,17 @@ export const useCartStore = create<CartStore>((set) => ({
   isOpen: false,
   addItem: (item) =>
     set((state) => {
-      const existingItem = state.items.find((i) => i.id === item.name);
+      const itemId = item.id || `item_${uuidv4()}`;
+      const existingItem = state.items.find((i) => i.id === itemId);
       if (existingItem) {
         return {
           items: state.items.map((i) =>
-            i.id === item.name ? { ...i, quantity: i.quantity + 1 } : i
+            i.id === itemId ? { ...i, quantity: i.quantity + 1 } : i
           ),
         };
       }
       return {
-        items: [...state.items, { ...item, id: item.name, quantity: 1 }],
+        items: [...state.items, { ...item, id: itemId, quantity: 1 }],
       };
     }),
   removeItem: (id) =>
@@ -56,10 +58,11 @@ export const useCartStore = create<CartStore>((set) => ({
   toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
   addToRecentlyViewed: (item) =>
     set((state) => {
-      const exists = state.recentlyViewed.some((i) => i.id === item.name);
+      const itemId = item.id || `item_${uuidv4()}`;
+      const exists = state.recentlyViewed.some((i) => i.id === itemId);
       if (exists) return state;
       const newRecentlyViewed = [
-        { ...item, id: item.name, quantity: 1 },
+        { ...item, id: itemId, quantity: 1 },
         ...state.recentlyViewed,
       ].slice(0, 4);
       return { recentlyViewed: newRecentlyViewed };

@@ -1,3 +1,4 @@
+ feat/food-tab
 import { Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/landing-page";
 import GamePage from "./pages/game";
@@ -13,6 +14,22 @@ import EncyclopediaPage from "./pages/encyclopedia";
  feat/food-tab
 import FoodTab from "./components/food-tab/FoodTab";
 
+
+
+import { Routes, Route } from "react-router-dom"
+import LandingPage from "./pages/landing-page"
+import GamePage from "./pages/game"
+import StorePage from "./pages/storage-page"
+import AchievementsPage from "./pages/achievements"
+import HelpCenter from "./pages/help-center"
+import BreadingLaboratory from "./pages/breeding-laboratory"
+import EventsCalendar from "./pages/events-calendar"
+import TradingMarketPage from "./pages/trading-market"
+import CommunityPage from "./pages/community"
+import MyProfile from "./pages/my-profile"
+import EncyclopediaPage from "./pages/encyclopedia"
+import AquariumsPage from "./pages/aquariums"
+ main
 import Error404Page from "./pages/404";
  main
 
@@ -21,6 +38,7 @@ function App() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/game" element={<GamePage />} />
+      <Route path="/aquariums" element={<AquariumsPage />} />
       <Route path="/store" element={<StorePage />} />
       <Route path="/breeding-laboratory" element={<BreadingLaboratory />} />
       <Route path="/encyclopedia" element={<EncyclopediaPage />} />
