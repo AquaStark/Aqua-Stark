@@ -164,6 +164,26 @@ pub struct AuctionCompleted {
     pub final_price: u256,
 }
 
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct ItemAdded {
+    id: u64,
+    name: felt252,
+    price: u256,
+    stock: u64,
+    description: felt252,
+    seller: ContractAddress,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct ItemUpdated {
+    id: u64,
+    price: u256,
+    stock: u64,
+    timestamp: u64,
+}
+
 
 // Custom Errors
 pub mod CustomErrors {
@@ -186,4 +206,9 @@ pub mod CustomErrors {
     pub const AUCTION_CANCELED: felt252 = 'AUCTION ALREADY CANCELED';
     pub const AUCTION_NOT_ENDED: felt252 = 'AUCTION NOT ENDED';
     pub const AUCTION_ENDED: felt252 = 'AUCTION ENDED';
+    pub const NOT_SELLER: felt252 = 'Caller is not the seller';
+    pub const INVALID_ITEM_ID: felt252 = 'Invalid item ID';
+    pub const INVALID_PRICE: felt252 = 'Price must be positive';
+    pub const INVALID_NAME: felt252 = 'Name cannot be empty';
+    pub const INVALID_STOCK: felt252 = 'Stock cannot be negative';
 }

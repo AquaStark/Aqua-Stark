@@ -35,11 +35,15 @@ pub fn namespace_def() -> NamespaceDef {
             TestResource::Model(m_Decoration::TEST_CLASS_HASH),
             TestResource::Model(m_Player::TEST_CLASS_HASH),
             TestResource::Model(base::m_Id::TEST_CLASS_HASH),
+            TestResource::Model(base::m_ShopCatalog::TEST_CLASS_HASH),
+
             // Contracts
             TestResource::Contract(AquariumState::TEST_CLASS_HASH),
             TestResource::Contract(FishState::TEST_CLASS_HASH),
             TestResource::Contract(AuctionState::TEST_CLASS_HASH),
             TestResource::Contract(erc20_mock::TEST_CLASS_HASH),
+            TestResource::Contract(shop_catalog::TEST_CLASS_HASH),
+
             // Aquarium Events
             TestResource::Event(base::e_AquariumCreated::TEST_CLASS_HASH),
             TestResource::Event(base::e_AquariumCleaned::TEST_CLASS_HASH),
@@ -59,6 +63,14 @@ pub fn namespace_def() -> NamespaceDef {
             TestResource::Event(base::e_AuctionCanceled::TEST_CLASS_HASH),
             TestResource::Event(base::e_AuctionCompleted::TEST_CLASS_HASH),
             TestResource::Event(base::e_NewBid::TEST_CLASS_HASH),
+            // Shop Catalog Events
+            TestResource::Event(base::e_ItemAdded::TEST_CLASS_HASH),
+            TestResource::Event(base::e_ItemUpdated::TEST_CLASS_HASH),
+            TestResource::Event(base::e_ItemRemoved::TEST_CLASS_HASH),
+            TestResource::Event(base::e_ItemPurchased::TEST_CLASS_HASH),
+            TestResource::Event(base::e_ItemPriceUpdated::TEST_CLASS_HASH),
+            TestResource::Event(base::e_ItemStockUpdated::TEST_CLASS_HASH),
+            TestResource::Event(base::e_ItemDescriptionUpdated::TEST_CLASS_HASH),
         ]
             .span(),
     };
@@ -75,6 +87,8 @@ pub fn contract_defs() -> Span<ContractDef> {
         ContractDefTrait::new(@"dojo_starter", @"AuctionState")
             .with_writer_of([dojo::utils::bytearray_hash(@"dojo_starter")].span()),
         ContractDefTrait::new(@"dojo_starter", @"erc20_mock")
+            .with_writer_of([dojo::utils::bytearray_hash(@"dojo_starter")].span()),
+        ContractDefTrait::new(@"dojo_starter", @"ShopCatalog")
             .with_writer_of([dojo::utils::bytearray_hash(@"dojo_starter")].span()),
     ]
         .span()
@@ -107,6 +121,10 @@ pub fn initialize_contacts() -> TestContracts {
     // Initialize FishState contract
     let (fish_address, _) = world.dns(@"FishState").unwrap();
     let fish_system = IFishStateDispatcher { contract_address: fish_address };
+
+    // Initialize shop_catalog contract
+    let (shop_catalog_address, _) = world.dns(@"ShopCatalog").unwrap();
+    let shop_catalog = IShopCatalogDispatcher { contract_address: shop_catalog_address };
 
     TestContracts { world, auction_system, fish_system, erc20_token }
 }

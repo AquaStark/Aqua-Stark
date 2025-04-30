@@ -24,54 +24,20 @@ pub trait IShopCatalog<TContractState> {
 #[dojo::contract]
 pub mod ShopCatalog {
     use super::*;
-    use dojo::event::EventStorage;
-    use dojo::model::ModelStorage;
+    // use dojo::event::EventStorage;
+    // use dojo::model::ModelStorage;
     use starknet::{get_caller_address, get_contract_address, contract_address_const};
     use core::array::ArrayTrait;
-
-    #[derive(Model, Copy, Drop, Serde)]
-    pub struct ShopItem {
-        #[key]
-        id: u64,
-        name: felt252,
-        price: u256,
-        stock: u64,
-        description: felt252,
-        seller: ContractAddress,
-    }
-
-    #[derive(Copy, Drop, Serde)]
-    pub struct ItemAdded {
-        id: u64,
-        name: felt252,
-        price: u256,
-        stock: u64,
-        description: felt252,
-        seller: ContractAddress,
-    }
-
-    #[derive(Copy, Drop, Serde)]
-    pub struct ItemUpdated {
-        id: u64,
-        price: u256,
-        stock: u64,
-        timestamp: u64,
-    }
-
-    #[derive(Model, Copy, Drop, Serde)]
-    pub struct CatalogCounter {
-        #[key]
-        id: felt252,
-        nonce: u64,
-    }
-
-    pub mod CustomErrors {
-        const NOT_SELLER: felt252 = 'Caller is not the seller';
-        const INVALID_ITEM_ID: felt252 = 'Invalid item ID';
-        const INVALID_PRICE: felt252 = 'Price must be positive';
-        const INVALID_NAME: felt252 = 'Name cannot be empty';
-        const INVALID_STOCK: felt252 = 'Stock cannot be negative';
-    }
+    use dojo_starter::entities::base::{
+        ItemAdded, ItemUpdated, CustomErrors,
+    };
+    use dojo_starter::entities::shopCatalog::{ShopItem, ShopItemTrait};
+    use dojo_starter::entities::base::CatalogCounter;
+    use dojo_starter::entities::base::CatalogCounterTrait;
+    use dojo_starter::entities::base::CustomErrors;
+    use dojo_starter::entities::base::ItemAdded;
+    use dojo_starter::entities::base::ItemUpdated;
+    use dojo_starter::entities::base::CustomErrors;
 
     #[abi(embed_v0)]
     impl ShopCatalogImpl of IShopCatalog<ContractState> {

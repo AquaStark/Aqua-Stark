@@ -2,8 +2,9 @@ use starknet::ContractAddress;
 use starknet::contract_address_const;
 use dojo::test_utils::{deploy_contract, deploy_world};
 use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
-use shop_catalog::{ShopCatalog, IShopCatalogDispatcher, IShopCatalogDispatcherTrait};
-use shop_catalog::ShopCatalog::{ShopItem, ItemAdded, ItemUpdated, CustomErrors};
+use dojo_starter::components::shop_catalog::{ShopCatalog, IShopCatalogDispatcher, IShopCatalogDispatcherTrait};
+use dojo_starter::entities::base::{ShopItem, ItemAdded, ItemUpdated, CustomErrors};
+use dojo_starter::entities::entities::{CatalogCounter, ShopItem};
 
 #[test]
 #[available_gas(2000000)]
@@ -31,8 +32,6 @@ fn test_add_item() {
     assert(item.description == description, 'Invalid description');
     assert(item.seller == caller, 'Invalid seller');
 
-    // Verify event
-    // Note: Event verification requires additional setup in Dojo test utils
 }
 
 #[test]
