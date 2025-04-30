@@ -106,6 +106,7 @@ function DiscoveryCard({ result }) {
       onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
     >
       <div className="relative h-40 bg-blue-800/50">
+ feat/food-tab
         <FishTank className="h-40">
           <img
             src={result.image || "/placeholder.svg"}
@@ -113,6 +114,13 @@ function DiscoveryCard({ result }) {
             className="w-24 h-24 object-contain"
           />
         </FishTank>
+
+        <div className="relative mb-4">
+          <div className="w-24 h-24 mx-auto">
+            <img src={result.image || "/fish/unkown-fish.png"} alt={result.name} className="w-24 h-24 object-contain" />
+          </div>
+        </div>
+ main
         <div className="absolute top-2 right-2 bg-blue-900/70 backdrop-blur-sm px-2 py-1 rounded text-xs text-blue-100">
           Discovered: {result.discovered}
         </div>
