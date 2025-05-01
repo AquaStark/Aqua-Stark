@@ -1,7 +1,7 @@
 // components/ui/MetricDisplay.tsx
-import React from 'react';
+import React from "react";
 import { cn } from "@/lib/utils";
-import { FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 
 interface MetricDisplayProps extends React.HTMLAttributes<HTMLDivElement> {
   icon: React.ReactNode;
@@ -21,10 +21,10 @@ export const MetricDisplay: React.FC<MetricDisplayProps> = ({
   const isPositive = change !== undefined && change >= 0;
 
   return (
-    <div 
+    <div
       className={cn(
-        'flex items-center space-x-4 bg-blue-800/30 p-4 rounded-lg',
-        className
+        "flex items-center space-x-4 bg-blue-800/30 p-4 rounded-lg",
+        className,
       )}
       {...props}
     >
@@ -36,7 +36,9 @@ export const MetricDisplay: React.FC<MetricDisplayProps> = ({
         <div className="flex items-center space-x-2">
           <span className="text-xl font-semibold text-white">{value}</span>
           {change !== undefined && (
-            <div className={`flex items-center ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+            <div
+              className={`flex items-center ${isPositive ? "text-green-400" : "text-red-400"}`}
+            >
               {isPositive ? <FaArrowUp /> : <FaArrowDown />}
               <span className="text-xs ml-1">{Math.abs(change)}%</span>
             </div>

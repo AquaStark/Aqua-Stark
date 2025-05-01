@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { GameHeader } from "@/components/game/game-header"
-import { GameSidebarButtons } from "@/components/game/game-sidebar-buttons"
-import { AquariumTabs } from "@/components/game/aquarium-tabs"
-import { TipsPopup } from "@/components/game/tips-popup"
-import { FishDisplay } from "@/components/game/fish-display"
-import { MOCK_FISH, INITIAL_GAME_STATE } from "@/data/game-data"
-import { useAquarium } from "@/hooks/use-aquarium"
-import { useFishStats } from "@/hooks/use-fish-stats"
-import { GameMenu } from "@/components/game/game-menu"
-import { useBubbles } from "@/hooks/use-bubbles"
-import { BubblesBackground } from "@/components/bubble-background"
+import { useState } from "react";
+import { GameHeader } from "@/components/game/game-header";
+import { GameSidebarButtons } from "@/components/game/game-sidebar-buttons";
+import { AquariumTabs } from "@/components/game/aquarium-tabs";
+import { TipsPopup } from "@/components/game/tips-popup";
+import { FishDisplay } from "@/components/game/fish-display";
+import { MOCK_FISH, INITIAL_GAME_STATE } from "@/data/game-data";
+import { useAquarium } from "@/hooks/use-aquarium";
+import { useFishStats } from "@/hooks/use-fish-stats";
+import { GameMenu } from "@/components/game/game-menu";
+import { useBubbles } from "@/hooks/use-bubbles";
+import { BubblesBackground } from "@/components/bubble-background";
 
 export default function GamePage() {
-  const { happiness, food, energy } = useFishStats(INITIAL_GAME_STATE)
-  const { selectedAquarium, handleAquariumChange, aquariums } = useAquarium()
-  const [showMenu, setShowMenu] = useState(false)
-  const [showTips, setShowTips] = useState(false)
+  const { happiness, food, energy } = useFishStats(INITIAL_GAME_STATE);
+  const { selectedAquarium, handleAquariumChange, aquariums } = useAquarium();
+  const [showMenu, setShowMenu] = useState(false);
+  const [showTips, setShowTips] = useState(false);
 
   const bubbles = useBubbles({
     initialCount: 10,
@@ -27,11 +27,11 @@ export default function GamePage() {
     minDuration: 10,
     maxDuration: 18,
     interval: 400,
-  })
+  });
 
   const handleTipsToggle = () => {
-    setShowTips(!showTips)
-  }
+    setShowTips(!showTips);
+  };
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-[#005C99]">
@@ -82,5 +82,5 @@ export default function GamePage() {
         onAquariumSelect={handleAquariumChange}
       />
     </div>
-  )
+  );
 }

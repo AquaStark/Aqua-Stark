@@ -6,15 +6,15 @@ import {
   Camera,
   Home,
   Settings,
-} from "lucide-react"
-import { GameButton } from "./game-button"
+} from "lucide-react";
+import { GameButton } from "./game-button";
 
 interface GameMenuProps {
-  show: boolean
+  show: boolean;
 }
 
 export function GameMenu({ show }: GameMenuProps) {
-    if (!show) return null
+  if (!show) return null;
 
   const menuItems = [
     { icon: <Volume2 className="h-5 w-5" />, onClick: () => {} },
@@ -24,7 +24,7 @@ export function GameMenu({ show }: GameMenuProps) {
     { icon: <Camera className="h-5 w-5" />, onClick: () => {} },
     { icon: <Home className="h-5 w-5" />, onClick: () => {} },
     { icon: <Settings className="h-5 w-5" />, onClick: () => {} },
-  ]
+  ];
 
   return (
     <div className="absolute top-32 right-4 z-30 flex flex-col gap-3">
@@ -37,5 +37,5 @@ export function GameMenu({ show }: GameMenuProps) {
         />
       ))}
     </div>
-  )
-} 
+  );
+}

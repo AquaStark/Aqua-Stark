@@ -1,3 +1,21 @@
+ feat/updated-food-tab
+import { Button } from "@/components/ui/button";
+import { Coins } from "lucide-react";
+import { FishTank } from "@/components/fish-tank";
+
+export default function StoreItem({
+  name,
+  image,
+  price,
+  rarity,
+}: {
+  name: string;
+  image: string;
+  price: number;
+  rarity: string;
+}) {
+  const rarityColor = () => {
+
 "use client"
 
 import { useState } from "react"
@@ -42,19 +60,20 @@ export default function StoreItem({
   const { addItem, addToRecentlyViewed } = useCartStore()
 
   const getRarityColor = () => {
+ main
     switch (rarity.toLowerCase()) {
       case "common":
-        return "bg-gray-500"
+        return "bg-gray-500";
       case "rare":
-        return "bg-blue-500"
+        return "bg-blue-500";
       case "legendary":
-        return "bg-purple-500"
+        return "bg-purple-500";
       case "special":
-        return "bg-orange-500"
+        return "bg-orange-500";
       default:
-        return "bg-gray-500"
+        return "bg-gray-500";
     }
-  }
+  };
 
   const hasDiscount = originalPrice && originalPrice > price
   const discountPercentage = hasDiscount ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0
@@ -119,6 +138,17 @@ export default function StoreItem({
   }
 
   return (
+ feat/updated-food-tab
+    <div className="bg-blue-600 rounded-3xl overflow-hidden shadow-xl border-2 border-blue-400 transform hover:scale-105 transition-all duration-200">
+      <div className="p-4 text-center">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-xl font-bold text-white">{name}</h3>
+          <span
+            className={`text-xs font-bold text-white px-2 py-1 rounded-full ${rarityColor()}`}
+          >
+            {rarity}
+          </span>
+
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -160,6 +190,7 @@ export default function StoreItem({
               <Plus className="w-5 h-5 text-white" />
             )}
           </motion.button>
+ main
         </div>
 
         {/* Discount tag */}
@@ -240,6 +271,12 @@ export default function StoreItem({
           </motion.div>
         </div>
       </div>
+ feat/updated-food-tab
+    </div>
+  );
+}
+
     </motion.div>
   )
 }
+ main

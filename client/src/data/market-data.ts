@@ -1,4 +1,4 @@
-import type { Fish, Transaction } from "@/types/market"
+import type { Fish, Transaction } from "@/types/market";
 
 export const mockFishData: Fish[] = [
   {
@@ -146,7 +146,7 @@ export const mockFishData: Fish[] = [
     price: 350,
     listed: "1 hour ago",
   },
-]
+];
 
 export const mockTransactions: Transaction[] = [
   {
@@ -185,4 +185,4 @@ export const mockTransactions: Transaction[] = [
     exchangedFor: "Sapphire Glider",
     trader: "RareFinder",
   },
-]
+];

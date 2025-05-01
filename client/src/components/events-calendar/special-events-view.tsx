@@ -15,28 +15,28 @@ export function SpecialEventsView({
   searchQuery,
 }: SpecialEventsViewProps) {
   const featuredEvent = events.find(
-    (event) => event.featured || event.id === events[0]?.id
+    (event) => event.featured || event.id === events[0]?.id,
   );
 
   const filteredEvents = searchQuery
     ? events.filter(
         (event) =>
           event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          event.description.toLowerCase().includes(searchQuery.toLowerCase())
+          event.description.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     : events;
 
   const nonFeaturedEvents = filteredEvents.filter(
-    (event) => event.id !== featuredEvent?.id
+    (event) => event.id !== featuredEvent?.id,
   );
   const activeEvents = nonFeaturedEvents.filter(
     (event) =>
       new Date(event.startDate) <= new Date() &&
-      new Date(event.endDate) >= new Date()
+      new Date(event.endDate) >= new Date(),
   );
 
   const upcomingEvents = nonFeaturedEvents.filter(
-    (event) => new Date(event.startDate) > new Date()
+    (event) => new Date(event.startDate) > new Date(),
   );
 
   return (
@@ -167,13 +167,13 @@ export function SpecialEventsView({
           </div>
 
           {filteredEvents.filter(
-            (event) => new Date(event.endDate) < new Date()
+            (event) => new Date(event.endDate) < new Date(),
           ).length > 6 && (
             <div className="text-center mt-4">
               <span className="text-blue-300 text-sm opacity-70">
                 +{" "}
                 {filteredEvents.filter(
-                  (event) => new Date(event.endDate) < new Date()
+                  (event) => new Date(event.endDate) < new Date(),
                 ).length - 6}{" "}
                 more past events
               </span>

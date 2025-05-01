@@ -1,4 +1,9 @@
 import { Link } from "react-router-dom";
+ feat/updated-food-tab
+export function Footer() {
+  return (
+    <footer className="relative z-10 bg-blue-800 py-6 border-t-2 border-blue-400/50">
+
 import { cn } from "@/lib/utils";
 
 interface FooterProps {
@@ -13,6 +18,7 @@ export function Footer({ className }: FooterProps = {}) {
         className
       )}
     >
+ main
       <div className="container mx-auto px-4 text-center">
         <p className="text-white/80 mb-2">
           © 2025 Aqua Stark - All rights reserved

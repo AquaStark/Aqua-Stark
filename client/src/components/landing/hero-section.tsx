@@ -1,15 +1,18 @@
-"use client"
-import { Link } from "react-router-dom"
-import { Button } from "@/components/ui/button"
+"use client";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 export function HeroSection() {
   return (
     <section className="w-full max-w-4xl mx-auto text-center mb-12">
       <h1 className="text-4xl md:text-6xl font-bold text-white drop-shadow-lg mb-6">
-        <span className="inline-block animate-float">Dive into the world of Aqua Stark!</span>
+        <span className="inline-block animate-float">
+          Dive into the world of Aqua Stark!
+        </span>
       </h1>
       <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-        Breed, feed, and collect unique fish while customizing your aquarium in this incredible aquatic adventure.
+        Breed, feed, and collect unique fish while customizing your aquarium in
+        this incredible aquatic adventure.
       </p>
       <div className="flex flex-col sm:flex-row justify-center gap-4 mt-8">
         <Link to="/game">
@@ -25,5 +28,5 @@ export function HeroSection() {
         </Button>
       </div>
     </section>
-  )
+  );
 }

@@ -1,4 +1,14 @@
-"use client"
+"use client";
+
+ feat/updated-food-tab
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Filter, Plus } from "lucide-react";
+import { FishSelection } from "@/components/laboratory/fish-selection";
+import { BreedingTank } from "@/components/laboratory/breeding-tank";
+import { FishDetails } from "@/components/laboratory/fish-details";
+import type { Fish } from "@/types/fish";
+import { breedingResults } from "@/data/fish-data";
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
@@ -10,9 +20,10 @@ import { FishDetails } from "@/components/laboratory/fish-details"
 import type { Fish } from "@/types/fish"
 import { breedingResults } from "@/data/fish-data"
 import { cn } from "@/lib/utils"
+ main
 
 interface BreedingTabProps {
-  filteredFish: Fish[]
+  filteredFish: Fish[];
 }
 
 interface FilterOptions {
@@ -28,10 +39,13 @@ interface FilterOptions {
 }
 
 export function BreedingTab({ filteredFish }: BreedingTabProps) {
-  const [selectedFish, setSelectedFish] = useState<Fish | null>(null)
+  const [selectedFish, setSelectedFish] = useState<Fish | null>(null);
   const [breedingPair, setBreedingPair] = useState({
     father: null,
     mother: null,
+ feat/updated-food-tab
+  });
+
   })
   const [showFilters, setShowFilters] = useState(false)
   const [activeFilterTab, setActiveFilterTab] = useState<'rarity' | 'color' | 'pattern' | 'fins'>('rarity')
@@ -47,24 +61,25 @@ export function BreedingTab({ filteredFish }: BreedingTabProps) {
     }
   })
   const [displayedFish, setDisplayedFish] = useState<Fish[]>(filteredFish)
+ main
 
   // Handle fish selection for breeding
   const selectFishForBreeding = (fish: Fish, role: "father" | "mother") => {
     // Check if fish is on cooldown
     if (fish.breedingCooldown && fish.breedingCooldown !== "Ready") {
-      return // Fish is on cooldown
+      return; // Fish is on cooldown
     }
 
     setBreedingPair((prev) => ({
       ...prev,
       [role]: fish,
-    }))
-  }
+    }));
+  };
 
   // Reset breeding process
   const resetBreeding = () => {
-    setBreedingPair({ father: null, mother: null })
-  }
+    setBreedingPair({ father: null, mother: null });
+  };
 
   // Reset filters
   const resetFilters = () => {
@@ -176,6 +191,12 @@ export function BreedingTab({ filteredFish }: BreedingTabProps) {
     <div className="w-full min-w-full">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-3 sm:mb-0">
         <h2 className="text-xl font-bold text-white">Breeding Laboratory</h2>
+ feat/updated-food-tab
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            className="bg-blue-800/50 border-blue-700/50 text-white hover:bg-blue-700/70"
+
         <div className="flex gap-2 w-full sm:w-auto">
           <Button 
             variant="outline" 
@@ -185,6 +206,7 @@ export function BreedingTab({ filteredFish }: BreedingTabProps) {
               "flex-1 sm:flex-none"
             )}
             onClick={() => setShowFilters(!showFilters)}
+ main
           >
             <Filter className="h-4 w-4 mr-2" />
             Filter
@@ -415,6 +437,29 @@ export function BreedingTab({ filteredFish }: BreedingTabProps) {
       {/* Breeding interface */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:h-[700px] lg:min-h-[700px] w-full">
         {/* Left column - Fish selection */}
+ feat/updated-food-tab
+        <FishSelection
+          filteredFish={filteredFish}
+          onSelectFish={setSelectedFish}
+        />
+
+        {/* Middle column - Breeding tank */}
+        <BreedingTank
+          breedingPair={breedingPair}
+          onReset={resetBreeding}
+          breedingResults={breedingResults}
+        />
+
+        {/* Right column - Fish details */}
+        <FishDetails
+          selectedFish={selectedFish}
+          onSelectForBreeding={selectFishForBreeding}
+        />
+      </div>
+    </>
+  );
+}
+
         <div className="lg:h-full lg:min-h-full overflow-hidden flex flex-col mb-6 lg:mb-0">
           <FishSelection filteredFish={displayedFish} onSelectFish={setSelectedFish} />
         </div>
@@ -464,3 +509,4 @@ if (typeof document !== 'undefined') {
 }
 
 
+ main

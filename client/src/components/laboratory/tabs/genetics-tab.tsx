@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Dna, Info } from "lucide-react"
-import { cn } from "@/lib/utils"
-import type { Fish, GeneticCombination } from "@/types/fish"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Dna, Info } from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { Fish, GeneticCombination } from "@/types/fish";
 
 interface GeneticsTabProps {
-  setActiveTab: (tab: string) => void
+  setActiveTab: (tab: string) => void;
 }
 
 export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
   const [breedingPair, setBreedingPair] = useState<{
-    father: Fish | null
-    mother: Fish | null
+    father: Fish | null;
+    mother: Fish | null;
   }>({
     father: null,
     mother: null,
-  })
+  });
 
   // Sample genetic combinations
   const geneticCombinations: GeneticCombination[] = [
@@ -26,8 +26,14 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
       fatherGene: breedingPair.father?.traits.color || "Unknown",
       motherGene: breedingPair.mother?.traits.color || "Unknown",
       possibleOutcomes: [
-        { outcome: breedingPair.father?.traits.color || "Unknown", probability: 45 },
-        { outcome: breedingPair.mother?.traits.color || "Unknown", probability: 45 },
+        {
+          outcome: breedingPair.father?.traits.color || "Unknown",
+          probability: 45,
+        },
+        {
+          outcome: breedingPair.mother?.traits.color || "Unknown",
+          probability: 45,
+        },
         { outcome: "Mixed", probability: 10 },
       ],
     },
@@ -36,8 +42,14 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
       fatherGene: breedingPair.father?.traits.pattern || "Unknown",
       motherGene: breedingPair.mother?.traits.pattern || "Unknown",
       possibleOutcomes: [
-        { outcome: breedingPair.father?.traits.pattern || "Unknown", probability: 40 },
-        { outcome: breedingPair.mother?.traits.pattern || "Unknown", probability: 40 },
+        {
+          outcome: breedingPair.father?.traits.pattern || "Unknown",
+          probability: 40,
+        },
+        {
+          outcome: breedingPair.mother?.traits.pattern || "Unknown",
+          probability: 40,
+        },
         { outcome: "Mixed", probability: 20 },
       ],
     },
@@ -46,8 +58,14 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
       fatherGene: breedingPair.father?.traits.fins || "Unknown",
       motherGene: breedingPair.mother?.traits.fins || "Unknown",
       possibleOutcomes: [
-        { outcome: breedingPair.father?.traits.fins || "Unknown", probability: 35 },
-        { outcome: breedingPair.mother?.traits.fins || "Unknown", probability: 35 },
+        {
+          outcome: breedingPair.father?.traits.fins || "Unknown",
+          probability: 35,
+        },
+        {
+          outcome: breedingPair.mother?.traits.fins || "Unknown",
+          probability: 35,
+        },
         { outcome: "Dominant", probability: 30 },
       ],
     },
@@ -56,8 +74,14 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
       fatherGene: breedingPair.father?.traits.size || "Unknown",
       motherGene: breedingPair.mother?.traits.size || "Unknown",
       possibleOutcomes: [
-        { outcome: breedingPair.father?.traits.size || "Unknown", probability: 30 },
-        { outcome: breedingPair.mother?.traits.size || "Unknown", probability: 30 },
+        {
+          outcome: breedingPair.father?.traits.size || "Unknown",
+          probability: 30,
+        },
+        {
+          outcome: breedingPair.mother?.traits.size || "Unknown",
+          probability: 30,
+        },
         { outcome: "Average", probability: 40 },
       ],
     },
@@ -66,13 +90,19 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
       fatherGene: breedingPair.father?.traits.special || "None",
       motherGene: breedingPair.mother?.traits.special || "None",
       possibleOutcomes: [
-        { outcome: breedingPair.father?.traits.special || "None", probability: 20 },
-        { outcome: breedingPair.mother?.traits.special || "None", probability: 20 },
+        {
+          outcome: breedingPair.father?.traits.special || "None",
+          probability: 20,
+        },
+        {
+          outcome: breedingPair.mother?.traits.special || "None",
+          probability: 20,
+        },
         { outcome: "New Trait", probability: 5 },
         { outcome: "None", probability: 55 },
       ],
     },
-  ]
+  ];
 
   return (
     <>
@@ -103,7 +133,9 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
                   />
                 </div>
                 <div>
-                  <h4 className="font-bold text-white">{breedingPair.father.name}</h4>
+                  <h4 className="font-bold text-white">
+                    {breedingPair.father.name}
+                  </h4>
                   <div className="flex items-center mt-1">
                     <span
                       className={cn(
@@ -121,7 +153,9 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
                     >
                       {breedingPair.father.rarity}
                     </span>
-                    <span className="text-blue-200 text-xs ml-2">Gen {breedingPair.father.generation}</span>
+                    <span className="text-blue-200 text-xs ml-2">
+                      Gen {breedingPair.father.generation}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -136,7 +170,9 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
                   />
                 </div>
                 <div>
-                  <h4 className="font-bold text-white">{breedingPair.mother.name}</h4>
+                  <h4 className="font-bold text-white">
+                    {breedingPair.mother.name}
+                  </h4>
                   <div className="flex items-center mt-1">
                     <span
                       className={cn(
@@ -154,13 +190,17 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
                     >
                       {breedingPair.mother.rarity}
                     </span>
-                    <span className="text-blue-200 text-xs ml-2">Gen {breedingPair.mother.generation}</span>
+                    <span className="text-blue-200 text-xs ml-2">
+                      Gen {breedingPair.mother.generation}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <h4 className="font-bold text-white mb-3">Genetic Inheritance Probabilities</h4>
+            <h4 className="font-bold text-white mb-3">
+              Genetic Inheritance Probabilities
+            </h4>
             <div className="space-y-4">
               {geneticCombinations.map((combo, index) => (
                 <div key={index} className="bg-blue-700/30 rounded-lg p-4">
@@ -181,7 +221,9 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
                   <div className="space-y-2">
                     {combo.possibleOutcomes.map((outcome, i) => (
                       <div key={i} className="flex items-center">
-                        <div className="w-24 text-sm text-blue-200">{outcome.outcome}</div>
+                        <div className="w-24 text-sm text-blue-200">
+                          {outcome.outcome}
+                        </div>
                         <div className="flex-1 ml-2">
                           <div className="h-5 bg-blue-900/50 rounded-full overflow-hidden">
                             <div
@@ -197,7 +239,9 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
                             ></div>
                           </div>
                         </div>
-                        <div className="w-12 text-right text-sm text-white">{outcome.probability}%</div>
+                        <div className="w-12 text-right text-sm text-white">
+                          {outcome.probability}%
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -211,8 +255,9 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
                 <div>
                   <h5 className="font-bold text-white">Rarity Chance</h5>
                   <p className="text-blue-200 text-sm">
-                    When breeding a {breedingPair.father.rarity} with a {breedingPair.mother.rarity} fish, there's a
-                    small chance (5-10%) to get a fish of higher rarity than both parents.
+                    When breeding a {breedingPair.father.rarity} with a{" "}
+                    {breedingPair.mother.rarity} fish, there's a small chance
+                    (5-10%) to get a fish of higher rarity than both parents.
                   </p>
                 </div>
               </div>
@@ -223,9 +268,12 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
             <div className="w-20 h-20 rounded-full bg-blue-700/30 flex items-center justify-center mx-auto mb-4">
               <Dna className="h-10 w-10 text-blue-400/70" />
             </div>
-            <h4 className="text-lg font-bold text-white mb-2">No Breeding Pair Selected</h4>
+            <h4 className="text-lg font-bold text-white mb-2">
+              No Breeding Pair Selected
+            </h4>
             <p className="text-blue-200 text-sm mb-4">
-              Select a breeding pair in the Breeding tab to view genetic combinations.
+              Select a breeding pair in the Breeding tab to view genetic
+              combinations.
             </p>
             <Button
               variant="outline"
@@ -256,7 +304,14 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
               title="Pattern Inheritance"
               icon={<Flame className="h-5 w-5 text-orange-300 mr-2" />}
               description="Patterns can blend or be inherited whole. Solid patterns are recessive, while complex patterns like spots or stripes are dominant."
-              traits={["Solid", "Spotted", "Striped", "Gradient", "Metallic", "Marbled"]}
+              traits={[
+                "Solid",
+                "Spotted",
+                "Striped",
+                "Gradient",
+                "Metallic",
+                "Marbled",
+              ]}
             />
 
             <TraitInheritanceCard
@@ -272,11 +327,17 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
         </div>
       </div>
     </>
-  )
+  );
 }
 
 // Helper components
-function TraitInheritanceCard({ title, icon, description, traits, columns = 3 }) {
+function TraitInheritanceCard({
+  title,
+  icon,
+  description,
+  traits,
+  columns = 3,
+}) {
   return (
     <div className="bg-blue-700/30 rounded-lg p-4">
       <h4 className="font-bold text-white flex items-center mb-3">
@@ -292,7 +353,7 @@ function TraitInheritanceCard({ title, icon, description, traits, columns = 3 })
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 function RarityInfluenceCard() {
@@ -303,38 +364,42 @@ function RarityInfluenceCard() {
         Rarity Influence
       </h4>
       <p className="text-blue-200 text-sm mb-3">
-        Higher rarity fish have a better chance of passing down their traits. Breeding two high-rarity fish increases
-        the chance of rare offspring.
+        Higher rarity fish have a better chance of passing down their traits.
+        Breeding two high-rarity fish increases the chance of rare offspring.
       </p>
       <div className="space-y-2">
-        {["Common", "Uncommon", "Rare", "Epic", "Legendary"].map((rarity, index) => (
-          <div key={rarity} className="flex items-center">
-            <div className="w-24 text-sm text-blue-200">{rarity}</div>
-            <div className="flex-1 ml-2">
-              <div className="h-4 bg-blue-900/50 rounded-full overflow-hidden">
-                <div
-                  className={cn(
-                    "h-full rounded-full",
-                    index === 0
-                      ? "bg-gray-500"
-                      : index === 1
-                        ? "bg-green-500"
-                        : index === 2
-                          ? "bg-blue-500"
-                          : index === 3
-                            ? "bg-purple-500"
-                            : "bg-amber-500",
-                  )}
-                  style={{ width: `${20 + index * 15}%` }}
-                ></div>
+        {["Common", "Uncommon", "Rare", "Epic", "Legendary"].map(
+          (rarity, index) => (
+            <div key={rarity} className="flex items-center">
+              <div className="w-24 text-sm text-blue-200">{rarity}</div>
+              <div className="flex-1 ml-2">
+                <div className="h-4 bg-blue-900/50 rounded-full overflow-hidden">
+                  <div
+                    className={cn(
+                      "h-full rounded-full",
+                      index === 0
+                        ? "bg-gray-500"
+                        : index === 1
+                          ? "bg-green-500"
+                          : index === 2
+                            ? "bg-blue-500"
+                            : index === 3
+                              ? "bg-purple-500"
+                              : "bg-amber-500",
+                    )}
+                    style={{ width: `${20 + index * 15}%` }}
+                  ></div>
+                </div>
+              </div>
+              <div className="w-12 text-right text-sm text-white">
+                {20 + index * 15}%
               </div>
             </div>
-            <div className="w-12 text-right text-sm text-white">{20 + index * 15}%</div>
-          </div>
-        ))}
+          ),
+        )}
       </div>
     </div>
-  )
+  );
 }
 
 function Droplet(props) {
@@ -353,7 +418,7 @@ function Droplet(props) {
     >
       <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
     </svg>
-  )
+  );
 }
 
 function Flame(props) {
@@ -372,7 +437,7 @@ function Flame(props) {
     >
       <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
     </svg>
-  )
+  );
 }
 
 function Zap(props) {
@@ -391,7 +456,7 @@ function Zap(props) {
     >
       <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
     </svg>
-  )
+  );
 }
 
 function Star(props) {
@@ -410,6 +475,5 @@ function Star(props) {
     >
       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
     </svg>
-  )
+  );
 }
-

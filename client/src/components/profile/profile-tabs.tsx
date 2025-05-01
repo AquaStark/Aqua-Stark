@@ -1,16 +1,21 @@
-import { Fish, Trophy, ShoppingBag } from "lucide-react"
+import { Fish, Trophy, ShoppingBag } from "lucide-react";
 
 interface ProfileTabsProps {
-  activeTab: string
-  setActiveTab: (tab: string) => void
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
 }
 
 export function ProfileTabs({ activeTab, setActiveTab }: ProfileTabsProps) {
   return (
-    <div className="grid grid-cols-3 gap-2 mb-6 animate-fadeIn" style={{ animationDelay: "0.4s" }}>
+    <div
+      className="grid grid-cols-3 gap-2 mb-6 animate-fadeIn"
+      style={{ animationDelay: "0.4s" }}
+    >
       <button
         className={`py-3 px-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 ${
-          activeTab === "achievements" ? "bg-blue-600 shadow-md" : "bg-blue-800 hover:bg-blue-700"
+          activeTab === "achievements"
+            ? "bg-blue-600 shadow-md"
+            : "bg-blue-800 hover:bg-blue-700"
         }`}
         onClick={() => setActiveTab("achievements")}
       >
@@ -23,7 +28,9 @@ export function ProfileTabs({ activeTab, setActiveTab }: ProfileTabsProps) {
       </button>
       <button
         className={`py-3 px-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 ${
-          activeTab === "collection" ? "bg-blue-600 shadow-md" : "bg-blue-800 hover:bg-blue-700"
+          activeTab === "collection"
+            ? "bg-blue-600 shadow-md"
+            : "bg-blue-800 hover:bg-blue-700"
         }`}
         onClick={() => setActiveTab("collection")}
       >
@@ -36,7 +43,9 @@ export function ProfileTabs({ activeTab, setActiveTab }: ProfileTabsProps) {
       </button>
       <button
         className={`py-3 px-4 rounded-lg text-center transition-all duration-300 transform hover:scale-105 ${
-          activeTab === "purchase" ? "bg-blue-600 shadow-md" : "bg-blue-800 hover:bg-blue-700"
+          activeTab === "purchase"
+            ? "bg-blue-600 shadow-md"
+            : "bg-blue-800 hover:bg-blue-700"
         }`}
         onClick={() => setActiveTab("purchase")}
       >
@@ -48,5 +57,5 @@ export function ProfileTabs({ activeTab, setActiveTab }: ProfileTabsProps) {
         </div>
       </button>
     </div>
-  )
+  );
 }

@@ -1,33 +1,33 @@
-import { useState } from "react"
-import { categories } from "@/data/help-center-data"
+import { useState } from "react";
+import { categories } from "@/data/help-center-data";
 
 export function useHelpCenter() {
-  const [activeCategory, setActiveCategory] = useState("getting-started")
-  const [activeTopic, setActiveTopic] = useState<string | null>(null)
-  const [searchQuery, setSearchQuery] = useState("")
+  const [activeCategory, setActiveCategory] = useState("getting-started");
+  const [activeTopic, setActiveTopic] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleCategoryClick = (categoryId: string) => {
-    setActiveCategory(categoryId)
-    setActiveTopic(null)
-  }
+    setActiveCategory(categoryId);
+    setActiveTopic(null);
+  };
 
   const handleTopicClick = (topicId: string) => {
-    setActiveTopic(topicId === activeTopic ? null : topicId)
-  }
+    setActiveTopic(topicId === activeTopic ? null : topicId);
+  };
 
   const handleFeaturedTopicClick = (categoryId: string, topicId: string) => {
-    setActiveCategory(categoryId)
-    setActiveTopic(topicId)
-  }
+    setActiveCategory(categoryId);
+    setActiveTopic(topicId);
+  };
 
   const handleClose = () => {
-    setActiveTopic(null)
-  }
+    setActiveTopic(null);
+  };
 
-  const currentCategory = categories.find((cat) => cat.id === activeCategory)
+  const currentCategory = categories.find((cat) => cat.id === activeCategory);
   const currentTopic = currentCategory?.topics.find(
-    (topic) => topic.id === activeTopic
-  )
+    (topic) => topic.id === activeTopic,
+  );
 
   return {
     activeCategory,
@@ -40,5 +40,5 @@ export function useHelpCenter() {
     handleTopicClick,
     handleFeaturedTopicClick,
     handleClose,
-  }
+  };
 }

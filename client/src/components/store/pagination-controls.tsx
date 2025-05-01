@@ -14,7 +14,7 @@ function PageButton({
         "w-8 h-8 rounded-full font-bold",
         active
           ? "bg-blue-400 text-white"
-          : "bg-blue-700 text-white hover:bg-blue-600"
+          : "bg-blue-700 text-white hover:bg-blue-600",
       )}
     >
       {children}

@@ -1,8 +1,8 @@
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 interface RarityBadgeProps {
-  rarity: "Common" | "Uncommon" | "Rare" | "Epic" | "Legendary"
-  className?: string
+  rarity: "Common" | "Uncommon" | "Rare" | "Epic" | "Legendary";
+  className?: string;
 }
 
 export function RarityBadge({ rarity, className }: RarityBadgeProps) {
@@ -24,6 +24,5 @@ export function RarityBadge({ rarity, className }: RarityBadgeProps) {
     >
       {rarity}
     </span>
-  )
+  );
 }
-

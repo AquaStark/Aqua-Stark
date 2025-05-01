@@ -1,5 +1,14 @@
+ feat/updated-food-tab
+ feat/updated-food-tab
 "use client";
 
+import { useMemo, useState } from "react";
+import { MarketHeader } from "@/components/market/market-header";
+import { MarketFooter } from "@/components/market/market-footer";
+
+"use client";
+
+ main
 import { BubblesBackground } from "@/components/bubble-background";
 import { FilterPanel } from "@/components/market/filter-panel";
 import { FishCard } from "@/components/market/fish-card";
@@ -8,6 +17,30 @@ import { OfferModal } from "@/components/market/offer-modal";
 import { ListingModal } from "@/components/market/listing-modal";
 import { useMarketStore } from "@/store/market-store";
 import { Button } from "@/components/ui/button";
+ feat/updated-food-tab
+import { Search, Filter, X, Plus } from "lucide-react";
+import { mockFishData } from "@/data/market-data";
+import "@/styles/market.css";
+
+"use client"
+
+import { useState } from "react"
+import { Footer } from "@/components/layout/footer"
+import { PageHeader } from "@/components/layout/page-header"
+import { BubblesBackground } from "@/components/bubble-background"
+import { FilterPanel } from "@/components/market/filter-panel"
+import { FishCard } from "@/components/market/fish-card"
+import { BidModal } from "@/components/market/bid-modal"
+import { OfferModal } from "@/components/market/offer-modal"
+import { ListingModal } from "@/components/market/listing-modal"
+import { useMarketStore } from "@/store/market-store"
+import { Button } from "@/components/ui/button"
+import { Search, Filter, X, Plus, Coins } from "lucide-react"
+import { mockFishData } from "@/data/market-data"
+import { useBubbles } from "@/hooks/use-bubbles"
+import "@/styles/market.css"
+ main
+
 import { Search, Filter, X, Plus, Coins } from "lucide-react";
 import { mockFishData } from "@/data/market-data";
 import "@/styles/market.css";
@@ -16,6 +49,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { useBubbles } from "@/hooks/use-bubbles";
 import "@/styles/market.css";
 import { useState } from "react";
+ main
 
 export default function MarketPage() {
   const {
@@ -27,8 +61,36 @@ export default function MarketPage() {
   } = useMarketStore();
   const [activeTab, setActiveTab] = useState("browse");
 
+ feat/updated-food-tab
+ feat/updated-food-tab
+  // 🫧 Generate bubbles once
+  const bubbles = useMemo(() => {
+    return Array.from({ length: 30 }).map((_, i) => {
+      const base = Math.random();
+      const size =
+        base < 0.3
+          ? Math.random() * 15 + 10
+          : base < 0.7
+            ? Math.random() * 25 + 20
+            : Math.random() * 40 + 30;
+
+      return {
+        id: i,
+        size,
+        left: Math.random() * 100,
+        animationDuration: Math.random() * 10 + 5,
+      };
+    });
+  }, []);
+
+
+  const bubbles = useBubbles()
+  
+ main
+
   const bubbles = useBubbles();
 
+ main
   const filteredFish = mockFishData.filter((fish) => {
     if (filters.rarity.length > 0 && !filters.rarity.includes(fish.rarity))
       return false;
@@ -45,7 +107,11 @@ export default function MarketPage() {
     if (filters.traits.length > 0) {
       const fishTraits = Object.values(fish.traits).map((t) => t.toLowerCase());
       const hasMatchingTrait = filters.traits.some((trait) =>
+ feat/updated-food-tab
+        fishTraits.includes(trait.toLowerCase()),
+
         fishTraits.includes(trait.toLowerCase())
+ main
       );
       if (!hasMatchingTrait) return false;
     }
@@ -140,9 +206,19 @@ export default function MarketPage() {
             </Button>
 
             <Button
-              className="border border-blue-600/50 bg-blue-600 hover:bg-blue-700/50 text-white"
+ feat/updated-food-tab
+              className="bg-blue-600 hover:bg-blue-700 text-white"
               onClick={() => setShowListingModal(true)}
             >
+
+              className="border border-blue-600/50 bg-blue-600 hover:bg-blue-700/50 text-white"
+ feat/updated-food-tab
+              onClick={() => setShowListingModal(true)}>
+ main
+
+              onClick={() => setShowListingModal(true)}
+            >
+ main
               <Plus className="mr-2 h-4 w-4" />
               List Fish
             </Button>
@@ -169,6 +245,22 @@ export default function MarketPage() {
         {showFilters && <FilterPanel />}
 
         {/* if tab is browse */}
+ feat/updated-food-tab
+        {activeTab === "browse" && <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6 w-full">
+          {sortedFish.map((fish) => (
+            <FishCard key={fish.id} fish={fish} />
+          ))}
+
+          {sortedFish.length === 0 && (
+            <div className="col-span-full text-center py-12">
+              <h3 className="text-xl text-white mb-2">No fish found</h3>
+              <p className="text-blue-300">
+                Try adjusting your filters or search criteria
+              </p>
+            </div>
+          )}
+        </div>}
+
         {activeTab === "browse" && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6 w-full">
             {sortedFish.map((fish) => (
@@ -185,6 +277,7 @@ export default function MarketPage() {
             )}
           </div>
         )}
+ main
 
         {/* if tab is auctions */}
         {activeTab === "auctions" && (

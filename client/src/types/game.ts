@@ -1,11 +1,11 @@
 export interface FishType {
-  id: number
-  name: string
-  image: string
+  id: number;
+  name: string;
+  image: string;
   position: {
-    x: number
-    y: number
-  }
-  rarity: string
-  generation: number
-} 
+    x: number;
+    y: number;
+  };
+  rarity: string;
+  generation: number;
+}

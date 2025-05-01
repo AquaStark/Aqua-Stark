@@ -1,10 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+ feat/updated-food-tab
+import { UserPlus } from "lucide-react";
+import { mockFriends, mockSuggestions } from "@/data/mock-community";
+
 import { Search, UserPlus } from "lucide-react";
 import { mockFriends, mockSuggestions } from "@/data/mock-community";
 import { Input } from "../ui/input";
 import { useState } from "react";
+ main
 
 export default function CommunityFriends() {
   const [searchQuery, setSearchQuery] = useState("");

@@ -1,22 +1,22 @@
 // components/ui/Card.tsx
-import React from 'react';
+import React from "react";
 import { cn } from "@/lib/utils";
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   title?: string;
 }
 
-export const Card: React.FC<CardProps> = ({ 
-  children, 
-  className, 
-  title, 
-  ...props 
+export const Card: React.FC<CardProps> = ({
+  children,
+  className,
+  title,
+  ...props
 }) => {
   return (
-    <div 
+    <div
       className={cn(
-        'bg-blue-800/50 backdrop-blur-sm rounded-lg p-6 border border-blue-600/50',
-        className
+        "bg-blue-800/50 backdrop-blur-sm rounded-lg p-6 border border-blue-600/50",
+        className,
       )}
       {...props}
     >

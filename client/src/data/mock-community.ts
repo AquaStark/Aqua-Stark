@@ -4,11 +4,18 @@ export const mockAquariums = [
     name: "Tropical Paradise",
     owner: "CoralQueen",
     timePosted: "3 days ago",
+ feat/updated-food-tab
+    likes: 120,
+    comments: 45,
+    featured: true,
+    imageUrl: "/textures/backgrounds/Bg2.svg",
+
     timeStamp: "2025-04-24T12:00:00Z",
     likes: 120,
     comments: 45,
     featured: true,
     imageUrl: "/textures/backgrounds/bg2.png",
+ main
   },
   {
     id: 2,
@@ -16,7 +23,11 @@ export const mockAquariums = [
     owner: "ReefMaster",
     likes: 89,
     comments: 12,
+ feat/updated-food-tab
+    imageUrl: "/textures/backgrounds/Bg2.svg",
+
     imageUrl: "/textures/backgrounds/bg3.png",
+ main
   },
   {
     id: 3,
@@ -24,8 +35,12 @@ export const mockAquariums = [
     owner: "AquaLover",
     likes: 50,
     comments: 8,
+ feat/updated-food-tab
+    imageUrl: "/textures/backgrounds/Bg2.svg",
+
     imageUrl: "/textures/backgrounds/bg4.png",
     timeStamp: "2025-04-22T12:00:00Z",
+ main
   },
   {
     id: 4,
@@ -33,8 +48,12 @@ export const mockAquariums = [
     owner: "TreasureHunter",
     likes: 78,
     comments: 14,
+ feat/updated-food-tab
+    imageUrl: "/textures/backgrounds/Bg2.svg",
+
     imageUrl: "/textures/backgrounds/bg5.png",
     timeStamp: "2025-04-20T12:00:00Z",
+ main
   },
   // ... más acuarios
 ];

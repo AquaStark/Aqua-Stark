@@ -32,7 +32,10 @@ export default function CommunityEvents() {
           variant="outline"
           className="bg-blue-800 border-blue-700 text-white hover:bg-blue-700 hover:text-white 
                          transition-all duration-300 hover:scale-105 hover:shadow-md hover:shadow-blue-900/50"
+ feat/updated-food-tab
+
           onClick={() => setShowFilters(!showFilters)}
+ main
         >
           <Filter className="h-4 w-4 mr-2" />
           Filter
@@ -150,17 +153,26 @@ export default function CommunityEvents() {
           "
               >
                 {/* Etiqueta "Coming Soon" */}
+ feat/updated-food-tab
+                <span className="absolute top-2 left-2 bg-blue-500 text-white text-sm px-2 py-1 rounded-full font-semibold">
+
                 <span className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
+ main
                   Coming Soon
                 </span>
 
                 {/* Imagen grande arriba */}
+ feat/updated-food-tab
+                <div className="w-full h-40 bg-white/10 rounded flex items-center justify-center mb-3">
+                  <p className="text-gray-400">[ Event Image ]</p>
+
                 <div className="w-full h-52 bg-white/10 rounded flex items-center justify-center mb-3">
                   <img
                     src={event.imageUrl}
                     alt={event.name}
                     className="w-full h-full object-cover rounded-md object-center"
                   />
+ main
                 </div>
 
                 {/* Título */}
@@ -218,6 +230,14 @@ export default function CommunityEvents() {
                 key={event.id}
                 className="relative bg-white/10 rounded p-4 flex flex-col md:flex-row gap-4"
               >
+ feat/updated-food-tab
+                <span className="absolute top-2 left-2 bg-gray-500 text-white text-sm px-2 py-1 rounded-full font-semibold">
+                  Ended
+                </span>
+
+                <div className="w-full md:w-2/5 h-40 bg-white/10 rounded flex items-center justify-center">
+                  <p className="text-gray-400">[ Event Image ]</p>
+
                 <span className="absolute top-2 left-2 bg-gray-500 text-white text-xs px-3 py-1 rounded-full font-semibold">
                   Ended
                 </span>
@@ -228,6 +248,7 @@ export default function CommunityEvents() {
                     alt={event.name}
                     className="w-full h-full object-cover rounded-md object-center"
                   />
+ main
                 </div>
 
                 <div className="flex-1 flex flex-col justify-center">
@@ -257,8 +278,15 @@ export default function CommunityEvents() {
           {/* Botón en el centro, fuera del contenedor al 50% */}
           <div className="flex justify-center mt-2">
             <button
+ feat/updated-food-tab
+              className="
+          text-blue-200 font-semibold hover:underline
+          transition-colors
+        "
+
               type="button"
               className="text-blue-200 font-semibold hover:underline transition-colors"
+ main
             >
               View All Past Events &gt;
             </button>

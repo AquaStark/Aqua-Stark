@@ -5,6 +5,16 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 
 export default function EncyclopediaHabitats() {
+ feat/updated-food-tab
+  return (
+    <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 p-6 text-white">
+      <h2 className="text-2xl font-bold mb-4">Fish Habitats</h2>
+      <p className="text-blue-200">
+        Here you can explore the different environments where fish species live.
+        This section will include habitat details like water type, temperature,
+        and more.
+      </p>
+
   const [expandedSections, setExpandedSections] = useState({
     habitats: true,
     compatibility: false
@@ -61,6 +71,7 @@ export default function EncyclopediaHabitats() {
         
         {expandedSections.compatibility && <CompatabilityGuide />}
       </div>
+ main
     </div>
   );
 }

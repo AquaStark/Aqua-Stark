@@ -70,7 +70,7 @@ function GameMileStone({
       <div
         className={cn(
           "relative w-full font-sans py-4 border-2 flex-1 px-4 gap-2 text-sm font-normal rounded-lg transition-all duration-200 flex items-center justify-between milestone-card bg-[#0251A6]",
-          milestone.completed ? "border-green-400/50" : "border-blue-400"
+          milestone.completed ? "border-green-400/50" : "border-blue-400",
         )}
       >
         <div className="flex flex-col w-full gap-2">

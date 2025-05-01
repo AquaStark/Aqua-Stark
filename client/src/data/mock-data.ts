@@ -48,7 +48,7 @@ export const fishStatusBarIconPaths = {
 };
 
 export const getStatusByLevel = (
-  level: number
+  level: number,
 ): "sad" | "neutral" | "happy" => {
   if (level < 50) return "sad";
   else if (level < 75) return "neutral";
@@ -254,4 +254,3 @@ export const mockGameMilestones = [
 ];
 
 export default mockFishData;
-

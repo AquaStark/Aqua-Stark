@@ -1,7 +1,7 @@
-import { FishType } from "@/types/game"
+import { FishType } from "@/types/game";
 
 interface FishDisplayProps {
-  fish: FishType[]
+  fish: FishType[];
 }
 
 export function FishDisplay({ fish }: FishDisplayProps) {
@@ -31,5 +31,5 @@ export function FishDisplay({ fish }: FishDisplayProps) {
         </div>
       ))}
     </div>
-  )
-} 
+  );
+}

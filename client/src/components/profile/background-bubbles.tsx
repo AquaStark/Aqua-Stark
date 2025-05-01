@@ -16,5 +16,5 @@ export function BackgroundBubbles() {
         />
       ))}
     </div>
-  )
+  );
 }

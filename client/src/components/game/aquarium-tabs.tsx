@@ -1,12 +1,12 @@
-import React from "react"
-import { Grid } from "lucide-react"
-import { cn } from "@/lib/utils"
+import React from "react";
+import { Grid } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface AquariumTabProps {
-  name: string
-  active: boolean
-  icon?: React.ReactNode
-  onClick: () => void
+  name: string;
+  active: boolean;
+  icon?: React.ReactNode;
+  onClick: () => void;
 }
 
 function AquariumTab({ name, active, icon, onClick }: AquariumTabProps) {
@@ -23,13 +23,13 @@ function AquariumTab({ name, active, icon, onClick }: AquariumTabProps) {
       {icon && icon}
       {name}
     </button>
-  )
+  );
 }
 
 interface AquariumTabsProps {
-  aquariums: string[]
-  selectedAquarium: string
-  onAquariumSelect: (aquarium: string) => void
+  aquariums: string[];
+  selectedAquarium: string;
+  onAquariumSelect: (aquarium: string) => void;
 }
 
 export function AquariumTabs({
@@ -58,5 +58,5 @@ export function AquariumTabs({
         </div>
       </div>
     </div>
-  )
-} 
+  );
+}

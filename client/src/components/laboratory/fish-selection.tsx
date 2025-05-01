@@ -1,3 +1,9 @@
+ feat/updated-food-tab
+"use client";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import type { Fish } from "@/types/fish";
+
 "use client"
 import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
@@ -5,11 +11,18 @@ import { cn } from "@/lib/utils"
 import { ChevronLeft, ChevronRight, List, Grid } from "lucide-react"
 import type { Fish } from "@/types/fish"
 import { Button } from "@/components/ui/button"
+ main
 
 interface FishSelectionProps {
-  filteredFish: Fish[]
-  onSelectFish: (fish: Fish) => void
+  filteredFish: Fish[];
+  onSelectFish: (fish: Fish) => void;
 }
+
+ feat/updated-food-tab
+export function FishSelection({
+  filteredFish,
+  onSelectFish,
+}: FishSelectionProps) {
 
 export function FishSelection({ filteredFish, onSelectFish }: FishSelectionProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
@@ -119,6 +132,7 @@ export function FishSelection({ filteredFish, onSelectFish }: FishSelectionProps
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+ main
   return (
     <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 overflow-hidden flex flex-col h-[500px] lg:h-full w-full max-w-full">
       <div className="p-4 border-b border-blue-700/50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
@@ -138,6 +152,56 @@ export function FishSelection({ filteredFish, onSelectFish }: FishSelectionProps
               )}
               onClick={() => setViewMode('scroll')}
             >
+ feat/updated-food-tab
+              <div className="relative w-16 h-16 mr-3 flex-shrink-0">
+                <img
+                  src={fish.image || "/placeholder.svg"}
+                  alt={fish.name}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div className="flex-1">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h4 className="font-bold text-white">{fish.name}</h4>
+                    <div className="flex items-center mt-1">
+                      <span
+                        className={cn(
+                          "text-xs px-2 py-0.5 rounded-full",
+                          fish.rarity === "Common"
+                            ? "bg-gray-500/50 text-gray-100"
+                            : fish.rarity === "Uncommon"
+                              ? "bg-green-500/50 text-green-100"
+                              : fish.rarity === "Rare"
+                                ? "bg-blue-500/50 text-blue-100"
+                                : fish.rarity === "Epic"
+                                  ? "bg-purple-500/50 text-purple-100"
+                                  : "bg-amber-500/50 text-amber-100",
+                        )}
+                      >
+                        {fish.rarity}
+                      </span>
+                      <span className="text-blue-200 text-xs ml-2">
+                        Gen {fish.generation}
+                      </span>
+                      <span className="text-blue-200 text-xs ml-2">
+                        Lvl {fish.level}
+                      </span>
+                    </div>
+                  </div>
+                  {fish.breedingCooldown && (
+                    <div
+                      className={cn(
+                        "text-xs px-2 py-1 rounded-full",
+                        fish.breedingCooldown === "Ready"
+                          ? "bg-green-500/30 text-green-100"
+                          : "bg-orange-500/30 text-orange-100",
+                      )}
+                    >
+                      {fish.breedingCooldown}
+                    </div>
+                  )}
+
               <List className="h-4 w-4" />
             </Button>
             <Button 
@@ -175,6 +239,7 @@ export function FishSelection({ filteredFish, onSelectFish }: FishSelectionProps
                 <div>
                   <p className="text-blue-300">No fish match your filter criteria</p>
                   <p className="text-blue-400 text-sm mt-2">Try adjusting your filters to see more fish</p>
+ main
                 </div>
               </div>
             )}
@@ -207,8 +272,10 @@ export function FishSelection({ filteredFish, onSelectFish }: FishSelectionProps
         )}
       </div>
     </div>
-  )
+  );
 }
+ feat/updated-food-tab
+
 
 interface FishCardProps {
   fish: Fish
@@ -311,3 +378,4 @@ if (typeof document !== 'undefined') {
   }
 }
 
+ main

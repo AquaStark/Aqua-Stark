@@ -1,6 +1,6 @@
-"use client"
-import { Wallet } from "lucide-react"
-import { Button } from "@/components/ui/button"
+"use client";
+import { Wallet } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function Navbar() {
   return (
@@ -21,5 +21,5 @@ export function Navbar() {
         </Button>
       </div>
     </nav>
-  )
+  );
 }

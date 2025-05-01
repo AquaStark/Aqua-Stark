@@ -1,9 +1,16 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+ feat/updated-food-tab
+
+interface StoreTabsProps {
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+
 import { ItemType } from "@/data/mock-game";
 
 interface StoreTabsProps {
   activeTab: ItemType;
   onTabChange: (tab: ItemType) => void;
+ main
 }
 
 export function StoreTabs({ activeTab, onTabChange }: StoreTabsProps) {

@@ -3,7 +3,10 @@ import type React from "react";
 interface FishTankProps {
   children: React.ReactNode;
   className?: string;
+ feat/updated-food-tab
+
   shadow?: boolean;
+ main
 }
 
 export function FishTank({

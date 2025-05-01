@@ -1,48 +1,48 @@
-import { useEffect, useRef, useState } from "react"
-import { mockEvents } from "@/data/event-calendar-data"
+import { useEffect, useRef, useState } from "react";
+import { mockEvents } from "@/data/event-calendar-data";
 
-export type TabType = "all" | "special" | "seasons" | "tournaments" | "offers"
-export type ViewType = "list" | "calendar"
+export type TabType = "all" | "special" | "seasons" | "tournaments" | "offers";
+export type ViewType = "list" | "calendar";
 
 export function useEventsCalendar() {
-  const [activeTab, setActiveTab] = useState<TabType>("all")
-  const [viewType, setViewType] = useState<ViewType>("list")
-  const [selectedEvent, setSelectedEvent] = useState<any>(null)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState<TabType>("all");
+  const [viewType, setViewType] = useState<ViewType>("list");
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const menuRef = useRef<HTMLDivElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const handleEventClick = (event: any) => {
-    setSelectedEvent(event)
-  }
+    setSelectedEvent(event);
+  };
 
   const closeModal = () => {
-    setSelectedEvent(null)
-  }
+    setSelectedEvent(null);
+  };
 
   const handleTabChange = (tab: TabType) => {
-    setActiveTab(tab)
-    setMobileMenuOpen(false)
-  }
+    setActiveTab(tab);
+    setMobileMenuOpen(false);
+  };
 
   const filteredEvents = mockEvents
     ? activeTab === "all"
       ? mockEvents
       : mockEvents.filter((event) => event.category === activeTab)
-    : []
+    : [];
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setMobileMenuOpen(false)
+        setMobileMenuOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return {
     activeTab,
@@ -58,5 +58,5 @@ export function useEventsCalendar() {
     handleEventClick,
     closeModal,
     setMobileMenuOpen,
-  }
+  };
 }

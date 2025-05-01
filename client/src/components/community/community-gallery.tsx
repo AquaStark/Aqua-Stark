@@ -1,3 +1,7 @@
+ feat/updated-food-tab
+import { mockAquariums } from "@/data/mock-community";
+
+ main
 import {
   Filter,
   Sparkles,
@@ -6,6 +10,12 @@ import {
   ShareIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+ feat/updated-food-tab
+
+function CommunityGallery() {
+  const featured = mockAquariums.find((aq) => aq.featured);
+  const others = mockAquariums.filter((aq) => !aq.featured);
+
 import { useCommunity } from "@/hooks/use-community";
 import { FilterPanel } from "./filter-panels/gallery";
 
@@ -15,6 +25,7 @@ function CommunityGallery() {
 
   const featured = sortedAquariums.find((aq) => aq.featured);
   const others = sortedAquariums.filter((aq) => !aq.featured);
+ main
 
   return (
     <div>
@@ -26,7 +37,10 @@ function CommunityGallery() {
             variant="outline"
             className="bg-blue-800 border-blue-700 text-white hover:bg-blue-700 hover:text-white 
                          transition-all duration-300 hover:scale-105 hover:shadow-md hover:shadow-blue-900/50"
+ feat/updated-food-tab
+
             onClick={() => setShowFilters(!showFilters)}
+ main
           >
             <Filter className="h-4 w-4 mr-2" />
             Filter
@@ -38,12 +52,15 @@ function CommunityGallery() {
         </div>
       </div>
 
+ feat/updated-food-tab
+
       {showFilters && (
         <div className="my-4">
           <FilterPanel key={filters.key} />
         </div>
       )}
 
+ main
       {featured && (
         <div className="mb-6 bg-white/10 rounded overflow-hidden">
           <div className="relative w-full h-60 overflow-hidden">

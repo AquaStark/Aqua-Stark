@@ -1,20 +1,20 @@
-import { ChevronRight, Star } from "lucide-react"
+import { ChevronRight, Star } from "lucide-react";
 
 interface Fish {
-  id: string
-  name: string
-  imageUrl: string
-  rarity: string
-  level: number
-  obtainedDate: string
+  id: string;
+  name: string;
+  imageUrl: string;
+  rarity: string;
+  level: number;
+  obtainedDate: string;
 }
 
 interface FishCollectionProps {
   fishCollection: {
-    collected: number
-    total: number
-    displayedFish: Fish[]
-  }
+    collected: number;
+    total: number;
+    displayedFish: Fish[];
+  };
 }
 
 export function FishCollection({ fishCollection }: FishCollectionProps) {
@@ -29,7 +29,9 @@ export function FishCollection({ fishCollection }: FishCollectionProps) {
       <div className="h-2 bg-blue-900 rounded-full overflow-hidden mb-4">
         <div
           className="h-full bg-gradient-to-r from-green-400 to-green-300 animate-expandWidth"
-          style={{ width: `${(fishCollection.collected / fishCollection.total) * 100}%` }}
+          style={{
+            width: `${(fishCollection.collected / fishCollection.total) * 100}%`,
+          }}
         />
       </div>
 
@@ -67,10 +69,15 @@ export function FishCollection({ fishCollection }: FishCollectionProps) {
               <h3 className="font-medium text-sm mb-1">{fish.name}</h3>
               <div className="flex justify-between items-center text-xs">
                 <div className="flex items-center">
-                  <Star className="w-3 h-3 text-yellow-400 mr-1" fill="currentColor" />
+                  <Star
+                    className="w-3 h-3 text-yellow-400 mr-1"
+                    fill="currentColor"
+                  />
                   <span>Level {fish.level}</span>
                 </div>
-                <span className="text-blue-300">Obtained: {fish.obtainedDate}</span>
+                <span className="text-blue-300">
+                  Obtained: {fish.obtainedDate}
+                </span>
               </div>
             </div>
           </div>
@@ -82,5 +89,5 @@ export function FishCollection({ fishCollection }: FishCollectionProps) {
         <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
       </button>
     </div>
-  )
+  );
 }

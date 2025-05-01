@@ -1,4 +1,15 @@
-"use client"
+"use client";
+
+ feat/updated-food-tab
+import { Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+interface PageHeaderProps {
+  title: string;
+  backTo: string;
+  backText?: string;
+  rightContent?: React.ReactNode;
 
 import { Link } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
@@ -11,6 +22,7 @@ interface PageHeaderProps {
   backText?: string
   rightContent?: React.ReactNode
   className?: string
+ main
 }
 
 export function PageHeader({
@@ -36,13 +48,17 @@ export function PageHeader({
               <span className="text-xs">{backText}</span>
             </Button>
           </Link>
-          <h3 className="text-base sm:text-lg font-semibold text-white">{title}</h3>
+          <h3 className="text-base sm:text-lg font-semibold text-white">
+            {title}
+          </h3>
         </div>
 
         {rightContent && (
-          <div className="flex items-center gap-2 mt-2 sm:mt-0">{rightContent}</div>
+          <div className="flex items-center gap-2 mt-2 sm:mt-0">
+            {rightContent}
+          </div>
         )}
       </div>
     </nav>
-  )
+  );
 }

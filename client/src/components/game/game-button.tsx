@@ -1,14 +1,14 @@
-import React from "react"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface GameButtonProps {
-  icon: React.ReactNode | string
-  text?: string
-  color?: string
-  tooltip?: string
-  onClick?: () => void
-  className?: string
+  icon: React.ReactNode | string;
+  text?: string;
+  color?: string;
+  tooltip?: string;
+  onClick?: () => void;
+  className?: string;
 }
 
 export function GameButton({
@@ -26,11 +26,15 @@ export function GameButton({
         "game-button bg-gradient-to-b text-white rounded-xl relative group",
         text ? "px-4 py-2" : "w-12 h-12",
         color,
-        className
+        className,
       )}
     >
       <div className="flex items-center gap-2">
-        {typeof icon === "string" ? <span className="text-xl">{icon}</span> : icon}
+        {typeof icon === "string" ? (
+          <span className="text-xl">{icon}</span>
+        ) : (
+          icon
+        )}
         {text && <span className="font-bold">{text}</span>}
       </div>
       {tooltip && (
@@ -39,5 +43,5 @@ export function GameButton({
         </div>
       )}
     </Button>
-  )
-} 
+  );
+}

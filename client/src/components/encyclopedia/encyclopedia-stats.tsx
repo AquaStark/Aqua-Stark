@@ -1,11 +1,18 @@
+ feat/updated-food-tab
+import { useEncyclopedia } from "@/hooks/use-encyclopedia";
+
 import { useEncyclopedia } from "@/hooks/use-encyclopedia"
 import CollectionProgress from "@/components/encyclopedia/collection-stats/collection-progress"
 import BreakdownSection from "@/components/encyclopedia/collection-stats/breakdown-section"
 import RecentDiscoveries from "@/components/encyclopedia/collection-stats/recent-discoveries"
 import CollectionAchievements from "@/components/encyclopedia/collection-stats/collection-achievements"
+ main
 
 export default function EncyclopediaStats() {
-  const { totalSpecies, discoveredSpecies } = useEncyclopedia()
+  const { totalSpecies, discoveredSpecies } = useEncyclopedia();
+
+ feat/updated-food-tab
+  const progress = (discoveredSpecies / totalSpecies) * 100;
 
   const progressData = {
     discovered: discoveredSpecies,
@@ -102,15 +109,25 @@ export default function EncyclopediaStats() {
       completed: true,
     },
   ]
+ main
 
   return (
     <div className="space-y-8">
       <div className="rounded-xl bg-blue-800/80 p-6 shadow-lg backdrop-blur-sm border border-blue-700/50">
         <CollectionProgress data={progressData} />
 
+ feat/updated-food-tab
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <span className="text-blue-200">Discovered Species:</span>
+          <span className="font-bold">
+            {discoveredSpecies} / {totalSpecies}
+          </span>
+
         <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
           <BreakdownSection title="Rarity Breakdown" items={rarityData} />
           <BreakdownSection title="Habitat Breakdown" items={habitatData} />
+ main
         </div>
       </div>
 
@@ -118,9 +135,16 @@ export default function EncyclopediaStats() {
         <RecentDiscoveries discoveries={recentDiscoveries} />
       </div>
 
+ feat/updated-food-tab
+        <p className="text-blue-300 text-sm italic">
+          You're {progress.toFixed(1)}% of the way to discovering all available
+          species!
+        </p>
+
       <div className="rounded-xl bg-blue-800/80 p-6 shadow-lg backdrop-blur-sm border border-blue-700/50">
         <CollectionAchievements achievements={achievements} />
+ main
       </div>
     </div>
-  )
+  );
 }

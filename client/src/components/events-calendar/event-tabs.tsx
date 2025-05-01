@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Input } from "@/components/ui/input"
+import { useEffect, useRef, useState } from "react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
 import {
   Calendar,
   CalendarRange,
@@ -12,56 +12,67 @@ import {
   Tag,
   Trophy,
   ChevronDown,
-} from "lucide-react"
-import { AllEventsView } from "./all-events-view"
-import { SpecialEventsView } from "./special-events-view"
-import { ListEventView } from "./list-event-view"
-import { CalendarView } from "./calendar-view"
-import { EventDetailsModal } from "./event-details-modal"
-import { mockEvents } from "@/data/event-calendar-data"
+} from "lucide-react";
+import { AllEventsView } from "./all-events-view";
+import { SpecialEventsView } from "./special-events-view";
+import { ListEventView } from "./list-event-view";
+import { CalendarView } from "./calendar-view";
+import { EventDetailsModal } from "./event-details-modal";
+import { mockEvents } from "@/data/event-calendar-data";
 
-type TabType = "all" | "special" | "seasons" | "tournaments" | "offers"
-type ViewType = "list" | "calendar"
+type TabType = "all" | "special" | "seasons" | "tournaments" | "offers";
+type ViewType = "list" | "calendar";
 
 export default function EventTabs() {
-  const [activeTab, setActiveTab] = useState<TabType>("all")
-  const [viewType, setViewType] = useState<ViewType>("list")
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedEvent, setSelectedEvent] = useState<any>(null)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
+  const [activeTab, setActiveTab] = useState<TabType>("all");
+  const [viewType, setViewType] = useState<ViewType>("list");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const tabs: { id: TabType; label: string; icon: JSX.Element }[] = [
     { id: "all", label: "All Events", icon: <Calendar className="w-4 h-4" /> },
     { id: "special", label: "Special", icon: <Sparkles className="w-4 h-4" /> },
-    { id: "seasons", label: "Seasons", icon: <CalendarRange className="w-4 h-4" /> },
-    { id: "tournaments", label: "Tournaments", icon: <Trophy className="w-4 h-4" /> },
+    {
+      id: "seasons",
+      label: "Seasons",
+      icon: <CalendarRange className="w-4 h-4" />,
+    },
+    {
+      id: "tournaments",
+      label: "Tournaments",
+      icon: <Trophy className="w-4 h-4" />,
+    },
     { id: "offers", label: "Offers", icon: <Tag className="w-4 h-4" /> },
-  ]
+  ];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setMobileOpen(false)
+        setMobileOpen(false);
       }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const filteredEvents =
     activeTab === "all"
       ? mockEvents
-      : mockEvents.filter((e) => e.category === activeTab)
+      : mockEvents.filter((e) => e.category === activeTab);
 
-  const handleEventClick = (event: any) => setSelectedEvent(event)
-  const closeModal = () => setSelectedEvent(null)
+  const handleEventClick = (event: any) => setSelectedEvent(event);
+  const closeModal = () => setSelectedEvent(null);
 
   return (
     <div className="w-full">
       {/* Desktop Tabs */}
       <div className="hidden md:block mb-4">
-        <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as TabType)}>
+        <Tabs
+          value={activeTab}
+          onValueChange={(val) => setActiveTab(val as TabType)}
+        >
           <TabsList className="flex w-full gap-2 bg-blue-700 rounded-lg p-1">
             {tabs.map((tab) => (
               <TabsTrigger
@@ -104,8 +115,8 @@ export default function EventTabs() {
                     activeTab === tab.id ? "bg-blue-600" : "hover:bg-blue-700"
                   }`}
                   onClick={() => {
-                    setActiveTab(tab.id)
-                    setMobileOpen(false)
+                    setActiveTab(tab.id);
+                    setMobileOpen(false);
                   }}
                 >
                   {tab.icon}
@@ -133,7 +144,9 @@ export default function EventTabs() {
           <button
             onClick={() => setViewType("list")}
             className={`px-3 py-2 rounded-md text-sm font-medium ${
-              viewType === "list" ? "bg-blue-600 text-white" : "bg-blue-800/50 text-blue-200"
+              viewType === "list"
+                ? "bg-blue-600 text-white"
+                : "bg-blue-800/50 text-blue-200"
             }`}
           >
             <ListFilter className="w-4 h-4 inline mr-2" />
@@ -142,7 +155,9 @@ export default function EventTabs() {
           <button
             onClick={() => setViewType("calendar")}
             className={`px-3 py-2 rounded-md text-sm font-medium ${
-              viewType === "calendar" ? "bg-blue-600 text-white" : "bg-blue-800/50 text-blue-200"
+              viewType === "calendar"
+                ? "bg-blue-600 text-white"
+                : "bg-blue-800/50 text-blue-200"
             }`}
           >
             <Calendar className="w-4 h-4 inline mr-2" />
@@ -178,7 +193,10 @@ export default function EventTabs() {
         )}
 
         {viewType === "calendar" && (
-          <CalendarView events={filteredEvents} onEventClick={handleEventClick} />
+          <CalendarView
+            events={filteredEvents}
+            onEventClick={handleEventClick}
+          />
         )}
 
         {(activeTab === "seasons" ||
@@ -186,13 +204,17 @@ export default function EventTabs() {
           activeTab === "offers") &&
           filteredEvents.length === 0 && (
             <div className="flex items-center justify-center h-64 bg-blue-800/30 rounded-lg mt-8 w-full">
-              <p className="text-lg text-blue-200">This tab is under development</p>
+              <p className="text-lg text-blue-200">
+                This tab is under development
+              </p>
             </div>
           )}
       </div>
 
       {/* Modal */}
-      {selectedEvent && <EventDetailsModal event={selectedEvent} onClose={closeModal} />}
+      {selectedEvent && (
+        <EventDetailsModal event={selectedEvent} onClose={closeModal} />
+      )}
     </div>
-  )
+  );
 }

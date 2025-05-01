@@ -1,11 +1,12 @@
-import type { Fish, BreedingResult } from "@/types/fish"
+import type { Fish, BreedingResult } from "@/types/fish";
 
 // Sample fish data
 export const fishCollection: Fish[] = [
   {
     id: 1,
     name: "Celestial Glowfin",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish1-ioYn5CvkJkCHPwgx1jBGoqibnAu5to.png",
+    image:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish1-ioYn5CvkJkCHPwgx1jBGoqibnAu5to.png",
     rarity: "Legendary",
     generation: 1,
     level: 8,
@@ -20,7 +21,8 @@ export const fishCollection: Fish[] = [
   {
     id: 2,
     name: "Royal Crowntail",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish2-D0YdqsjY0OgI0AZg98FS0Sq7zMm2Fe.png",
+    image:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish2-D0YdqsjY0OgI0AZg98FS0Sq7zMm2Fe.png",
     rarity: "Rare",
     generation: 1,
     level: 12,
@@ -35,7 +37,8 @@ export const fishCollection: Fish[] = [
   {
     id: 3,
     name: "Crimson Flasher",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish3-LOteAGqWGR4lDQ8VBBAlRSUByZL2KX.png",
+    image:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish3-LOteAGqWGR4lDQ8VBBAlRSUByZL2KX.png",
     rarity: "Epic",
     generation: 1,
     level: 10,
@@ -50,7 +53,8 @@ export const fishCollection: Fish[] = [
   {
     id: 4,
     name: "Azure Drifter",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish1-ioYn5CvkJkCHPwgx1jBGoqibnAu5to.png",
+    image:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish1-ioYn5CvkJkCHPwgx1jBGoqibnAu5to.png",
     rarity: "Common",
     generation: 2,
     level: 15,
@@ -68,7 +72,8 @@ export const fishCollection: Fish[] = [
   {
     id: 5,
     name: "Emerald Whisker",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish2-D0YdqsjY0OgI0AZg98FS0Sq7zMm2Fe.png",
+    image:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish2-D0YdqsjY0OgI0AZg98FS0Sq7zMm2Fe.png",
     rarity: "Uncommon",
     generation: 1,
     level: 7,
@@ -82,7 +87,8 @@ export const fishCollection: Fish[] = [
   {
     id: 6,
     name: "Golden Shimmer",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish3-LOteAGqWGR4lDQ8VBBAlRSUByZL2KX.png",
+    image:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish3-LOteAGqWGR4lDQ8VBBAlRSUByZL2KX.png",
     rarity: "Epic",
     generation: 2,
     level: 9,
@@ -98,14 +104,15 @@ export const fishCollection: Fish[] = [
       mother: 5,
     },
   },
-]
+];
 
 // Sample breeding results
 export const breedingResults: BreedingResult[] = [
   {
     id: 4,
     name: "Azure Drifter",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish1-ioYn5CvkJkCHPwgx1jBGoqibnAu5to.png",
+    image:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish1-ioYn5CvkJkCHPwgx1jBGoqibnAu5to.png",
     rarity: "Common",
     traits: {
       color: "Blue",
@@ -122,7 +129,8 @@ export const breedingResults: BreedingResult[] = [
   {
     id: 6,
     name: "Golden Shimmer",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish3-LOteAGqWGR4lDQ8VBBAlRSUByZL2KX.png",
+    image:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish3-LOteAGqWGR4lDQ8VBBAlRSUByZL2KX.png",
     rarity: "Epic",
     traits: {
       color: "Gold",
@@ -140,7 +148,8 @@ export const breedingResults: BreedingResult[] = [
   {
     id: 7,
     name: "Sapphire Whisker",
-    image: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish2-D0YdqsjY0OgI0AZg98FS0Sq7zMm2Fe.png",
+    image:
+      "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish2-D0YdqsjY0OgI0AZg98FS0Sq7zMm2Fe.png",
     rarity: "Rare",
     traits: {
       color: "Blue",
@@ -154,5 +163,4 @@ export const breedingResults: BreedingResult[] = [
     },
     discovered: "Apr 18, 2025",
   },
-]
-
+];

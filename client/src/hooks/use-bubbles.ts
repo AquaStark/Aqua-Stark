@@ -38,7 +38,7 @@ export function useBubbles({
     });
 
     const initialBubbles = Array.from({ length: initialCount }, (_, i) =>
-      createBubble(i)
+      createBubble(i),
     );
     setBubbles(initialBubbles);
 

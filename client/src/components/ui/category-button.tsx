@@ -18,8 +18,13 @@ export function CategoryButton({
       className={cn(
         "px-4 py-2 rounded-full whitespace-nowrap text-sm font-semibold transition-all duration-200 flex items-center justify-center",
         active
+ feat/updated-food-tab
+          ? "bg-blue-900 text-white border-blue-600"
+          : "bg-blue-800 hover:bg-blue-900 text-white border-blue-700",
+
           ? "bg-orange-500 text-white"
           : "bg-blue-700/60 hover:bg-blue-700 text-white"
+ main
       )}
     >
       <span className="p-1">{children}</span>
