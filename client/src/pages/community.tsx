@@ -1,9 +1,14 @@
 "use client";
 
 import { useState } from "react";
+ feat/updated-food-tab
 import { Search, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
+import { Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+ main
 import { BubblesBackground } from "@/components/bubble-background";
 import { useBubbles } from "@/hooks/use-bubbles";
 import { PageHeader } from "@/components/layout/page-header";
@@ -15,7 +20,7 @@ export default function CommunityPage() {
   const bubbles = useBubbles();
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background text-white/80">
       <BubblesBackground bubbles={bubbles} />
 
       <PageHeader
@@ -24,15 +29,7 @@ export default function CommunityPage() {
         backText="Back to Game"
         rightContent={
           <div className="flex items-center gap-2">
-            <div className="relative">
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              <Input
-                type="text"
-                placeholder="Search community..."
-                className="pl-10 bg-blue-800 border-blue-700 text-white placeholder:text-blue-300"
-              />
-            </div>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold">
+            <Button className="bg-blue-600 hover:bg-blue-500 text-white font-semibold border border-blue-500">
               <Users className="w-4 h-4 mr-2" />
               My Friends
             </Button>
@@ -40,7 +37,7 @@ export default function CommunityPage() {
         }
       />
 
-      <main className="relative z-20 flex flex-col items-center px-4 py-8 mx-auto max-w-7xl">
+      <main className="relative z-20 flex flex-col items-center px-4 py-8 mx-auto max-w-7xl min-h-[85vh]">
         <CommunityTabs activeTab={activeTab} setActiveTab={setActiveTab} />
       </main>
 

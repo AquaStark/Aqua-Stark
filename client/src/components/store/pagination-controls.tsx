@@ -22,20 +22,23 @@ function PageButton({
   );
 }
 
-export function PaginationControls() {
-  return (
-    <div className="flex justify-between mt-6">
-      <button className="bg-orange-500 hover:bg-orange-600 text-white p-2 rounded-lg shadow-lg border-2 border-orange-400">
-        <ChevronLeft size={24} />
-      </button>
-      <div className="flex items-center gap-2">
-        <PageButton active>1</PageButton>
-        <PageButton>2</PageButton>
-        <PageButton>3</PageButton>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function PaginationControls({ items }: { items: any[] }) {
+  if (items.length > 0) {
+    return (
+      <div className="flex justify-between mt-6">
+        <button className="p-2 text-white bg-orange-500 border-2 border-orange-400 rounded-lg shadow-lg hover:bg-orange-600">
+          <ChevronLeft size={24} />
+        </button>
+        <div className="flex items-center gap-2">
+          <PageButton active>1</PageButton>
+          <PageButton>2</PageButton>
+          <PageButton>3</PageButton>
+        </div>
+        <button className="p-2 text-white bg-orange-500 border-2 border-orange-400 rounded-lg shadow-lg hover:bg-orange-600">
+          <ChevronRight size={24} />
+        </button>
       </div>
-      <button className="bg-orange-500 hover:bg-orange-600 text-white p-2 rounded-lg shadow-lg border-2 border-orange-400">
-        <ChevronRight size={24} />
-      </button>
-    </div>
-  );
+    );
+  }
 }

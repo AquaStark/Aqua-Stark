@@ -36,7 +36,7 @@ export function BubblesBackground({
         />
       ))}
 
-      <style jsx>{`
+      <style jsx="true">{`
         @keyframes ${animationName} {
           0% {
             transform: translateY(0);

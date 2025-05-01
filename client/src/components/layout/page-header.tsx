@@ -1,5 +1,6 @@
 "use client";
 
+ feat/updated-food-tab
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,19 @@ interface PageHeaderProps {
   backTo: string;
   backText?: string;
   rightContent?: React.ReactNode;
+
+import { Link } from "react-router-dom"
+import { ArrowLeft } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+
+interface PageHeaderProps {
+  title: string
+  backTo: string
+  backText?: string
+  rightContent?: React.ReactNode
+  className?: string
+ main
 }
 
 export function PageHeader({
@@ -16,9 +30,13 @@ export function PageHeader({
   backTo,
   backText = "Back",
   rightContent,
+  className,
 }: PageHeaderProps) {
   return (
-    <nav className="relative z-10 p-4 bg-blue-700 border-b-2 border-blue-400/50">
+    <nav className={cn(
+      "relative z-10 p-4 bg-blue-700 border-b-2 border-blue-400/50",
+      className
+    )}>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mx-auto font-sans max-w-7xl">
         <div className="flex flex-col sm:flex-row sm:items-center">
           <Link to={backTo} className="flex items-center mb-2 sm:mb-0">

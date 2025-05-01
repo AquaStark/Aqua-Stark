@@ -1,3 +1,5 @@
+import { ItemType } from "./mock-game";
+
 export const banners = [
   {
     title: "✨ BUY 2 GET 1 FREE",
@@ -42,7 +44,7 @@ export const miscItems = [
     rating: 4.2,
     isNew: false,
     stock: 125,
-    isLimited: false
+    isLimited: false,
   },
   {
     id: "advanced-filter-002",
@@ -56,7 +58,7 @@ export const miscItems = [
     rating: 4.8,
     isNew: false,
     stock: 50,
-    isLimited: false
+    isLimited: false,
   },
   {
     id: "basic-food-003",
@@ -69,7 +71,7 @@ export const miscItems = [
     rating: 3.9,
     isNew: false,
     stock: 200,
-    isLimited: false
+    isLimited: false,
   },
   {
     id: "premium-food-004",
@@ -83,7 +85,7 @@ export const miscItems = [
     rating: 4.5,
     isNew: true,
     stock: 75,
-    isLimited: false
+    isLimited: false,
   },
   {
     id: "basic-plant-005",
@@ -96,7 +98,7 @@ export const miscItems = [
     rating: 4.0,
     isNew: false,
     stock: 150,
-    isLimited: false
+    isLimited: false,
   },
   {
     id: "mystery-chest-006",
@@ -110,8 +112,8 @@ export const miscItems = [
     rating: 4.7,
     isNew: true,
     stock: 20,
-    isLimited: true
-  },  
+    isLimited: true,
+  },
 ];
 
 // Special bundles for the Others tab
@@ -125,12 +127,8 @@ export const bundles = [
     discount: "19% SAVINGS",
     tag: "Special",
     rarity: "Special",
-    items: [
-      "BASIC FILTER",
-      "ADVANCED FILTER",
-      "EXPANSION KIT"
-    ],
-    description: "Complete filtration solution for your aquarium"
+    items: ["BASIC FILTER", "ADVANCED FILTER", "EXPANSION KIT"],
+    description: "Complete filtration solution for your aquarium",
   },
   {
     id: "premium-equipment",
@@ -141,12 +139,8 @@ export const bundles = [
     discount: "21% SAVINGS",
     tag: "Special",
     rarity: "Special",
-    items: [
-      "ADVANCED FILTER",
-      "EXPANSION KIT",
-      "PREMIUM FILTER"
-    ],
-    description: "High-end equipment package for serious aquarium enthusiasts"
+    items: ["ADVANCED FILTER", "EXPANSION KIT", "PREMIUM FILTER"],
+    description: "High-end equipment package for serious aquarium enthusiasts",
   },
   {
     id: "starter-bundle",
@@ -157,12 +151,9 @@ export const bundles = [
     discount: "25% OFF",
     tag: "Best Value",
     rarity: "Special",
-    items: [
-      "Basic Filter",
-      "Basic Food (x3)",
-      "Basic Plant (x2)"
-    ],
-    description: "Everything you need to start your first aquarium. Perfect for beginners."
+    items: ["Basic Filter", "Basic Food (x3)", "Basic Plant (x2)"],
+    description:
+      "Everything you need to start your first aquarium. Perfect for beginners.",
   },
   {
     id: "premium-bundle",
@@ -177,9 +168,10 @@ export const bundles = [
       "Advanced Filter",
       "Premium Food (x5)",
       "Mystery Chest",
-      "Basic Plant (x3)"
+      "Basic Plant (x3)",
     ],
-    description: "High-end aquarium setup with premium equipment and exclusive items."
+    description:
+      "High-end aquarium setup with premium equipment and exclusive items.",
   },
   {
     id: "ancient-bundle",
@@ -190,11 +182,83 @@ export const bundles = [
     discount: "20% OFF",
     tag: "Limited Edition",
     rarity: "Rare",
-    items: [
-      "Ancient Temple Ruins",
-      "Mystery Chest (x2)",
-      "Basic Filter"
-    ],
-    description: "Transform your aquarium into an ancient underwater civilization with these exclusive decorations."
-  }
+    items: ["Ancient Temple Ruins", "Mystery Chest (x2)", "Basic Filter"],
+    description:
+      "Transform your aquarium into an ancient underwater civilization with these exclusive decorations.",
+  },
+];
+
+// Decoration Tab Data
+export interface DecorationBundle {
+  id: string;
+  name: string;
+  description: string;
+  items: string[];
+  itemsDescription: string;
+  originalPrice: number;
+  price: number;
+  image: string;
+  type: ItemType;
+  savingsPercentage: number;
+}
+
+// Add this after the decorationBundles array
+
+// Individual decoration items
+export const decorationItems = [
+  {
+    id: "basic-plant-101",
+    name: "Basic Plant",
+    image: "/items/basic-plant.png",
+    price: 350,
+    rarity: "Common",
+    category: "Plants",
+    description:
+      "Simple plant decoration that adds a touch of nature to your aquarium",
+    rating: 4.0,
+    isNew: false,
+    stock: 150,
+    isLimited: false,
+  },
+  {
+    id: "treasure-chest-102",
+    name: "Treasure Chest",
+    image: "/items/chest.png",
+    price: 750,
+    rarity: "Common",
+    category: "Ornaments",
+    description:
+      "Classic treasure chest that opens and closes with air bubbles",
+    rating: 4.2,
+    isNew: false,
+    stock: 100,
+    isLimited: false,
+  },
+];
+
+export const decorationBundles: DecorationBundle[] = [
+  {
+    id: "bundle-1",
+    name: "Nature Pack",
+    description: "A natural themed decoration set",
+    items: ["deco-1", "deco-2", "deco-3"],
+    itemsDescription: "BASIC PLANT, TREASURE CHEST, ANCIENT COLUMN",
+    originalPrice: 2500,
+    price: 2000,
+    image: "/items/basic-plant.png",
+    type: "decorations",
+    savingsPercentage: 20,
+  },
+  {
+    id: "bundle-2",
+    name: "Treasure Collection",
+    description: "A collection of treasure-themed decorations",
+    items: ["deco-2", "deco-3", "deco-4"],
+    itemsDescription: "TREASURE CHEST, ANCIENT COLUMN, ATLANTIS CITY",
+    originalPrice: 5300,
+    price: 4200,
+    image: "/items/chest.png",
+    type: "decorations",
+    savingsPercentage: 21,
+  },
 ];

@@ -27,7 +27,7 @@ export function CategoryButton({
  main
       )}
     >
-      {children}
+      <span className="p-1">{children}</span>
     </button>
   );
 }

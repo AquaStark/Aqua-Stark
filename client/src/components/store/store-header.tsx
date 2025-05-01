@@ -8,11 +8,11 @@ export function StoreHeader() {
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
-    <nav className="flex justify-between items-center p-4 bg-blue-600 border-b-2 border-blue-400/50 relative z-10">
+    <nav className="relative z-10 flex items-center justify-between p-4 bg-blue-600 border-b-2 border-blue-400/50">
       <Link to="/" className="flex items-center">
         <Button
           variant="ghost"
-          className="text-white hover:bg-blue-500/50 rounded-full mr-2"
+          className="mr-2 text-white rounded-full hover:bg-blue-500/50"
         >
           <ArrowLeft className="mr-2" />
           Back
@@ -28,19 +28,19 @@ export function StoreHeader() {
       <div className="flex items-center gap-2">
         <Button
           variant="ghost"
-          className="text-white hover:bg-blue-500/50 rounded-full relative"
+          className="relative text-white rounded-full hover:bg-blue-500/50"
           onClick={toggleCart}
         >
           <ShoppingCart className="mr-2" />
           {itemCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">
+            <span className="absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-red-500 rounded-full -top-1 -right-1">
               {itemCount}
             </span>
           )}
         </Button>
-        <div className="flex items-center bg-blue-700/50 rounded-full px-4 py-2 border border-blue-400/50">
-          <Coins className="text-yellow-400 mr-2" size={20} />
-          <span className="text-white font-bold">12,500</span>
+        <div className="flex items-center px-4 py-2 border rounded-full bg-blue-700/50 border-blue-400/50">
+          <Coins className="mr-2 text-yellow-400" size={20} />
+          <span className="font-bold text-white">12,500</span>
         </div>
       </div>
     </nav>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Sparkles, Eye, MessageSquare } from "lucide-react";
@@ -8,6 +8,20 @@ import { popularCategories, recentDiscussions } from "@/data/mock-community";
 
 export default function CommunityForum() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [category, setCategory] = useState("");
+  const filteredDiscussions = recentDiscussions.filter((topic) => {
+    if (
+      !(
+        topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        topic.author.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    ) {
+      return false;
+    }
+    if (!category) return true;
+    if (!(category && category === topic.category)) return false;
+    return true;
+  });
 
   return (
     <div className="space-y-6">
@@ -40,7 +54,10 @@ export default function CommunityForum() {
         {/* Encabezado con título y botón "View All" */}
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold">Popular Categories</h3>
-          <Button className="bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors">
+          <Button
+            className="bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors"
+            onClick={() => setCategory("")}
+          >
             View All
           </Button>
         </div>
@@ -57,12 +74,15 @@ export default function CommunityForum() {
           {popularCategories.map((cat) => (
             <button
               key={cat}
+              type="button"
+              value={cat}
               className="
                 w-full
                 bg-white/10 text-white px-4 py-2 rounded
                 transition-colors hover:bg-white/20
                 text-center font-semibold
               "
+              onClick={() => setCategory(cat)}
             >
               {cat}
             </button>
@@ -75,7 +95,7 @@ export default function CommunityForum() {
         <h3 className="text-lg font-bold mb-4">Recent Discussions</h3>
 
         <div className="space-y-2">
-          {recentDiscussions.map((disc) => (
+          {filteredDiscussions.map((disc) => (
             <div
               key={disc.id}
               className="
@@ -86,7 +106,13 @@ export default function CommunityForum() {
               "
             >
               {/* Avatar (placeholder) */}
-              <div className="w-12 h-12 bg-white rounded-full flex-shrink-0" />
+              <div className="w-12 h-12 bg-white rounded-full flex-shrink-0">
+                <img
+                  src={disc.imageUrl}
+                  alt={disc.author}
+                  className="w-full h-full rounded-full object-cover"
+                />
+              </div>
 
               {/* Bloque de texto */}
               <div className="flex-1 space-y-1">

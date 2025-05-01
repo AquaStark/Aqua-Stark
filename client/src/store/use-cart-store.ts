@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { v4 as uuidv4 } from "uuid";
 
-interface CartItem {
+export interface CartItem {
   id: string;
   name: string;
   image: string;
   price: number;
-  rarity: string;
+  rarity?: string;
   quantity: number;
 }
 
