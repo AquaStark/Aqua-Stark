@@ -7,6 +7,7 @@ pub mod components {
     pub mod auction;
     pub mod aquarium;
     pub mod fish;
+    pub mod ShopCatalog;
 }
 
 pub mod models;
@@ -26,13 +27,10 @@ pub mod tests {
     }
     #[cfg(test)]
     mod test_auction;
-    #[cfg(test)]
     mod test_aquarium;
-    #[cfg(test)]
     mod test_fish;
-    #[cfg(test)]
     mod test_ownership;
-    #[cfg(test)]
     mod test_utils;
     mod test_world;
+    mod test_shop_catalog;
 }
