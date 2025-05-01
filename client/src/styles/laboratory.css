@@ -39,4 +39,37 @@
     align-items: center;
   }
   
+  /* Hide scrollbar for the horizontal scroll component */
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .hide-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+  
+  /* Scroll button effects */
+  .scroll-button {
+    opacity: 0.7;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .scroll-button:hover {
+    opacity: 1;
+    transform: scale(1.1) translateY(-50%);
+    box-shadow: 0 0 15px rgba(0, 100, 255, 0.5);
+  }
+  
+  /* Fish card hover effects */
+  .fish-card {
+    transition: all 0.3s ease;
+    transform-origin: center bottom;
+  }
+  
+  .fish-card:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
   

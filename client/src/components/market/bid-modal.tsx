@@ -83,7 +83,7 @@ export function BidModal() {
             <Button
               variant="outline"
               size="sm"
-              className="border-blue-600 text-blue-200"
+              className="border-blue-600 text-black"
               onClick={() => handleBidChange(Math.max(minBid, bidAmount - 100))}
             >
               <Minus className="h-4 w-4" />
@@ -100,7 +100,7 @@ export function BidModal() {
             <Button
               variant="outline"
               size="sm"
-              className="border-blue-600 text-blue-200"
+              className="border-blue-600 text-black"
               onClick={() => handleBidChange(bidAmount + 100)}
             >
               <Plus className="h-4 w-4" />
@@ -110,10 +110,12 @@ export function BidModal() {
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setShowBidModal(false)}>
+          <Button
+            variant="outline" onClick={() => setShowBidModal(false)}
+            className="text-black">
             Cancel
           </Button>
-          <Button className="bg-amber-500 hover:bg-amber-600" onClick={handleSubmit}>
+          <Button className="bg-amber-500 hover:bg-amber-600 text-black" onClick={handleSubmit}>
             Place Bid
           </Button>
         </DialogFooter>

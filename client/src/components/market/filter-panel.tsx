@@ -10,7 +10,7 @@ export function FilterPanel() {
   const { filters, setFilters, resetFilters } = useMarketStore()
 
   return (
-    <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 p-4 animate-in fade-in-50 duration-200">
+    <div className="w-full bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 p-4 animate-in fade-in-50 duration-200">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Rarity filter */}
         <div>
@@ -25,7 +25,7 @@ export function FilterPanel() {
                   "border-blue-600/50 text-blue-100",
                   filters.rarity.includes(rarity)
                     ? "bg-blue-700/70 border-blue-500/70"
-                    : "bg-blue-800/30 hover:bg-blue-700/50",
+                    : "bg-blue-800/30 hover:bg-blue-700/50 hover:text-white",
                 )}
                 onClick={() => {
                   if (filters.rarity.includes(rarity)) {
@@ -86,7 +86,7 @@ export function FilterPanel() {
                   "border-blue-600/50 text-blue-100",
                   filters.listingType === type.value
                     ? "bg-blue-700/70 border-blue-500/70"
-                    : "bg-blue-800/30 hover:bg-blue-700/50",
+                    : "bg-blue-800/30 hover:bg-blue-700/50 hover:text-white",
                 )}
                 onClick={() => {
                   setFilters({
@@ -113,7 +113,7 @@ export function FilterPanel() {
                   "border-blue-600/50 text-blue-100",
                   filters.traits.includes(trait)
                     ? "bg-blue-700/70 border-blue-500/70"
-                    : "bg-blue-800/30 hover:bg-blue-700/50",
+                    : "bg-blue-800/30 hover:bg-blue-700/50 hover:text-white",
                 )}
                 onClick={() => {
                   if (filters.traits.includes(trait)) {
@@ -152,7 +152,7 @@ export function FilterPanel() {
                   "border-blue-600/50 text-blue-100",
                   filters.sort === option.value
                     ? "bg-blue-700/70 border-blue-500/70"
-                    : "bg-blue-800/30 hover:bg-blue-700/50",
+                    : "bg-blue-800/30 hover:bg-blue-700/50 hover:text-white",
                 )}
                 onClick={() => {
                   setFilters({
@@ -170,7 +170,7 @@ export function FilterPanel() {
         <div className="flex items-end">
           <Button
             variant="outline"
-            className="border-blue-600/50 text-blue-100 hover:bg-blue-700/50"
+            className="border-blue-600/50 text-black hover:text-white hover:bg-blue-700/50"
             onClick={resetFilters}
           >
             <RefreshCw className="h-4 w-4 mr-2" />

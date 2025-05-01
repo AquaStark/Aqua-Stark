@@ -87,14 +87,14 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
   }, [])
 
   return (
-    <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 overflow-hidden">
+    <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 overflow-hidden flex flex-col lg:h-full">
       <div className="p-4 border-b border-blue-700/50 flex justify-between items-center">
         <h3 className="font-bold text-white">Breeding Tank</h3>
         {(breedingPair.father || breedingPair.mother) && (
           <Button
             variant="outline"
             size="sm"
-            className="border-red-400/50 text-red-200 hover:bg-red-500/20"
+            className="bg-blue-700/30 hover:bg-blue-600/50 border-blue-600/50 text-white py-1 h-auto transition-colors duration-200"
             onClick={resetBreeding}
           >
             <X className="h-3 w-3 mr-1" />
@@ -104,7 +104,7 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
       </div>
 
       {showBreedingResult ? (
-        <div className="p-6 flex flex-col items-center">
+        <div className="p-6 flex flex-col items-center overflow-y-auto flex-1">
           <div className="text-center mb-4">
             <div className="inline-block bg-green-500/20 text-green-100 px-3 py-1 rounded-full text-sm mb-2">
               Breeding Successful!
@@ -115,7 +115,7 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
           <div className="relative w-40 h-40 mb-4">
             <FishTank className="h-40">
               <img
-                src={breedingResult?.image || "/placeholder.svg"}
+                src={breedingResult?.image || "/fish/unkown-fish.png"}
                 alt={breedingResult?.name || "New Fish"}
                 className="w-32 h-32 object-contain"
               />
@@ -163,7 +163,7 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
           </div>
         </div>
       ) : isBreeding ? (
-        <div className="p-6 flex flex-col items-center">
+        <div className="p-6 flex flex-col items-center justify-center flex-1">
           <div className="text-center mb-6">
             <h3 className="text-xl font-bold text-white mb-2">Breeding in Progress</h3>
             <p className="text-blue-200">Please wait while the fish are breeding...</p>
@@ -173,7 +173,7 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="relative">
                 <img
-                  src={breedingPair.father?.image || "/placeholder.svg"}
+                  src={breedingPair.father?.image || "/fish/unkown-fish.png"}
                   alt={breedingPair.father?.name || "Father Fish"}
                   className="w-20 h-20 object-contain absolute -left-12 animate-pulse"
                 />
@@ -181,7 +181,7 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
                   <Heart className="h-8 w-8 text-pink-400 animate-pulse" />
                 </div>
                 <img
-                  src={breedingPair.mother?.image || "/placeholder.svg"}
+                  src={breedingPair.mother?.image || "/fish/unkown-fish.png"}
                   alt={breedingPair.mother?.name || "Mother Fish"}
                   className="w-20 h-20 object-contain absolute -right-12 animate-pulse"
                 />
@@ -207,8 +207,8 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
           </div>
         </div>
       ) : (
-        <div className="p-6">
-          <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="p-6 flex flex-col flex-1 overflow-y-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             {/* Father selection */}
             <div className="bg-blue-700/30 rounded-xl p-4 flex flex-col items-center">
               <h4 className="font-bold text-white mb-2">Father</h4>
@@ -216,7 +216,7 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
                 <div className="text-center">
                   <div className="relative w-24 h-24 mb-2">
                     <img
-                      src={breedingPair.father.image || "/placeholder.svg"}
+                      src={breedingPair.father.image || "/fish/unkown-fish.png"}
                       alt={breedingPair.father.name}
                       className="w-full h-full object-contain"
                     />
@@ -241,7 +241,7 @@ export function BreedingTank({ breedingPair, onReset, breedingResults }: Breedin
                 <div className="text-center">
                   <div className="relative w-24 h-24 mb-2">
                     <img
-                      src={breedingPair.mother.image || "/placeholder.svg"}
+                      src={breedingPair.mother.image || "/fish/unkown-fish.png"}
                       alt={breedingPair.mother.name}
                       className="w-full h-full object-contain"
                     />

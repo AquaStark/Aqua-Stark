@@ -209,15 +209,17 @@ export function ListingModal() {
         </Tabs>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setShowListingModal(false)}>
+          <Button
+            variant="outline" onClick={() => setShowListingModal(false)}
+            className="text-black">
             Cancel
           </Button>
           <Button
             className={
               listingType === "sale"
-                ? "bg-green-500 hover:bg-green-600"
+                ? "bg-green-500 hover:bg-green-600 text-black"
                 : listingType === "auction"
-                  ? "bg-amber-500 hover:bg-amber-600"
+                  ? "bg-amber-500 hover:bg-amber-600 text-black"
                   : "bg-purple-500 hover:bg-purple-600"
             }
             onClick={handleSubmit}

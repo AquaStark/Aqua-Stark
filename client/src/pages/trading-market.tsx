@@ -1,8 +1,8 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { MarketHeader } from "@/components/market/market-header"
-import { MarketFooter } from "@/components/market/market-footer"
+import { useState } from "react"
+import { Footer } from "@/components/layout/footer"
+import { PageHeader } from "@/components/layout/page-header"
 import { BubblesBackground } from "@/components/bubble-background"
 import { FilterPanel } from "@/components/market/filter-panel"
 import { FishCard } from "@/components/market/fish-card"
@@ -11,34 +11,17 @@ import { OfferModal } from "@/components/market/offer-modal"
 import { ListingModal } from "@/components/market/listing-modal"
 import { useMarketStore } from "@/store/market-store"
 import { Button } from "@/components/ui/button"
-import { Search, Filter, X, Plus } from "lucide-react"
+import { Search, Filter, X, Plus, Coins } from "lucide-react"
 import { mockFishData } from "@/data/market-data"
+import { useBubbles } from "@/hooks/use-bubbles"
 import "@/styles/market.css"
 
 export default function MarketPage() {
   const { filters, showFilters, setShowFilters, setFilters, setShowListingModal } = useMarketStore()
   const [activeTab, setActiveTab] = useState("browse")
 
-  // 🫧 Generate bubbles once
-  const bubbles = useMemo(() => {
-    return Array.from({ length: 30 }).map((_, i) => {
-      const base = Math.random()
-      const size = base < 0.3
-        ? Math.random() * 15 + 10   
-        : base < 0.7
-        ? Math.random() * 25 + 20   
-        : Math.random() * 40 + 30   
+  const bubbles = useBubbles()
   
-      return {
-        id: i,
-        size,
-        left: Math.random() * 100,
-        animationDuration: Math.random() * 10 + 5,
-      }
-    })
-  }, [])
-  
-
   const filteredFish = mockFishData.filter((fish) => {
     if (filters.rarity.length > 0 && !filters.rarity.includes(fish.rarity)) return false
     if (fish.price && (fish.price < filters.minPrice || fish.price > filters.maxPrice)) return false
@@ -74,15 +57,24 @@ export default function MarketPage() {
   })
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-700 relative overflow-hidden">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <BubblesBackground bubbles={bubbles} />
-      </div>
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background">
+      <BubblesBackground bubbles={bubbles} />
 
-      <MarketHeader />
+      <PageHeader
+        title="Trading Market"
+        backTo="/game"
+        backText="Back to Game"
+        rightContent={
+        <div className="flex items-center gap-2">
+          <div className="flex items-center bg-blue-700/50 rounded-full px-4 py-2 border border-blue-400/50">
+            <Coins className="text-yellow-400 mr-2" size={20} />
+            <span className="text-white font-bold">12,500</span>
+          </div>
+        </div>        }
+      />
 
-      <main className="container mx-auto px-4 py-6 relative z-10">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+      <main className="relative z-20 flex flex-col items-center px-4 py-8 mx-auto max-w-7xl">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 w-full">
           <div className="relative w-full md:w-96">
             <input
               type="text"
@@ -97,7 +89,7 @@ export default function MarketPage() {
           <div className="flex items-center gap-2 w-full md:w-auto">
             <Button
               variant="outline"
-              className="border-blue-600/50 text-blue-100 hover:bg-blue-700/50"
+              className="border-blue-600/50 !text-blue-100 bg-blue-600 hover:bg-blue-700/50"
               onClick={() => setShowFilters(!showFilters)}
             >
               {showFilters ? (
@@ -113,7 +105,9 @@ export default function MarketPage() {
               )}
             </Button>
 
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setShowListingModal(true)}>
+            <Button
+              className="border border-blue-600/50 bg-blue-600 hover:bg-blue-700/50 text-white"
+              onClick={() => setShowListingModal(true)}>
               <Plus className="mr-2 h-4 w-4" />
               List Fish
             </Button>
@@ -136,7 +130,8 @@ export default function MarketPage() {
 
         {showFilters && <FilterPanel />}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+        {/* if tab is browse */}
+        {activeTab === "browse" && <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6 w-full">
           {sortedFish.map((fish) => (
             <FishCard key={fish.id} fish={fish} />
           ))}
@@ -147,10 +142,52 @@ export default function MarketPage() {
               <p className="text-blue-300">Try adjusting your filters or search criteria</p>
             </div>
           )}
-        </div>
+        </div>}
+
+        {/* if tab is auctions */}
+        {activeTab === "auctions" && <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6 w-full">
+          {sortedFish.filter(fish => fish.auction).map((fish) => (
+            <FishCard key={fish.id} fish={fish} />
+          ))}
+
+          {sortedFish.filter(fish => fish.auction).length === 0 && (
+            <div className="col-span-full text-center py-12">
+              <h3 className="text-xl text-white mb-2">No auctions found</h3>
+              <p className="text-blue-300">Try adjusting your filters or search criteria</p>
+            </div>
+          )}
+        </div>}
+
+        {/* if tab is my listings */}
+        {activeTab === "my listings" && <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6 w-full">
+          {sortedFish.filter(fish => fish.listed).map((fish) => (
+            <FishCard key={fish.id} fish={fish} />
+          ))}
+
+          {sortedFish.filter(fish => fish.listed).length === 0 && (
+            <div className="col-span-full text-center py-12">
+              <h3 className="text-xl text-white mb-2">No listings found</h3>
+              <p className="text-blue-300">Try adjusting your filters or search criteria</p>
+            </div>
+          )}
+        </div>}
+
+        {/* if tab is history */}
+        {activeTab === "history" && <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6 w-full">
+          {sortedFish.filter(fish => fish.exchange).map((fish) => (
+            <FishCard key={fish.id} fish={fish} />
+          ))}
+
+          {sortedFish.filter(fish => fish.exchange).length === 0 && (
+            <div className="col-span-full text-center py-12">
+              <h3 className="text-xl text-white mb-2">No history found</h3>
+              <p className="text-blue-300">Try adjusting your filters or search criteria</p>
+            </div>
+          )}
+        </div>}
       </main>
 
-      <MarketFooter />
+      <Footer />
 
       <BidModal />
       <OfferModal />

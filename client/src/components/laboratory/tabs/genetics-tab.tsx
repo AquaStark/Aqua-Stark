@@ -95,9 +95,9 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               {/* Father */}
               <div className="bg-blue-700/30 rounded-lg p-3 flex items-center">
-                <div className="relative w-16 h-16 mr-3 flex-shrink-0">
+                <div className="relative w-24 h-24 mb-2">
                   <img
-                    src={breedingPair.father.image || "/placeholder.svg"}
+                    src={breedingPair.father.image || "/fish/unkown-fish.png"}
                     alt={breedingPair.father.name}
                     className="w-full h-full object-contain"
                   />
@@ -128,9 +128,9 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
 
               {/* Mother */}
               <div className="bg-blue-700/30 rounded-lg p-3 flex items-center">
-                <div className="relative w-16 h-16 mr-3 flex-shrink-0">
+                <div className="relative w-24 h-24 mb-2">
                   <img
-                    src={breedingPair.mother.image || "/placeholder.svg"}
+                    src={breedingPair.mother.image || "/fish/unkown-fish.png"}
                     alt={breedingPair.mother.name}
                     className="w-full h-full object-contain"
                   />
@@ -229,7 +229,7 @@ export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
             </p>
             <Button
               variant="outline"
-              className="border-blue-600 text-blue-200"
+              className="border-blue-600 bg-blue-600 hover:bg-blue-700 hover:text-white text-white"
               onClick={() => setActiveTab("breeding")}
             >
               Go to Breeding Tab

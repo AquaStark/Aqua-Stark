@@ -114,7 +114,7 @@ export function FishCard({ fish, onClick }: FishCardProps) {
               <Coins className="h-4 w-4 text-yellow-400 mr-1" />
               <span className="text-white font-bold">{fish.price}</span>
             </div>
-            <Button size="sm" className="bg-green-500 hover:bg-green-600 text-white">
+            <Button size="sm" className="bg-green-500 hover:bg-green-600 text-black">
               Buy Now
             </Button>
           </div>
@@ -133,7 +133,7 @@ export function FishCard({ fish, onClick }: FishCardProps) {
                 Ends in {fish.auction.endsIn}
               </div>
             </div>
-            <Button size="sm" className="bg-amber-500 hover:bg-amber-600 text-white" onClick={handleBidClick}>
+            <Button size="sm" className="bg-amber-500 hover:bg-amber-600 text-black" onClick={handleBidClick}>
               Place Bid
             </Button>
           </div>

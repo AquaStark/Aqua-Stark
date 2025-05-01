@@ -12,10 +12,10 @@ export function CategoryButton({ children, active, onClick }: CategoryButtonProp
     <button
       onClick={onClick}
       className={cn(
-        "px-4 py-2 rounded-lg whitespace-nowrap shadow-md border",
+        "px-4 py-2 rounded-full whitespace-nowrap text-sm font-semibold transition-all duration-200 flex items-center justify-center",
         active
-          ? "bg-blue-900 text-white border-blue-600"
-          : "bg-blue-800 hover:bg-blue-900 text-white border-blue-700"
+          ? "bg-orange-500 text-white"
+          : "bg-blue-700/60 hover:bg-blue-700 text-white"
       )}
     >
       {children}

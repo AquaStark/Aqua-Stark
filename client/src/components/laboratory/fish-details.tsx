@@ -13,27 +13,27 @@ interface FishDetailsProps {
 
 export function FishDetails({ selectedFish, onSelectForBreeding }: FishDetailsProps) {
   return (
-    <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 overflow-hidden">
+    <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 overflow-hidden flex flex-col lg:h-full">
       <div className="p-4 border-b border-blue-700/50">
         <h3 className="font-bold text-white">Fish Details</h3>
       </div>
       {selectedFish ? (
-        <div className="p-4">
+        <div className="p-4 overflow-y-auto flex-1">
           <div className="flex flex-col items-center mb-4">
-            <div className="relative w-32 h-32 mb-2">
-              <FishTank className="h-32">
+            <div className="relative w-32 h-32 mb-6">
+              <FishTank className="h-36">
                 <img
-                  src={selectedFish.image || "/placeholder.svg"}
+                  src={selectedFish.image || "/fish/unkown-fish.png"}
                   alt={selectedFish.name}
-                  className="w-24 h-24 object-contain"
+                  className="w-24 h-24 object-contain transform -translate-y-2"
                 />
               </FishTank>
             </div>
             <h3 className="text-xl font-bold text-white">{selectedFish.name}</h3>
-            <div className="flex items-center mt-1">
+            <div className="flex items-center mt-1 flex-wrap justify-center">
               <span
                 className={cn(
-                  "text-xs px-2 py-0.5 rounded-full",
+                  "text-xs px-2 py-0.5 rounded-full m-0.5",
                   selectedFish.rarity === "Common"
                     ? "bg-gray-500/50 text-gray-100"
                     : selectedFish.rarity === "Uncommon"
@@ -47,8 +47,8 @@ export function FishDetails({ selectedFish, onSelectForBreeding }: FishDetailsPr
               >
                 {selectedFish.rarity}
               </span>
-              <span className="text-blue-200 text-xs ml-2">Generation {selectedFish.generation}</span>
-              <span className="text-blue-200 text-xs ml-2">Level {selectedFish.level}</span>
+              <span className="text-blue-200 text-xs m-0.5">Generation {selectedFish.generation}</span>
+              <span className="text-blue-200 text-xs m-0.5">Level {selectedFish.level}</span>
             </div>
           </div>
 
@@ -86,7 +86,7 @@ export function FishDetails({ selectedFish, onSelectForBreeding }: FishDetailsPr
             </div>
           )}
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <Button
               className="flex-1 bg-pink-600 hover:bg-pink-700 text-white"
               onClick={() => onSelectForBreeding(selectedFish, "father")}
@@ -104,7 +104,7 @@ export function FishDetails({ selectedFish, onSelectForBreeding }: FishDetailsPr
           </div>
         </div>
       ) : (
-        <div className="p-6 text-center">
+        <div className="p-6 text-center flex-1 flex flex-col justify-center">
           <div className="w-20 h-20 rounded-full bg-blue-700/30 flex items-center justify-center mx-auto mb-4">
             <FishIcon className="h-10 w-10 text-blue-400/70" />
           </div>

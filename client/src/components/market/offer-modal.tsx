@@ -99,7 +99,9 @@ export function OfferModal() {
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => setShowOfferModal(false)}>
+          <Button
+            variant="outline" onClick={() => setShowOfferModal(false)}
+            className="text-black">
             Cancel
           </Button>
           <Button

@@ -1,22 +1,35 @@
+"use client"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ChevronDown, ChevronUp, Filter, Lock, Search, X } from "lucide-react"
-import { useEncyclopedia } from "@/hooks/use-encyclopedia"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 import { FishTank } from "@/components/fish-tank"
+import EncyclopediaFilters from "./encyclopedia-filters"
+import type { EncyclopediaFilters as EncyclopediaFiltersState } from "@/hooks/use-encyclopedia"
+import type { FishSpecies } from "@/data/encyclopedia-data"
 
-export default function EncyclopediaCatalog() {
-  const {
-    filters,
-    setFilters,
-    showFilters,
-    setShowFilters,
-    sortedFish,
-    handleFishClick,
-    resetFilters,
-  } = useEncyclopedia()
+type SortOption = "name" | "rarity" | "recent"
 
+interface EncyclopediaCatalogProps {
+  filters: EncyclopediaFiltersState;
+  setFilters: React.Dispatch<React.SetStateAction<EncyclopediaFiltersState>>;
+  showFilters: boolean;
+  setShowFilters: React.Dispatch<React.SetStateAction<boolean>>;
+  sortedFish: FishSpecies[];
+  handleFishClick: (fish: FishSpecies) => void;
+  resetFilters: () => void;
+}
+
+export default function EncyclopediaCatalog({
+  filters,
+  setFilters,
+  showFilters,
+  setShowFilters,
+  sortedFish,
+  handleFishClick,
+  resetFilters,
+}: EncyclopediaCatalogProps) {
   return (
     <>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -35,7 +48,7 @@ export default function EncyclopediaCatalog() {
         <div className="flex gap-2 w-full md:w-auto">
           <Button
             variant="outline"
-            className="bg-blue-800/50 border-blue-700/50 text-white hover:bg-blue-700/70 flex-1 md:flex-none"
+            className="bg-blue-800/50 border-blue-700/50 text-white  flex-1 md:flex-none"
             onClick={() => setShowFilters(!showFilters)}
           >
             <Filter className="h-4 w-4 mr-2" />
@@ -45,7 +58,7 @@ export default function EncyclopediaCatalog() {
           <select
             className="bg-blue-800/50 border border-blue-700/50 text-white rounded-md px-3 py-2 flex-1 md:flex-none"
             value={filters.sort}
-            onChange={(e) => setFilters({ ...filters, sort: e.target.value as any })}
+            onChange={(e) => setFilters({ ...filters, sort: e.target.value as SortOption })}
           >
             <option value="name">Sort by Name</option>
             <option value="rarity">Sort by Rarity</option>
@@ -53,7 +66,12 @@ export default function EncyclopediaCatalog() {
           </select>
         </div>
       </div>
-
+      <EncyclopediaFilters
+        showFilters={showFilters}
+        filters={filters}
+        setFilters={setFilters}
+        resetFilters={resetFilters}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {sortedFish.length > 0 ? (
           sortedFish.map((fish) => (

@@ -1,4 +1,4 @@
-use starknet::{ContractAddress, contract_address_const};
+use starknet::{ContractAddress};
 
 #[derive(Copy, Drop, Serde, Debug)]
 #[dojo::model]
@@ -36,6 +36,7 @@ impl FishImpl of FishTrait {
 mod tests {
     use super::Fish;
     use super::*;
+    use starknet::contract_address_const;
 
     fn zero_address() -> ContractAddress {
         contract_address_const::<0>()

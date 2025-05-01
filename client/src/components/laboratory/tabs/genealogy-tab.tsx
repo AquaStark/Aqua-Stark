@@ -7,21 +7,21 @@ import { fishCollection } from "@/data/fish-data"
 export function GenealogyTab() {
   return (
     <>
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4">
         <h2 className="text-xl font-bold text-white">Fish Genealogy</h2>
-        <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+        <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto">
           <FileText className="h-4 w-4 mr-2" />
           Export Tree
         </Button>
       </div>
 
       {/* Fish selection for genealogy */}
-      <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 overflow-hidden">
+      <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 overflow-hidden mb-4">
         <div className="p-4 border-b border-blue-700/50">
           <h3 className="font-bold text-white">Select Fish to View Lineage</h3>
         </div>
         <div className="p-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {fishCollection
               .filter((fish) => fish.generation > 1)
               .map((fish) => (
@@ -30,15 +30,15 @@ export function GenealogyTab() {
                   className="bg-blue-700/30 rounded-lg p-3 flex flex-col items-center cursor-pointer hover:bg-blue-700/50 transition-colors"
                   whileHover={{ scale: 1.05 }}
                 >
-                  <div className="relative w-16 h-16 mb-2">
+                  <div className="relative w-12 sm:w-16 h-12 sm:h-16 mb-2">
                     <img
-                      src={fish.image || "/placeholder.svg"}
+                      src={fish.image || "/fish/unkown-fish.png"}
                       alt={fish.name}
                       className="w-full h-full object-contain"
                     />
                   </div>
                   <div className="text-center">
-                    <div className="font-bold text-white">{fish.name}</div>
+                    <div className="font-bold text-white text-sm truncate w-full">{fish.name}</div>
                     <div className="text-xs text-blue-200">Generation {fish.generation}</div>
                   </div>
                 </motion.div>
@@ -48,12 +48,13 @@ export function GenealogyTab() {
       </div>
 
       {/* Genealogy tree */}
-      <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 overflow-hidden">
+      <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 overflow-hidden mb-4">
         <div className="p-4 border-b border-blue-700/50">
           <h3 className="font-bold text-white">Family Tree: Azure Drifter</h3>
         </div>
-        <div className="p-6 overflow-x-auto">
-          <div className="min-w-[800px]">
+        <div className="p-4 overflow-x-auto">
+          {/* Desktop Tree (hidden on mobile) */}
+          <div className="hidden md:block min-w-[800px]">
             {/* Tree structure */}
             <div className="relative">
               {/* Generation 1 - Grandparents */}
@@ -63,7 +64,7 @@ export function GenealogyTab() {
                   <div className="flex gap-4">
                     <div className="genealogy-node">
                       <div className="relative w-16 h-16 mb-2">
-                        <img src="/placeholder.svg" alt="Unknown" className="w-full h-full object-contain opacity-50" />
+                        <img src="/fish/unkown-fish.png" alt="Unknown" className="w-full h-full object-contain opacity-50" />
                       </div>
                       <div className="text-center">
                         <div className="font-bold text-white/50">Unknown</div>
@@ -72,7 +73,7 @@ export function GenealogyTab() {
                     </div>
                     <div className="genealogy-node">
                       <div className="relative w-16 h-16 mb-2">
-                        <img src="/placeholder.svg" alt="Unknown" className="w-full h-full object-contain opacity-50" />
+                        <img src="/fish/unkown-fish.png" alt="Unknown" className="w-full h-full object-contain opacity-50" />
                       </div>
                       <div className="text-center">
                         <div className="font-bold text-white/50">Unknown</div>
@@ -85,7 +86,7 @@ export function GenealogyTab() {
                   <div className="flex gap-4">
                     <div className="genealogy-node">
                       <div className="relative w-16 h-16 mb-2">
-                        <img src="/placeholder.svg" alt="Unknown" className="w-full h-full object-contain opacity-50" />
+                        <img src="/fish/unkown-fish.png" alt="Unknown" className="w-full h-full object-contain opacity-50" />
                       </div>
                       <div className="text-center">
                         <div className="font-bold text-white/50">Unknown</div>
@@ -94,7 +95,7 @@ export function GenealogyTab() {
                     </div>
                     <div className="genealogy-node">
                       <div className="relative w-16 h-16 mb-2">
-                        <img src="/placeholder.svg" alt="Unknown" className="w-full h-full object-contain opacity-50" />
+                        <img src="/fish/unkown-fish.png" alt="Unknown" className="w-full h-full object-contain opacity-50" />
                       </div>
                       <div className="text-center">
                         <div className="font-bold text-white/50">Unknown</div>
@@ -180,10 +181,129 @@ export function GenealogyTab() {
               </svg>
             </div>
           </div>
+
+          {/* Mobile Tree (stacked vertically) */}
+          <div className="md:hidden">
+            {/* Generation 3 - Selected fish (child) */}
+            <div className="flex justify-center mb-8">
+              <div className="genealogy-node">
+                <div className="relative w-20 h-20 mb-2">
+                  <img
+                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish1-ioYn5CvkJkCHPwgx1jBGoqibnAu5to.png"
+                    alt="Azure Drifter"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <div className="text-center">
+                  <div className="font-bold text-white text-lg">Azure Drifter</div>
+                  <div className="text-sm text-blue-200">Generation 2</div>
+                  <div className="mt-1 text-xs px-2 py-0.5 rounded-full bg-gray-500/50 text-gray-100 inline-block">
+                    Common
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Parents section */}
+            <div className="bg-blue-700/20 rounded-lg p-4 mb-6">
+              <h4 className="text-white font-bold mb-3 text-center">Parents</h4>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Father */}
+                <div className="genealogy-node">
+                  <div className="relative w-16 h-16 mb-2 mx-auto">
+                    <img
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish1-ioYn5CvkJkCHPwgx1jBGoqibnAu5to.png"
+                      alt="Celestial Glowfin"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="text-center">
+                    <div className="font-bold text-white text-sm">Celestial Glowfin</div>
+                    <div className="text-xs text-blue-200">Generation 1</div>
+                    <div className="mt-1 text-xs px-2 py-0.5 rounded-full bg-amber-500/50 text-amber-100 inline-block">
+                      Legendary
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mother */}
+                <div className="genealogy-node">
+                  <div className="relative w-16 h-16 mb-2 mx-auto">
+                    <img
+                      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish3-LOteAGqWGR4lDQ8VBBAlRSUByZL2KX.png"
+                      alt="Crimson Flasher"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="text-center">
+                    <div className="font-bold text-white text-sm">Crimson Flasher</div>
+                    <div className="text-xs text-blue-200">Generation 1</div>
+                    <div className="mt-1 text-xs px-2 py-0.5 rounded-full bg-purple-500/50 text-purple-100 inline-block">
+                      Epic
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Grandparents section */}
+            <div className="bg-blue-700/20 rounded-lg p-4">
+              <h4 className="text-white font-bold mb-3 text-center">Grandparents</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h5 className="text-center text-blue-300 text-xs mb-2">Paternal</h5>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="genealogy-node">
+                      <div className="relative w-12 h-12 mb-1 mx-auto">
+                        <img src="/fish/unkown-fish.png" alt="Unknown" className="w-full h-full object-contain opacity-50" />
+                      </div>
+                      <div className="text-center">
+                        <div className="font-bold text-white/50 text-xs">Unknown</div>
+                        <div className="text-xs text-blue-200/50">Gen 0</div>
+                      </div>
+                    </div>
+                    <div className="genealogy-node">
+                      <div className="relative w-12 h-12 mb-1 mx-auto">
+                        <img src="/fish/unkown-fish.png" alt="Unknown" className="w-full h-full object-contain opacity-50" />
+                      </div>
+                      <div className="text-center">
+                        <div className="font-bold text-white/50 text-xs">Unknown</div>
+                        <div className="text-xs text-blue-200/50">Gen 0</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h5 className="text-center text-blue-300 text-xs mb-2">Maternal</h5>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="genealogy-node">
+                      <div className="relative w-12 h-12 mb-1 mx-auto">
+                        <img src="/fish/unkown-fish.png" alt="Unknown" className="w-full h-full object-contain opacity-50" />
+                      </div>
+                      <div className="text-center">
+                        <div className="font-bold text-white/50 text-xs">Unknown</div>
+                        <div className="text-xs text-blue-200/50">Gen 0</div>
+                      </div>
+                    </div>
+                    <div className="genealogy-node">
+                      <div className="relative w-12 h-12 mb-1 mx-auto">
+                        <img src="/fish/unkown-fish.png" alt="Unknown" className="w-full h-full object-contain opacity-50" />
+                      </div>
+                      <div className="text-center">
+                        <div className="font-bold text-white/50 text-xs">Unknown</div>
+                        <div className="text-xs text-blue-200/50">Gen 0</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Inherited traits analysis */}
+      {/* Inherited traits analysis - Make more responsive */}
       <div className="bg-blue-800/50 backdrop-blur-sm rounded-xl border border-blue-700/50 overflow-hidden">
         <div className="p-4 border-b border-blue-700/50">
           <h3 className="font-bold text-white">Inherited Traits Analysis</h3>
@@ -303,7 +423,21 @@ export function GenealogyTab() {
   )
 }
 
-function TraitInheritanceBar({ trait, value, father, mother, result, colors }) {
+function TraitInheritanceBar({ 
+  trait, 
+  value, 
+  father, 
+  mother, 
+  result, 
+  colors 
+}: {
+  trait: string;
+  value: string;
+  father: string;
+  mother: string;
+  result: string;
+  colors: string[];
+}) {
   return (
     <div className="bg-blue-700/30 rounded-lg p-3">
       <div className="flex justify-between items-center mb-2">
@@ -324,7 +458,7 @@ function TraitInheritanceBar({ trait, value, father, mother, result, colors }) {
   )
 }
 
-function Info(props) {
+function Info(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
