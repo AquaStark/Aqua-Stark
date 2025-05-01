@@ -1,4 +1,5 @@
 import { CategoryButton } from "@/components/ui/category-button";
+import { Percent } from "lucide-react";
 
 interface StoreCategoriesProps {
   activeCategory: string;
@@ -12,8 +13,19 @@ export function StoreCategories({
   return (
     <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
       <CategoryButton
+ feat/updated-food-tab
         active={activeCategory === "specials"}
         onClick={() => onCategoryChange("specials")}
+
+        active={activeCategory === "all"}
+        onClick={() => onCategoryChange("all")}
+      >
+        ALL
+      </CategoryButton>
+      <CategoryButton
+        active={activeCategory === "special"}
+        onClick={() => onCategoryChange("special")}
+ main
       >
         SPECIAL
       </CategoryButton>
@@ -30,10 +42,17 @@ export function StoreCategories({
         RARE
       </CategoryButton>
       <CategoryButton
+ feat/updated-food-tab
         active={activeCategory === "carnivory"}
         onClick={() => onCategoryChange("carnivory")}
       >
         CARNIVOROUS
+
+        active={activeCategory === "on-sale"}
+        onClick={() => onCategoryChange("on-sale")}
+      >
+        <Percent size={14} className="mr-1" /> ON SALE
+ main
       </CategoryButton>
     </div>
   );

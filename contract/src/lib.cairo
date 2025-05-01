@@ -4,6 +4,7 @@ pub mod systems {
 }
 
 pub mod components {
+    pub mod auction;
     pub mod aquarium;
     pub mod fish;
 }
@@ -11,6 +12,7 @@ pub mod components {
 pub mod models;
 
 pub mod entities {
+    pub mod auction;
     pub mod aquarium;
     pub mod base;
     pub mod decoration;
@@ -19,9 +21,18 @@ pub mod entities {
 }
 
 pub mod tests {
+    mod mocks {
+        pub mod erc20_mock;
+    }
+    #[cfg(test)]
+    mod test_auction;
+    #[cfg(test)]
     mod test_aquarium;
+    #[cfg(test)]
     mod test_fish;
+    #[cfg(test)]
     mod test_ownership;
+    #[cfg(test)]
     mod test_utils;
     mod test_world;
 }

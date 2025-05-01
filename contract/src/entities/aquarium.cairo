@@ -1,6 +1,4 @@
-use starknet::{ContractAddress, contract_address_const};
-use core::array::ArrayTrait;
-// use dojo::model::ModelStorage;
+use starknet::ContractAddress;
 
 #[derive(Drop, Serde, Debug)]
 #[dojo::model]
@@ -17,6 +15,8 @@ pub struct Aquarium {
 mod tests {
     use super::Aquarium;
     use super::*;
+    use starknet::contract_address_const;
+    use core::array::ArrayTrait;
 
     fn zero_address() -> ContractAddress {
         contract_address_const::<0>()

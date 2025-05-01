@@ -1,4 +1,4 @@
-use starknet::{ContractAddress, contract_address_const};
+use starknet::{ContractAddress};
 
 #[derive(Copy, Drop, Serde, Debug)]
 #[dojo::model]
@@ -13,6 +13,7 @@ pub struct Decoration {
 mod tests {
     use super::Decoration;
     use super::*;
+    use starknet::contract_address_const;
 
     fn zero_address() -> ContractAddress {
         contract_address_const::<0>()

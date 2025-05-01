@@ -7,7 +7,7 @@ interface ListingTypeBadgeProps {
 export function ListingTypeBadge({ type }: ListingTypeBadgeProps) {
   if (type === "auction") {
     return (
-      <div className="absolute top-2 right-2 bg-amber-500/80 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-white flex items-center">
+      <div className="absolute top-2 right-2 bg-amber-500/80 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-black flex items-center">
         <Gavel className="h-3 w-3 mr-1" />
         Auction
       </div>
@@ -24,7 +24,7 @@ export function ListingTypeBadge({ type }: ListingTypeBadgeProps) {
   }
 
   return (
-    <div className="absolute top-2 right-2 bg-green-500/80 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-white flex items-center">
+    <div className="absolute top-2 right-2 bg-green-500/80 backdrop-blur-sm px-2 py-1 rounded-full text-xs text-black flex items-center">
       <Tag className="h-3 w-3 mr-1" />
       Sale
     </div>

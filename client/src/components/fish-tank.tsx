@@ -3,9 +3,17 @@ import type React from "react";
 interface FishTankProps {
   children: React.ReactNode;
   className?: string;
+ feat/updated-food-tab
+
+  shadow?: boolean;
+ main
 }
 
-export function FishTank({ children, className = "" }: FishTankProps) {
+export function FishTank({
+  children,
+  className = "",
+  shadow = true,
+}: FishTankProps) {
   return (
     <div
       className={`relative w-full h-48 flex items-center justify-center ${className}`}
@@ -24,7 +32,9 @@ export function FishTank({ children, className = "" }: FishTankProps) {
         <div className="relative w-4/5 h-4/5 flex items-center justify-center">
           {/* Add a subtle shadow/depth effect */}
           {/* biome-ignore lint/style/useSelfClosingElements: <explanation> */}
-          <div className="absolute inset-0 bg-blue-900/20 rounded-full filter blur-md"></div>
+          {shadow && (
+            <div className="absolute inset-0 bg-blue-900/20 rounded-full filter blur-md"></div>
+          )}
           {/* Fish with scaling and movement effect */}
           <div className="transform scale-75 hover:scale-90 transition-all duration-500 ease-in-out">
             {children}
