@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { GameHeader } from "@/components/game/game-header"
 import { GameSidebarButtons } from "@/components/game/game-sidebar-buttons"
 import { AquariumTabs } from "@/components/game/aquarium-tabs"
@@ -12,12 +12,15 @@ import { useFishStats } from "@/hooks/use-fish-stats"
 import { GameMenu } from "@/components/game/game-menu"
 import { useBubbles } from "@/hooks/use-bubbles"
 import { BubblesBackground } from "@/components/bubble-background"
-
+import { Food } from '@/components/aquarium/food'
+import { FoodType } from '@/types/game'
+ console.log('')
 export default function GamePage() {
-  const { happiness, food, energy } = useFishStats(INITIAL_GAME_STATE)
+  const { happiness, food: fishFood, energy } = useFishStats(INITIAL_GAME_STATE)
   const { selectedAquarium, handleAquariumChange, aquariums } = useAquarium()
   const [showMenu, setShowMenu] = useState(false)
   const [showTips, setShowTips] = useState(false)
+  const [food, setFood] = useState<FoodType[]>([])
 
   const bubbles = useBubbles({
     initialCount: 10,
@@ -32,6 +35,28 @@ export default function GamePage() {
   const handleTipsToggle = () => {
     setShowTips(!showTips)
   }
+
+const handleFoodRenderOnClick = useCallback(() => {
+  const randomX = Math.random() * 80 + 10; 
+  const y = 5; 
+
+  const newFood: FoodType = {
+    id: Date.now(),
+    position: { x: randomX, y },
+    createdAt: Date.now(),
+  };
+
+  setFood((prev) => [...prev, newFood]);
+}, []);
+
+  useEffect(() => {
+    const cleanupInterval = setInterval(() => {
+      const now = Date.now()
+      setFood(prev => prev.filter(f => now - f.createdAt < 5000))
+    }, 1000)
+
+    return () => clearInterval(cleanupInterval)
+  }, [])
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-[#005C99]">
@@ -53,18 +78,27 @@ export default function GamePage() {
       <div className="absolute inset-0 animate-water-movement z-20"></div>
 
       {/* Fish */}
-      <FishDisplay fish={MOCK_FISH} />
+      <div 
+        className="absolute inset-0 z-10 cursor-pointer"
+
+      >
+        <FishDisplay fish={MOCK_FISH} />
+        
+        {food.map(foodItem => (
+          <Food key={foodItem.id} food={foodItem} />
+        ))}
+      </div>
 
       {/* Header */}
       <GameHeader
         happiness={happiness}
-        food={food}
+        food={fishFood}
         energy={energy}
         onMenuToggle={() => setShowMenu(!showMenu)}
       />
-
+   
       {showMenu && <GameMenu show={showMenu} />}
-      <GameSidebarButtons />
+      <GameSidebarButtons onFeed={handleFoodRenderOnClick}/>
 
       {/* Tips */}
       <div className="absolute bottom-0 right-4 mb-4 z-30">
