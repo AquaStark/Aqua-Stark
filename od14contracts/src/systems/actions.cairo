@@ -58,7 +58,7 @@ pub mod actions {
             let fed_event = FishFed { fish_id, amount, new_hunger };
             world.emit_event(@fed_event);
         }
-        
+
         fn grow(ref self: ContractState, fish_id: u64, amount: u32) {
             let mut world = self.world_default();
             let caller = get_caller_address();
@@ -235,7 +235,7 @@ pub mod actions {
         }
     }
 
-     #[generate_trait]
+    #[generate_trait]
     impl InternalImpl of InternalTrait {
         fn world_default(self: @ContractState) -> dojo::world::WorldStorage {
             self.world(@"dojo_starter")

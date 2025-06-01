@@ -20,7 +20,6 @@ pub struct Id {
     pub target: felt252,
     pub nonce: u64,
 }
-
 // #[generate_trait]
 // impl FishImpl of FishTrait {
 //     fn is_dead(self: @Fish) -> bool {
@@ -39,4 +38,5 @@ pub struct Id {
 //         self.hunger_level < @100_u32
 //     }
 // }
+
 
