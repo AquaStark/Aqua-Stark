@@ -1,119 +1,253 @@
-use dojo_starter::models::{Direction, Position};
-
-// define the interface
-#[starknet::interface]
-pub trait IActions<T> {
-    fn spawn(ref self: T);
-    fn move(ref self: T, direction: Direction);
-}
-
-// dojo decorator
 #[dojo::contract]
 pub mod actions {
-    use super::{IActions, Direction, Position, next_position};
-    use starknet::{ContractAddress, get_caller_address};
-    use dojo_starter::models::{Vec2, Moves};
-
-    use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
+    use dojo::model::ModelStorage;
+    use dojo_starter::errors::errors::CustomErrors;
+    use dojo_starter::events::events::*;
+    use dojo_starter::interfaces::IActions::IFish;
+    use dojo_starter::models::aqua_stark::{Fish, Id};
+    use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
 
-    #[derive(Copy, Drop, Serde)]
-    #[dojo::event]
-    pub struct Moved {
-        #[key]
-        pub player: ContractAddress,
-        pub direction: Direction,
-    }
+    const FISH_ID_TARGET: felt252 = 'FISH';
 
     #[abi(embed_v0)]
-    impl ActionsImpl of IActions<ContractState> {
-        fn spawn(ref self: ContractState) {
-            // Get the default world.
+    impl ActionsImpl of IFish<ContractState> {
+        fn create_fish(ref self: ContractState, owner: ContractAddress, fish_type: u32) -> u64 {
             let mut world = self.world_default();
 
-            // Get the address of the current caller, possibly the player's address.
-            let player = get_caller_address();
-            // Retrieve the player's current position from the world.
-            let position: Position = world.read_model(player);
+            // Generate new fish ID
+            let fish_id = self.generate_fish_id();
 
-            // Update the world state with the new data.
-
-            // 1. Move the player's position 10 units in both the x and y direction.
-            let new_position = Position {
-                player, vec: Vec2 { x: position.vec.x + 10, y: position.vec.y + 10 },
+            // Create new fish
+            let fish = Fish {
+                id: fish_id, fish_type, age: 0, hunger_level: 100, health: 100, growth: 0, owner,
             };
 
-            // Write the new position to the world.
-            world.write_model(@new_position);
+            // Write to world state
+            world.write_model(@fish);
 
-            // 2. Set the player's remaining moves to 100.
-            let moves = Moves {
-                player, remaining: 100, last_direction: Option::None, can_move: true,
+            // Emit event
+            let created_event = FishCreated { id: fish_id, owner, fish_type };
+            world.emit_event(@created_event);
+
+            fish_id
+        }
+        fn feed(ref self: ContractState, fish_id: u64, amount: u32) {
+            let mut world = self.world_default();
+            let caller = get_caller_address();
+
+            // Read current fish state
+            let mut fish: Fish = world.read_model(fish_id);
+
+            // Check ownership
+            assert(fish.owner == caller, CustomErrors::NOT_OWNER);
+
+            // Update hunger
+            let new_hunger = if fish.hunger_level - amount < 0 {
+                0_u32
+            } else {
+                fish.hunger_level - amount
             };
 
-            // Write the new moves to the world.
-            world.write_model(@moves);
+            fish.hunger_level = new_hunger;
+
+            // Write updated state
+            world.write_model(@fish);
+
+            // Emit event
+            let fed_event = FishFed { fish_id, amount, new_hunger };
+            world.emit_event(@fed_event);
+        }
+        
+        fn grow(ref self: ContractState, fish_id: u64, amount: u32) {
+            let mut world = self.world_default();
+            let caller = get_caller_address();
+
+            // Read current fish state
+            let mut fish: Fish = world.read_model(fish_id);
+
+            // Check ownership
+            assert(fish.owner == caller, CustomErrors::NOT_OWNER);
+
+            // Update growth
+            let new_growth = if fish.growth + amount > 100 {
+                100_u32
+            } else {
+                fish.growth + amount
+            };
+
+            fish.growth = new_growth;
+
+            // Write updated state
+            world.write_model(@fish);
+
+            // Emit event
+            let grown_event = FishGrown { fish_id, amount, new_growth };
+            world.emit_event(@grown_event);
         }
 
-        // Implementation of the move function for the ContractState struct.
-        fn move(ref self: ContractState, direction: Direction) {
-            // Get the address of the current caller, possibly the player's address.
+        fn heal(ref self: ContractState, fish_id: u64, amount: u32) {
+            let mut world = self.world_default();
+            let caller = get_caller_address();
 
+            // Read current fish state
+            let mut fish: Fish = world.read_model(fish_id);
+
+            // Check ownership
+            assert(fish.owner == caller, CustomErrors::NOT_OWNER);
+
+            // Update health
+            let new_health = if fish.health + amount > 100 {
+                100_u32
+            } else {
+                fish.health + amount
+            };
+
+            fish.health = new_health;
+
+            // Write updated state
+            world.write_model(@fish);
+
+            // Emit event
+            let healed_event = FishHealed { fish_id, amount, new_health };
+            world.emit_event(@healed_event);
+        }
+
+        fn damage(ref self: ContractState, fish_id: u64, amount: u32) {
+            let mut world = self.world_default();
+            let caller = get_caller_address();
+
+            // Read current fish state
+            let mut fish: Fish = world.read_model(fish_id);
+
+            // Check ownership
+            assert(fish.owner == caller, CustomErrors::NOT_OWNER);
+
+            // Update health
+            let new_health = if amount >= fish.health {
+                0_u32
+            } else {
+                fish.health - amount
+            };
+
+            fish.health = new_health;
+
+            // Write updated state
+            world.write_model(@fish);
+
+            // Emit event
+            let damaged_event = FishDamaged { fish_id, damage_amount: amount, new_health };
+            world.emit_event(@damaged_event);
+        }
+
+        fn regenerate_health(ref self: ContractState, fish_id: u64, aquarium_cleanliness: u32) {
+            let mut world = self.world_default();
+            let caller = get_caller_address();
+
+            // Read current fish state
+            let mut fish: Fish = world.read_model(fish_id);
+
+            // Check ownership
+            assert(fish.owner == caller, CustomErrors::NOT_OWNER);
+
+            // Only regenerate if fish is not dead and aquarium is clean enough
+            if fish.health > 0_u32 && aquarium_cleanliness >= 80_u32 {
+                // Calculate regeneration amount based on cleanliness
+                let regen_amount = (aquarium_cleanliness - 80_u32) / 4_u32;
+
+                // Update health
+                let new_health = if fish.health + regen_amount > 100_u32 {
+                    100_u32
+                } else {
+                    fish.health + regen_amount
+                };
+
+                fish.health = new_health;
+
+                // Write updated state
+                world.write_model(@fish);
+
+                // Emit event
+                let healed_event = FishHealed { fish_id, amount: regen_amount, new_health };
+                world.emit_event(@healed_event);
+            }
+        }
+
+        fn update_hunger(ref self: ContractState, fish_id: u64, hours_passed: u32) {
             let mut world = self.world_default();
 
-            let player = get_caller_address();
+            // Read current fish state
+            let mut fish: Fish = world.read_model(fish_id);
 
-            // Retrieve the player's current position and moves data from the world.
-            let position: Position = world.read_model(player);
-            let mut moves: Moves = world.read_model(player);
-            // if player hasn't spawn, read returns model default values. This leads to sub overflow
-            // afterwards.
-            // Plus it's generally considered as a good pratice to fast-return on matching
-            // conditions.
-            if !moves.can_move {
-                return;
-            }
+            // Calculate hunger decrease
+            let hunger_decrease = hours_passed * 2;
 
-            // Deduct one from the player's remaining moves.
-            moves.remaining -= 1;
+            // Update hunger
+            let new_hunger = if hunger_decrease > fish.hunger_level {
+                0_u32
+            } else {
+                fish.hunger_level - hunger_decrease
+            };
 
-            // Update the last direction the player moved in.
-            moves.last_direction = Option::Some(direction);
+            fish.hunger_level = new_hunger;
 
-            // Calculate the player's next position based on the provided direction.
-            let next = next_position(position, moves.last_direction);
+            // Write updated state
+            world.write_model(@fish);
 
-            // Write the new position to the world.
-            world.write_model(@next);
+            // Emit event
+            let updated_event = FishHungerUpdated { fish_id, hours_passed, new_hunger };
+            world.emit_event(@updated_event);
+        }
 
-            // Write the new moves to the world.
-            world.write_model(@moves);
+        fn update_age(ref self: ContractState, fish_id: u64, days_passed: u32) {
+            let mut world = self.world_default();
 
-            // Emit an event to the world to notify about the player's move.
-            world.emit_event(@Moved { player, direction });
+            // Read current fish state
+            let mut fish: Fish = world.read_model(fish_id);
+
+            // Update age
+            fish.age += days_passed;
+
+            // Write updated state
+            world.write_model(@fish);
+
+            // Emit event
+            let updated_event = FishAgeUpdated { fish_id, days_passed, new_age: fish.age };
+            world.emit_event(@updated_event);
+        }
+
+        fn get_hunger_level(self: @ContractState, fish_id: u64) -> u32 {
+            let mut world = self.world_default();
+            let fish: Fish = world.read_model(fish_id);
+            fish.hunger_level
+        }
+
+        fn get_growth_rate(self: @ContractState, fish_id: u64) -> u32 {
+            let mut world = self.world_default();
+            let fish: Fish = world.read_model(fish_id);
+            fish.growth
+        }
+
+        fn get_health(self: @ContractState, fish_id: u64) -> u32 {
+            let mut world = self.world_default();
+            let fish: Fish = world.read_model(fish_id);
+            fish.health
         }
     }
 
-    #[generate_trait]
+     #[generate_trait]
     impl InternalImpl of InternalTrait {
-        /// Use the default namespace "dojo_starter". This function is handy since the ByteArray
-        /// can't be const.
         fn world_default(self: @ContractState) -> dojo::world::WorldStorage {
             self.world(@"dojo_starter")
         }
-    }
-}
 
-// Define function like this:
-fn next_position(mut position: Position, direction: Option<Direction>) -> Position {
-    match direction {
-        Option::None => { return position; },
-        Option::Some(d) => match d {
-            Direction::Left => { position.vec.x -= 1; },
-            Direction::Right => { position.vec.x += 1; },
-            Direction::Up => { position.vec.y -= 1; },
-            Direction::Down => { position.vec.y += 1; },
-        },
-    };
-    position
+        fn generate_fish_id(self: @ContractState) -> u64 {
+            let mut world = self.world_default();
+            let mut fish_id: Id = world.read_model(FISH_ID_TARGET);
+            let new_id = fish_id.nonce + 1;
+            fish_id.nonce = new_id;
+            world.write_model(@fish_id);
+            new_id
+        }
+    }
 }
