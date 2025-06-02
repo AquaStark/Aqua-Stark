@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { FishType } from '@/types/game';
+import { FishType, FoodType } from '@/types/game';
 
 // Movement parameters for different fish behaviors
 interface MovementParams {
@@ -24,12 +24,15 @@ interface FishMovementState {
   position: { x: number; y: number };
   velocity: { x: number; y: number };
   targetPosition: { x: number; y: number };
-  behaviorState: 'idle' | 'darting' | 'hovering' | 'turning';
+  behaviorState: 'idle' | 'darting' | 'hovering' | 'turning' | 'seeking_food' | 'eating' | 'satisfied';
   behaviorTimer: number;
   facingLeft: boolean;
   lastDirectionChangeTime: number; // Track when we last changed direction
   stuckTimer: number; // Track how long a fish has been "stuck" in the same position
   turningProgress?: number; // Track turning animation progress
+  targetFood?: FoodType;
+  eatingTimer?: number;
+  satisfactionTimer?: number;
 }
 
 interface UseFishMovementOptions {
@@ -37,9 +40,117 @@ interface UseFishMovementOptions {
   collisionRadius: number;
 }
 
+// Spatial Grid Implementation
+interface GridCell {
+  x: number;
+  y: number;
+  fish: FishMovementState[];
+  food: FoodType[];
+}
+
+interface SpatialGrid {
+  cells: Map<string, GridCell>;
+  cellSize: number;
+  width: number;
+  height: number;
+}
+
+function createSpatialGrid(width: number, height: number, cellSize: number): SpatialGrid {
+  const cells = new Map<string, GridCell>();
+  const gridWidth = Math.ceil(width / cellSize);
+  const gridHeight = Math.ceil(height / cellSize);
+  
+  // Initialize grid cells
+  for (let x = 0; x < gridWidth; x++) {
+    for (let y = 0; y < gridHeight; y++) {
+      const key = `${x},${y}`;
+      cells.set(key, { x, y, fish: [], food: [] });
+    }
+  }
+  
+  return { cells, cellSize, width: gridWidth, height: gridHeight };
+}
+
+function getCellForPosition(position: { x: number; y: number }, grid: SpatialGrid): GridCell | null {
+  const cellX = Math.floor(position.x / grid.cellSize);
+  const cellY = Math.floor(position.y / grid.cellSize);
+  return grid.cells.get(`${cellX},${cellY}`) || null;
+}
+
+function getAdjacentCells(cell: GridCell, grid: SpatialGrid): GridCell[] {
+  const adjacent: GridCell[] = [];
+  const directions = [
+    [-1, -1], [0, -1], [1, -1],
+    [-1, 0],           [1, 0],
+    [-1, 1],  [0, 1],  [1, 1]
+  ];
+  
+  for (const [dx, dy] of directions) {
+    const newX = cell.x + dx;
+    const newY = cell.y + dy;
+    if (newX >= 0 && newX < grid.width && newY >= 0 && newY < grid.height) {
+      const adjacentCell = grid.cells.get(`${newX},${newY}`);
+      if (adjacentCell) adjacent.push(adjacentCell);
+    }
+  }
+  
+  return adjacent;
+}
+
+function calculateDistance(pos1: { x: number; y: number }, pos2: { x: number; y: number }): number {
+  const dx = pos1.x - pos2.x;
+  const dy = pos1.y - pos2.y;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+function findNearestFood(fishState: FishMovementState, grid: SpatialGrid): FoodType | null {
+  const fishCell = getCellForPosition(fishState.position, grid);
+  if (!fishCell) return null;
+  
+  // Check current cell and adjacent cells for food
+  const nearbyCells = [fishCell, ...getAdjacentCells(fishCell, grid)];
+  let nearestFood: FoodType | null = null;
+  let minDistance = Infinity;
+  console.log(nearbyCells)
+  for (const cell of nearbyCells) {
+    for (const food of cell.food) {
+
+      const distance = calculateDistance(fishState.position, food.position);
+      console.log(distance)
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearestFood = food;
+      }
+    }
+  }
+  
+  return nearestFood;
+}
+
+function populateGrid(grid: SpatialGrid, fishStates: FishMovementState[], food: FoodType[]) {
+  // Clear existing data
+  for (const cell of grid.cells.values()) {
+    cell.fish = [];
+    cell.food = [];
+  }
+  
+  // Add fish to grid
+  for (const fish of fishStates) {
+    const cell = getCellForPosition(fish.position, grid);
+    if (cell) cell.fish.push(fish);
+  }
+  
+  // Add food to grid
+  for (const foodItem of food) {
+    const cell = getCellForPosition(foodItem.position, grid);
+    if (cell) cell.food.push(foodItem);
+  }
+}
+
 export function useFishMovement(
   initialFish: FishType[],
-  options: UseFishMovementOptions
+  options: UseFishMovementOptions,
+  food: FoodType[] = [] // Add food parameter with default empty array
 ) {
   const { aquariumBounds, collisionRadius } = options;
   
@@ -50,6 +161,9 @@ export function useFishMovement(
   
   // Store movement parameters for each fish
   const fishParamsRef = useRef<Map<number, MovementParams>>(new Map());
+  
+  // Create spatial grid
+  const gridRef = useRef<SpatialGrid>(createSpatialGrid(aquariumBounds.width, aquariumBounds.height, 100));
   
   // Timestamp for animation frame
   const lastUpdateTimeRef = useRef<number>(Date.now());
@@ -87,7 +201,7 @@ export function useFishMovement(
       lastUpdateTimeRef.current = now;
       
       // Update fish positions based on their movement behaviors
-      setFishStates(prevStates => updateFishStates(prevStates, deltaTime, now));
+      setFishStates(prevStates => updateFishStates(prevStates, food, deltaTime, now));
       
       // Continue animation loop
       animationFrameRef.current = requestAnimationFrame(animate);
@@ -102,7 +216,7 @@ export function useFishMovement(
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [initialFish]);
+  }, [initialFish, food]);
   
   // Initialize a fish's movement state
   function initializeFishState(fish: FishType): FishMovementState {
@@ -183,19 +297,66 @@ export function useFishMovement(
   // Update all fish states for a new frame
   function updateFishStates(
     prevStates: FishMovementState[],
+    food: FoodType[],
     deltaTime: number,
     currentTime: number
   ): FishMovementState[] {
+    // Create and populate spatial grid
+    const grid = createSpatialGrid(aquariumBounds.width, aquariumBounds.height, 100);
+    populateGrid(grid, prevStates, food);
+    
     // First get all updated states
     const newStates = prevStates.map(fishState => {
       const params = fishParamsRef.current.get(fishState.id);
-      if (!params) return fishState; // Skip if no params found
+      if (!params) return fishState;
       
       // Clone the state to avoid mutations
       const newState = { ...fishState };
       
       // Update behavior state timer
       newState.behaviorTimer -= deltaTime;
+      
+      // Handle food-seeking behavior
+      if (newState.behaviorState === 'idle' || newState.behaviorState === 'seeking_food') {
+        const nearestFood = findNearestFood(newState, grid);
+        
+        if (nearestFood) {
+          newState.behaviorState = 'seeking_food';
+          newState.targetFood = nearestFood;
+          newState.targetPosition = nearestFood.position;
+          
+          // Check if fish is close enough to eat
+          const distanceToFood = calculateDistance(newState.position, nearestFood.position);
+          console.log('distanceToFood', distanceToFood)
+          if (distanceToFood < 20) { // Eating distance threshold
+            newState.behaviorState = 'eating';
+            newState.eatingTimer = 1.0; // 1 second eating animation
+          }
+        }
+      }
+      
+      // Handle eating state
+      if (newState.behaviorState === 'eating') {
+        newState.eatingTimer! -= deltaTime;
+        if (newState.eatingTimer! <= 0) {
+          newState.behaviorState = 'satisfied';
+          newState.satisfactionTimer = 5.0; // 5 seconds satisfaction
+          // Remove eaten food from the grid
+          const foodCell = getCellForPosition(newState.targetFood!.position, grid);
+          if (foodCell) {
+            foodCell.food = foodCell.food.filter(f => f.id !== newState.targetFood!.id);
+          }
+        }
+      }
+      
+      // Handle satisfaction state
+      if (newState.behaviorState === 'satisfied') {
+        newState.satisfactionTimer! -= deltaTime;
+        if (newState.satisfactionTimer! <= 0) {
+          newState.behaviorState = 'idle';
+          newState.targetFood = undefined;
+        }
+      }
       
       // IMPORTANT: Always set facingLeft based on velocity BEFORE applying any other logic
       // This ensures visual direction always matches actual movement

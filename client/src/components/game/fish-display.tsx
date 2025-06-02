@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FishType } from "@/types/game";
+import { FishType, FoodType } from "@/types/game";
 import { useFishMovement } from "@/hooks/use-fish-movement";
 import { Fish } from "@/components/aquarium/fish";
 
@@ -8,6 +8,7 @@ interface FishDisplayProps {
   containerWidth?: number;
   containerHeight?: number;
   minFishCount?: number; // Minimum number of fish to display
+  food?: FoodType[]; // Add food prop
 }
 
 // Sample fish data for generating additional fish if needed
@@ -47,7 +48,8 @@ export function FishDisplay({
   fish, 
   containerWidth = 1000, 
   containerHeight = 600,
-  minFishCount = 15 // Increase fish count even more for visibility
+  minFishCount = 15,
+  food = [] // Add food prop with default empty array
 }: FishDisplayProps) {
   // Set up container dimensions for fish movement
   const [dimensions, setDimensions] = useState({
@@ -130,7 +132,7 @@ export function FishDisplay({
   const fishWithMovement = useFishMovement(allFish, {
     aquariumBounds: dimensions,
     collisionRadius: 40, // Radius to consider for collision avoidance
-  });
+  }, food); // Pass food to useFishMovement
   
   // Diagnostic logging for fish count discrepancy
   useEffect(() => {   

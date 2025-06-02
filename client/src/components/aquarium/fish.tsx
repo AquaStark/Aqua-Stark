@@ -9,7 +9,7 @@ interface FishProps {
     y: number;
   };
   facingLeft: boolean;
-  behaviorState: 'idle' | 'darting' | 'hovering' | 'turning';
+  behaviorState: 'idle' | 'darting' | 'hovering' | 'turning' | 'seeking_food' | 'eating' | 'satisfied';
 }
 
 // Define valid rarity types for type safety
@@ -126,7 +126,9 @@ export function Fish({ fish, position, facingLeft, behaviorState }: FishProps) {
   // Use animation class based on state and direction
   const stateClass = 
     behaviorState === 'darting' ? 'animate-swim-dart' : 
-    behaviorState === 'hovering' ? 'animate-hover' : 'animate-swim-idle';
+    behaviorState === 'hovering' ? 'animate-hover' :
+    behaviorState === 'eating' ? 'animate-eating' :
+    behaviorState === 'seeking_food' ? 'animate-swim-dart' : 'animate-swim-idle';
   
   // Combine state class with direction for animations
   const animationClass = `${stateClass}`;
@@ -134,13 +136,16 @@ export function Fish({ fish, position, facingLeft, behaviorState }: FishProps) {
   // Add flip animation class when direction changes
   const flipClass = isFlipping ? 'fish-flipping' : '';
   
+  // Add eating animation class
+  const eatingClass = behaviorState === 'eating' ? 'fish-eating' : '';
+
   return (
     <motion.div
       className="absolute cursor-pointer group"
       style={{ 
         left: `${position.x}%`, 
         top: `${position.y}%`,
-        zIndex: behaviorState === 'darting' ? 10 : 1
+        zIndex: behaviorState === 'darting' || behaviorState === 'seeking_food' ? 10 : 1
       }}
       // Use motion to animate position changes smoothly
       transition={{
@@ -154,19 +159,19 @@ export function Fish({ fish, position, facingLeft, behaviorState }: FishProps) {
         <motion.div
           // Simplify animations to prevent jitter
           animate={{
-            // Very subtle rotation only
-            rotate: behaviorState === 'darting' ? [-1, 1, -1] : 
-                  behaviorState === 'hovering' ? [-0.5, 0.5, -0.5] : [-1, 1, -1],
-            // Subtle y-offset for bobbing
-            y: behaviorState === 'darting' ? [0, 1, 0] : 
-              behaviorState === 'hovering' ? [0, 2, 0] : [0, 2, 0],
+            rotate: behaviorState === 'darting' || behaviorState === 'seeking_food' ? [-1, 1, -1] : 
+                  behaviorState === 'hovering' ? [-0.5, 0.5, -0.5] : 
+                  behaviorState === 'eating' ? [0, 5, 0] : [-1, 1, -1],
+            y: behaviorState === 'darting' || behaviorState === 'seeking_food' ? [0, 1, 0] : 
+               behaviorState === 'hovering' ? [0, 2, 0] : 
+               behaviorState === 'eating' ? [0, 3, 0] : [0, 2, 0],
           }}
           transition={{ 
-            duration: behaviorState === 'darting' ? 0.5 : 
-                      behaviorState === 'hovering' ? 3 : 2, 
+            duration: behaviorState === 'darting' || behaviorState === 'seeking_food' ? 0.5 : 
+                      behaviorState === 'hovering' ? 3 : 
+                      behaviorState === 'eating' ? 0.3 : 2, 
             repeat: Infinity, 
             ease: "easeInOut",
-            // Avoid staggering with zero delay
             delay: 0
           }}
           // No need for transform anymore since we're using the correct pre-flipped images
@@ -174,7 +179,7 @@ export function Fish({ fish, position, facingLeft, behaviorState }: FishProps) {
             display: 'inline-block',
           }}
         >
-          <div className={`relative ${animationClass}`}>
+          <div className={`relative ${animationClass} ${eatingClass}`}>
             <img
               src={fishImage}
               alt={fish.name}
@@ -182,7 +187,8 @@ export function Fish({ fish, position, facingLeft, behaviorState }: FishProps) {
               height={fishSize}
               className={`transition-all hover:scale-105 fish-image ${flipClass}`}
               style={{
-                filter: behaviorState === 'darting' ? 'brightness(1.1)' : 'brightness(1.0)',
+                filter: behaviorState === 'darting' || behaviorState === 'seeking_food' ? 'brightness(1.1)' : 
+                       behaviorState === 'eating' ? 'brightness(1.2)' : 'brightness(1.0)',
               }}
               onError={handleImageError}
             />
