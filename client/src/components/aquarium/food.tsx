@@ -16,7 +16,7 @@ export function Food({ food }: FoodProps) {
       animate={{ top: "90%", opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.8 }}
       transition={{
-        duration: 5,
+        duration: 10,
         ease: "easeInOut",
       }}
     >
