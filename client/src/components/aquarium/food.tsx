@@ -28,7 +28,7 @@ export function Food({ food }: FoodProps) {
           height={20}
           className="drop-shadow-lg"
         />
-        {/* Subtle glow effect */}
+    
         <div
           className="absolute inset-0 rounded-full opacity-30 pointer-events-none"
           style={{

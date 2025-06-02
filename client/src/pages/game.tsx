@@ -40,6 +40,25 @@ export default function GamePage() {
     setShowTips(!showTips);
   };
 
+  const handleFoodRenderOnMouseClick = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      const boundingRect = event.currentTarget.getBoundingClientRect();
+      const x =
+        ((event.clientX - boundingRect.left) / boundingRect.width) * 100; // Percentage
+      const y =
+        ((event.clientY - boundingRect.top) / boundingRect.height) * 100; // Percentage
+
+      const newFood: FoodType = {
+        id: Date.now(),
+        position: { x, y },
+        createdAt: Date.now(),
+      };
+
+      setFood((prev) => [...prev, newFood]);
+    },
+    []
+  );
+
   const handleFoodRenderOnClick = useCallback(() => {
     const randomX = Math.random() * 80 + 10;
     const y = 5;
@@ -63,7 +82,10 @@ export default function GamePage() {
   }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-[#005C99]">
+    <div
+      className="relative w-full h-screen overflow-hidden bg-[#005C99]"
+      onClick={handleFoodRenderOnMouseClick}
+    >
       {/* Background */}
       <img
         src="/backgrounds/background2.png"
