@@ -45,6 +45,7 @@ interface FishMovementState {
 interface UseFishMovementOptions {
   aquariumBounds: { width: number; height: number };
   collisionRadius: number;
+  foodDetectionRadius?: number; 
 }
 
 // Spatial Grid Implementation
@@ -88,11 +89,18 @@ function getCellForPosition(
 ): GridCell | null {
   const cellX = Math.floor(position.x / grid.cellSize);
   const cellY = Math.floor(position.y / grid.cellSize);
+  // Ensure cell coordinates are within grid boundaries
+  if (cellX < 0 || cellX >= grid.width || cellY < 0 || cellY >= grid.height) {
+    return null;
+  }
   return grid.cells.get(`${cellX},${cellY}`) || null;
 }
 
 function getAdjacentCells(cell: GridCell, grid: SpatialGrid): GridCell[] {
   const adjacent: GridCell[] = [];
+  // Include the current cell in the "adjacent" check for food
+  adjacent.push(cell);
+
   const directions = [
     [-1, -1],
     [0, -1],
@@ -125,19 +133,37 @@ function calculateDistance(
   return Math.sqrt(dx * dx + dy * dy);
 }
 
+// Modified findNearestFood to only consider food within a detection radius
 function findNearestFood(
   fishState: FishMovementState,
-  grid: SpatialGrid
+  grid: SpatialGrid,
+  detectionRadius: number
 ): FoodType | null {
-  // Instead of just checking nearby cells, check all cells for food
   let nearestFood: FoodType | null = null;
   let minDistance = Infinity;
 
-  // Check all cells in the grid for food
-  for (const cell of grid.cells.values()) {
-    for (const food of cell.food) {
-      const distance = calculateDistance(fishState.position, food.position);
-      if (distance < minDistance) {
+  const currentCell = getCellForPosition(fishState.position, grid);
+
+  if (currentCell) {
+    // Get food from current cell and adjacent cells
+    const cellsToSearch = getAdjacentCells(currentCell, grid);
+    const potentialFood: FoodType[] = [];
+
+    for (const cell of cellsToSearch) {
+      potentialFood.push(...cell.food);
+    }
+
+    // Iterate through potential food items and find the nearest one within the detection radius
+    for (const food of potentialFood) {
+      // Convert food position from percentage to absolute for distance calculation
+      const foodAbsPos = {
+        x: (food.position.x / 100) * grid.width * grid.cellSize, // Use grid dimensions for conversion
+        y: (food.position.y / 100) * grid.height * grid.cellSize,
+      };
+
+      const distance = calculateDistance(fishState.position, foodAbsPos);
+
+      if (distance < detectionRadius && distance < minDistance) {
         minDistance = distance;
         nearestFood = food;
       }
@@ -166,7 +192,12 @@ function populateGrid(
 
   // Add food to grid
   for (const foodItem of food) {
-    const cell = getCellForPosition(foodItem.position, grid);
+    // Food position needs to be converted to absolute for grid placement
+    const foodAbsPos = {
+      x: (foodItem.position.x / 100) * grid.width * grid.cellSize,
+      y: (foodItem.position.y / 100) * grid.height * grid.cellSize,
+    };
+    const cell = getCellForPosition(foodAbsPos, grid);
     if (cell) cell.food.push(foodItem);
   }
 }
@@ -176,7 +207,8 @@ export function useFishMovement(
   options: UseFishMovementOptions,
   food: FoodType[] = [] // Add food parameter with default empty array
 ) {
-  const { aquariumBounds, collisionRadius } = options;
+  
+  const { aquariumBounds, collisionRadius, foodDetectionRadius = 500 } = options;
 
   // Store movement state for each fish
   const [fishStates, setFishStates] = useState<FishMovementState[]>(() =>
@@ -187,8 +219,14 @@ export function useFishMovement(
   const fishParamsRef = useRef<Map<number, MovementParams>>(new Map());
 
   // Create spatial grid
+  // Cell size should be related to foodDetectionRadius to ensure relevant cells are checked
+  const GRID_CELL_SIZE = Math.max(50, foodDetectionRadius / 2); // Ensure cell size is reasonable
   const gridRef = useRef<SpatialGrid>(
-    createSpatialGrid(aquariumBounds.width, aquariumBounds.height, 100)
+    createSpatialGrid(
+      aquariumBounds.width,
+      aquariumBounds.height,
+      GRID_CELL_SIZE
+    )
   );
 
   // Timestamp for animation frame
@@ -242,7 +280,13 @@ export function useFishMovement(
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [initialFish, food]);
+  }, [
+    initialFish,
+    food,
+    foodDetectionRadius,
+    aquariumBounds.width,
+    aquariumBounds.height,
+  ]); // Added dependencies
 
   // Initialize a fish's movement state
   function initializeFishState(fish: FishType): FishMovementState {
@@ -356,21 +400,27 @@ export function useFishMovement(
         newState.behaviorState !== "eating" &&
         newState.behaviorState !== "satisfied"
       ) {
-        const nearestFood = findNearestFood(newState, gridRef.current);
+        // Pass foodDetectionRadius to findNearestFood
+        const nearestFood = findNearestFood(
+          newState,
+          gridRef.current,
+          foodDetectionRadius
+        );
 
         if (nearestFood) {
           // Set behavior to seeking food
           newState.behaviorState = "seeking_food";
           newState.targetFood = nearestFood;
-          const foodPos = {
+          // Convert food position from percentage to absolute for target
+          const foodAbsPos = {
             x: (nearestFood.position.x / 100) * aquariumBounds.width,
-            y: (nearestFood.position.y / 100) * aquariumBounds.height
+            y: (nearestFood.position.y / 100) * aquariumBounds.height,
           };
-          newState.targetPosition = foodPos;
+          newState.targetPosition = foodAbsPos;
 
           // Calculate direction to food
-          const dx = foodPos.x - newState.position.x;
-          const dy = foodPos.y - newState.position.y;
+          const dx = foodAbsPos.x - newState.position.x;
+          const dy = foodAbsPos.y - newState.position.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
           // Adjust velocity to move towards food
@@ -396,7 +446,7 @@ export function useFishMovement(
             newState.velocity.y *= 0.3;
           }
         } else {
-          // If no food is found, return to idle behavior
+          // If no food is found within radius, return to idle behavior
           if (newState.behaviorState === "seeking_food") {
             newState.behaviorState = "idle";
             newState.targetFood = undefined;
@@ -411,9 +461,12 @@ export function useFishMovement(
         if (newState.eatingTimer! <= 0) {
           newState.behaviorState = "satisfied";
           newState.satisfactionTimer = 5.0; // 5 seconds satisfaction
-          // Remove eaten food from the grid
+          // Remove eaten food from the grid by filtering the global food array
+          // This ensures the food is removed from the source of truth
+          food = food.filter((f) => f.id !== newState.targetFood!.id);
+          // Also clear from the grid's internal food list for immediate effect
           const foodCell = getCellForPosition(
-            newState.targetFood!.position,
+            newState.targetFood!.position, // Use the original percentage position for food
             gridRef.current
           );
           if (foodCell) {
@@ -480,12 +533,17 @@ export function useFishMovement(
       // Handle behavior state changes
       if (newState.behaviorTimer <= 0) {
         // Reset timer and potentially change behavior
-        if (newState.behaviorState !== "idle") {
-          // Return to idle if in a special state
+        if (
+          newState.behaviorState !== "idle" &&
+          newState.behaviorState !== "seeking_food" && // Don't interrupt food seeking
+          newState.behaviorState !== "eating" && // Don't interrupt eating
+          newState.behaviorState !== "satisfied" // Don't interrupt satisfaction
+        ) {
+          // Return to idle if in a special state (not food-related)
           newState.behaviorState = "idle";
           newState.behaviorTimer = 1 + Math.random() * 3; // Idle for 1-4 seconds
-        } else {
-          // Possibly transition to a special state
+        } else if (newState.behaviorState === "idle") {
+          // Possibly transition to a special state from idle
           const dartRoll = Math.random();
           const hoverRoll = Math.random();
 

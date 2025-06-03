@@ -12,7 +12,7 @@ export function Food({ food }: FoodProps) {
       style={{
         left: `${food.position.x}%`,
       }}
-      initial={{ top: `${food.position.y}%`, opacity: 0, scale: 0 }}
+      initial={{ top: `${food.position.y}%`, opacity: 0, scale: 0.5 }}
       animate={{ top: "90%", opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.8 }}
       transition={{
