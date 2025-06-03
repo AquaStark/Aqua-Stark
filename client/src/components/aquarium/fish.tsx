@@ -157,24 +157,24 @@ export function Fish({ fish, position, facingLeft, behaviorState }: FishProps) {
     >
       <div className="relative">
         <motion.div
-          // Simplify animations to prevent jitter
+          // Enhance eating animation
           animate={{
             rotate: behaviorState === 'darting' || behaviorState === 'seeking_food' ? [-1, 1, -1] : 
                   behaviorState === 'hovering' ? [-0.5, 0.5, -0.5] : 
-                  behaviorState === 'eating' ? [0, 5, 0] : [-1, 1, -1],
+                  behaviorState === 'eating' ? [-5, 5, -5] : [-1, 1, -1],
             y: behaviorState === 'darting' || behaviorState === 'seeking_food' ? [0, 1, 0] : 
                behaviorState === 'hovering' ? [0, 2, 0] : 
                behaviorState === 'eating' ? [0, 3, 0] : [0, 2, 0],
+            scale: behaviorState === 'eating' ? [1, 1.1, 1] : 1
           }}
           transition={{ 
             duration: behaviorState === 'darting' || behaviorState === 'seeking_food' ? 0.5 : 
                       behaviorState === 'hovering' ? 3 : 
                       behaviorState === 'eating' ? 0.3 : 2, 
-            repeat: Infinity, 
+            repeat: behaviorState === 'eating' ? 3 : Infinity,
             ease: "easeInOut",
             delay: 0
           }}
-          // No need for transform anymore since we're using the correct pre-flipped images
           style={{
             display: 'inline-block',
           }}
@@ -188,10 +188,22 @@ export function Fish({ fish, position, facingLeft, behaviorState }: FishProps) {
               className={`transition-all hover:scale-105 fish-image ${flipClass}`}
               style={{
                 filter: behaviorState === 'darting' || behaviorState === 'seeking_food' ? 'brightness(1.1)' : 
-                       behaviorState === 'eating' ? 'brightness(1.2)' : 'brightness(1.0)',
+                       behaviorState === 'eating' ? 'brightness(1.3)' : 'brightness(1.0)',
               }}
               onError={handleImageError}
             />
+            
+            {/* Eating effect */}
+            {behaviorState === 'eating' && (
+              <motion.div
+                className="absolute inset-0"
+                initial={{ scale: 1, opacity: 0 }}
+                animate={{ scale: 1.5, opacity: 0 }}
+                transition={{ duration: 0.3, repeat: 3 }}
+              >
+                <div className="w-full h-full rounded-full bg-yellow-300/30" />
+              </motion.div>
+            )}
             
             {/* Very subtle glow for depth */}
             <div 

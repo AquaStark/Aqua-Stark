@@ -20,11 +20,13 @@ export default function GamePage() {
     happiness,
     food: fishFood,
     energy,
+    updateFishStats,
   } = useFishStats(INITIAL_GAME_STATE);
   const { selectedAquarium, handleAquariumChange, aquariums } = useAquarium();
   const [showMenu, setShowMenu] = useState(false);
   const [showTips, setShowTips] = useState(false);
   const [food, setFood] = useState<FoodType[]>([]);
+  const [eatenFood, setEatenFood] = useState<number[]>([]);
 
   const bubbles = useBubbles({
     initialCount: 10,
@@ -72,14 +74,37 @@ export default function GamePage() {
     setFood((prev) => [...prev, newFood]);
   }, []);
 
+  // Handle food being eaten
+  const handleFoodEaten = useCallback((foodId: number) => {
+    setEatenFood(prev => [...prev, foodId]);
+    
+    // Update fish stats when food is eaten
+    updateFishStats(prev => ({
+      ...prev,
+      food: Math.min(prev.food + 10, 100), // Increase food stat by 10, max 100
+      happiness: Math.min(prev.happiness + 5, 100), // Increase happiness by 5, max 100
+      energy: Math.min(prev.energy + 5, 100), // Increase energy by 5, max 100
+    }));
+
+    // Remove food after a short delay to show the eating animation
+    setTimeout(() => {
+      setFood(prev => prev.filter(f => f.id !== foodId));
+    }, 300);
+  }, [updateFishStats]);
+
+  // Clean up eaten food state periodically
   useEffect(() => {
     const cleanupInterval = setInterval(() => {
       const now = Date.now();
       setFood((prev) => prev.filter((f) => now - f.createdAt < 5000));
+      setEatenFood(prev => prev.filter(id => {
+        const foodItem = food.find(f => f.id === id);
+        return foodItem && now - foodItem.createdAt < 5000;
+      }));
     }, 1000);
 
     return () => clearInterval(cleanupInterval);
-  }, []);
+  }, [food]);
 
   return (
     <div
@@ -105,10 +130,18 @@ export default function GamePage() {
 
       {/* Fish */}
       <div className="absolute inset-0 z-10 cursor-pointer">
-        <FishDisplay fish={MOCK_FISH} food={food} />
+        <FishDisplay 
+          fish={MOCK_FISH} 
+          food={food} 
+          onFoodEaten={handleFoodEaten}
+        />
 
         {food.map((foodItem) => (
-          <Food key={foodItem.id} food={foodItem} />
+          <Food 
+            key={foodItem.id} 
+            food={foodItem} 
+            isEaten={eatenFood.includes(foodItem.id)}
+          />
         ))}
       </div>
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 
 interface GameState {
   happiness: number
@@ -28,5 +28,17 @@ export function useFishStats(initialState: GameState) {
     return () => clearInterval(interval)
   }, [])
 
-  return { happiness, food, energy }
+  const updateFishStats = useCallback((updater: (prev: GameState) => GameState) => {
+    const newState = updater({ happiness, food, energy })
+    setHappiness(newState.happiness)
+    setFood(newState.food)
+    setEnergy(newState.energy)
+  }, [])
+
+  return {
+    happiness,
+    food,
+    energy,
+    updateFishStats,
+  }
 } 

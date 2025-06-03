@@ -202,14 +202,33 @@ function populateGrid(
   }
 }
 
+// Add a new interface to track eaten food
+interface EatenFood {
+  id: number;
+  eatenAt: number;
+}
+
+// Add cooldown interface
+interface FishCooldown {
+  id: number;
+  lastEatenAt: number;
+}
+
 export function useFishMovement(
   initialFish: FishType[],
   options: UseFishMovementOptions,
-  food: FoodType[] = [] // Add food parameter with default empty array
+  food: FoodType[] = []
 ) {
-  
   const { aquariumBounds, collisionRadius, foodDetectionRadius = 500 } = options;
-
+  
+  // Add state to track eaten food and cooldowns
+  const [eatenFood, setEatenFood] = useState<EatenFood[]>([]);
+  const [fishCooldowns, setFishCooldowns] = useState<FishCooldown[]>([]);
+  
+  // Constants for timing
+  const SATISFACTION_DURATION = 10.0; // 10 seconds satisfaction
+  const EATING_COOLDOWN = 15.0; // 15 seconds cooldown before fish can eat again
+  
   // Store movement state for each fish
   const [fishStates, setFishStates] = useState<FishMovementState[]>(() =>
     initialFish.map((fish) => initializeFishState(fish))
@@ -383,109 +402,119 @@ export function useFishMovement(
   ): FishMovementState[] {
     // Update the spatial grid with current fish and food positions
     populateGrid(gridRef.current, prevStates, food);
-
+    
     // First get all updated states
-    const newStates = prevStates.map((fishState) => {
+    const newStates = prevStates.map(fishState => {
       const params = fishParamsRef.current.get(fishState.id);
       if (!params) return fishState;
-
+      
       // Clone the state to avoid mutations
       const newState = { ...fishState };
-
+      
       // Update behavior state timer
       newState.behaviorTimer -= deltaTime;
-
-      // Always check for food unless the fish is currently eating or satisfied
-      if (
-        newState.behaviorState !== "eating" &&
-        newState.behaviorState !== "satisfied"
-      ) {
-        // Pass foodDetectionRadius to findNearestFood
-        const nearestFood = findNearestFood(
-          newState,
-          gridRef.current,
-          foodDetectionRadius
-        );
-
+      
+      // Check if fish is on cooldown
+      const cooldown = fishCooldowns.find(cd => cd.id === fishState.id);
+      const isOnCooldown = cooldown && (currentTime - cooldown.lastEatenAt) < EATING_COOLDOWN * 1000;
+      
+      // Always check for food unless the fish is currently eating, satisfied, or on cooldown
+      if (newState.behaviorState !== 'eating' && 
+          newState.behaviorState !== 'satisfied' && 
+          !isOnCooldown) {
+        const nearestFood = findNearestFood(newState, gridRef.current, foodDetectionRadius);
+        
         if (nearestFood) {
-          // Set behavior to seeking food
-          newState.behaviorState = "seeking_food";
-          newState.targetFood = nearestFood;
-          // Convert food position from percentage to absolute for target
-          const foodAbsPos = {
-            x: (nearestFood.position.x / 100) * aquariumBounds.width,
-            y: (nearestFood.position.y / 100) * aquariumBounds.height,
-          };
-          newState.targetPosition = foodAbsPos;
-
-          // Calculate direction to food
-          const dx = foodAbsPos.x - newState.position.x;
-          const dy = foodAbsPos.y - newState.position.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          // Adjust velocity to move towards food
-          if (distance > 0) {
-            // Move faster when seeking food
-            const speed = params.speed * 2;
-            newState.velocity = {
-              x: (dx / distance) * speed,
-              y: (dy / distance) * speed,
+          // Check if this food has been eaten
+          const isEaten = eatenFood.some(ef => ef.id === nearestFood.id);
+          
+          if (!isEaten) {
+            // Set behavior to seeking food
+            newState.behaviorState = 'seeking_food';
+            newState.targetFood = nearestFood;
+            
+            // Convert food position from percentage to absolute coordinates
+            const foodPos = {
+              x: (nearestFood.position.x / 100) * aquariumBounds.width,
+              y: (nearestFood.position.y / 100) * aquariumBounds.height
             };
-
-            // Update facing direction based on movement
-            newState.facingLeft = newState.velocity.x < 0;
-          }
-
-          // Check if fish is close enough to eat
-          if (distance < 20) {
-            // Eating distance threshold
-            newState.behaviorState = "eating";
-            newState.eatingTimer = 1.0; // 1 second eating animation
-            // Slow down when eating
-            newState.velocity.x *= 0.3;
-            newState.velocity.y *= 0.3;
+            
+            newState.targetPosition = foodPos;
+            
+            // Calculate direction to food
+            const dx = foodPos.x - newState.position.x;
+            const dy = foodPos.y - newState.position.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // Adjust velocity to move towards food
+            if (distance > 0) {
+              // Move faster when seeking food
+              const speed = params.speed * 2;
+              newState.velocity = {
+                x: (dx / distance) * speed,
+                y: (dy / distance) * speed
+              };
+              
+              // Update facing direction based on movement
+              newState.facingLeft = newState.velocity.x < 0;
+            }
+            
+            // Check if fish is close enough to eat
+            if (distance < 20) { // Eating distance threshold
+              newState.behaviorState = 'eating';
+              newState.eatingTimer = 1.0; // 1 second eating animation
+              // Slow down when eating
+              newState.velocity.x *= 0.3;
+              newState.velocity.y *= 0.3;
+              
+              // Mark food as eaten and set cooldown
+              setEatenFood(prev => [...prev, { id: nearestFood.id, eatenAt: currentTime }]);
+              setFishCooldowns(prev => {
+                const newCooldowns = prev.filter(cd => cd.id !== fishState.id);
+                return [...newCooldowns, { id: fishState.id, lastEatenAt: currentTime }];
+              });
+            }
+          } else {
+            // If food is eaten, return to idle behavior
+            newState.behaviorState = 'idle';
+            newState.targetFood = undefined;
+            newState.targetPosition = getSafeTargetPosition(params);
           }
         } else {
-          // If no food is found within radius, return to idle behavior
-          if (newState.behaviorState === "seeking_food") {
-            newState.behaviorState = "idle";
+          // If no food is found, return to idle behavior
+          if (newState.behaviorState === 'seeking_food') {
+            newState.behaviorState = 'idle';
             newState.targetFood = undefined;
             newState.targetPosition = getSafeTargetPosition(params);
           }
         }
       }
-
+      
       // Handle eating state
-      if (newState.behaviorState === "eating") {
+      if (newState.behaviorState === 'eating') {
         newState.eatingTimer! -= deltaTime;
         if (newState.eatingTimer! <= 0) {
-          newState.behaviorState = "satisfied";
-          newState.satisfactionTimer = 5.0; // 5 seconds satisfaction
-          // Remove eaten food from the grid by filtering the global food array
-          // This ensures the food is removed from the source of truth
-          food = food.filter((f) => f.id !== newState.targetFood!.id);
-          // Also clear from the grid's internal food list for immediate effect
-          const foodCell = getCellForPosition(
-            newState.targetFood!.position, // Use the original percentage position for food
-            gridRef.current
-          );
+          newState.behaviorState = 'satisfied';
+          newState.satisfactionTimer = SATISFACTION_DURATION;
+          // Remove eaten food from the grid
+          const foodCell = getCellForPosition(newState.targetFood!.position, gridRef.current);
           if (foodCell) {
-            foodCell.food = foodCell.food.filter(
-              (f) => f.id !== newState.targetFood!.id
-            );
+            foodCell.food = foodCell.food.filter(f => f.id !== newState.targetFood!.id);
           }
         }
       }
-
+      
       // Handle satisfaction state
-      if (newState.behaviorState === "satisfied") {
+      if (newState.behaviorState === 'satisfied') {
         newState.satisfactionTimer! -= deltaTime;
         if (newState.satisfactionTimer! <= 0) {
-          newState.behaviorState = "idle";
+          newState.behaviorState = 'idle';
           newState.targetFood = undefined;
+          // Set a new random target position when returning to idle
+          newState.targetPosition = getSafeTargetPosition(params);
         }
       }
-
+      
       // IMPORTANT: Always set facingLeft based on velocity BEFORE applying any other logic
       // This ensures visual direction always matches actual movement
       if (Math.abs(newState.velocity.x) > 5) {

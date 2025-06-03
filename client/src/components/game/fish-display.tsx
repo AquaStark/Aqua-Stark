@@ -9,6 +9,7 @@ interface FishDisplayProps {
   containerHeight?: number;
   minFishCount?: number; // Minimum number of fish to display
   food?: FoodType[]; // Add food prop
+  onFoodEaten?: (foodId: number) => void;
 }
 
 // Sample fish data for generating additional fish if needed
@@ -49,7 +50,8 @@ export function FishDisplay({
   containerWidth = 1000, 
   containerHeight = 600,
   minFishCount = 15,
-  food = [] // Add food prop with default empty array
+  food = [],
+  onFoodEaten
 }: FishDisplayProps) {
   // Set up container dimensions for fish movement
   const [dimensions, setDimensions] = useState({
@@ -146,6 +148,11 @@ export function FishDisplay({
     }
   }, [allFish, fishWithMovement]);
   
+  // Notify parent when food is eaten
+  const handleFoodEaten = (foodId: number) => {
+    onFoodEaten?.(foodId);
+  };
+
   return (
     <div className="relative w-full h-full fish-container overflow-hidden bg-cyan-500/20">
       {/* Display the number of fish for debugging */}
