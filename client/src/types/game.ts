@@ -8,4 +8,13 @@ export interface FishType {
   }
   rarity: string
   generation: number
+}
+
+export interface FoodType {
+  id: number;
+  position: {
+    x: number;
+    y: number;
+  };
+  createdAt: number; // timestamp for animation and cleanup
 } 
