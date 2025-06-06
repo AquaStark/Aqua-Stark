@@ -2,16 +2,16 @@ import { StoreBundle } from "./store-bundle";
 import { CartItem, useCartStore } from "@/store/use-cart-store";
 import { Package } from "lucide-react";
 import { motion } from "framer-motion";
-import { DecorationBundle } from "@/data/mock-store";
+import { SpecialBundle } from "@/data/mock-store";
 
 interface SpecialBundlesProps {
-  bundles: DecorationBundle[];
+  bundles: SpecialBundle[];
 }
 
 export function SpecialBundles({ bundles }: SpecialBundlesProps) {
   const { addItem, addToRecentlyViewed } = useCartStore();
 
-  const handleBuyBundle = (bundle: DecorationBundle) => {
+  const handleBuyBundle = (bundle: SpecialBundle) => {
     const { id, name, image, price } = bundle;
 
     // Create item object for cart

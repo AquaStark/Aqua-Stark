@@ -189,7 +189,7 @@ export const bundles = [
 ];
 
 // Decoration Tab Data
-export interface DecorationBundle {
+export interface SpecialBundle {
   id: string;
   name: string;
   description: string;
@@ -236,7 +236,7 @@ export const decorationItems = [
   },
 ];
 
-export const decorationBundles: DecorationBundle[] = [
+export const decorationBundles: SpecialBundle[] = [
   {
     id: "bundle-1",
     name: "Nature Pack",

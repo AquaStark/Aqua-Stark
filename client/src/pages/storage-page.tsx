@@ -4,8 +4,8 @@ import { useState } from "react";
 // Removed unused imports: useEffect, Link
 import { Clock, Coins, Filter, Search, SlidersHorizontal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { fishData, type ItemType } from "@/data/mock-game";
 
-import { fishData } from "@/data/mock-game";
 import {
   miscItems,
   bundles,
@@ -23,12 +23,13 @@ import { useCartStore } from "@/store/use-cart-store";
 import { StoreCarousel } from "@/components/store/store-carousel";
 import { BubblesBackground } from "@/components/bubble-background";
 import { useBubbles } from "@/hooks/use-bubbles";
-import { FilterPanel } from "@/components/store/filter-panel";
+import { FilterCategory, FilterPanel } from "@/components/store/filter-panel";
 import { SortDropdown } from "@/components/store/sort-dropdown";
-import { useDebounce } from "@/hooks/use-debounce";
 import { PageHeader } from "@/components/layout/page-header";
 import { Footer } from "@/components/layout/footer";
 import { SpecialBundles } from "@/components/store/special-bundles";
+import { foodData, specialFoodBundles } from "@/data/market-data";
+import { useStoreFilters } from "@/hooks/use-store-filters";
 
 // Define types for our data model
 interface StoreItem {
@@ -49,79 +50,18 @@ interface StoreItem {
 interface Bundle {
   id: string;
   name: string;
-  price: number;
   image: string;
-  description: string;
+  price: number;
+  originalPrice: number;
+  discount: string;
+  tag: string;
+  rarity: string;
   items: string[];
-  discount: number;
-}
-
-// Define the PriceRange type that's expected by FilterPanel
-type PriceRange = [number, number];
-
-// Define types for sort state
-interface SortState {
-  field: "price" | "popularity" | "newest";
-  direction: "asc" | "desc";
-}
-
-// Define types for filter state
-interface FilterState {
-  priceRange: PriceRange;
-  categories: string[];
-  onSale: boolean;
-}
-
-// Custom hook for store filters
-function useStoreFilters() {
-  const [filters, setFilters] = useState<FilterState>({
-    priceRange: [0, 5000],
-    categories: [],
-    onSale: false,
-  });
-
-  const [sort, setSort] = useState<SortState>({
-    field: "price",
-    direction: "asc",
-  });
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const debouncedSearch = useDebounce(searchQuery, 300);
-
-  const updatePriceRange = (range: PriceRange) => {
-    setFilters((prev) => ({ ...prev, priceRange: range }));
-  };
-
-  const updateCategories = (categories: string[]) => {
-    setFilters((prev) => ({ ...prev, categories }));
-  };
-
-  const toggleOnSale = () => {
-    setFilters((prev) => ({ ...prev, onSale: !prev.onSale }));
-  };
-
-  const updateSort = (
-    field: SortState["field"],
-    direction: SortState["direction"]
-  ) => {
-    setSort({ field, direction });
-  };
-
-  return {
-    filters,
-    sort,
-    searchQuery,
-    debouncedSearch,
-    setSearchQuery,
-    updatePriceRange,
-    updateCategories,
-    toggleOnSale,
-    updateSort,
-  };
+  description: string;
 }
 
 export default function StorePage() {
-  const [activeTab, setActiveTab] = useState("fish");
+  const [activeTab, setActiveTab] = useState<ItemType>("fish");
   const [activeCategory, setActiveCategory] = useState("all");
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
@@ -136,7 +76,7 @@ export default function StorePage() {
     updateCategories,
     toggleOnSale,
     updateSort,
-  } = useStoreFilters();
+  } = useStoreFilters({ initialTab: "fish" });
 
   const bubbles = useBubbles();
   const { recentlyViewed } = useCartStore();
@@ -148,6 +88,7 @@ export default function StorePage() {
         return fishData as unknown as StoreItem[];
       case "food":
         // In a real implementation, these would come from their own data files
+        return foodData as unknown as StoreItem[];
         return [] as StoreItem[];
       case "decorations":
         // In a real implementation, these would come from their own data files
@@ -195,7 +136,10 @@ export default function StorePage() {
     // Apply category filter from filter panel
     const filterCategoryMatch =
       filters.categories.length === 0 ||
-      (item.rarity && filters.categories.includes(item.rarity.toLowerCase()));
+      (item.rarity &&
+        filters.categories.includes(
+          item.rarity.toLowerCase() as any as FilterCategory
+        ));
 
     // Apply on sale filter
     const saleMatch =
@@ -241,7 +185,18 @@ export default function StorePage() {
 
   // Check if we should show bundles (only in Others tab)
   const shouldShowBundles = activeTab === "others";
-  const shouldShowSpecialBundles = activeTab === "decorations";
+  const shouldShowSpecialBundles =
+    activeTab === "decorations" || activeTab === "food";
+  const currentlyShowingSpecialBundles = () => {
+    switch (activeTab) {
+      case "decorations":
+        return decorationBundles;
+      case "food":
+        return specialFoodBundles;
+      default:
+        return [];
+    }
+  };
 
   // Get the title for the current tab
   const getTabTitle = () => {
@@ -408,8 +363,8 @@ export default function StorePage() {
               )}
 
               {/* Special Bundles (only for decorations tab) */}
-              {shouldShowSpecialBundles && decorationBundles.length > 0 && (
-                <SpecialBundles bundles={decorationBundles} />
+              {shouldShowSpecialBundles && (
+                <SpecialBundles bundles={currentlyShowingSpecialBundles()} />
               )}
 
               {/* Regular items grid */}

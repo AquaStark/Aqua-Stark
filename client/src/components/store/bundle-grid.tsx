@@ -38,24 +38,24 @@ export function BundleGrid({ bundles }: BundleGridProps) {
           <Package className="mr-2 text-yellow-400" /> Special Bundles
         </h2>
       </motion.div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {bundles.map((bundle) => (
-            <BundleItem
-              key={bundle.id}
-              id={bundle.id}
-              name={bundle.name}
-              image={bundle.image}
-              price={bundle.price}
-              originalPrice={bundle.originalPrice}
-              discount={bundle.discount}
-              tag={bundle.tag}
-              rarity={bundle.rarity}
-              items={bundle.items}
-              description={bundle.description}
-            />
+          <BundleItem
+            key={bundle.id}
+            id={bundle.id}
+            name={bundle.name}
+            image={bundle.image}
+            price={bundle.price}
+            originalPrice={bundle.originalPrice}
+            discount={bundle.discount}
+            tag={bundle.tag}
+            rarity={bundle.rarity}
+            items={bundle.items}
+            description={bundle.description}
+          />
         ))}
       </div>
     </div>
   );
-} 
+}

@@ -14,7 +14,7 @@ interface SortState {
 
 interface SortDropdownProps {
   sort: SortState;
-  updateSort: (field: string, direction: string) => void;
+  updateSort: (field: SortState["field"], direction: string) => void;
   onClose: () => void;
 }
 
@@ -51,7 +51,9 @@ export function SortDropdown({ sort, updateSort, onClose }: SortDropdownProps) {
             onClick={() => handleSort(option.field, option.direction)}
           >
             <span>{option.label}</span>
-            {isActive(option) && <CheckCircle size={16} className="ml-auto text-white" />}
+            {isActive(option) && (
+              <CheckCircle size={16} className="ml-auto text-white" />
+            )}
           </button>
         ))}
       </div>

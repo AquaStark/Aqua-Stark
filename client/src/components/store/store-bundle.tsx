@@ -1,13 +1,34 @@
-import { Bundle } from "@/data/mock-game";
+import { SpecialBundle } from "@/data/mock-store";
 
 interface StoreBundleProps {
-  bundle: Bundle;
-  onBuy: (bundle: Bundle) => void;
+  bundle: SpecialBundle;
+  onBuy: (bundle: SpecialBundle) => void;
 }
+
+const getBundleGradient = (bundleType?: string) => {
+  switch (bundleType) {
+    case "decorations":
+      return "from-blue-700 to-green-700";
+    case "food":
+      return "from-blue-700 to-orange-700";
+    default:
+      return "";
+  }
+};
+
+const savingsPercentage = (data: SpecialBundle) => {
+  const priceDifference = data.originalPrice - data.price;
+  const percentage = (priceDifference / data.originalPrice) * 100;
+  return Math.round(percentage);
+};
 
 export function StoreBundle({ bundle, onBuy }: StoreBundleProps) {
   return (
-    <div className="flex flex-col p-4 mb-4 overflow-hidden rounded-lg bg-gradient-to-r from-blue-700 to-green-700 md:items-center md:flex-row">
+    <div
+      className={`flex flex-col p-4 mb-4 overflow-hidden rounded-lg bg-gradient-to-r md:items-center md:flex-row ${getBundleGradient(
+        bundle.type
+      )}`}
+    >
       <div className="flex flex-col flex-1 ">
         <h3 className="text-lg font-bold text-white">
           {bundle.name.toUpperCase()}
@@ -23,7 +44,7 @@ export function StoreBundle({ bundle, onBuy }: StoreBundleProps) {
           <span className="font-bold text-white">{bundle.price} coins</span>
 
           <div className="px-2 py-1 text-xs font-bold text-white bg-green-500 rounded-full shadow-lg">
-            {bundle.savingsPercentage}% SAVINGS
+            {savingsPercentage(bundle)}% SAVINGS
           </div>
         </div>
       </div>

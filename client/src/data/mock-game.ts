@@ -10,8 +10,6 @@ export interface FishData {
   originalPrice?: number;
 }
 
-
-
 export const fishData: FishData[] = [
   {
     name: "REDGLOW",
@@ -73,5 +71,3 @@ export const fishData: FishData[] = [
     rating: 5.0,
   },
 ];
-
-

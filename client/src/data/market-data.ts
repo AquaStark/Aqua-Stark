@@ -1,4 +1,5 @@
-import type { Fish, Transaction } from "@/types/market"
+import type { Fish, Transaction } from "@/types/market";
+import { SpecialBundle } from "./mock-store";
 
 export const mockFishData: Fish[] = [
   {
@@ -146,7 +147,7 @@ export const mockFishData: Fish[] = [
     price: 350,
     listed: "1 hour ago",
   },
-]
+];
 
 export const mockTransactions: Transaction[] = [
   {
@@ -185,4 +186,61 @@ export const mockTransactions: Transaction[] = [
     exchangedFor: "Sapphire Glider",
     trader: "RareFinder",
   },
-]
+];
+
+export const foodData = [
+  {
+    id: "basic-food-003",
+    name: "Basic Food",
+    image: "/items/basic-food.png",
+    price: 250,
+    rarity: "Common",
+    category: "Supplies",
+    description: "Standard nutrition for common fish species",
+    rating: 3.9,
+    isNew: false,
+    stock: 200,
+    isLimited: false,
+  },
+  {
+    id: "premium-food-004",
+    name: "Premium Food",
+    image: "/items/premium-food.png",
+    price: 500,
+    originalPrice: 600,
+    rarity: "Rare",
+    category: "Supplies",
+    description: "Enhanced formula for better fish health and colors",
+    rating: 4.5,
+    isNew: true,
+    stock: 75,
+    isLimited: false,
+  },
+];
+
+export const specialFoodBundles: SpecialBundle[] = [
+  {
+    id: "bundle-1",
+    name: "Nutrition Pack",
+    description: "A natural themed nutrition pack for fish food.",
+    items: ["deco-1", "deco-2", "deco-3"],
+    itemsDescription: "BASIC FOOD, PREMIUM FOOD, SPECIAL FOOD",
+    originalPrice: 1500,
+    price: 1200,
+    image: "/items/basic-food.png",
+    type: "food",
+    savingsPercentage: 20,
+  },
+  {
+    id: "bundle-2",
+    name: "Gourmet Collection",
+    description: "A collection of premium fish food",
+    items: ["deco-2", "deco-3", "deco-4"],
+    itemsDescription: "PREMIUM FOOD, SPECIAL FOOD, LEGENDARY FOOD",
+    originalPrice: 2500,
+    price: 2000,
+    image: "/items/premium-food.png",
+    type: "food",
+    savingsPercentage: 21,
+  },
+];
