@@ -17,15 +17,15 @@ export function Food({ food, isEaten = false }: FoodProps) {
         left: `${food.position.x}%`,
         top: `${food.position.y}%`,
       }}
-      initial={{ opacity: 0, scale: 0.5 }}
+      initial={{ opacity: 1, scale: 1 }}
       animate={{ 
         opacity: 1, 
         scale: 1,
         y: "90%"
       }}
       transition={{
-        duration: 10,
-        ease: "easeInOut",
+        duration: 0.1, // Very short duration for immediate appearance
+        ease: "linear",
       }}
     >
       <div className="relative">
