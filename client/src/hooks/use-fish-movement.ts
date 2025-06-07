@@ -155,12 +155,13 @@ function findNearestFood(
 
     // Iterate through potential food items and find the nearest one within the detection radius
     for (const food of potentialFood) {
-      // Convert food position from percentage to absolute for distance calculation
+      // Convert food position from percentage to absolute coordinates
       const foodAbsPos = {
-        x: (food.position.x / 100) * grid.width * grid.cellSize, // Use grid dimensions for conversion
+        x: (food.position.x / 100) * grid.width * grid.cellSize,
         y: (food.position.y / 100) * grid.height * grid.cellSize,
       };
 
+      // Calculate distance using absolute coordinates
       const distance = calculateDistance(fishState.position, foodAbsPos);
 
       if (distance < detectionRadius && distance < minDistance) {
@@ -441,7 +442,7 @@ export function useFishMovement(
             
             newState.targetPosition = foodPos;
             
-            // Calculate direction to food
+            // Calculate direction to food using absolute coordinates
             const dx = foodPos.x - newState.position.x;
             const dy = foodPos.y - newState.position.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
@@ -459,8 +460,8 @@ export function useFishMovement(
               newState.facingLeft = newState.velocity.x < 0;
             }
             
-            // Check if fish is close enough to eat
-            if (distance < 20) { // Eating distance threshold
+            // Check if fish is close enough to eat (using absolute coordinates)
+            if (distance < 30) { // Increased eating distance threshold for better accuracy
               newState.behaviorState = 'eating';
               newState.eatingTimer = 1.0; // 1 second eating animation
               // Slow down when eating
