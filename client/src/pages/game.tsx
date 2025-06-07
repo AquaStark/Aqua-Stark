@@ -86,10 +86,8 @@ export default function GamePage() {
       energy: Math.min(prev.energy + 5, 100), // Increase energy by 5, max 100
     }));
 
-    // Remove food after a short delay to show the eating animation
-    setTimeout(() => {
-      setFood(prev => prev.filter(f => f.id !== foodId));
-    }, 300);
+    // Remove food immediately
+    setFood(prev => prev.filter(f => f.id !== foodId));
   }, [updateFishStats]);
 
   // Clean up eaten food state periodically
