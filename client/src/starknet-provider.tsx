@@ -1,33 +1,24 @@
 import type { PropsWithChildren } from "react";
-import { mainnet } from "@starknet-react/chains";
+import { sepolia } from "@starknet-react/chains";
 import { jsonRpcProvider, StarknetConfig, voyager } from "@starknet-react/core";
-import { dojoConfig } from "../dojoConfig";
-import {
-    predeployedAccounts,
-    PredeployedAccountsConnector,
-} from "@dojoengine/predeployed-connector";
-
-let pa: PredeployedAccountsConnector[] = [];
-predeployedAccounts({
-    rpc: dojoConfig.rpcUrl as string,
-    id: "katana",
-    name: "Katana",
-}).then((p) => (pa = p));
+import cartridgeConnector from "./cartredgeConnector";
 
 export default function StarknetProvider({ children }: PropsWithChildren) {
-    const provider = jsonRpcProvider({
-        rpc: () => ({ nodeUrl: dojoConfig.rpcUrl as string }),
-    });
+  const provider = jsonRpcProvider({
+    rpc: () => {
+      return { nodeUrl: "https://api.cartridge.gg/x/starknet/sepolia" };
+    },
+  });
 
-    return (
-        <StarknetConfig
-            chains={[mainnet]}
-            provider={provider}
-            connectors={pa}
-            explorer={voyager}
-            autoConnect
-        >
-            {children}
-        </StarknetConfig>
-    );
+  return (
+    <StarknetConfig
+      autoConnect
+      chains={[sepolia]}
+      provider={provider}
+      connectors={[cartridgeConnector]}
+      explorer={voyager}
+    >
+      {children}
+    </StarknetConfig>
+  );
 }

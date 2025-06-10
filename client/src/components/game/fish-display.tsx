@@ -45,13 +45,17 @@ const fallbackImages = [
   "/fish/fish1.png" // This is our guaranteed file
 ];
 
-export function FishDisplay({ 
+export function FishDisplay({
   fish, 
   containerWidth = 1000, 
   containerHeight = 600,
+<<<<<<< HEAD
   minFishCount = 15,
   food = [],
   onFoodEaten
+=======
+  minFishCount = 10 // Increase fish count even more for visibility
+>>>>>>> upstream/main
 }: FishDisplayProps) {
   // Set up container dimensions for fish movement
   const [dimensions, setDimensions] = useState({
@@ -125,11 +129,10 @@ export function FishDisplay({
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-  
+
   // Log when dimensions change to help debug
-  useEffect(() => {    
-  }, [dimensions]);
-  
+  useEffect(() => { }, [dimensions]);
+
   // Use the fish movement hook to animate fish positions
   const fishWithMovement = useFishMovement(allFish, {
     aquariumBounds: dimensions,
@@ -137,14 +140,13 @@ export function FishDisplay({
   }, food); // Pass food to useFishMovement
   
   // Diagnostic logging for fish count discrepancy
-  useEffect(() => {   
-    
+  useEffect(() => {
     // Check if all fish IDs are present in the movement results
-    const allFishIds = new Set(allFish.map(f => f.id));
-    const movementFishIds = new Set(fishWithMovement.map(f => f.id));
-    const missingIds = [...allFishIds].filter(id => !movementFishIds.has(id));
+    const allFishIds = new Set(allFish.map((f) => f.id));
+    const movementFishIds = new Set(fishWithMovement.map((f) => f.id));
+    const missingIds = [...allFishIds].filter((id) => !movementFishIds.has(id));
     
-    if (missingIds.length > 0) {      
+    if (missingIds.length > 0) {
     }
   }, [allFish, fishWithMovement]);
   
@@ -162,8 +164,8 @@ export function FishDisplay({
       
       {fishWithMovement.map((fishState) => {
         // Find the original fish data by ID
-        const fishData = allFish.find(f => f.id === fishState.id);
-        if (!fishData) {          
+        const fishData = allFish.find((f) => f.id === fishState.id);
+        if (!fishData) {
           return null;
         }
         
@@ -179,4 +181,4 @@ export function FishDisplay({
       })}
     </div>
   );
-} 
+}

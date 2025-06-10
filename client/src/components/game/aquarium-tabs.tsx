@@ -1,6 +1,7 @@
 import React from "react"
 import { Grid } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { MOCK_AQUARIUMS } from "@/data/game-data"
 
 interface AquariumTabProps {
   name: string
@@ -27,9 +28,9 @@ function AquariumTab({ name, active, icon, onClick }: AquariumTabProps) {
 }
 
 interface AquariumTabsProps {
-  aquariums: string[]
-  selectedAquarium: string
-  onAquariumSelect: (aquarium: string) => void
+  aquariums: typeof MOCK_AQUARIUMS
+  selectedAquarium: (typeof MOCK_AQUARIUMS)[0]
+  onAquariumSelect: (aquarium?: (typeof MOCK_AQUARIUMS)[0]) => void
 }
 
 export function AquariumTabs({
@@ -43,20 +44,20 @@ export function AquariumTabs({
         <div className="flex gap-2">
           {aquariums.map((aquarium) => (
             <AquariumTab
-              key={aquarium}
-              name={aquarium}
+              key={aquarium.id}
+              name={aquarium.name}
               active={selectedAquarium === aquarium}
               onClick={() => onAquariumSelect(aquarium)}
             />
           ))}
           <AquariumTab
             name="View All"
-            active={false}
+            active={selectedAquarium.id === 0}
             icon={<Grid className="h-4 w-4 mr-1" />}
-            onClick={() => alert("View All Aquariums")}
+            onClick={() => onAquariumSelect()}
           />
         </div>
       </div>
     </div>
   )
-} 
+}

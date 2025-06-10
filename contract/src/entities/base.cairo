@@ -224,4 +224,5 @@ pub mod CustomErrors {
     pub const AUCTION_NOT_ENDED: felt252 = 'AUCTION NOT ENDED';
     pub const AUCTION_ENDED: felt252 = 'AUCTION ENDED';
     pub const ALREADY_REGISTERED: felt252 = 'ALREADY_REGISTERED';
+    pub const USERNAME_EXISTS: felt252 = 'USERNAME_EXISTS';
 }

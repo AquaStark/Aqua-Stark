@@ -21,13 +21,11 @@ import {
   voyager,
 } from "@starknet-react/core";
 import { mainnet, sepolia } from "@starknet-react/chains";
+import cartridgeConnector from "./cartredgeConnector";
 
 function App() {
   const { connectors } = useInjectedConnectors({
-    recommended: [argent(), braavos()],
-    includeRecommended: "onlyIfNoConnectors",
-    order: "random",
-    
+    recommended: [argent(), braavos(), cartridgeConnector],
   });
 
   return (

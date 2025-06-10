@@ -5,12 +5,21 @@ use starknet::ContractAddress;
 pub struct Player {
     #[key]
     pub wallet: ContractAddress,
+    pub username: felt252,
     pub id: u64,
     pub inventory_ref: ContractAddress,
     pub is_verified: bool,
     pub registered_at: u64,
     pub experience: u64,
     pub level: u32,
+}
+
+#[derive(Copy, Drop, Serde, Debug)]
+#[dojo::model]
+pub struct UsernamePlayerMapping {
+    #[key]
+    username: felt252,
+    wallet: ContractAddress
 }
 
 #[generate_trait]

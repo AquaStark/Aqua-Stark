@@ -8,6 +8,7 @@ dependencies = [
  "dojo",
  "dojo_cairo_test",
  "openzeppelin_token",
+ "origami_map",
 ]
 
 [[package]]
