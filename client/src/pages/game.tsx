@@ -1,22 +1,4 @@
-<<<<<<< HEAD
 "use client";
-=======
-"use client"
-
-import { useState } from "react"
-import { GameHeader } from "@/components/game/game-header"
-import { GameSidebarButtons } from "@/components/game/game-sidebar-buttons"
-import { AquariumTabs } from "@/components/game/aquarium-tabs"
-import { TipsPopup } from "@/components/game/tips-popup"
-import { FishDisplay } from "@/components/game/fish-display"
-import { INITIAL_GAME_STATE } from "@/data/game-data"
-import { useAquarium } from "@/hooks/use-aquarium"
-import { useFishStats } from "@/hooks/use-fish-stats"
-import { GameMenu } from "@/components/game/game-menu"
-import { useBubbles } from "@/hooks/use-bubbles"
-import { BubblesBackground } from "@/components/bubble-background"
-import { motion } from "framer-motion"
->>>>>>> upstream/main
 
 import { useState, useCallback, useEffect } from "react";
 import { GameHeader } from "@/components/game/game-header";
@@ -32,6 +14,7 @@ import { useBubbles } from "@/hooks/use-bubbles";
 import { BubblesBackground } from "@/components/bubble-background";
 import { Food } from "@/components/aquarium/food";
 import { FoodType } from "@/types/game";
+import { motion } from "framer-motion";
 console.log("");
 export default function GamePage() {
   const {
@@ -145,23 +128,6 @@ export default function GamePage() {
       <div className="absolute inset-0 animate-water-movement z-20"></div>
 
       {/* Fish */}
-<<<<<<< HEAD
-      <div className="absolute inset-0 z-10 cursor-pointer">
-        <FishDisplay 
-          fish={MOCK_FISH} 
-          food={food} 
-          onFoodEaten={handleFoodEaten}
-        />
-
-        {food.map((foodItem) => (
-          <Food 
-            key={foodItem.id} 
-            food={foodItem} 
-            isEaten={eatenFood.includes(foodItem.id)}
-          />
-        ))}
-      </div>
-=======
       <motion.div
         key={selectedAquarium.id}
         initial={{ opacity: 0, y: 20 }}
@@ -172,7 +138,6 @@ export default function GamePage() {
       >
         <FishDisplay fish={selectedAquarium.fishes} />
       </motion.div>
->>>>>>> upstream/main
 
       {/* Header */}
       <GameHeader

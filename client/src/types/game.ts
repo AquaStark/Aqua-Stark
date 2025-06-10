@@ -10,7 +10,6 @@ export interface FishType {
   generation: number
 }
 
-<<<<<<< HEAD
 export interface FoodType {
   id: number;
   position: {
@@ -19,10 +18,8 @@ export interface FoodType {
   };
   createdAt: number; // timestamp for animation and cleanup
 } 
-=======
 export interface AquariumData {
   id: any
   name: string
   fishes: FishType[]
 }
->>>>>>> upstream/main

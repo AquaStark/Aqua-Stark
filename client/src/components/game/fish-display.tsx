@@ -49,13 +49,9 @@ export function FishDisplay({
   fish, 
   containerWidth = 1000, 
   containerHeight = 600,
-<<<<<<< HEAD
   minFishCount = 15,
   food = [],
   onFoodEaten
-=======
-  minFishCount = 10 // Increase fish count even more for visibility
->>>>>>> upstream/main
 }: FishDisplayProps) {
   // Set up container dimensions for fish movement
   const [dimensions, setDimensions] = useState({
