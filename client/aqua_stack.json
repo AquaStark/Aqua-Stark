@@ -1,0 +1,681 @@
+[
+    {
+      "type": "impl",
+      "name": "AquaStark__ContractImpl",
+      "interface_name": "dojo::contract::interface::IContract"
+    },
+    {
+      "type": "interface",
+      "name": "dojo::contract::interface::IContract",
+      "items": []
+    },
+    {
+      "type": "impl",
+      "name": "AquaStark__DeployedContractImpl",
+      "interface_name": "dojo::meta::interface::IDeployedResource"
+    },
+    {
+      "type": "struct",
+      "name": "core::byte_array::ByteArray",
+      "members": [
+        {
+          "name": "data",
+          "type": "core::array::Array::<core::bytes_31::bytes31>"
+        },
+        {
+          "name": "pending_word",
+          "type": "core::felt252"
+        },
+        {
+          "name": "pending_word_len",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "dojo::meta::interface::IDeployedResource",
+      "items": [
+        {
+          "type": "function",
+          "name": "dojo_name",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "core::byte_array::ByteArray"
+            }
+          ],
+          "state_mutability": "view"
+        }
+      ]
+    },
+    {
+      "type": "impl",
+      "name": "AquaStarkImpl",
+      "interface_name": "aqua_stark::interfaces::IAquaStark::IAquaStark"
+    },
+    {
+      "type": "enum",
+      "name": "aqua_stark::models::fish_model::Species",
+      "variants": [
+        {
+          "name": "AngelFish",
+          "type": "()"
+        },
+        {
+          "name": "GoldFish",
+          "type": "()"
+        },
+        {
+          "name": "Betta",
+          "type": "()"
+        },
+        {
+          "name": "NeonTetra",
+          "type": "()"
+        },
+        {
+          "name": "Corydoras",
+          "type": "()"
+        },
+        {
+          "name": "Hybrid",
+          "type": "()"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "core::integer::u256",
+      "members": [
+        {
+          "name": "low",
+          "type": "core::integer::u128"
+        },
+        {
+          "name": "high",
+          "type": "core::integer::u128"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "aqua_stark::models::decoration_model::Decoration",
+      "members": [
+        {
+          "name": "id",
+          "type": "core::integer::u256"
+        },
+        {
+          "name": "owner",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "aquarium_id",
+          "type": "core::integer::u256"
+        },
+        {
+          "name": "name",
+          "type": "core::felt252"
+        },
+        {
+          "name": "description",
+          "type": "core::felt252"
+        },
+        {
+          "name": "price",
+          "type": "core::integer::u256"
+        },
+        {
+          "name": "rarity",
+          "type": "core::felt252"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "aqua_stark::models::aquarium_model::Aquarium",
+      "members": [
+        {
+          "name": "id",
+          "type": "core::integer::u256"
+        },
+        {
+          "name": "owner",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "max_capacity",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "cleanliness",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "housed_fish",
+          "type": "core::array::Array::<core::integer::u64>"
+        }
+      ]
+    },
+    {
+      "type": "enum",
+      "name": "aqua_stark::models::fish_model::Pattern",
+      "variants": [
+        {
+          "name": "Plain",
+          "type": "()"
+        },
+        {
+          "name": "Spotted",
+          "type": "()"
+        },
+        {
+          "name": "Stripes",
+          "type": "()"
+        }
+      ]
+    },
+    {
+      "type": "enum",
+      "name": "core::bool",
+      "variants": [
+        {
+          "name": "False",
+          "type": "()"
+        },
+        {
+          "name": "True",
+          "type": "()"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "aqua_stark::models::fish_model::Fish",
+      "members": [
+        {
+          "name": "id",
+          "type": "core::integer::u256"
+        },
+        {
+          "name": "fish_type",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "age",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "hunger_level",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "health",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "growth",
+          "type": "core::integer::u64"
+        },
+        {
+          "name": "growth_rate",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "owner",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "species",
+          "type": "aqua_stark::models::fish_model::Species"
+        },
+        {
+          "name": "generation",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "color",
+          "type": "core::felt252"
+        },
+        {
+          "name": "pattern",
+          "type": "aqua_stark::models::fish_model::Pattern"
+        },
+        {
+          "name": "size",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "speed",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "birth_time",
+          "type": "core::integer::u64"
+        },
+        {
+          "name": "parent_ids",
+          "type": "(core::integer::u256, core::integer::u256)"
+        },
+        {
+          "name": "mutation_rate",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "growth_counter",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "can_grow",
+          "type": "core::bool"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "aqua_stark::models::player_model::Player",
+      "members": [
+        {
+          "name": "wallet",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "id",
+          "type": "core::integer::u256"
+        },
+        {
+          "name": "username",
+          "type": "core::felt252"
+        },
+        {
+          "name": "inventory_ref",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "is_verified",
+          "type": "core::bool"
+        },
+        {
+          "name": "aquarium_count",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "fish_count",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "decoration_count",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "registered_at",
+          "type": "core::integer::u64"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "aqua_stark::interfaces::IAquaStark::IAquaStark",
+      "items": [
+        {
+          "type": "function",
+          "name": "get_username_from_address",
+          "inputs": [
+            {
+              "name": "address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::felt252"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "register",
+          "inputs": [
+            {
+              "name": "username",
+              "type": "core::felt252"
+            },
+            {
+              "name": "species",
+              "type": "aqua_stark::models::fish_model::Species"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "create_new_player_id",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "core::integer::u256"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "create_decoration_id",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "core::integer::u256"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "new_decoration",
+          "inputs": [
+            {
+              "name": "aquarium_id",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "name",
+              "type": "core::felt252"
+            },
+            {
+              "name": "description",
+              "type": "core::felt252"
+            },
+            {
+              "name": "price",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "rarity",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "aqua_stark::models::decoration_model::Decoration"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "create_aquarium_id",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "core::integer::u256"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "create_fish_id",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "core::integer::u256"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "new_aquarium",
+          "inputs": [
+            {
+              "name": "owner",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "max_capacity",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "aqua_stark::models::aquarium_model::Aquarium"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "new_fish",
+          "inputs": [
+            {
+              "name": "owner",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "species",
+              "type": "aqua_stark::models::fish_model::Species"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "aqua_stark::models::fish_model::Fish"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "get_player",
+          "inputs": [
+            {
+              "name": "address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "aqua_stark::models::player_model::Player"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "get_fish",
+          "inputs": [
+            {
+              "name": "id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "aqua_stark::models::fish_model::Fish"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "get_aquarium",
+          "inputs": [
+            {
+              "name": "id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "aqua_stark::models::aquarium_model::Aquarium"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "get_decoration",
+          "inputs": [
+            {
+              "name": "id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "aqua_stark::models::decoration_model::Decoration"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "add_fish_to_aquarium",
+          "inputs": [
+            {
+              "name": "fish",
+              "type": "aqua_stark::models::fish_model::Fish"
+            },
+            {
+              "name": "aquarium_id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "add_decoration_to_aquarium",
+          "inputs": [
+            {
+              "name": "decoration",
+              "type": "aqua_stark::models::decoration_model::Decoration"
+            },
+            {
+              "name": "aquarium_id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "dojo_init",
+      "inputs": [],
+      "outputs": [],
+      "state_mutability": "view"
+    },
+    {
+      "type": "impl",
+      "name": "WorldProviderImpl",
+      "interface_name": "dojo::contract::components::world_provider::IWorldProvider"
+    },
+    {
+      "type": "struct",
+      "name": "dojo::world::iworld::IWorldDispatcher",
+      "members": [
+        {
+          "name": "contract_address",
+          "type": "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "dojo::contract::components::world_provider::IWorldProvider",
+      "items": [
+        {
+          "type": "function",
+          "name": "world_dispatcher",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "dojo::world::iworld::IWorldDispatcher"
+            }
+          ],
+          "state_mutability": "view"
+        }
+      ]
+    },
+    {
+      "type": "impl",
+      "name": "UpgradeableImpl",
+      "interface_name": "dojo::contract::components::upgradeable::IUpgradeable"
+    },
+    {
+      "type": "interface",
+      "name": "dojo::contract::components::upgradeable::IUpgradeable",
+      "items": [
+        {
+          "type": "function",
+          "name": "upgrade",
+          "inputs": [
+            {
+              "name": "new_class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "constructor",
+      "name": "constructor",
+      "inputs": []
+    },
+    {
+      "type": "event",
+      "name": "dojo::contract::components::upgradeable::upgradeable_cpt::Upgraded",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "Upgraded",
+          "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Upgraded",
+          "kind": "nested"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::contract::components::world_provider::world_provider_cpt::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "event",
+      "name": "aqua_stark::systems::AquaStark::AquaStark::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "UpgradeableEvent",
+          "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
+          "kind": "nested"
+        },
+        {
+          "name": "WorldProviderEvent",
+          "type": "dojo::contract::components::world_provider::world_provider_cpt::Event",
+          "kind": "nested"
+        }
+      ]
+    }
+  ]

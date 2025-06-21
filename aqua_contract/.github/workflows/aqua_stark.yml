@@ -1,0 +1,39 @@
+name: Contracts CI
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@v2
+
+      - name: Install plugins
+        run: |
+          asdf plugin add scarb
+          asdf install scarb 2.10.1
+          asdf global scarb 2.10.1
+          asdf plugin add dojo https://github.com/dojoengine/asdf-dojo
+          asdf install dojo 1.5.0
+          asdf global dojo 1.5.0
+      - name: Build contracts
+        run: |
+          sozo build
+      - name: Run tests
+        run: |
+          sozo test
+      - name: Check formatting
+        run: |
+          scarb fmt --check

@@ -1,9 +1,13 @@
-import { useState } from "react"
-import { MOCK_AQUARIUMS } from "@/data/game-data"
-import { AquariumData } from "@/types/game"
+import { MOCK_AQUARIUMS } from "@/data/game-data";
+import { AquariumData } from "@/types/game";
+import { useDojoSDK } from "@dojoengine/sdk/react";
+import { useState } from "react";
+import { Account, AccountInterface } from "starknet";
 
 export function useAquarium() {
-  const [selectedAquarium, setSelectedAquarium] = useState(MOCK_AQUARIUMS[0])
+  const { client } = useDojoSDK();
+  console.log("client", client);
+  const [selectedAquarium, setSelectedAquarium] = useState(MOCK_AQUARIUMS[0]);
   const mergedAquariums: AquariumData = {
     id: 0,
     name: "View All",
@@ -22,9 +26,27 @@ export function useAquarium() {
     }
   };
 
+  const handleNewAquarium = async (
+    account: Account | AccountInterface,
+    owner: string,
+    maxCapacity: number
+  ) => {
+    try {
+      const res = await client.AquaStark.newAquarium(
+        account,
+        owner,
+        maxCapacity
+      );
+      return res;
+    } catch (error) {
+      console.log("error creating aquarium", error);
+    }
+  };
+
   return {
     selectedAquarium,
     handleAquariumChange,
     aquariums: MOCK_AQUARIUMS,
-  }
+    handleNewAquarium,
+  };
 }

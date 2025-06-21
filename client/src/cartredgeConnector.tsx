@@ -1,8 +1,10 @@
-import { Connector } from "@starknet-react/core";
 import { ControllerConnector } from "@cartridge/connector";
-import { ControllerOptions } from "@cartridge/controller";
-import ColorMode from "@cartridge/controller";
-import SessionPolicies from "@cartridge/controller";
+import {
+  default as ColorMode,
+  ControllerOptions,
+  default as SessionPolicies,
+} from "@cartridge/controller";
+import { Connector } from "@starknet-react/core";
 import { constants } from "starknet";
 
 const CONTRACT_ADDRESS_GAME =

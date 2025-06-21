@@ -1,0 +1,42 @@
+[world]
+name = "Dojo starter"
+description = "The official Dojo Starter guide, the quickest and most streamlined way to get your Dojo Autonomous World up and running. This guide will assist you with the initial setup, from cloning the repository to deploying your world."
+cover_uri = "file://assets/cover.png"
+icon_uri = "file://assets/icon.png"
+website = "https://github.com/dojoengine/dojo-starter"
+seed = "aqua_stark61161"
+
+[world.socials]
+x = "https://x.com/ohayo_dojo"
+discord = "https://discord.gg/FB2wR6uF"
+github = "https://github.com/dojoengine/dojo-starter"
+telegram = "https://t.me/dojoengine"
+
+[namespace]
+default = "aqua_stark"
+
+[env]
+# rpc_url = ""         # env: STARKNET_RPC_URL
+# account_address = "" # env: DOJO_ACCOUNT_ADDRESS
+# private_key = ""     # env: DOJO_PRIVATE_KEY
+# world_address = ""
+
+[writers]
+"aqua_stark" = ["aqua_stark-AquaStark"]
+"aqua_stark-Aquarium" = ["aqua_stark-AquaStark"]
+"aqua_stark-AquariumCounter" = ["aqua_stark-AquaStark"]
+"aqua_stark-AquariumOwner" = ["aqua_stark-AquaStark"]
+"aqua_stark-AquariumFishes" = ["aqua_stark-AquaStark"]
+"aqua_stark-Decoration" = ["aqua_stark-AquaStark"]
+"aqua_stark-DecorationCounter" = ["aqua_stark-AquaStark"]
+"aqua_stark-FishCounter" = ["aqua_stark-AquaStark"]
+"aqua_stark-FishOwner" = ["aqua_stark-AquaStark"]
+"aqua_stark-Fish" = ["aqua_stark-AquaStark"]
+"aqua_stark-GameCounter" = ["aqua_stark-AquaStark"]
+"aqua_stark-Game" = ["aqua_stark-AquaStark"]
+"aqua_stark-PlayerCounter" = ["aqua_stark-AquaStark"]
+"aqua_stark-PlayerFishes" = ["aqua_stark-AquaStark"]
+"aqua_stark-PlayerFish" = ["aqua_stark-AquaStark"]
+"aqua_stark-UsernameToAddress" = ["aqua_stark-AquaStark"]
+"aqua_stark-AddressToUsername" = ["aqua_stark-AquaStark"]
+"aqua_stark-Player" = ["aqua_stark-AquaStark"]

@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { useBubbles } from "@/hooks/use-bubbles"
-import { Navbar } from "@/components/landing/navbar"
-import { HeroSection } from "@/components/landing/hero-section"
-import { FeaturedFish } from "@/components/landing/featured-fish"
-import { FishStatusTips } from "@/components/landing/fish-status-tips"
-import { ReadyToPlay } from "@/components/landing/ready-to-play"
-import { Footer } from "@/components/layout/footer"
-import { BubblesBackground } from "@/components/bubble-background"
+import { BubblesBackground } from "@/components/bubble-background";
+import { FeaturedFish } from "@/components/landing/featured-fish";
+import { FishStatusTips } from "@/components/landing/fish-status-tips";
+import { HeroSection } from "@/components/landing/hero-section";
+import { Navbar } from "@/components/landing/navbar";
+import { ReadyToPlay } from "@/components/landing/ready-to-play";
+import { Footer } from "@/components/layout/footer";
+import { useBubbles } from "@/hooks/use-bubbles";
 
 export default function LandingPage() {
   const bubbles = useBubbles({
@@ -25,7 +25,6 @@ export default function LandingPage() {
       <div className="water-movement"></div>
       <BubblesBackground bubbles={bubbles} />
       <Navbar />
-
       <main className="relative  container mx-auto px-4 py-8 flex flex-col items-center">
         <HeroSection />
         <FeaturedFish />
@@ -35,6 +34,5 @@ export default function LandingPage() {
 
       <Footer />
     </div>
-  )
+  );
 }
-
