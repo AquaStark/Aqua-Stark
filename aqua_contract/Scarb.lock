@@ -2,9 +2,18 @@
 version = 1
 
 [[package]]
+name = "achievement"
+version = "0.0.0"
+source = "git+https://github.com/cartridge-gg/arcade?tag=v0.0.0#5fceaacd8f25891abf9d292badcfb6ea490929bd"
+dependencies = [
+ "dojo",
+]
+
+[[package]]
 name = "aqua_stark"
 version = "1.5.0"
 dependencies = [
+ "achievement",
  "dojo",
  "dojo_cairo_test",
 ]

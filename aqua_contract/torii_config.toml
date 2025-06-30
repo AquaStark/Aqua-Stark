@@ -1,0 +1,23 @@
+# The World address to index.
+world_address = ""
+ 
+# Default RPC URL configuration
+rpc = "https://api.cartridge.gg/x/starknet/sepolia"
+
+# Indexing Options
+[indexing]
+contracts = [
+  "erc20:0x49d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7", # ETH fee token
+  "erc20:0x4718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d", # STRK fee token
+]
+allowed_origins = ["*"]
+transactions = true
+pending = true
+polling_interval = 1000
+contracts = []
+
+[events]
+raw = true
+
+[sql]
+historical = ["aqua_stark-TrophyProgression"] 

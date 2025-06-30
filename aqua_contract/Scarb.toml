@@ -8,15 +8,18 @@ edition = "2024_07"
 sierra-replace-ids = true
 
 [scripts]
-migrate = "sozo build && sozo migrate"                      # scarb run migrate
-spawn = "sozo execute dojo_starter-actions spawn --wait"    # scarb run spawn
-move = "sozo execute dojo_starter-actions move -c 1 --wait" # scarb run move
+sepolia = "sozo --profile sepolia clean && sozo --profile sepolia build && sozo --profile sepolia migrate --account-address $DEPLOYER_ACCOUNT_ADDRESS --private-key $DEPLOYER_PRIVATE_KEY --fee strk"
 
 [dependencies]
 dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.5.0" }
+achievement = { git = "https://github.com/cartridge-gg/arcade", tag = "v0.0.0" }
 
 [[target.starknet-contract]]
-build-external-contracts = ["dojo::world::world_contract::world"]
+build-external-contracts = [
+    "dojo::world::world_contract::world",
+    "achievement::events::index::e_TrophyCreation", 
+    "achievement::events::index::e_TrophyProgression", 
+]
 
 [dev-dependencies]
 cairo_test = "=2.10.1"
