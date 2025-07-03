@@ -38,5 +38,3 @@ pub trait IAquaStark<T> {
     fn get_player_decoration_count(self: @T, player: ContractAddress) -> u32;
     fn is_verified(self: @T, player: ContractAddress) -> bool;
 }
-
-// 
