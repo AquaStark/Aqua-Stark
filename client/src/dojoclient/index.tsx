@@ -6,7 +6,7 @@ import {
   CairoCustomEnum,
 } from "starknet";
 import { setupWorld } from "../typescript/contracts.gen";
-import { Decoration, Fish } from "../typescript/models.gen";
+import { Decoration, Fish, } from "../typescript/models.gen";
 
 type ClientType = ReturnType<typeof setupWorld>;
 
@@ -94,8 +94,8 @@ export function useAquaStark({ client, account }: UseAquaStarkProps) {
   );
 
   const newAquarium = useCallback(
-    (owner: string, maxCapacity: BigNumberish) => {
-      return client.AquaStark.newAquarium(account, owner, maxCapacity);
+    (owner: string, maxCapacity: BigNumberish, maxDecorations: BigNumberish) => {
+      return client.AquaStark.newAquarium(account, owner, maxCapacity, maxDecorations);
     },
     [client, account]
   );

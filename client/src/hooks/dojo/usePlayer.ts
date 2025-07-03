@@ -62,10 +62,23 @@ export const usePlayer = () => {
     [client]
   );
 
+    const isVerified = useCallback(
+    async (playerAddress: string): Promise<boolean> => {
+      try {
+        return await client.AquaStark.isVerified(playerAddress);
+      } catch (error) {
+        console.error("Error checking verification status:", error);
+        throw error;
+      }
+    },
+    [client]
+  );
+
   return {
     registerPlayer,
     getPlayer,
     getUsernameFromAddress,
     createNewPlayerId,
+    isVerified,
   };
 };

@@ -46,15 +46,7 @@ pub struct AddressToUsername {
     pub username: felt252,
 }
 
-// #[derive(Serde, Clone, Drop, Introspect)]
-// #[dojo::model]
-// pub struct PlayerAquarium {
-//     #[key]
-//     pub aquarium: Aquarium,
-//     #[key]
-//     pub game_id: u256,
-//     pub owner: ContractAddress,
-// }
+
 
 #[derive(Clone, Drop, Serde)]
 #[dojo::model]
@@ -103,7 +95,7 @@ impl PlayerImpl of PlayerTrait {
             id: id,
             username: username,
             inventory_ref: inventory_ref,
-            is_verified: false,
+            is_verified: true,
             registered_at: timestamp,
             aquarium_count: 0,
             decoration_count: 0,

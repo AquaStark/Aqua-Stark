@@ -24,9 +24,10 @@ export const useAquarium = () => {
     async (
       account: Account | AccountInterface,
       owner: string,
-      maxCapacity: BigNumberish
+      maxCapacity: BigNumberish,
+      maxDecorations: BigNumberish
     ) => {
-      return await client.AquaStark.newAquarium(account, owner, maxCapacity);
+      return await client.AquaStark.newAquarium(account, owner, maxCapacity, maxDecorations);
     },
     [client]
   );
@@ -61,11 +62,28 @@ export const useAquarium = () => {
     [client]
   );
 
+  const getPlayerAquariums = useCallback(
+  async (playerAddress: string) => {
+    return await client.AquaStark.getPlayerAquariums(playerAddress);
+  },
+  [client]
+);
+
+const getPlayerAquariumCount = useCallback(
+  async (playerAddress: string) => {
+    return await client.AquaStark.getPlayerAquariumCount(playerAddress);
+  },
+  [client]
+);
+
+
   return {
     createAquariumId,
     getAquarium,
     newAquarium,
     addFishToAquarium,
     addDecorationToAquarium,
+    getPlayerAquariums,
+    getPlayerAquariumCount
   };
 };
