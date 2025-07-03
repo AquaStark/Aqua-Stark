@@ -47,7 +47,6 @@ pub struct AddressToUsername {
 }
 
 
-
 #[derive(Clone, Drop, Serde)]
 #[dojo::model]
 pub struct Player {

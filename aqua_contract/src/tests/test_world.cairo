@@ -160,6 +160,5 @@ mod tests {
         assert(player.decoration_count == 2, 'Player deco count mismatch');
         assert(*player.player_decorations[1] == decoration.id, 'Player decoration ID mismatch');
     }
-
 }
 
