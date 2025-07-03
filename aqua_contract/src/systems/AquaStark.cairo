@@ -233,6 +233,12 @@ pub mod AquaStark {
                 );
         }
 
+        fn is_verified(self: @ContractState, player: ContractAddress) -> bool {
+            let mut world = self.world_default();
+            let player_model: Player = world.read_model(player);
+            player_model.is_verified
+        }
+
 
         fn get_player(self: @ContractState, address: ContractAddress) -> Player {
             let mut world = self.world_default();

@@ -160,27 +160,5 @@ mod tests {
         assert(player.decoration_count == 2, 'Player deco count mismatch');
         assert(*player.player_decorations[1] == decoration.id, 'Player decoration ID mismatch');
     }
-    // #[test]
-// fn test_add_fish_to_aquarium() {
-//     // Initialize test environment
-//     let caller = contract_address_const::<'aji'>();
-//     let ndef = namespace_def();
-//     let mut world = spawn_test_world([ndef].span());
-//     world.sync_perms_and_inits(contract_defs());
-//     let (contract_address, _) = world.dns(@"AquaStark").unwrap();
-//     let actions_system = IAquaStarkDispatcher { contract_address };
-//     testing::set_contract_address(caller);
-//     actions_system.register('Aji');
-//     let aquarium = actions_system.new_aquarium(caller, 10, 10);
-//     let fish = actions_system.new_fish(caller, Species::GoldFish);
-//     actions_system.add_fish_to_aquarium(fish, aquarium.id);
-//     let updated_aquarium = actions_system.get_aquarium(aquarium.id);
-//     let player = actions_system.get_player(caller);
-//     assert(updated_aquarium.fishes.len() == 1, 'Fish not added to aquarium');
-//     assert(updated_aquarium.fishes[0] == fish.id, 'Fish ID mismatch in aquarium');
-//     assert(player.fish_count == 1, 'Player fish count mismatch after adding to aquarium');
-//     assert(*player.player_fishes[0] == fish.id, 'Player fish ID mismatch after adding to
-//     aquarium');
-// }
 }
 

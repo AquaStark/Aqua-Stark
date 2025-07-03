@@ -24,20 +24,36 @@ export const useFish = () => {
     [client]
   );
 
-  const newFish = useCallback(
-    async (
-      account: Account | AccountInterface,
-      owner: string,
-      species: CairoCustomEnum
-    ) => {
-      return await client.AquaStark.newFish(account, owner, species);
-    },
-    [client]
-  );
+const newFish = useCallback(
+  async (
+    account: Account | AccountInterface,
+    aquariumId: BigNumberish,
+    species: CairoCustomEnum
+  ) => {
+    return await client.AquaStark.newFish(account, aquariumId, species,);
+  },
+  [client]
+);
+const getPlayerFishes = useCallback(
+  async (playerAddress: string) => {
+    return await client.AquaStark.getPlayerFishes(playerAddress);
+  },
+  [client]
+);
+
+const getPlayerFishCount = useCallback(
+  async (playerAddress: string) => {
+    return await client.AquaStark.getPlayerFishCount(playerAddress);
+  },
+  [client]
+);
+
 
   return {
     createFishId,
     getFish,
     newFish,
+    getPlayerFishes,
+    getPlayerFishCount,
   };
 };

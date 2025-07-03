@@ -40,9 +40,26 @@ export const useDecoration = () => {
     [client]
   );
 
+  const getPlayerDecorations = useCallback(
+  async (playerAddress: string) => {
+    return await client.AquaStark.getPlayerDecorations(playerAddress);
+  },
+  [client]
+);
+
+const getPlayerDecorationCount = useCallback(
+  async (playerAddress: string) => {
+    return await client.AquaStark.getPlayerDecorationCount(playerAddress);
+  },
+  [client]
+);
+
+
   return {
     createDecorationId,
     getDecoration,
     newDecoration,
+    getPlayerDecorations,
+    getPlayerDecorationCount
   };
 };

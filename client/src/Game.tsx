@@ -8,10 +8,18 @@ import { useFish } from "./hooks/dojo/useFish";
 import { usePlayer } from "./hooks/dojo/usePlayer";
 
 export const Game = () => {
-  const { registerPlayer, getPlayer } = usePlayer();
-  const { getAquarium, newAquarium } = useAquarium();
-  const { getDecoration, newDecoration } = useDecoration();
-  const { getFish, newFish } = useFish();
+  const { registerPlayer, getPlayer, isVerified } = usePlayer();
+  const { getAquarium, newAquarium,
+    getPlayerAquariums,
+    getPlayerAquariumCount } = useAquarium();
+  const { getDecoration, newDecoration, 
+    getPlayerDecorations,
+    getPlayerDecorationCount 
+  } = useDecoration();
+  const { getFish, newFish,
+     getPlayerFishes,
+    getPlayerFishCount,
+   } = useFish();
   const { account } = useAccount();
 
   // Inputs state
@@ -19,6 +27,7 @@ export const Game = () => {
   const [playerAddress, setPlayerAddress] = useState("");
   const [aquariumId, setAquariumId] = useState("1");
   const [maxCapacity, setMaxCapacity] = useState("10");
+  const [maxDecorations, setMaxDecorations] = useState("10");
   const [decorationId, setDecorationId] = useState("1");
   const [decorationName, setDecorationName] = useState("decoration");
   const [decorationDesc, setDecorationDesc] = useState("a cool decoration");
@@ -26,7 +35,10 @@ export const Game = () => {
   const [decorationRarity, setDecorationRarity] = useState("1");
   const [fishId, setFishId] = useState("1");
   const [fishSpecies, setFishSpecies] = useState("GoldFish");
-
+  const [playerAddressCounts, setPlayerAddressCounts] = useState("");
+  const [playerAddressAquariums, setPlayerAddressAquariums] = useState("");
+  const [playerAddressDecorations, setPlayerAddressDecorations] = useState("");
+  const [playerAddressFishes, setPlayerAddressFishes] = useState("");
   // UI state
   const [response, setResponse] = useState<object | null>(null);
   const [loading, setLoading] = useState(false);
@@ -72,7 +84,7 @@ export const Game = () => {
   const handleNewAquarium = async () => {
     if (!account) return;
     handleRequest(
-      () => newAquarium(account, account.address, parseInt(maxCapacity)),
+      () => newAquarium(account, account.address,parseInt(maxCapacity), parseInt(maxDecorations)), 
       "newAquarium"
     );
   };
@@ -114,11 +126,53 @@ export const Game = () => {
   const handleNewFish = async () => {
     if (!account) return;
     const species = new CairoCustomEnum({ [fishSpecies]: {} });
-    handleRequest(() => newFish(account, account.address, species), "newFish");
+    handleRequest(() => newFish(account, aquariumId, species), "newFish");
   };
 
   const handleGetFish = async () => {
-    handleRequest(() => getFish(parseInt(fishId)), "getFish");
+    handleRequest(() => getFish(parseInt(playerAddressCounts)), "getFish");
+  };
+
+   const handleGetDecorationCount = async () => {
+    handleRequest(() => getPlayerDecorationCount(playerAddressCounts), "getPlayerDecorationCount");
+  };
+
+    const handleGetAquariumCount = async () => {
+    handleRequest(() => getPlayerAquariumCount(playerAddressCounts), "getPlayerAquariumCount");
+  };
+
+      const handleGetFishCount = async () => {
+    handleRequest(() => getPlayerFishCount(playerAddressCounts), "getPlayerFishCount");
+  };
+
+  const handleGetPlayerAquariums = async () => {
+    if (!playerAddressAquariums) return setError("Player address required");
+    handleRequest(
+      () => getPlayerAquariums(playerAddressAquariums),
+      "getPlayerAquariums"
+    );
+  };
+
+  const handleGetPlayerDecorations = async () => {
+    if (!playerAddressDecorations) return setError("Player address required");
+    handleRequest(
+      () => getPlayerDecorations(playerAddressDecorations),
+      "getPlayerDecorations"
+    );
+  }
+
+  const handleGetPlayerFishes = async () => {
+    if (!playerAddressFishes) return setError("Player address required");
+    handleRequest(
+      () => getPlayerFishes(playerAddressFishes),
+      "getPlayerFishes"
+    );
+  };
+
+    // Verification Handler
+  const handleIsVerified = async () => {
+    if (!playerAddress) return setError("Player address required");
+    handleRequest(() => isVerified(playerAddress), "isVerified");
   };
 
   return (
@@ -162,6 +216,161 @@ export const Game = () => {
             </div>
           </div>
 
+
+          {/* Verification Section */}
+          <div className="bg-gray-800 p-4 rounded-lg">
+            <h2 className="text-xl font-bold mb-4 text-purple-300">Verification</h2>
+
+            <div className="mb-4">
+              <input
+                className="bg-gray-700 p-2 rounded-md placeholder-gray-500 w-full"
+                placeholder="Player Address"
+               value={playerAddress}
+                onChange={(e) => setPlayerAddress(e.target.value)}
+              />
+              <button
+                className="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-md mt-2 w-full"
+                onClick={handleIsVerified}
+                disabled={loading}
+              >
+                Check If Verified
+              </button>
+            </div>
+          </div>
+          {/* Aquarium Interaction Section */}
+<div className="bg-gray-800 p-4 rounded-lg mt-6">
+  <h2 className="text-xl font-bold mb-4 text-purple-300">Aquarium Actions</h2>
+
+  {/* Add Fish to Aquarium */}
+  <div className="mb-4">
+    <input
+      className="bg-gray-700 p-2 rounded-md placeholder-gray-500 w-full mb-2"
+      placeholder="Fish ID or Data"
+      // value={fish}
+      // onChange={(e) => setFish(e.target.value)}
+    />
+    <input
+      className="bg-gray-700 p-2 rounded-md placeholder-gray-500 w-full mb-2"
+      placeholder="Aquarium ID"
+      // value={aquariumIdForFish}
+      // onChange={(e) => setAquariumIdForFish(e.target.value)}
+    />
+    <button
+      className="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-md w-full"
+      // onClick={handleAddFish}
+      disabled={loading}
+    >
+      Add Fish to Aquarium
+    </button>
+  </div>
+
+  {/* Add Decoration to Aquarium */}
+  <div className="mb-4">
+    <input
+      className="bg-gray-700 p-2 rounded-md placeholder-gray-500 w-full mb-2"
+      placeholder="Decoration ID or Data"
+      // value={decoration}
+      // onChange={(e) => setDecoration(e.target.value)}
+    />
+    <input
+      className="bg-gray-700 p-2 rounded-md placeholder-gray-500 w-full mb-2"
+      placeholder="Aquarium ID"
+      // value={aquariumIdForDecoration}
+      // onChange={(e) => setAquariumIdForDecoration(e.target.value)}
+    />
+    <button
+      className="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-md w-full"
+      // onClick={handleAddDecoration}
+      disabled={loading}
+    >
+      Add Decoration to Aquarium
+    </button>
+  </div>
+
+  {/* Get Player Fishes */}
+  <div className="mb-4">
+    <input
+      className="bg-gray-700 p-2 rounded-md placeholder-gray-500 w-full mb-2"
+      placeholder="Player Address"
+      value={playerAddressFishes}
+      onChange={(e) => setPlayerAddressFishes(e.target.value)}
+    />
+    <button
+      className="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-md w-full"
+      onClick={handleGetPlayerFishes}
+      disabled={loading}
+    >
+      Get Player Fishes
+    </button>
+  </div>
+
+  {/* Get Player Aquariums */}
+  <div className="mb-4">
+    <input
+      className="bg-gray-700 p-2 rounded-md placeholder-gray-500 w-full mb-2"
+      placeholder="Player Address"
+      value={playerAddressAquariums}
+      onChange={(e) => setPlayerAddressAquariums(e.target.value)}
+    />
+    <button
+      className="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-md w-full"
+      onClick={handleGetPlayerAquariums}
+      disabled={loading}
+    >
+      Get Player Aquariums
+    </button>
+  </div>
+
+  {/* Get Player Decorations */}
+  <div className="mb-4">
+    <input
+      className="bg-gray-700 p-2 rounded-md placeholder-gray-500 w-full mb-2"
+      placeholder="Player Address"
+      value={playerAddressDecorations}
+      onChange={(e) => setPlayerAddressDecorations(e.target.value)}
+    />
+    <button
+      className="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-md w-full"
+      onClick={handleGetPlayerDecorations}
+      disabled={loading}
+    >
+      Get Player Decorations
+    </button>
+  </div>
+
+  {/* Get Counts */}
+  <div className="mb-4">
+    <input
+      className="bg-gray-700 p-2 rounded-md placeholder-gray-500 w-full mb-2"
+      placeholder="Player Address"
+      value={playerAddressCounts}
+      onChange={(e) => setPlayerAddressCounts(e.target.value)}
+    />
+    <button
+      className="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-md w-full mb-2"
+      onClick={handleGetFishCount}
+      disabled={loading}
+    >
+      Get Fish Count
+    </button>
+    <button
+      className="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-md w-full mb-2"
+      onClick={handleGetAquariumCount}
+      disabled={loading}
+    >
+      Get Aquarium Count
+    </button>
+    <button
+      className="bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-md w-full"
+      onClick={handleGetDecorationCount}
+      disabled={loading}
+    >
+      Get Decoration Count
+    </button>
+  </div>
+</div>
+
+
           {/* Aquarium Section */}
           <div className="bg-gray-800 p-4 rounded-lg">
             <h2 className="text-xl font-bold mb-4 text-green-300">Aquarium</h2>
@@ -172,6 +381,13 @@ export const Game = () => {
                 type="number"
                 value={maxCapacity}
                 onChange={(e) => setMaxCapacity(e.target.value)}
+              />
+                <input
+                className="bg-gray-700 p-2 rounded-md placeholder-gray-500"
+                placeholder="Max Decorations"
+                type="number"
+                value={maxDecorations}
+                onChange={(e) => setMaxDecorations(e.target.value)}
               />
               <button
                 className="bg-green-600 hover:bg-green-700 text-white p-2 rounded-md transition-colors"
@@ -257,6 +473,13 @@ export const Game = () => {
           <div className="bg-gray-800 p-4 rounded-lg">
             <h2 className="text-xl font-bold mb-4 text-red-300">Fish</h2>
             <div className="flex flex-col gap-3">
+                 <input
+                className="bg-gray-700 p-2 rounded-md placeholder-gray-500"
+                placeholder="Aquarium ID"
+                type="number"
+                value={aquariumId}
+                onChange={(e) => setAquariumId(e.target.value)}
+              />
               <select
                 className="bg-gray-700 p-2 rounded-md"
                 value={fishSpecies}
@@ -307,7 +530,8 @@ export const Game = () => {
                 {JSON.stringify(
                   response,
                   (key, value) =>
-                    typeof value === "bigint" ? value.toString() : value,
+                    typeof value === "bigint" ? value.toString() : 
+                  value,
                   2
                 )}
               </pre>
