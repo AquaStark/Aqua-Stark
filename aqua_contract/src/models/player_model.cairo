@@ -11,24 +11,6 @@ pub struct PlayerCounter {
     pub current_val: u256,
 }
 
-#[derive(Serde, Clone, Drop, Introspect)]
-#[dojo::model]
-pub struct PlayerFishes {
-    #[key]
-    pub id: u256,
-    pub owner: ContractAddress,
-    pub fish: Fish,
-}
-
-#[derive(Serde, Copy, Drop, Introspect)]
-#[dojo::model]
-pub struct PlayerFish {
-    #[key]
-    pub fish: Fish,
-    #[key]
-    pub game_id: u256,
-    pub owner: ContractAddress,
-}
 
 #[derive(Drop, Copy, Serde)]
 #[dojo::model]
@@ -73,10 +55,6 @@ pub trait PlayerTrait {
         aquarium_count: u32,
         fish_count: u32,
     ) -> Player;
-    // fn add_fish(player: Player, player_fish: PlayerFish);
-// fn add_aquarium(player: Player, player_aquarium: PlayerAquarium);
-// fn remove_aquarium(aquarium: Aquarium, player: Player, player_aquarium: PlayerAquarium);
-// fn remove_fish(fish: Fish, player: Player, player_fish: PlayerFish);
 }
 impl PlayerImpl of PlayerTrait {
     fn register_player(

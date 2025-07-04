@@ -54,12 +54,19 @@ const getPlayerDecorationCount = useCallback(
   [client]
 );
 
+const getDecorationOwner = useCallback(
+  async (decorationId: BigNumberish) => {
+    return await client.AquaStark.getDecorationOwner(decorationId);
+  },
+  [client]
+);
 
   return {
     createDecorationId,
     getDecoration,
     newDecoration,
     getPlayerDecorations,
-    getPlayerDecorationCount
+    getPlayerDecorationCount,
+    getDecorationOwner
   };
 };
