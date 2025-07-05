@@ -428,7 +428,7 @@
     font-family: "Baloo 2", "Nunito", "Quicksand", sans-serif;
   }
 
-  /* Fish animations */
+  /* Fish visual effects */
   .fish-feeding {
     filter: brightness(1.2) drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
   }
@@ -443,6 +443,26 @@
     animation: fishPulse 1s ease-in-out infinite;
   }
 
+  .fish-playful-glow {
+    background: radial-gradient(
+      circle,
+      rgba(255, 105, 180, 0.3) 0%,
+      rgba(255, 105, 180, 0) 70%
+    );
+    transform: scale(1.2);
+    animation: fishPlayfulPulse 0.8s ease-in-out infinite;
+  }
+
+  .fish-depth-glow {
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0) 70%
+    );
+    transform: scale(1.05);
+  }
+
+  /* Fish animations */
   @keyframes fishPulse {
     0%,
     100% {
@@ -450,6 +470,16 @@
     }
     50% {
       opacity: 0.4;
+    }
+  }
+
+  @keyframes fishPlayfulPulse {
+    0%,
+    100% {
+      opacity: 0.15;
+    }
+    50% {
+      opacity: 0.3;
     }
   }
 
