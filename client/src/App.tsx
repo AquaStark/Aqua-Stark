@@ -26,6 +26,7 @@ import Error404Page from "./pages/404.tsx";
 import Start from "./pages/start.tsx";
 import CreateAquarium from "./pages/create-aquarium.tsx";
 import { Game } from "./Game.tsx";
+import DirtDemoPage from "./pages/dirt-demo.tsx";
 
 const cartridgeConnector = new ControllerConnector({
   chains: [
@@ -65,6 +66,7 @@ function App() {
         <Route path="/storage-page" element={<StorePage />} />
         <Route path="/start" element={<Start />} />
         <Route path="/create-aquarium" element={<CreateAquarium />} />
+        <Route path="/dirt-demo" element={<DirtDemoPage />} />
         <Route path="*" element={<Error404Page />} />
       </Routes>
     </StarknetConfig>
