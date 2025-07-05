@@ -6,6 +6,8 @@ import { CairoCustomEnum, BigNumberish } from 'starknet';
 export interface Aquarium {
 	id: BigNumberish;
 	owner: string;
+	fish_count: BigNumberish;
+	decoration_count: BigNumberish;
 	max_capacity: BigNumberish;
 	cleanliness: BigNumberish;
 	housed_fish: Array<BigNumberish>;
@@ -53,6 +55,8 @@ export interface AquariumOwnerValue {
 // Type definition for `aqua_stark::models::aquarium_model::AquariumValue` struct
 export interface AquariumValue {
 	owner: string;
+	fish_count: BigNumberish;
+	decoration_count: BigNumberish;
 	max_capacity: BigNumberish;
 	cleanliness: BigNumberish;
 	housed_fish: Array<BigNumberish>;
@@ -114,6 +118,7 @@ export interface Fish {
 	growth_counter: BigNumberish;
 	can_grow: boolean;
 	aquarium_id: BigNumberish;
+	offspings: Array<BigNumberish>;
 }
 
 // Type definition for `aqua_stark::models::fish_model::FishCounter` struct
@@ -159,6 +164,7 @@ export interface FishValue {
 	growth_counter: BigNumberish;
 	can_grow: boolean;
 	aquarium_id: BigNumberish;
+	offspings: Array<BigNumberish>;
 }
 
 // Type definition for `aqua_stark::models::game_model::Game` struct
@@ -245,31 +251,6 @@ export interface PlayerCounter {
 // Type definition for `aqua_stark::models::player_model::PlayerCounterValue` struct
 export interface PlayerCounterValue {
 	current_val: BigNumberish;
-}
-
-// Type definition for `aqua_stark::models::player_model::PlayerFish` struct
-export interface PlayerFish {
-	fish: Fish;
-	game_id: BigNumberish;
-	owner: string;
-}
-
-// Type definition for `aqua_stark::models::player_model::PlayerFishValue` struct
-export interface PlayerFishValue {
-	owner: string;
-}
-
-// Type definition for `aqua_stark::models::player_model::PlayerFishes` struct
-export interface PlayerFishes {
-	id: BigNumberish;
-	owner: string;
-	fish: Fish;
-}
-
-// Type definition for `aqua_stark::models::player_model::PlayerFishesValue` struct
-export interface PlayerFishesValue {
-	owner: string;
-	fish: Fish;
 }
 
 // Type definition for `aqua_stark::models::player_model::PlayerValue` struct
@@ -360,10 +341,6 @@ export interface SchemaType extends ISchemaType {
 		Player: Player,
 		PlayerCounter: PlayerCounter,
 		PlayerCounterValue: PlayerCounterValue,
-		PlayerFish: PlayerFish,
-		PlayerFishValue: PlayerFishValue,
-		PlayerFishes: PlayerFishes,
-		PlayerFishesValue: PlayerFishesValue,
 		PlayerValue: PlayerValue,
 		UsernameToAddress: UsernameToAddress,
 		UsernameToAddressValue: UsernameToAddressValue,
@@ -376,6 +353,8 @@ export const schema: SchemaType = {
 		Aquarium: {
 		id: 0,
 			owner: "",
+		fish_count: 0,
+		decoration_count: 0,
 			max_capacity: 0,
 			cleanliness: 0,
 			housed_fish: [0],
@@ -409,6 +388,8 @@ export const schema: SchemaType = {
 		},
 		AquariumValue: {
 			owner: "",
+		fish_count: 0,
+		decoration_count: 0,
 			max_capacity: 0,
 			cleanliness: 0,
 			housed_fish: [0],
@@ -469,6 +450,7 @@ export const schema: SchemaType = {
 			growth_counter: 0,
 			can_grow: false,
 		aquarium_id: 0,
+			offspings: [0],
 		},
 		FishCounter: {
 			id: 0,
@@ -513,6 +495,7 @@ export const schema: SchemaType = {
 			growth_counter: 0,
 			can_grow: false,
 		aquarium_id: 0,
+			offspings: [0],
 		},
 		Game: {
 			id: 0,
@@ -582,50 +565,6 @@ export const schema: SchemaType = {
 		PlayerCounterValue: {
 		current_val: 0,
 		},
-		PlayerFish: {
-		fish: { id: 0, fish_type: 0, age: 0, hunger_level: 0, health: 0, growth: 0, growth_rate: 0, owner: "", species: new CairoCustomEnum({ 
-					AngelFish: "",
-				GoldFish: undefined,
-				Betta: undefined,
-				NeonTetra: undefined,
-				Corydoras: undefined,
-				Hybrid: undefined, }), generation: 0, color: 0, pattern: new CairoCustomEnum({ 
-					Plain: "",
-				Spotted: undefined,
-				Stripes: undefined, }), size: 0, speed: 0, birth_time: 0, parent_ids: [0, 0], mutation_rate: 0, growth_counter: 0, can_grow: false, aquarium_id: 0, },
-		game_id: 0,
-			owner: "",
-		},
-		PlayerFishValue: {
-			owner: "",
-		},
-		PlayerFishes: {
-		id: 0,
-			owner: "",
-		fish: { id: 0, fish_type: 0, age: 0, hunger_level: 0, health: 0, growth: 0, growth_rate: 0, owner: "", species: new CairoCustomEnum({ 
-					AngelFish: "",
-				GoldFish: undefined,
-				Betta: undefined,
-				NeonTetra: undefined,
-				Corydoras: undefined,
-				Hybrid: undefined, }), generation: 0, color: 0, pattern: new CairoCustomEnum({ 
-					Plain: "",
-				Spotted: undefined,
-				Stripes: undefined, }), size: 0, speed: 0, birth_time: 0, parent_ids: [0, 0], mutation_rate: 0, growth_counter: 0, can_grow: false, aquarium_id: 0, },
-		},
-		PlayerFishesValue: {
-			owner: "",
-		fish: { id: 0, fish_type: 0, age: 0, hunger_level: 0, health: 0, growth: 0, growth_rate: 0, owner: "", species: new CairoCustomEnum({ 
-					AngelFish: "",
-				GoldFish: undefined,
-				Betta: undefined,
-				NeonTetra: undefined,
-				Corydoras: undefined,
-				Hybrid: undefined, }), generation: 0, color: 0, pattern: new CairoCustomEnum({ 
-					Plain: "",
-				Spotted: undefined,
-				Stripes: undefined, }), size: 0, speed: 0, birth_time: 0, parent_ids: [0, 0], mutation_rate: 0, growth_counter: 0, can_grow: false, aquarium_id: 0, },
-		},
 		PlayerValue: {
 		id: 0,
 			username: 0,
@@ -686,10 +625,6 @@ export enum ModelsMapping {
 	Player = 'aqua_stark-Player',
 	PlayerCounter = 'aqua_stark-PlayerCounter',
 	PlayerCounterValue = 'aqua_stark-PlayerCounterValue',
-	PlayerFish = 'aqua_stark-PlayerFish',
-	PlayerFishValue = 'aqua_stark-PlayerFishValue',
-	PlayerFishes = 'aqua_stark-PlayerFishes',
-	PlayerFishesValue = 'aqua_stark-PlayerFishesValue',
 	PlayerValue = 'aqua_stark-PlayerValue',
 	UsernameToAddress = 'aqua_stark-UsernameToAddress',
 	UsernameToAddressValue = 'aqua_stark-UsernameToAddressValue',

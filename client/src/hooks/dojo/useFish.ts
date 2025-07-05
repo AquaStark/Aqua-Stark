@@ -48,6 +48,36 @@ const getPlayerFishCount = useCallback(
   [client]
 );
 
+const breedFishes = useCallback(
+  async (
+    account: Account | AccountInterface,
+    parent1Id: BigNumberish,
+    parent2Id: BigNumberish
+  ) => {
+    return await client.AquaStark.breedFishes(account, parent1Id, parent2Id);
+  },
+  [client]
+);
+
+const getFishOwner = useCallback(
+  async (fishId: BigNumberish) => {
+    return await client.AquaStark.getFishOwner(fishId);
+  },
+  [client]
+);
+
+const getFishParents = useCallback(
+  async (fishId: BigNumberish) => {
+    return await client.AquaStark.getParents(fishId);
+  },
+  [client]
+);
+const getFishOffspring = useCallback(
+  async (fishId: BigNumberish) => {
+    return await client.AquaStark.getFishOffspring(fishId);
+  },
+  [client]
+);
 
   return {
     createFishId,
@@ -55,5 +85,9 @@ const getPlayerFishCount = useCallback(
     newFish,
     getPlayerFishes,
     getPlayerFishCount,
+    breedFishes,
+    getFishOwner,
+    getFishParents,
+    getFishOffspring,
   };
 };

@@ -6,6 +6,8 @@ pub struct Aquarium {
     #[key]
     pub id: u256,
     pub owner: ContractAddress,
+    pub fish_count: u256,
+    pub decoration_count: u256,
     pub max_capacity: u32,
     pub cleanliness: u32, // 0-100 scale
     pub housed_fish: Array<u256>,
@@ -62,6 +64,8 @@ impl AquariumImpl of AquariumTrait {
         let aquarium = Aquarium {
             id: aquarium_id,
             owner,
+            fish_count: 0,
+            decoration_count: 0,
             max_capacity,
             cleanliness: 100_u32,
             housed_fish: ArrayTrait::new(),
@@ -73,6 +77,7 @@ impl AquariumImpl of AquariumTrait {
     fn add_fish(mut aquarium: Aquarium, fish_id: u256) -> Aquarium {
         let is_full: bool = aquarium.housed_fish.len() >= aquarium.max_capacity;
         assert(!is_full, 'Aquarium full');
+        aquarium.fish_count += 1;
         aquarium.housed_fish.append(fish_id);
         aquarium
     }
@@ -99,6 +104,8 @@ impl AquariumImpl of AquariumTrait {
         if found {
             aquarium.housed_fish = new_fish_array;
         }
+        aquarium.fish_count -= 1;
+        assert(aquarium.fish_count >= 0, 'Fish count cannot be negative');
         aquarium
     }
 
@@ -106,6 +113,7 @@ impl AquariumImpl of AquariumTrait {
         let is_full: bool = aquarium.housed_decorations.len() >= aquarium.max_capacity;
         assert(!is_full, 'Aquarium full');
         aquarium.housed_decorations.append(decoration_id);
+        aquarium.decoration_count += 1;
         aquarium
     }
 
@@ -131,6 +139,7 @@ impl AquariumImpl of AquariumTrait {
         if found {
             aquarium.housed_decorations = new_decor_array;
         }
+        aquarium.decoration_count -= 1;
         aquarium
     }
 
@@ -196,6 +205,8 @@ mod tests {
         let aquarium = Aquarium {
             id: 1,
             owner: zero_address(),
+            fish_count: 0,
+            decoration_count: 0,
             max_capacity: 10,
             cleanliness: 100,
             housed_fish: ArrayTrait::new(),
@@ -212,6 +223,8 @@ mod tests {
         let aquarium = Aquarium {
             id: 1,
             owner: zero_address(),
+            fish_count: 0,
+            decoration_count: 0,
             max_capacity: 10,
             cleanliness: 100,
             housed_fish: ArrayTrait::new(),
@@ -229,6 +242,8 @@ mod tests {
         let aquarium = Aquarium {
             id: 1,
             owner: zero_address(),
+            fish_count: 0,
+            decoration_count: 0,
             max_capacity: 3,
             cleanliness: 100,
             housed_fish: ArrayTrait::new(),
@@ -249,6 +264,8 @@ mod tests {
         let aquarium = Aquarium {
             id: 1,
             owner: zero_address(),
+            fish_count: 0,
+            decoration_count: 0,
             max_capacity: 3,
             cleanliness: 50,
             housed_fish: ArrayTrait::new(),
@@ -273,6 +290,8 @@ mod tests {
         let aquarium = Aquarium {
             id: 1,
             owner: zero_address(),
+            fish_count: 0,
+            decoration_count: 0,
             max_capacity: 3,
             cleanliness: 100,
             housed_fish: ArrayTrait::new(),
@@ -305,6 +324,8 @@ mod tests {
         let aquarium = Aquarium {
             id: 1,
             owner: zero_address(),
+            fish_count: 0,
+            decoration_count: 0,
             max_capacity: 2,
             cleanliness: 100,
             housed_fish: ArrayTrait::new(),

@@ -76,6 +76,47 @@ const getPlayerAquariumCount = useCallback(
   [client]
 );
 
+const moveFishToAquarium = useCallback(
+  async (
+    account: Account | AccountInterface,
+    fishId: BigNumberish,
+    fromAquariumId: BigNumberish,
+    toAquariumId: BigNumberish
+  ) => {
+    return await client.AquaStark.moveFishToAquarium(
+      account,
+      fishId,
+      fromAquariumId,
+      toAquariumId
+    );
+  },
+  [client]
+);
+
+const moveDecorationToAquarium = useCallback(
+  async (
+    account: Account | AccountInterface,
+    decorationId: BigNumberish,
+    fromAquariumId: BigNumberish,
+    toAquariumId: BigNumberish
+  ) => {
+    return await client.AquaStark.moveDecorationToAquarium(
+      account,
+      decorationId,
+      fromAquariumId,
+      toAquariumId
+    );
+  },
+  [client]
+);
+
+const getAquariumOwner = useCallback(
+  async (aquariumId: BigNumberish) => {
+    return await client.AquaStark.getAquariumOwner(aquariumId);
+  },
+  [client]
+);
+
 
   return {
     createAquariumId,
@@ -84,6 +125,9 @@ const getPlayerAquariumCount = useCallback(
     addFishToAquarium,
     addDecorationToAquarium,
     getPlayerAquariums,
-    getPlayerAquariumCount
+    getPlayerAquariumCount,
+    moveFishToAquarium,
+    moveDecorationToAquarium,
+    getAquariumOwner
   };
 };

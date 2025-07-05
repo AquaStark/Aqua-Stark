@@ -35,7 +35,7 @@ pub struct FishOwner {
     pub owner: ContractAddress,
 }
 
-#[derive(Copy, Drop, Introspect, Serde)]
+#[derive(Clone, Drop, Introspect, Serde)]
 #[dojo::model]
 pub struct Fish {
     #[key]
@@ -59,6 +59,7 @@ pub struct Fish {
     pub growth_counter: u8,
     pub can_grow: bool,
     pub aquarium_id: u256,
+    pub offspings: Array<u256>,
 }
 
 pub trait FishTrait {
@@ -458,6 +459,7 @@ mod tests {
             growth_rate: 4,
             can_grow: false,
             aquarium_id: 1,
+            offspings: ArrayTrait::new(),
         };
         assert(fish.fish_type == 1, 'Fish type should match');
     }
@@ -485,9 +487,12 @@ mod tests {
             growth_rate: 5,
             can_grow: false,
             aquarium_id: 1,
+            offspings: ArrayTrait::new(),
         };
 
-        let new_fish: Fish = FishTrait::create_random_fish(fish, zero_address(), fish.aquarium_id);
+        let new_fish: Fish = FishTrait::create_random_fish(
+            fish.clone(), zero_address(), fish.aquarium_id,
+        );
         assert(new_fish.generation == 1, 'Fish generation error');
     }
 
@@ -514,13 +519,14 @@ mod tests {
             growth_rate: 5,
             can_grow: false,
             aquarium_id: 1,
+            offspings: ArrayTrait::new(),
         };
 
         let parent1: Fish = FishTrait::create_fish_by_species(
-            fish, fish.aquarium_id, zero_address(), Species::AngelFish,
+            fish.clone(), fish.aquarium_id, zero_address(), Species::AngelFish,
         );
         let parent: Fish = FishTrait::create_fish_by_species(
-            fish, fish.aquarium_id, zero_address(), Species::GoldFish,
+            fish.clone(), fish.aquarium_id, zero_address(), Species::GoldFish,
         );
         assert(parent1.species == Species::AngelFish, 'Fish Species error');
         assert(parent1.color == 'blue', 'Color error');
@@ -559,16 +565,17 @@ mod tests {
             growth_rate: 0,
             can_grow: false,
             aquarium_id: 1,
+            offspings: ArrayTrait::new(),
         };
 
         let parent2: Fish = FishTrait::create_fish_by_species(
-            fish, fish.aquarium_id, zero_address(), Species::AngelFish,
+            fish.clone(), fish.aquarium_id, zero_address(), Species::AngelFish,
         );
         let parent1: Fish = FishTrait::create_fish_by_species(
-            fish, fish.aquarium_id, zero_address(), Species::GoldFish,
+            fish.clone(), fish.aquarium_id, zero_address(), Species::GoldFish,
         );
         let offspring: Fish = FishTrait::create_offspring(
-            fish, zero_address(), fish.aquarium_id, parent1, parent2,
+            fish.clone(), zero_address(), fish.aquarium_id, parent1, parent2,
         );
         assert(offspring.species == Species::Hybrid, 'offspring Species error');
         assert(offspring.pattern == Pattern::Spotted, 'offspring pattern error');
@@ -597,16 +604,17 @@ mod tests {
             growth_rate: 0,
             can_grow: false,
             aquarium_id: 1,
+            offspings: ArrayTrait::new(),
         };
 
         let parent2: Fish = FishTrait::create_fish_by_species(
-            fish, fish.aquarium_id, zero_address(), Species::AngelFish,
+            fish.clone(), fish.aquarium_id, zero_address(), Species::AngelFish,
         );
         let parent1: Fish = FishTrait::create_fish_by_species(
-            fish, fish.aquarium_id, zero_address(), Species::AngelFish,
+            fish.clone(), fish.aquarium_id, zero_address(), Species::AngelFish,
         );
         let offspring: Fish = FishTrait::create_offspring(
-            fish, zero_address(), fish.aquarium_id, parent1, parent2,
+            fish.clone(), zero_address(), fish.aquarium_id, parent1, parent2,
         );
         assert(offspring.species == Species::AngelFish, 'offspring Species error');
         assert(offspring.pattern == Pattern::Plain, 'offspring pattern error');
@@ -635,19 +643,20 @@ mod tests {
             growth_rate: 0,
             can_grow: false,
             aquarium_id: 1,
+            offspings: ArrayTrait::new(),
         };
 
         let new_fish: Fish = FishTrait::create_fish_by_species(
-            fish, fish.aquarium_id, zero_address(), Species::AngelFish,
+            fish.clone(), fish.aquarium_id, zero_address(), Species::AngelFish,
         );
 
-        let health: u8 = FishTrait::get_health(new_fish);
-        let is_hungry: bool = FishTrait::is_hungry(new_fish);
+        let health: u8 = FishTrait::get_health(new_fish.clone());
+        let is_hungry: bool = FishTrait::is_hungry(new_fish.clone());
 
-        let hungry_fish: Fish = FishTrait::update_hunger(new_fish, 6);
-        let new_hunger: u8 = FishTrait::get_hunger_level(hungry_fish);
+        let hungry_fish: Fish = FishTrait::update_hunger(new_fish.clone(), 6);
+        let new_hunger: u8 = FishTrait::get_hunger_level(hungry_fish.clone());
 
-        let feed_fish: Fish = FishTrait::feed(hungry_fish, 92);
+        let feed_fish: Fish = FishTrait::feed(hungry_fish.clone(), 92);
         let hunger_level: u8 = FishTrait::get_hunger_level(feed_fish);
 
         assert(is_hungry, 'Hunger error');
@@ -679,10 +688,11 @@ mod tests {
             growth_rate: 4,
             can_grow: false,
             aquarium_id: 1,
+            offspings: ArrayTrait::new(),
         };
 
         let new_fish: Fish = FishTrait::create_fish_by_species(
-            fish, fish.aquarium_id, zero_address(), Species::AngelFish,
+            fish.clone(), fish.aquarium_id, zero_address(), Species::AngelFish,
         );
 
         let growth: u8 = FishTrait::get_growth_rate(new_fish);

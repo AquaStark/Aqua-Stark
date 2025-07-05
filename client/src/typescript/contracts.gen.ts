@@ -1,5 +1,5 @@
 import { DojoProvider, DojoCall } from "@dojoengine/core";
-import { Account, AccountInterface, BigNumberish, CairoCustomEnum } from "starknet";
+import { Account, AccountInterface, BigNumberish, CairoOption, CairoCustomEnum, ByteArray } from "starknet";
 import * as models from "./models.gen";
 
 export function setupWorld(provider: DojoProvider) {
@@ -38,6 +38,27 @@ export function setupWorld(provider: DojoProvider) {
 			return await provider.execute(
 				snAccount,
 				build_AquaStark_addFishToAquarium_calldata(fish, aquariumId),
+				"aqua_stark",
+			);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	};
+
+	const build_AquaStark_breedFishes_calldata = (parent1Id: BigNumberish, parent2Id: BigNumberish): DojoCall => {
+		return {
+			contractName: "AquaStark",
+			entrypoint: "breed_fishes",
+			calldata: [parent1Id, parent2Id],
+		};
+	};
+
+	const AquaStark_breedFishes = async (snAccount: Account | AccountInterface, parent1Id: BigNumberish, parent2Id: BigNumberish) => {
+		try {
+			return await provider.execute(
+				snAccount,
+				build_AquaStark_breedFishes_calldata(parent1Id, parent2Id),
 				"aqua_stark",
 			);
 		} catch (error) {
@@ -147,6 +168,23 @@ export function setupWorld(provider: DojoProvider) {
 		}
 	};
 
+	const build_AquaStark_getAquariumOwner_calldata = (id: BigNumberish): DojoCall => {
+		return {
+			contractName: "AquaStark",
+			entrypoint: "get_aquarium_owner",
+			calldata: [id],
+		};
+	};
+
+	const AquaStark_getAquariumOwner = async (id: BigNumberish) => {
+		try {
+			return await provider.call("aqua_stark", build_AquaStark_getAquariumOwner_calldata(id));
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	};
+
 	const build_AquaStark_getDecoration_calldata = (id: BigNumberish): DojoCall => {
 		return {
 			contractName: "AquaStark",
@@ -164,6 +202,23 @@ export function setupWorld(provider: DojoProvider) {
 		}
 	};
 
+	const build_AquaStark_getDecorationOwner_calldata = (id: BigNumberish): DojoCall => {
+		return {
+			contractName: "AquaStark",
+			entrypoint: "get_decoration_owner",
+			calldata: [id],
+		};
+	};
+
+	const AquaStark_getDecorationOwner = async (id: BigNumberish) => {
+		try {
+			return await provider.call("aqua_stark", build_AquaStark_getDecorationOwner_calldata(id));
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	};
+
 	const build_AquaStark_getFish_calldata = (id: BigNumberish): DojoCall => {
 		return {
 			contractName: "AquaStark",
@@ -175,6 +230,57 @@ export function setupWorld(provider: DojoProvider) {
 	const AquaStark_getFish = async (id: BigNumberish) => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getFish_calldata(id));
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	};
+
+	const build_AquaStark_getFishOffspring_calldata = (fishId: BigNumberish): DojoCall => {
+		return {
+			contractName: "AquaStark",
+			entrypoint: "get_fish_offspring",
+			calldata: [fishId],
+		};
+	};
+
+	const AquaStark_getFishOffspring = async (fishId: BigNumberish) => {
+		try {
+			return await provider.call("aqua_stark", build_AquaStark_getFishOffspring_calldata(fishId));
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	};
+
+	const build_AquaStark_getFishOwner_calldata = (id: BigNumberish): DojoCall => {
+		return {
+			contractName: "AquaStark",
+			entrypoint: "get_fish_owner",
+			calldata: [id],
+		};
+	};
+
+	const AquaStark_getFishOwner = async (id: BigNumberish) => {
+		try {
+			return await provider.call("aqua_stark", build_AquaStark_getFishOwner_calldata(id));
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	};
+
+	const build_AquaStark_getParents_calldata = (fishId: BigNumberish): DojoCall => {
+		return {
+			contractName: "AquaStark",
+			entrypoint: "get_parents",
+			calldata: [fishId],
+		};
+	};
+
+	const AquaStark_getParents = async (fishId: BigNumberish) => {
+		try {
+			return await provider.call("aqua_stark", build_AquaStark_getParents_calldata(fishId));
 		} catch (error) {
 			console.error(error);
 			throw error;
@@ -334,6 +440,48 @@ export function setupWorld(provider: DojoProvider) {
 		}
 	};
 
+	const build_AquaStark_moveDecorationToAquarium_calldata = (decorationId: BigNumberish, from: BigNumberish, to: BigNumberish): DojoCall => {
+		return {
+			contractName: "AquaStark",
+			entrypoint: "move_decoration_to_aquarium",
+			calldata: [decorationId, from, to],
+		};
+	};
+
+	const AquaStark_moveDecorationToAquarium = async (snAccount: Account | AccountInterface, decorationId: BigNumberish, from: BigNumberish, to: BigNumberish) => {
+		try {
+			return await provider.execute(
+				snAccount,
+				build_AquaStark_moveDecorationToAquarium_calldata(decorationId, from, to),
+				"aqua_stark",
+			);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	};
+
+	const build_AquaStark_moveFishToAquarium_calldata = (fishId: BigNumberish, from: BigNumberish, to: BigNumberish): DojoCall => {
+		return {
+			contractName: "AquaStark",
+			entrypoint: "move_fish_to_aquarium",
+			calldata: [fishId, from, to],
+		};
+	};
+
+	const AquaStark_moveFishToAquarium = async (snAccount: Account | AccountInterface, fishId: BigNumberish, from: BigNumberish, to: BigNumberish) => {
+		try {
+			return await provider.execute(
+				snAccount,
+				build_AquaStark_moveFishToAquarium_calldata(fishId, from, to),
+				"aqua_stark",
+			);
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	};
+
 	const build_AquaStark_newAquarium_calldata = (owner: string, maxCapacity: BigNumberish, maxDecorations: BigNumberish): DojoCall => {
 		return {
 			contractName: "AquaStark",
@@ -426,6 +574,8 @@ export function setupWorld(provider: DojoProvider) {
 			buildAddDecorationToAquariumCalldata: build_AquaStark_addDecorationToAquarium_calldata,
 			addFishToAquarium: AquaStark_addFishToAquarium,
 			buildAddFishToAquariumCalldata: build_AquaStark_addFishToAquarium_calldata,
+			breedFishes: AquaStark_breedFishes,
+			buildBreedFishesCalldata: build_AquaStark_breedFishes_calldata,
 			createAquariumId: AquaStark_createAquariumId,
 			buildCreateAquariumIdCalldata: build_AquaStark_createAquariumId_calldata,
 			createDecorationId: AquaStark_createDecorationId,
@@ -436,10 +586,20 @@ export function setupWorld(provider: DojoProvider) {
 			buildCreateNewPlayerIdCalldata: build_AquaStark_createNewPlayerId_calldata,
 			getAquarium: AquaStark_getAquarium,
 			buildGetAquariumCalldata: build_AquaStark_getAquarium_calldata,
+			getAquariumOwner: AquaStark_getAquariumOwner,
+			buildGetAquariumOwnerCalldata: build_AquaStark_getAquariumOwner_calldata,
 			getDecoration: AquaStark_getDecoration,
 			buildGetDecorationCalldata: build_AquaStark_getDecoration_calldata,
+			getDecorationOwner: AquaStark_getDecorationOwner,
+			buildGetDecorationOwnerCalldata: build_AquaStark_getDecorationOwner_calldata,
 			getFish: AquaStark_getFish,
 			buildGetFishCalldata: build_AquaStark_getFish_calldata,
+			getFishOffspring: AquaStark_getFishOffspring,
+			buildGetFishOffspringCalldata: build_AquaStark_getFishOffspring_calldata,
+			getFishOwner: AquaStark_getFishOwner,
+			buildGetFishOwnerCalldata: build_AquaStark_getFishOwner_calldata,
+			getParents: AquaStark_getParents,
+			buildGetParentsCalldata: build_AquaStark_getParents_calldata,
 			getPlayer: AquaStark_getPlayer,
 			buildGetPlayerCalldata: build_AquaStark_getPlayer_calldata,
 			getPlayerAquariumCount: AquaStark_getPlayerAquariumCount,
@@ -458,6 +618,10 @@ export function setupWorld(provider: DojoProvider) {
 			buildGetUsernameFromAddressCalldata: build_AquaStark_getUsernameFromAddress_calldata,
 			isVerified: AquaStark_isVerified,
 			buildIsVerifiedCalldata: build_AquaStark_isVerified_calldata,
+			moveDecorationToAquarium: AquaStark_moveDecorationToAquarium,
+			buildMoveDecorationToAquariumCalldata: build_AquaStark_moveDecorationToAquarium_calldata,
+			moveFishToAquarium: AquaStark_moveFishToAquarium,
+			buildMoveFishToAquariumCalldata: build_AquaStark_moveFishToAquarium_calldata,
 			newAquarium: AquaStark_newAquarium,
 			buildNewAquariumCalldata: build_AquaStark_newAquarium_calldata,
 			newDecoration: AquaStark_newDecoration,
