@@ -18,6 +18,7 @@ pub mod components {
     pub mod fish;
     pub mod friends;
     pub mod playerstate;
+    pub mod voting;
 }
 
 pub mod models;
@@ -32,6 +33,7 @@ pub mod entities {
     pub mod friends;
     pub mod mission;
     pub mod player;
+    pub mod voting;
 }
 
 pub mod tests {
