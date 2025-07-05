@@ -1,28 +1,27 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useLocation } from "react-router-dom"
-import { GameHeader } from "@/components/game/game-header"
-import { GameSidebarButtons } from "@/components/game/game-sidebar-buttons"
-import { AquariumTabs } from "@/components/game/aquarium-tabs"
-import { TipsPopup } from "@/components/game/tips-popup"
-import { FishDisplay } from "@/components/game/fish-display"
-import { INITIAL_GAME_STATE } from "@/data/game-data"
-import { useAquarium } from "@/hooks/use-aquarium"
-import { useFishStats } from "@/hooks/use-fish-stats"
-import { GameMenu } from "@/components/game/game-menu"
-import { useBubbles } from "@/hooks/use-bubbles"
-import { BubblesBackground } from "@/components/bubble-background"
-import { motion } from "framer-motion"
-import { FishType } from "@/types/game"
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import { GameHeader } from "@/components/game/game-header";
+import { GameSidebarButtons } from "@/components/game/game-sidebar-buttons";
+import { AquariumTabs } from "@/components/game/aquarium-tabs";
+import { TipsPopup } from "@/components/game/tips-popup";
+import { FishDisplay } from "@/components/game/fish-display";
+import { INITIAL_GAME_STATE } from "@/data/game-data";
+import { useAquarium } from "@/hooks/use-aquarium";
+import { useFishStats } from "@/hooks/use-fish-stats";
+import { GameMenu } from "@/components/game/game-menu";
+import { useBubbles } from "@/hooks/use-bubbles";
+import { BubblesBackground } from "@/components/bubble-background";
+import { motion } from "framer-motion";
+import type { FishType } from "@/types/game";
 
 export default function GamePage() {
-  const { happiness, food, energy } = useFishStats(INITIAL_GAME_STATE)
-  const { selectedAquarium, handleAquariumChange, aquariums } = useAquarium()
-  const [showMenu, setShowMenu] = useState(false)
-  const [showTips, setShowTips] = useState(false)
-
-  const location = useLocation()
+  const { happiness, food, energy } = useFishStats(INITIAL_GAME_STATE);
+  const { selectedAquarium, handleAquariumChange, aquariums } = useAquarium();
+  const [showMenu, setShowMenu] = useState(false);
+  const [showTips, setShowTips] = useState(false);
+  const location = useLocation();
 
   const bubbles = useBubbles({
     initialCount: 10,
@@ -32,16 +31,18 @@ export default function GamePage() {
     minDuration: 10,
     maxDuration: 18,
     interval: 400,
-  })
+  });
 
   const handleTipsToggle = () => {
-    setShowTips(!showTips)
-  }
+    setShowTips(!showTips);
+  };
 
   // Parse fish species from URL param
-  const searchParams = new URLSearchParams(location.search)
-  const fishesParam = searchParams.get("fishes")
-  const fishFromUrl = JSON.parse(decodeURIComponent(fishesParam || "[]")) as string[]
+  const searchParams = new URLSearchParams(location.search);
+  const fishesParam = searchParams.get("fishes");
+  const fishFromUrl = JSON.parse(
+    decodeURIComponent(fishesParam || "[]")
+  ) as string[];
 
   // Match species to mock data
   const speciesToFishData = {
@@ -69,15 +70,18 @@ export default function GamePage() {
       rarity: "Legendary",
       generation: 1,
     },
-  }
+  };
 
+  // Create fish objects from URL parameters
   const fishObjects: FishType[] = fishFromUrl.map((species, index) => {
-    const data = speciesToFishData[species as keyof typeof speciesToFishData] || {
+    const data = speciesToFishData[
+      species as keyof typeof speciesToFishData
+    ] || {
       image: "/fish/fish1.png",
       name: "Unknown Fish",
       rarity: "Common",
       generation: 1,
-    }
+    };
 
     return {
       id: index,
@@ -86,8 +90,12 @@ export default function GamePage() {
       rarity: data.rarity,
       generation: data.generation,
       position: { x: 0, y: 0 },
-    }
-  })
+    };
+  });
+
+  // Use fish from URL if available, otherwise use selected aquarium fish
+  const displayFish =
+    fishObjects.length > 0 ? fishObjects : selectedAquarium.fishes;
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-[#005C99]">
@@ -110,16 +118,14 @@ export default function GamePage() {
 
       {/* Fish */}
       <motion.div
-        // Comentado: se usaba el selectedAquarium
-        // key={selectedAquarium.id}
-        key="fishes-from-url"
+        key={selectedAquarium.id}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 1 }}
         className="relative z-20 w-full h-full"
       >
-        <FishDisplay fish={fishObjects} />
+        <FishDisplay fish={displayFish} />
       </motion.div>
 
       {/* Header */}
@@ -131,6 +137,7 @@ export default function GamePage() {
       />
 
       {showMenu && <GameMenu show={showMenu} />}
+
       <GameSidebarButtons />
 
       {/* Tips */}
@@ -149,5 +156,5 @@ export default function GamePage() {
         onAquariumSelect={handleAquariumChange}
       />
     </div>
-  )
+  );
 }

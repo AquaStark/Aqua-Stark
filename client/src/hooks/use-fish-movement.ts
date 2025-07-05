@@ -1,7 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import { FishType } from '@/types/game';
+"use client";
 
-// Movement parameters for different fish behaviors
+import { useState, useEffect, useRef } from "react";
+import type { FishType } from "@/types/game";
+import type { FoodItem } from "@/types/food";
+
 interface MovementParams {
   speed: number;
   turnRate: number;
@@ -16,484 +18,581 @@ interface MovementParams {
     intensity: number;
   };
   boundaryPadding: number;
+  foodDetectionRadius: number;
+  feedingSpeed: number;
+  minTargetDistance: number;
+  directionChangeCooldown: number;
+  baseEnergyLevel: number;
+  swimmingVariation: number;
+  curiosityLevel: number;
 }
 
-// Current movement state of a fish
 interface FishMovementState {
   id: number;
   position: { x: number; y: number };
   velocity: { x: number; y: number };
   targetPosition: { x: number; y: number };
-  behaviorState: 'idle' | 'darting' | 'hovering' | 'turning';
+  behaviorState:
+    | "idle"
+    | "darting"
+    | "hovering"
+    | "turning"
+    | "feeding"
+    | "exploring"
+    | "playful";
   behaviorTimer: number;
   facingLeft: boolean;
-  lastDirectionChangeTime: number; // Track when we last changed direction
-  stuckTimer: number; // Track how long a fish has been "stuck" in the same position
-  turningProgress?: number; // Track turning animation progress
+  lastDirectionChangeTime: number;
+  stuckTimer: number;
+  targetFoodId?: number;
+  feedingCooldown: number;
+  directionChangeCooldown: number;
+  lastVelocityX: number;
+  energyLevel: number;
+  explorationTimer: number;
+  playfulnessTimer: number;
+  swimmingPattern: "straight" | "zigzag" | "circular" | "spiral";
+  patternTimer: number;
 }
 
 interface UseFishMovementOptions {
   aquariumBounds: { width: number; height: number };
-  collisionRadius: number;
+  foods?: FoodItem[];
+  onFoodConsumed?: (foodId: number) => void;
 }
 
 export function useFishMovement(
   initialFish: FishType[],
   options: UseFishMovementOptions
 ) {
-  const { aquariumBounds, collisionRadius } = options;
-  
-  // Store movement state for each fish
-  const [fishStates, setFishStates] = useState<FishMovementState[]>(() => 
-    initialFish.map(fish => initializeFishState(fish))
+  const { aquariumBounds, foods = [], onFoodConsumed } = options;
+
+  const [fishStates, setFishStates] = useState<FishMovementState[]>(() =>
+    initialFish.map((fish) => initializeFishState(fish))
   );
-  
-  // Store movement parameters for each fish
+
   const fishParamsRef = useRef<Map<number, MovementParams>>(new Map());
-  
-  // Timestamp for animation frame
   const lastUpdateTimeRef = useRef<number>(Date.now());
-  // Request animation frame ID for cleanup
   const animationFrameRef = useRef<number | null>(null);
-  
-  // Debug: log initial fish
-  useEffect(() => {    
-    
-    // Ensure we reinitialize fish states when initialFish changes
-    if (initialFish.length > 0) {      
-      setFishStates(initialFish.map(fish => initializeFishState(fish)));
-    }
-  }, [initialFish.length]);
-  
-  // Initialize fish movement parameters
-  useEffect(() => {
-    // Reset fish parameters when initialFish changes significantly
-    if (initialFish.length !== fishParamsRef.current.size) {
-      fishParamsRef.current.clear();
-    }
-    
-    // Initialize movement parameters for each fish
-    initialFish.forEach(fish => {
-      if (!fishParamsRef.current.has(fish.id)) {
-        fishParamsRef.current.set(fish.id, generateMovementParams(fish));
-      }
-    });
-            
-    
-    // Start animation loop
-    const animate = () => {
-      const now = Date.now();
-      const deltaTime = Math.min((now - lastUpdateTimeRef.current) / 1000, 0.1); // Convert to seconds, cap to avoid large jumps
-      lastUpdateTimeRef.current = now;
-      
-      // Update fish positions based on their movement behaviors
-      setFishStates(prevStates => updateFishStates(prevStates, deltaTime, now));
-      
-      // Continue animation loop
-      animationFrameRef.current = requestAnimationFrame(animate);
-    };
-    
-    // Start animation
-    animationFrameRef.current = requestAnimationFrame(animate);
-    
-    // Cleanup on unmount
-    return () => {
-      if (animationFrameRef.current !== null) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [initialFish]);
-  
-  // Initialize a fish's movement state
+
   function initializeFishState(fish: FishType): FishMovementState {
-    // Generate random direction for initial velocity
     const angle = Math.random() * Math.PI * 2;
-    const speed = 15 + Math.random() * 20; // Increased speed for more visible movement
-    const velocityX = Math.cos(angle) * speed;
-    
-    // Ensure the fish is positioned within bounds
-    const safePosition = {
-      x: Math.min(Math.max(fish.position.x / 100 * aquariumBounds.width, 20), aquariumBounds.width - 20),
-      y: Math.min(Math.max(fish.position.y / 100 * aquariumBounds.height, 20), aquariumBounds.height - 20)
+    const speed = 35 + Math.random() * 25;
+
+    const pixelPosition = {
+      x: (fish.position.x / 100) * aquariumBounds.width,
+      y: (fish.position.y / 100) * aquariumBounds.height,
     };
-    
+
+    const safePosition = {
+      x: Math.max(30, Math.min(aquariumBounds.width - 30, pixelPosition.x)),
+      y: Math.max(30, Math.min(aquariumBounds.height - 30, pixelPosition.y)),
+    };
+
+    const velocityX = Math.cos(angle) * speed;
+
     return {
       id: fish.id,
       position: safePosition,
       velocity: {
         x: velocityX,
-        y: Math.sin(angle) * speed
+        y: Math.sin(angle) * speed,
       },
       targetPosition: {
-        x: Math.random() * (aquariumBounds.width - 40) + 20,
-        y: Math.random() * (aquariumBounds.height - 40) + 20
+        x: 50 + Math.random() * (aquariumBounds.width - 100),
+        y: 50 + Math.random() * (aquariumBounds.height - 100),
       },
-      behaviorState: 'idle',
+      behaviorState: "exploring",
       behaviorTimer: 0,
-      // Initialize facing direction based on the initial velocity
       facingLeft: velocityX < 0,
       lastDirectionChangeTime: Date.now(),
-      stuckTimer: 0
+      stuckTimer: 0,
+      feedingCooldown: 0,
+      directionChangeCooldown: 0,
+      lastVelocityX: velocityX,
+      energyLevel: 0.7 + Math.random() * 0.3,
+      explorationTimer: Math.random() * 2,
+      playfulnessTimer: Math.random() * 5,
+      swimmingPattern: "straight",
+      patternTimer: 0,
     };
   }
-  
-  // Generate movement parameters based on fish properties
+
   function generateMovementParams(fish: FishType): MovementParams {
-    // Use fish properties to influence movement parameters
-    // Higher rarity could mean more complex or interesting movement patterns
-    const isExotic = fish.rarity.toLowerCase().includes('exotic') || 
-                     fish.rarity.toLowerCase().includes('legendary');
-    
+    const isExotic =
+      fish.rarity.toLowerCase().includes("legendary") ||
+      fish.rarity.toLowerCase().includes("epic");
+    const isRare = fish.rarity.toLowerCase().includes("rare");
+
     return {
-      // Base speed inversely related to generation (older fish are slower)
-      // Increased speeds overall for better visibility
-      speed: Math.max(20, 40 - fish.generation * 2),
-      
-      // Turn rate - how quickly the fish can change direction
-      turnRate: isExotic ? 3.0 : 2.0, // Increased for faster responsiveness
-      
-      // Darting behavior - sudden bursts of speed
+      speed: isExotic ? 45 + Math.random() * 20 : 35 + Math.random() * 15,
+      turnRate: isExotic ? 4.5 : 3.5,
       darting: {
-        probability: isExotic ? 0.02 : 0.01, // Increased probability
-        speedMultiplier: isExotic ? 5 : 4,   // Increased speed boost
-        duration: 0.8 + Math.random() * 0.5  // Longer darting duration
+        probability: isExotic ? 0.03 : 0.02,
+        speedMultiplier: isExotic ? 3.5 : 3.0,
+        duration: 0.8 + Math.random() * 0.7,
       },
-      
-      // Hovering behavior - staying in one place with small movements
       hovering: {
-        probability: isExotic ? 0.008 : 0.01, // Reduced slightly to favor movement
-        duration: 1.5 + Math.random() * 2,    // Shorter hover time
-        intensity: isExotic ? 0.7 : 1.2       // Increased movement while hovering
+        probability: 0.008,
+        duration: 1 + Math.random() * 1.5,
+        intensity: 1.5,
       },
-      
-      // Padding from boundaries - prevents fish from getting too close to edges
-      boundaryPadding: 30 // Increased to keep fish further from edges
+      boundaryPadding: 30,
+      foodDetectionRadius: 140,
+      feedingSpeed: isExotic ? 120 : 100,
+      minTargetDistance: 80,
+      directionChangeCooldown: 0.3,
+      baseEnergyLevel: isExotic ? 0.9 : isRare ? 0.8 : 0.7,
+      swimmingVariation: isExotic ? 0.4 : 0.3,
+      curiosityLevel: isExotic ? 0.8 : 0.6,
     };
   }
-  
-  // Get a safe target position within the aquarium bounds
-  function getSafeTargetPosition(params: MovementParams): { x: number; y: number } {
-    const padding = params.boundaryPadding;
+
+  function findNearestFood(
+    fishPixelPos: { x: number; y: number },
+    detectionRadius: number
+  ): FoodItem | null {
+    let nearestFood: FoodItem | null = null;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+
+    for (const food of foods) {
+      if (food.consumed) continue;
+
+      const foodPixelPos = {
+        x: (food.position.x / 100) * aquariumBounds.width,
+        y: (food.position.y / 100) * aquariumBounds.height,
+      };
+
+      const dx = foodPixelPos.x - fishPixelPos.x;
+      const dy = foodPixelPos.y - fishPixelPos.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance <= detectionRadius && distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestFood = food;
+      }
+    }
+
+    return nearestFood;
+  }
+
+  function checkFoodReached(fishState: FishMovementState): boolean {
+    if (!fishState.targetFoodId) return false;
+
+    const targetFood = foods.find(
+      (f) => f.id === fishState.targetFoodId && !f.consumed
+    );
+    if (!targetFood) return false;
+
+    const foodPixelPos = {
+      x: (targetFood.position.x / 100) * aquariumBounds.width,
+      y: (targetFood.position.y / 100) * aquariumBounds.height,
+    };
+
+    const dx = foodPixelPos.x - fishState.position.x;
+    const dy = foodPixelPos.y - fishState.position.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    return distance <= 18;
+  }
+
+  function getSafeTargetPosition(
+    currentPos: { x: number; y: number },
+    minDistance: number
+  ): { x: number; y: number } {
+    let attempts = 0;
+    let newTarget: { x: number; y: number };
+
+    do {
+      newTarget = {
+        x: 50 + Math.random() * (aquariumBounds.width - 100),
+        y: 50 + Math.random() * (aquariumBounds.height - 100),
+      };
+
+      const dx = newTarget.x - currentPos.x;
+      const dy = newTarget.y - currentPos.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance >= minDistance) {
+        return newTarget;
+      }
+
+      attempts++;
+    } while (attempts < 10);
+
+    const angle = Math.random() * Math.PI * 2;
     return {
-      x: Math.random() * (aquariumBounds.width - 2 * padding) + padding,
-      y: Math.random() * (aquariumBounds.height - 2 * padding) + padding
+      x: Math.max(
+        50,
+        Math.min(
+          aquariumBounds.width - 50,
+          currentPos.x + Math.cos(angle) * minDistance
+        )
+      ),
+      y: Math.max(
+        50,
+        Math.min(
+          aquariumBounds.height - 50,
+          currentPos.y + Math.sin(angle) * minDistance
+        )
+      ),
     };
   }
-  
-  // Update all fish states for a new frame
+
+  function applySwimmingPattern(
+    state: FishMovementState,
+    baseVelocity: { x: number; y: number }
+  ): { x: number; y: number } {
+    const time = Date.now() / 1000;
+    const modifiedVelocity = { ...baseVelocity };
+
+    switch (state.swimmingPattern) {
+      case "zigzag": {
+        const zigzagOffset = Math.sin(time * 4) * 15;
+        modifiedVelocity.y += zigzagOffset;
+        break;
+      }
+
+      case "circular": {
+        const circularForce = 20;
+        const perpX = -baseVelocity.y;
+        const perpY = baseVelocity.x;
+        const length = Math.sqrt(perpX * perpX + perpY * perpY);
+        if (length > 0) {
+          modifiedVelocity.x += (perpX / length) * circularForce;
+          modifiedVelocity.y += (perpY / length) * circularForce;
+        }
+        break;
+      }
+
+      case "spiral": {
+        const spiralTime = time * 2;
+        const spiralRadius = 10 + Math.sin(spiralTime * 0.5) * 5;
+        modifiedVelocity.x += Math.cos(spiralTime) * spiralRadius;
+        modifiedVelocity.y += Math.sin(spiralTime) * spiralRadius;
+        break;
+      }
+
+      case "straight":
+      default: {
+        modifiedVelocity.x += (Math.random() - 0.5) * 8;
+        modifiedVelocity.y += (Math.random() - 0.5) * 6;
+        break;
+      }
+    }
+
+    return modifiedVelocity;
+  }
+
   function updateFishStates(
     prevStates: FishMovementState[],
-    deltaTime: number,
-    currentTime: number
+    deltaTime: number
   ): FishMovementState[] {
-    // First get all updated states
-    const newStates = prevStates.map(fishState => {
+    return prevStates.map((fishState) => {
       const params = fishParamsRef.current.get(fishState.id);
-      if (!params) return fishState; // Skip if no params found
-      
-      // Clone the state to avoid mutations
+      if (!params) return fishState;
+
       const newState = { ...fishState };
-      
-      // Update behavior state timer
+
       newState.behaviorTimer -= deltaTime;
-      
-      // IMPORTANT: Always set facingLeft based on velocity BEFORE applying any other logic
-      // This ensures visual direction always matches actual movement
-      if (Math.abs(newState.velocity.x) > 5) {
-        newState.facingLeft = newState.velocity.x < 0;
-      }
-      
-      // Check if fish is stuck (not moving much)
-      const velocityMagnitude = Math.sqrt(
-        newState.velocity.x * newState.velocity.x + 
-        newState.velocity.y * newState.velocity.y
+      newState.feedingCooldown = Math.max(
+        0,
+        newState.feedingCooldown - deltaTime
       );
-      
-      if (velocityMagnitude < 5) {
-        newState.stuckTimer += deltaTime;
-        
-        // If stuck for too long, give it a new target and velocity boost
-        if (newState.stuckTimer > 2) { // 2 seconds of being stuck
-          newState.stuckTimer = 0;
-          newState.targetPosition = getSafeTargetPosition(params);
-          
-          // Calculate direction to target
-          const dx = newState.targetPosition.x - newState.position.x;
-          const dy = newState.targetPosition.y - newState.position.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance > 0) {
-            // Set new velocity toward target
-            newState.velocity = {
-              x: (dx / distance) * params.speed * 2,
-              y: (dy / distance) * params.speed * 2
+      newState.directionChangeCooldown = Math.max(
+        0,
+        newState.directionChangeCooldown - deltaTime
+      );
+      newState.explorationTimer -= deltaTime;
+      newState.playfulnessTimer -= deltaTime;
+      newState.patternTimer -= deltaTime;
+
+      newState.energyLevel = Math.min(
+        1,
+        newState.energyLevel + deltaTime * 0.1
+      );
+
+      if (newState.patternTimer <= 0) {
+        const patterns: Array<"straight" | "zigzag" | "circular" | "spiral"> = [
+          "straight",
+          "zigzag",
+          "circular",
+          "spiral",
+        ];
+        newState.swimmingPattern =
+          patterns[Math.floor(Math.random() * patterns.length)];
+        newState.patternTimer = 2 + Math.random() * 4;
+      }
+
+      if (newState.behaviorState === "feeding" && checkFoodReached(newState)) {
+        console.log(
+          `🐠 Fish ${newState.id} ATE food ${newState.targetFoodId}! (Close contact)`
+        );
+
+        if (onFoodConsumed && newState.targetFoodId) {
+          onFoodConsumed(newState.targetFoodId);
+        }
+
+        newState.energyLevel = Math.min(1, newState.energyLevel + 0.3);
+        newState.behaviorState = "playful";
+        newState.targetFoodId = undefined;
+        newState.feedingCooldown = 0.5;
+        newState.behaviorTimer = 2 + Math.random() * 2;
+        newState.targetPosition = getSafeTargetPosition(
+          newState.position,
+          params.minTargetDistance
+        );
+      }
+
+      if (newState.feedingCooldown <= 0) {
+        const nearestFood = findNearestFood(
+          newState.position,
+          params.foodDetectionRadius
+        );
+
+        if (nearestFood && nearestFood.id !== newState.targetFoodId) {
+          const foodExists = foods.find(
+            (f) => f.id === nearestFood.id && !f.consumed
+          );
+
+          if (foodExists) {
+            console.log(
+              `🎯 Fish ${newState.id} targeting food ${nearestFood.id}`
+            );
+
+            newState.behaviorState = "feeding";
+            newState.targetFoodId = nearestFood.id;
+            newState.behaviorTimer = 6;
+
+            const foodPixelPos = {
+              x: (nearestFood.position.x / 100) * aquariumBounds.width,
+              y: (nearestFood.position.y / 100) * aquariumBounds.height,
             };
-            
-            // Update facing direction based on new velocity
-            newState.facingLeft = newState.velocity.x < 0;
+            newState.targetPosition = foodPixelPos;
           }
-          
-          newState.lastDirectionChangeTime = currentTime;
         }
-      } else {
-        // Reset stuck timer if moving
-        newState.stuckTimer = 0;
       }
-      
-      // Handle behavior state changes
-      if (newState.behaviorTimer <= 0) {
-        // Reset timer and potentially change behavior
-        if (newState.behaviorState !== 'idle') {
-          // Return to idle if in a special state
-          newState.behaviorState = 'idle';
-          newState.behaviorTimer = 1 + Math.random() * 3; // Idle for 1-4 seconds
+
+      if (newState.targetFoodId) {
+        const targetFood = foods.find(
+          (f) => f.id === newState.targetFoodId && !f.consumed
+        );
+        if (!targetFood) {
+          newState.behaviorState = "exploring";
+          newState.targetFoodId = undefined;
+          newState.behaviorTimer = 1;
+          newState.targetPosition = getSafeTargetPosition(
+            newState.position,
+            params.minTargetDistance
+          );
+        }
+      }
+
+      if (newState.behaviorTimer <= 0 && newState.behaviorState !== "feeding") {
+        const rand = Math.random();
+
+        if (newState.energyLevel > 0.8 && rand < 0.3) {
+          newState.behaviorState = "darting";
+          newState.behaviorTimer = 0.8 + Math.random() * 0.5;
+        } else if (newState.playfulnessTimer <= 0 && rand < 0.4) {
+          newState.behaviorState = "playful";
+          newState.behaviorTimer = 2 + Math.random() * 2;
+          newState.playfulnessTimer = 8 + Math.random() * 5;
+        } else if (newState.explorationTimer <= 0 && rand < 0.6) {
+          newState.behaviorState = "exploring";
+          newState.behaviorTimer = 3 + Math.random() * 3;
+          newState.explorationTimer = 5 + Math.random() * 3;
+        } else if (rand < 0.1) {
+          newState.behaviorState = "hovering";
+          newState.behaviorTimer = 1 + Math.random() * 1.5;
         } else {
-          // Possibly transition to a special state
-          const dartRoll = Math.random();
-          const hoverRoll = Math.random();
-          
-          if (dartRoll < params.darting.probability) {
-            newState.behaviorState = 'darting';
-            newState.behaviorTimer = params.darting.duration;
-            
-            // Set a new target when darting
-            newState.targetPosition = getSafeTargetPosition(params);
-            
-            // Calculate direction to target
-            const dx = newState.targetPosition.x - newState.position.x;
-            const dy = newState.targetPosition.y - newState.position.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance > 0) {
-              // Set new velocity toward target with darting boost
-              newState.velocity = {
-                x: (dx / distance) * params.speed * params.darting.speedMultiplier,
-                y: (dy / distance) * params.speed * params.darting.speedMultiplier
-              };
-              
-              // Update facing direction based on new velocity
-              newState.facingLeft = newState.velocity.x < 0;
-            }
-            
-          } else if (hoverRoll < params.hovering.probability) {
-            newState.behaviorState = 'hovering';
-            newState.behaviorTimer = params.hovering.duration;
-            // Slow down when entering hovering state
-            newState.velocity.x *= 0.3;
-            newState.velocity.y *= 0.3;
-          } else {
-            // Stay in idle
-            newState.behaviorTimer = 1 + Math.random() * 3;
-            
-            // Occasionally set a new target while idle
-            if (Math.random() < 0.2) {
-              newState.targetPosition = getSafeTargetPosition(params);
-            }
+          newState.behaviorState = "exploring";
+          newState.behaviorTimer = 2 + Math.random() * 2;
+        }
+
+        newState.targetPosition = getSafeTargetPosition(
+          newState.position,
+          params.minTargetDistance
+        );
+      }
+
+      const dx = newState.targetPosition.x - newState.position.x;
+      const dy = newState.targetPosition.y - newState.position.y;
+      const distToTarget = Math.sqrt(dx * dx + dy * dy);
+
+      let speed = params.speed * newState.energyLevel;
+
+      switch (newState.behaviorState) {
+        case "feeding":
+          speed = params.feedingSpeed;
+          if (distToTarget < 40) {
+            speed *= 0.7;
           }
+          break;
+        case "darting":
+          speed *= params.darting.speedMultiplier;
+          break;
+        case "playful":
+          speed *= 1.4;
+          break;
+        case "exploring":
+          speed *= 1.2;
+          break;
+        case "hovering":
+          speed *= 0.3;
+          break;
+      }
+
+      speed *= 1 + (Math.random() - 0.5) * params.swimmingVariation;
+
+      let desiredVelocity = { x: 0, y: 0 };
+      if (distToTarget > 5) {
+        desiredVelocity = {
+          x: (dx / distToTarget) * speed,
+          y: (dy / distToTarget) * speed,
+        };
+      }
+
+      if (newState.behaviorState !== "feeding") {
+        desiredVelocity = applySwimmingPattern(newState, desiredVelocity);
+      }
+
+      const turnSpeed =
+        newState.behaviorState === "feeding"
+          ? params.turnRate * 2
+          : params.turnRate * 1.5;
+      newState.velocity = {
+        x:
+          newState.velocity.x +
+          (desiredVelocity.x - newState.velocity.x) * turnSpeed * deltaTime,
+        y:
+          newState.velocity.y +
+          (desiredVelocity.y - newState.velocity.y) * turnSpeed * deltaTime,
+      };
+
+      const minSpeed = newState.behaviorState === "hovering" ? 5 : 15;
+      if (
+        Math.abs(newState.velocity.x) < minSpeed &&
+        newState.behaviorState !== "hovering"
+      ) {
+        newState.velocity.x = Math.sign(newState.velocity.x || 1) * minSpeed;
+      }
+      if (
+        Math.abs(newState.velocity.y) < minSpeed * 0.7 &&
+        newState.behaviorState !== "hovering"
+      ) {
+        newState.velocity.y =
+          Math.sign(newState.velocity.y || 1) * (minSpeed * 0.7);
+      }
+
+      const velocityXSign = Math.sign(newState.velocity.x);
+      const lastVelocityXSign = Math.sign(newState.lastVelocityX);
+
+      if (Math.abs(newState.velocity.x) > 15) {
+        if (
+          newState.directionChangeCooldown <= 0 &&
+          velocityXSign !== lastVelocityXSign
+        ) {
+          newState.facingLeft = newState.velocity.x < 0;
+          newState.directionChangeCooldown = params.directionChangeCooldown;
+          newState.lastVelocityX = newState.velocity.x;
         }
       }
-      
-      // Calculate desired velocity based on behavior state
-      let desiredVelocity = calculateDesiredVelocity(newState, params);
-      
-      // Update velocity with easing for smooth transitions
-      newState.velocity = {
-        x: newState.velocity.x + (desiredVelocity.x - newState.velocity.x) * params.turnRate * deltaTime,
-        y: newState.velocity.y + (desiredVelocity.y - newState.velocity.y) * params.turnRate * deltaTime
-      };
-      
-      // MOST IMPORTANT PART: Update facing direction based on actual velocity
-      // Must be done after velocity update to ensure it matches current movement
-      if (Math.abs(newState.velocity.x) > 5) {
-        newState.facingLeft = newState.velocity.x < 0;
-      }
-      
-      // Prevent extremely slow movement that causes pauses
-      if (Math.abs(newState.velocity.x) < 5 && newState.behaviorState !== 'hovering') {
-        newState.velocity.x = Math.sign(newState.velocity.x || 1) * 5;
-      }
-      if (Math.abs(newState.velocity.y) < 3 && newState.behaviorState !== 'hovering') {
-        newState.velocity.y = Math.sign(newState.velocity.y || 1) * 3;
-      }
-      
-      // Update position based on velocity
+
       newState.position = {
         x: newState.position.x + newState.velocity.x * deltaTime,
-        y: newState.position.y + newState.velocity.y * deltaTime
+        y: newState.position.y + newState.velocity.y * deltaTime,
       };
-      
-      // Apply boundary constraints
-      const directionChanged = applyBoundaryConstraints(newState, params);
-      
-      // If direction changed due to boundary, make sure velocity and facing direction are consistent
-      if (directionChanged) {
-        // Direction has changed due to boundary collision, make sure we update lastDirectionChangeTime
-        newState.lastDirectionChangeTime = currentTime;
+
+      const padding = params.boundaryPadding;
+      let hitBoundary = false;
+
+      if (newState.position.x < padding) {
+        newState.position.x = padding;
+        if (newState.velocity.x < 0) {
+          newState.velocity.x = Math.abs(newState.velocity.x) * 0.9;
+          hitBoundary = true;
+        }
+      } else if (newState.position.x > aquariumBounds.width - padding) {
+        newState.position.x = aquariumBounds.width - padding;
+        if (newState.velocity.x > 0) {
+          newState.velocity.x = -Math.abs(newState.velocity.x) * 0.9;
+          hitBoundary = true;
+        }
       }
-      
+
+      if (newState.position.y < padding) {
+        newState.position.y = padding;
+        if (newState.velocity.y < 0) {
+          newState.velocity.y = Math.abs(newState.velocity.y) * 0.9;
+        }
+      } else if (newState.position.y > aquariumBounds.height - padding) {
+        newState.position.y = aquariumBounds.height - padding;
+        if (newState.velocity.y > 0) {
+          newState.velocity.y = -Math.abs(newState.velocity.y) * 0.9;
+        }
+      }
+
+      if (hitBoundary && newState.directionChangeCooldown <= 0) {
+        newState.facingLeft = newState.velocity.x < 0;
+        newState.directionChangeCooldown = params.directionChangeCooldown;
+        newState.lastVelocityX = newState.velocity.x;
+
+        if (newState.behaviorState !== "feeding") {
+          newState.targetPosition = getSafeTargetPosition(
+            newState.position,
+            params.minTargetDistance
+          );
+        }
+      }
+
       return newState;
     });
-    
-    // Apply collision avoidance
-    return applyCollisionAvoidance(newStates, collisionRadius);
   }
-  
-  // Apply collision avoidance - prevent fish from overlapping
-  function applyCollisionAvoidance(states: FishMovementState[], radius: number): FishMovementState[] {
-    // We'll just make slight position adjustments to avoid fish clustering too much
-    return states.map((fish, index) => {
-      // Skip collision check on hovering or darting fish
-      if (fish.behaviorState !== 'idle') return fish;
-      
-      const newFish = { ...fish };
-      let totalPush = { x: 0, y: 0 };
-      let pushCount = 0;
-      
-      // Check against all other fish
-      for (let j = 0; j < states.length; j++) {
-        if (index === j) continue;
-        
-        const otherFish = states[j];
-        
-        // Calculate distance between fish
-        const dx = newFish.position.x - otherFish.position.x;
-        const dy = newFish.position.y - otherFish.position.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        
-        // If they're too close, calculate a push vector
-        if (distance < radius) {
-          // Direction to push (away from other fish)
-          const pushFactor = (radius - distance) / radius;
-          totalPush.x += dx * pushFactor * 0.5;
-          totalPush.y += dy * pushFactor * 0.5;
-          pushCount++;
-        }
+
+  useEffect(() => {
+    if (initialFish.length !== fishParamsRef.current.size) {
+      fishParamsRef.current.clear();
+    }
+
+    initialFish.forEach((fish) => {
+      if (!fishParamsRef.current.has(fish.id)) {
+        fishParamsRef.current.set(fish.id, generateMovementParams(fish));
       }
-      
-      // Apply the average push if there were any collisions
-      if (pushCount > 0) {
-        newFish.position.x += totalPush.x / pushCount;
-        newFish.position.y += totalPush.y / pushCount;
-        
-        // Ensure the fish stays within bounds after collision avoidance
-        const params = fishParamsRef.current.get(newFish.id);
-        if (params) {
-          applyBoundaryConstraints(newFish, params);
-        }
-      }
-      
-      return newFish;
     });
-  }
-  
-  // Calculate desired velocity based on current state and behavior
-  function calculateDesiredVelocity(
-    state: FishMovementState,
-    params: MovementParams
-  ) {
-    // Direction to target
-    const dx = state.targetPosition.x - state.position.x;
-    const dy = state.targetPosition.y - state.position.y;
-    
-    // Distance to target
-    const distToTarget = Math.sqrt(dx * dx + dy * dy);
-    
-    // Base speed depends on behavior state
-    let speed = params.speed;
-    
-    // Apply behavior-specific modifications
-    switch (state.behaviorState) {
-      case 'darting':
-        speed *= params.darting.speedMultiplier;
-        break;
-        
-      case 'hovering':
-        // When hovering, move very little and make random small adjustments
-        // But preserve facing direction by ensuring x velocity has correct sign
-        const xVelocity = (Math.random() - 0.5) * params.hovering.intensity * 15;
-        return {
-          // Ensure hovering fish maintain their facing direction by keeping velocity sign consistent
-          x: state.facingLeft ? -Math.abs(xVelocity) : Math.abs(xVelocity),
-          y: (Math.random() - 0.5) * params.hovering.intensity * 15  // Increased
-        };
-        
-      case 'idle':
-      default:
-        // If very close to target, slow down
-        if (distToTarget < 20) {
-          speed *= distToTarget / 20;
-        }
-        break;
-    }
-    
-    // Normalize direction and apply speed
-    if (distToTarget > 0) {
-      return {
-        x: (dx / distToTarget) * speed,
-        y: (dy / distToTarget) * speed
-      };
-    } else {
-      // If at target, move in a random direction
-      const angle = Math.random() * Math.PI * 2;
-      return {
-        x: Math.cos(angle) * speed * 0.3, // Increased
-        y: Math.sin(angle) * speed * 0.3  // Increased
-      };
-    }
-  }
-  
-  // Apply constraints to keep fish within boundaries
-  function applyBoundaryConstraints(state: FishMovementState, params: MovementParams) {
-    const padding = params.boundaryPadding;
-    let directionChanged = false;
-    
-    // Check horizontal boundaries
-    if (state.position.x < padding) {
-      state.position.x = padding;
-      // Fish hit left boundary - make it move right
-      if (state.velocity.x < 0) {
-        state.velocity.x = Math.abs(state.velocity.x) * 0.8; // Bounce
-        state.facingLeft = false; // Always face right when bouncing off left wall
-        directionChanged = true;
-      }
-    } else if (state.position.x > aquariumBounds.width - padding) {
-      state.position.x = aquariumBounds.width - padding;
-      // Fish hit right boundary - make it move left
-      if (state.velocity.x > 0) {
-        state.velocity.x = -Math.abs(state.velocity.x) * 0.8; // Bounce
-        state.facingLeft = true; // Always face left when bouncing off right wall
-        directionChanged = true;
-      }
-    }
-    
-    // Check vertical boundaries
-    if (state.position.y < padding) {
-      state.position.y = padding;
-      state.velocity.y = Math.abs(state.velocity.y) * 0.8; // Bounce
-    } else if (state.position.y > aquariumBounds.height - padding) {
-      state.position.y = aquariumBounds.height - padding;
-      state.velocity.y = -Math.abs(state.velocity.y) * 0.8; // Bounce
-    }
-    
-    return directionChanged;
-  }
-  
-  // Return fish states with transformed positions as percentages for rendering
-  return fishStates.map(state => {
-    // CRITICAL: Ensure facingLeft is consistent with velocity direction
-    // This is the final check before rendering to make sure fish never move backwards
-    if (Math.abs(state.velocity.x) > 1) {
-      state.facingLeft = state.velocity.x < 0;
-    }
-    
-    return {
-      id: state.id,
-      position: {
-        x: (state.position.x / aquariumBounds.width) * 100,
-        y: (state.position.y / aquariumBounds.height) * 100
-      },
-      facingLeft: state.facingLeft,
-      behaviorState: state.behaviorState
+
+    const animate = () => {
+      const now = Date.now();
+      const deltaTime = Math.min((now - lastUpdateTimeRef.current) / 1000, 0.1);
+      lastUpdateTimeRef.current = now;
+
+      setFishStates((prevStates) => updateFishStates(prevStates, deltaTime));
+
+      animationFrameRef.current = requestAnimationFrame(animate);
     };
-  });
-} 
+
+    animationFrameRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [initialFish, foods]);
+
+  useEffect(() => {
+    if (initialFish.length > 0) {
+      setFishStates(initialFish.map((fish) => initializeFishState(fish)));
+    }
+  }, [initialFish.length]);
+
+  return fishStates.map((state) => ({
+    id: state.id,
+    position: {
+      x: (state.position.x / aquariumBounds.width) * 100,
+      y: (state.position.y / aquariumBounds.height) * 100,
+    },
+    facingLeft: state.facingLeft,
+    behaviorState: state.behaviorState,
+  }));
+}
