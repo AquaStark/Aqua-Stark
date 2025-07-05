@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -43,19 +43,24 @@
 }
 
 @layer utilities {
-
   /* Efectos de botones de juego */
   .game-button {
     @apply relative overflow-hidden transition-all duration-200 transform hover:scale-105 active:scale-95;
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2), 0 -2px 0 rgba(255, 255, 255, 0.2) inset, 0 2px 0 rgba(255, 255, 255, 0.2) inset;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2),
+      0 -2px 0 rgba(255, 255, 255, 0.2) inset,
+      0 2px 0 rgba(255, 255, 255, 0.2) inset;
   }
 
   .game-button:hover {
-    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2), 0 -2px 0 rgba(255, 255, 255, 0.3) inset, 0 2px 0 rgba(255, 255, 255, 0.3) inset;
+    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.2),
+      0 -2px 0 rgba(255, 255, 255, 0.3) inset,
+      0 2px 0 rgba(255, 255, 255, 0.3) inset;
   }
 
   .game-button:active {
-    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2), 0 -1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2),
+      0 -1px 0 rgba(255, 255, 255, 0.2) inset,
+      0 1px 0 rgba(255, 255, 255, 0.2) inset;
     box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2),
       0 -2px 0 rgba(255, 255, 255, 0.2) inset,
       0 2px 0 rgba(255, 255, 255, 0.2) inset;
@@ -87,10 +92,12 @@
 
   /* Efectos de agua */
   .water-effect {
-    background: linear-gradient(180deg,
-        rgba(0, 119, 255, 0.2) 0%,
-        rgba(0, 119, 255, 0.1) 50%,
-        rgba(0, 119, 255, 0.05) 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(0, 119, 255, 0.2) 0%,
+      rgba(0, 119, 255, 0.1) 50%,
+      rgba(0, 119, 255, 0.05) 100%
+    );
   }
 
   /* Animaciones de burbujas */
@@ -148,7 +155,6 @@
   }
 
   @keyframes light-pulse {
-
     0%,
     100% {
       opacity: 0.5;
@@ -200,13 +206,13 @@
 
   @keyframes swim-idle {
     0% {
-      transform: scaleX(1.00);
+      transform: scaleX(1);
     }
     50% {
       transform: scaleX(1.02);
     }
     100% {
-      transform: scaleX(1.00);
+      transform: scaleX(1);
     }
   }
 
@@ -217,42 +223,42 @@
 
   @keyframes swim-dart {
     0% {
-      transform: scaleX(1.00);
+      transform: scaleX(1);
     }
     50% {
       transform: scaleX(1.04);
     }
     100% {
-      transform: scaleX(1.00);
+      transform: scaleX(1);
     }
   }
-  
+
   /* Hovering animation - very subtle movement */
   .animate-hover {
     animation: hover 3s ease-in-out infinite;
   }
-  
+
   @keyframes hover {
     0% {
-      transform: scaleX(1.00) scaleY(1.00);
+      transform: scaleX(1) scaleY(1);
     }
     50% {
       transform: scaleX(1.01) scaleY(0.99);
     }
     100% {
-      transform: scaleX(1.00) scaleY(1.00);
+      transform: scaleX(1) scaleY(1);
     }
   }
-  
+
   /* Smooth fish direction change transition */
   .fish-image {
     transition: opacity 0.3s ease-in-out;
   }
-  
+
   .fish-flipping {
     animation: flip-transition 0.4s ease-in-out;
   }
-  
+
   @keyframes flip-transition {
     0% {
       opacity: 1;
@@ -275,19 +281,19 @@
 
   @keyframes swim {
     0% {
-      transform: scaleX(1.00);
+      transform: scaleX(1);
     }
     25% {
       transform: scaleX(1.03);
     }
     50% {
-      transform: scaleX(1.00);
+      transform: scaleX(1);
     }
     75% {
       transform: scaleX(1.03);
     }
     100% {
-      transform: scaleX(1.00);
+      transform: scaleX(1);
     }
   }
 
@@ -362,10 +368,12 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    background: linear-gradient(0deg,
-        rgba(0, 119, 255, 0.05) 0%,
-        rgba(0, 119, 255, 0.1) 50%,
-        rgba(0, 119, 255, 0.05) 100%);
+    background: linear-gradient(
+      0deg,
+      rgba(0, 119, 255, 0.05) 0%,
+      rgba(0, 119, 255, 0.1) 50%,
+      rgba(0, 119, 255, 0.05) 100%
+    );
     animation: water-move 10s ease-in-out infinite alternate;
   }
 
@@ -417,10 +425,68 @@
   }
 
   .font-404 {
-    font-family: 'Baloo 2', 'Nunito', 'Quicksand', sans-serif;
+    font-family: "Baloo 2", "Nunito", "Quicksand", sans-serif;
+  }
+
+  /* Fish animations */
+  .fish-feeding {
+    filter: brightness(1.2) drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+  }
+
+  .fish-feeding-glow {
+    background: radial-gradient(
+      circle,
+      rgba(255, 215, 0, 0.4) 0%,
+      rgba(255, 215, 0, 0) 70%
+    );
+    transform: scale(1.3);
+    animation: fishPulse 1s ease-in-out infinite;
+  }
+
+  @keyframes fishPulse {
+    0%,
+    100% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+  /* Flip animation */
+  .fish-flipping {
+    animation: flip-transition 0.4s ease-in-out;
+  }
+
+  @keyframes flip-transition {
+    0% {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scaleX(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+  }
+
+  .food-item {
+    animation: foodBob 1.5s ease-in-out infinite;
+  }
+
+  @keyframes foodBob {
+    0%,
+    100% {
+      transform: translate(-50%, -50%) scale(1) translateY(0px);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1) translateY(-2px);
+    }
   }
 }
-
 
 @keyframes bubble {
   0% {
@@ -525,4 +591,3 @@
     rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
     scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
-
