@@ -1,8 +1,8 @@
 {
   "world": {
     "class_hash": "0x4c60dc46a8ca8bb47675b7b914053cef769afbf0e340523187336b72bd71d1f",
-    "address": "0x683f7e456eefc82a8ae434b0d2b63e3f3786194744c250f868013ece52015db",
-    "seed": "ajidokwuuuuu",
+    "address": "0x67350470f00986191170bdda99ab81f1b0c932ca75ebd4ba2a84e88483fc757",
+    "seed": "ajidokwuuuuuu",
     "name": "Dojo starter",
     "entrypoints": [
       "uuid",
@@ -1328,8 +1328,8 @@
   },
   "contracts": [
     {
-      "address": "0x372787635e57b668171a9eeffa4649b9e03eb5e38873facceeec6321bf988a8",
-      "class_hash": "0x14c5a07597b5afbe0f2f82dc59c1d54bd6197ce40ce2592a72571243efaadb6",
+      "address": "0x13e6f5597fb41c5ba12bc18fd0780c22987f8ff749796d60e224d35f135f92c",
+      "class_hash": "0x280fd80d2195ebcdf040b6795948b979edc56873340262cfa634f895087a52e",
       "abi": [
         {
           "type": "impl",
@@ -1540,6 +1540,20 @@
         },
         {
           "type": "struct",
+          "name": "aqua_stark::models::fish_model::FishParents",
+          "members": [
+            {
+              "name": "parent1",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "parent2",
+              "type": "core::integer::u256"
+            }
+          ]
+        },
+        {
+          "type": "struct",
           "name": "aqua_stark::models::fish_model::Fish",
           "members": [
             {
@@ -1625,6 +1639,10 @@
             {
               "name": "offspings",
               "type": "core::array::Array::<core::integer::u256>"
+            },
+            {
+              "name": "family_tree",
+              "type": "core::array::Array::<aqua_stark::models::fish_model::FishParents>"
             }
           ]
         },
@@ -2189,6 +2207,42 @@
                 }
               ],
               "state_mutability": "view"
+            },
+            {
+              "type": "function",
+              "name": "get_fish_family_tree",
+              "inputs": [
+                {
+                  "name": "fish_id",
+                  "type": "core::integer::u256"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "core::array::Array::<aqua_stark::models::fish_model::FishParents>"
+                }
+              ],
+              "state_mutability": "view"
+            },
+            {
+              "type": "function",
+              "name": "get_fish_ancestor",
+              "inputs": [
+                {
+                  "name": "fish_id",
+                  "type": "core::integer::u256"
+                },
+                {
+                  "name": "generation",
+                  "type": "core::integer::u32"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "aqua_stark::models::fish_model::FishParents"
+                }
+              ],
+              "state_mutability": "view"
             }
           ]
         },
@@ -2374,7 +2428,7 @@
     },
     {
       "members": [],
-      "class_hash": "0x3348d4d15f4643965415ab5be09e8dbd10de52a781fcdca35768971353da72f",
+      "class_hash": "0x6fcc862d359ab7a07eef6a17fc63ceabae6cbf3f4aa812142059beddb8aabea",
       "tag": "aqua_stark-Fish",
       "selector": "0x2c29d0c1c419653118b00904822377170068e57e95aea2c09d5141ec49d2d3"
     },
@@ -2424,9 +2478,63 @@
   "events": [
     {
       "members": [],
-      "class_hash": "0x40fe0aed12f0aaf469d9df284d26bd9394c2b3d74a3addcd25973aaa99f2869",
+      "class_hash": "0x7fd77091ac0611b974c4d6bef4c08619446c46f38acf28136e1d2ee45b1ddea",
+      "tag": "aqua_stark-DecorationAddedToAquarium",
+      "selector": "0xb88293269818bde02e6ae323e631bfc3c4f653acab8d4a79bc77cda197980d"
+    },
+    {
+      "members": [],
+      "class_hash": "0x38aa5b79d41d48f52d08bd6293766f57bd0bf04f5bdaa7f2476c9980dff8000",
+      "tag": "aqua_stark-DecorationCreated",
+      "selector": "0x47ba9bfbff0cb6a2b5a5cf71cf5afef0fcf61f476bcd96549ea65f5ac6dedd5"
+    },
+    {
+      "members": [],
+      "class_hash": "0x2c37ea17944274a0a3002e94300320c3bad1b456f4dc348b12178668ad999ce",
+      "tag": "aqua_stark-DecorationMoved",
+      "selector": "0x7e10bc631d9a4c66ce0ea43691a35de09c842fa70f25671cd22bcb44bfe0906"
+    },
+    {
+      "members": [],
+      "class_hash": "0x42fac433bcfa693e0fb21f8c2618752c1e50a3c14d377cbcac7b8de6e13f234",
+      "tag": "aqua_stark-FishAddedToAquarium",
+      "selector": "0x5dc53e867152a5f89cff5d90058965fd9d20d12f0f1fb2980114051e99a7900"
+    },
+    {
+      "members": [],
+      "class_hash": "0x7a3eae1068ebc0e2818f9fd59dc6a1f734fade1b020b96695ee3efbf2ffc0d3",
+      "tag": "aqua_stark-FishBred",
+      "selector": "0x65437229d5640f87c72fd13f75756bac3efa6d50fd4b351f452d4acfba5b9b"
+    },
+    {
+      "members": [],
+      "class_hash": "0x2d061984887cc44cb35ca712ff368229349c60a22ea3155e34ed530af10be33",
+      "tag": "aqua_stark-FishCreated",
+      "selector": "0x516f730a6741296459c2f16c4bba4dacc590bc98ec7e95c7f547420c82b7f53"
+    },
+    {
+      "members": [],
+      "class_hash": "0x54ac8fd2083d11c12cb77f57c9ec2132ff7e62732e4e661b3bbda594405fbcc",
+      "tag": "aqua_stark-FishMoved",
+      "selector": "0x30665490f47e2171659f506f52abe582fdab1e07fd379417c43590df45ce81a"
+    },
+    {
+      "members": [],
+      "class_hash": "0xb230e355ffee0f5df4b7854462e769721f874a150f0b68fcbd6d952b251318",
       "tag": "aqua_stark-PlayerCreated",
       "selector": "0x6e38919b864f246a83eca36b4584f5f1206e54037ca0234793b4791cdb6ca79"
+    },
+    {
+      "members": [],
+      "class_hash": "0x6fede2561a93b4808a6a00e19457a94d616e7ee53fc952f75af58da9bae45f5",
+      "tag": "aqua_stark-TrophyCreation",
+      "selector": "0x48c429a63d15cce6f22c99a792b1071d37804a704af4713bba829cc3c88ef4b"
+    },
+    {
+      "members": [],
+      "class_hash": "0x3d60f68ff66df399a5efc60c6aacda487ced739897ddcea54270b7c147206d",
+      "tag": "aqua_stark-TrophyProgression",
+      "selector": "0x2c4b98b558785e5a008a098c27b91920c0f7b539ecf80719c7e1c2b16751083"
     }
   ],
   "external_contracts": []
