@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { DirtSpot, DirtType, DirtSystemConfig, DirtSystemState } from '@/types/dirt';
 
 const DEFAULT_CONFIG: DirtSystemConfig = {
-  spawnInterval: 5000, // 5 seconds
-  maxSpots: 5,
-  minSpotDistance: 60, // pixels
+  spawnInterval: 100, // 0.1 segundos (ultra rápido)
+  maxSpots: Infinity, // Sin límite
+  minSpotDistance: 8, // pixels (permite agrupación densa)
   aquariumBounds: {
     x: 0,
     y: 0,
@@ -50,34 +50,53 @@ export function useDirtSystem(config: Partial<DirtSystemConfig> = {}) {
     };
   }, [finalConfig.aquariumBounds]);  // Create a new dirt spot
   const createDirtSpot = useCallback((currentSpots: DirtSpot[]): DirtSpot | null => {
-    const { maxSpots, spawnChance } = finalConfig;
-    
-    if (currentSpots.length >= maxSpots) {
-      return null;
-    }
-    
+    const { spawnChance } = finalConfig;
     if (Math.random() > spawnChance) {
       return null;
     }
-
-    // Try to find a valid position (max 10 attempts)
-    for (let attempts = 0; attempts < 10; attempts++) {
-      const position = generateRandomPosition();
-      
-      if (isValidPosition(position, currentSpots)) {
-        const newSpot = {
-          id: nextIdRef.current++,
-          position,
-          type: DirtType.BASIC, // For now, only basic dirt
-          size: Math.random() * 20 + 15, // 15-35px
-          opacity: Math.random() * 0.3 + 0.6, // 0.6-0.9
-          createdAt: Date.now(),
+    // Si ya hay suciedad, crecer cerca de una existente
+    if (currentSpots.length > 0) {
+      for (let attempts = 0; attempts < 10; attempts++) {
+        const base = currentSpots[Math.floor(Math.random() * currentSpots.length)];
+        // Generar posición cerca de la base
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = 10 + Math.random() * 25; // crecimiento más denso y controlado
+        const position = {
+          x: Math.max(finalConfig.aquariumBounds.x, Math.min(finalConfig.aquariumBounds.x + finalConfig.aquariumBounds.width,
+            base.position.x + Math.cos(angle) * distance)),
+          y: Math.max(finalConfig.aquariumBounds.y, Math.min(finalConfig.aquariumBounds.y + finalConfig.aquariumBounds.height,
+            base.position.y + Math.sin(angle) * distance)),
         };
-        return newSpot;
+        if (isValidPosition(position, currentSpots)) {
+          const newSpot = {
+            id: nextIdRef.current++,
+            position,
+            type: DirtType.BASIC,
+            size: Math.random() * 20 + 15,
+            opacity: Math.random() * 0.3 + 0.6,
+            createdAt: Date.now(),
+          };
+          return newSpot;
+        }
+      }
+    } else {
+      // Si no hay suciedad, posición aleatoria
+      for (let attempts = 0; attempts < 10; attempts++) {
+        const position = generateRandomPosition();
+        if (isValidPosition(position, currentSpots)) {
+          const newSpot = {
+            id: nextIdRef.current++,
+            position,
+            type: DirtType.BASIC,
+            size: Math.random() * 20 + 15,
+            opacity: Math.random() * 0.3 + 0.6,
+            createdAt: Date.now(),
+          };
+          return newSpot;
+        }
       }
     }
-    
-    return null; // Couldn't find valid position
+    return null;
   }, [finalConfig, generateRandomPosition, isValidPosition]);
   
   // Force spawn (for debug)
