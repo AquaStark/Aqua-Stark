@@ -267,6 +267,8 @@ pub mod AquaStark {
             let caller = get_caller_address();
             let mut parent1: Fish = world.read_model(parent1_id);
             let mut parent2: Fish = world.read_model(parent2_id);
+            let mut aquarium = self.get_aquarium(parent1.aquarium_id);
+            assert(aquarium.housed_fish.len() <= aquarium.max_capacity, 'Aquarium full');
             assert(parent1.aquarium_id == parent2.aquarium_id, 'Fishes must have same aquarium');
             assert(parent1.owner == parent2.owner, 'Fishes must have same player');
 
@@ -293,7 +295,6 @@ pub mod AquaStark {
             offspring_tree.append(fish_parents);
             new_fish.family_tree = offspring_tree;
 
-            let mut aquarium = self.get_aquarium(parent1.aquarium_id);
             aquarium.fish_count += 1;
             aquarium.housed_fish.append(new_fish.id);
 
