@@ -25,6 +25,8 @@ export const Game = () => {
     getFishOwner,
     getFishParents,
     getFishOffspring,
+    getFishAncestor,
+    getFishFamilyTree
    } = useFish();
   const { account } = useAccount();
 
@@ -53,6 +55,7 @@ export const Game = () => {
   const [offspringFishId, setOffspringFishId] = useState("");
   const [aquariumownerId, setAquariumownerId] = useState("");
   const [decorationOwnerId, setDecorationOwnerId] = useState("");
+  const [generation, setGeneration] = useState("");
   
 
   // UI state
@@ -190,6 +193,24 @@ export const Game = () => {
     if (!playerAddress) return setError("Player address required");
     handleRequest(() => isVerified(playerAddress), "isVerified");
   };
+
+
+ const handleFamilyTree = () => {
+  if (!fishId) return setError("Fish ID required");
+  handleRequest(
+    () => getFishFamilyTree(parseInt(fishId)),
+    "getFishFamilyTree"
+  );
+};
+
+const handleFishAncestor = () => {
+  if (!fishId) return setError("Fish ID required");
+  if (!generation) return setError("Generation required");
+  handleRequest(
+    () => getFishAncestor(parseInt(fishId), parseInt(generation)),
+    "getFishAncestor"
+  );
+};
 
 
 
@@ -458,6 +479,30 @@ return (
             onChange={(e) => setOffspringFishId(e.target.value)} />
           <button className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-md mt-2 w-full"
             onClick={handleGetOffspring}>Get Offspring</button>
+        </div>
+
+          <div className="bg-gray-800 p-4 rounded-lg border-l-4 border-red-500">
+          <h2 className="text-xl font-bold mb-4 text-red-300">Get Fish Family Tree</h2>
+          <input className="bg-gray-700 p-2 rounded-md placeholder-gray-500 w-full"
+            placeholder="Fish ID" type="number"
+            value={fishId}
+            onChange={(e) => setFishId(e.target.value)} />
+          <button className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-md mt-2 w-full"
+            onClick={handleFamilyTree}>Get Family Tree</button>
+        </div>
+
+          <div className="bg-gray-800 p-4 rounded-lg border-l-4 border-red-500">
+          <h2 className="text-xl font-bold mb-4 text-red-300">Get Fish Ancestor</h2>
+          <input className="bg-gray-700 p-2 rounded-md placeholder-gray-500 w-full"
+            placeholder="Fish ID" type="number"
+            value={fishId}
+            onChange={(e) => setFishId(e.target.value)} />
+             <input className="bg-gray-700 p-2 rounded-md placeholder-gray-500 w-full"
+            placeholder="generation" type="number"
+            value={generation}
+            onChange={(e) => setGeneration(e.target.value)} />
+          <button className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-md mt-2 w-full"
+            onClick={handleFishAncestor}>Get Ancestor</button>
         </div>
 
       </div>

@@ -5,6 +5,10 @@ pub mod systems {
 pub mod achievements {
     pub mod achievements;
 }
+pub mod base {
+    pub mod events;
+}
+
 
 pub mod interfaces {
     pub mod IAquaStark;

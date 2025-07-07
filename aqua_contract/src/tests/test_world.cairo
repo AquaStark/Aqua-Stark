@@ -18,6 +18,7 @@ mod tests {
         m_PlayerCounter, m_UsernameToAddress,
     };
     use aqua_stark::systems::AquaStark::AquaStark;
+    use aqua_stark::base::events;
     use dojo::model::{ModelStorage, ModelStorageTest};
     use dojo::world::WorldStorageTrait;
     use dojo_cairo_test::{
@@ -43,7 +44,14 @@ mod tests {
                 TestResource::Model(m_FishOwner::TEST_CLASS_HASH),
                 TestResource::Model(m_Decoration::TEST_CLASS_HASH),
                 TestResource::Model(m_DecorationCounter::TEST_CLASS_HASH),
-                TestResource::Event(AquaStark::e_PlayerCreated::TEST_CLASS_HASH),
+                TestResource::Event(events::e_PlayerCreated::TEST_CLASS_HASH),
+                TestResource::Event(events::e_DecorationCreated::TEST_CLASS_HASH),
+                TestResource::Event(events::e_FishCreated::TEST_CLASS_HASH),
+                TestResource::Event(events::e_FishBred::TEST_CLASS_HASH),
+                TestResource::Event(events::e_FishMoved::TEST_CLASS_HASH),
+                TestResource::Event(events::e_DecorationMoved::TEST_CLASS_HASH),
+                TestResource::Event(events::e_FishAddedToAquarium::TEST_CLASS_HASH),
+                TestResource::Event(events::e_DecorationAddedToAquarium::TEST_CLASS_HASH),
                 TestResource::Contract(AquaStark::TEST_CLASS_HASH),
             ]
                 .span(),
@@ -294,6 +302,89 @@ mod tests {
         assert(player_fishes.len() == 3, 'Player fishes count mismatch');
         assert(*player_fishes[1].id == fish1.id, 'Player fish 1 ID mismatch');
         assert(*player_fishes[2].id == fish2.id, 'Player fish 2 ID mismatch');
+    }
+
+    #[test]
+    fn test_get_fish_family_tree() {
+        // Initialize test environment
+        let caller = contract_address_const::<'aji'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+        testing::set_contract_address(caller);
+        actions_system.register('Aji');
+        let parent_1 = actions_system.new_fish(1, Species::GoldFish);
+        let parent_2 = actions_system.new_fish(1, Species::Betta);
+        let offspring_id = actions_system.breed_fishes(parent_1.id, parent_2.id);
+        let family_tree = actions_system.get_fish_family_tree(offspring_id);
+        assert(family_tree.len() == 1, 'Family tree length mismatch');
+        assert(*family_tree[0].parent1 == parent_1.id, 'Parent 1 ID mismatch');
+        assert(*family_tree[0].parent2 == parent_2.id, 'Parent 2 ID mismatch');
+    }
+
+    #[test]
+    fn test_get_fish_ancestor_three_generations() {
+        let caller = contract_address_const::<'aji'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+        testing::set_contract_address(caller);
+
+        actions_system.register('Aji');
+
+        let parent_1 = actions_system.new_fish(1, Species::GoldFish);
+        let parent_2 = actions_system.new_fish(1, Species::Betta);
+        let parent_3 = actions_system.new_fish(1, Species::AngelFish);
+        let parent_4 = actions_system.new_fish(1, Species::GoldFish);
+
+        let offspring_id = actions_system.breed_fishes(parent_1.id, parent_2.id);
+
+        let grandchild_id = actions_system.breed_fishes(offspring_id, parent_3.id);
+
+        let great_grandchild_id = actions_system.breed_fishes(grandchild_id, parent_4.id);
+
+        // Adjusted order: newest first
+        let ancestor_0 = actions_system.get_fish_ancestor(grandchild_id, 0);
+        assert(ancestor_0.parent1 == parent_1.id, 'Gen 0 Parent 1 mismatch');
+        assert(ancestor_0.parent2 == parent_2.id, 'Gen 0 Parent 2 mismatch');
+
+        let ancestor_1 = actions_system.get_fish_ancestor(grandchild_id, 1);
+        assert(ancestor_1.parent1 == offspring_id, 'Gen 1 Parent 1 mismatch');
+        assert(ancestor_1.parent2 == parent_3.id, 'Gen 1 Parent 2 mismatch');
+
+        let ancestor_2 = actions_system.get_fish_ancestor(great_grandchild_id, 2);
+        assert(ancestor_2.parent1 == grandchild_id, 'Gen 2 Parent 1 mismatch');
+        assert(ancestor_2.parent2 == parent_4.id, 'Gen 2 Parent 2 mismatch');
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_get_fish_ancestor_out_of_bounds() {
+        let caller = contract_address_const::<'aji'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+        testing::set_contract_address(caller);
+
+        actions_system.register('Aji');
+
+        let parent_1 = actions_system.new_fish(1, Species::GoldFish);
+        let parent_2 = actions_system.new_fish(1, Species::Betta);
+
+        let offspring_id = actions_system.breed_fishes(parent_1.id, parent_2.id);
+
+        let grandchild_id = actions_system.breed_fishes(parent_1.id, offspring_id);
+
+        // This should panic: only 2 generations recorded (0 and 1)
+        let _ = actions_system.get_fish_ancestor(grandchild_id, 2);
     }
 }
 

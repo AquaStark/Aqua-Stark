@@ -1,4 +1,5 @@
 use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
+
 #[derive(Serde, Copy, Drop, Introspect, PartialEq)]
 #[dojo::model]
 pub struct FishCounter {
@@ -7,6 +8,11 @@ pub struct FishCounter {
     pub current_val: u256,
 }
 
+#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
+pub struct FishParents {
+    pub parent1: u256,
+    pub parent2: u256,
+}
 
 #[derive(Serde, Copy, Introspect, Drop, PartialEq)]
 pub enum Species {
@@ -60,6 +66,7 @@ pub struct Fish {
     pub can_grow: bool,
     pub aquarium_id: u256,
     pub offspings: Array<u256>,
+    pub family_tree: Array<FishParents>,
 }
 
 pub trait FishTrait {
@@ -460,6 +467,7 @@ mod tests {
             can_grow: false,
             aquarium_id: 1,
             offspings: ArrayTrait::new(),
+            family_tree: ArrayTrait::new(),
         };
         assert(fish.fish_type == 1, 'Fish type should match');
     }
@@ -488,6 +496,7 @@ mod tests {
             can_grow: false,
             aquarium_id: 1,
             offspings: ArrayTrait::new(),
+            family_tree: ArrayTrait::new(),
         };
 
         let new_fish: Fish = FishTrait::create_random_fish(
@@ -520,6 +529,7 @@ mod tests {
             can_grow: false,
             aquarium_id: 1,
             offspings: ArrayTrait::new(),
+            family_tree: ArrayTrait::new(),
         };
 
         let parent1: Fish = FishTrait::create_fish_by_species(
@@ -566,6 +576,7 @@ mod tests {
             can_grow: false,
             aquarium_id: 1,
             offspings: ArrayTrait::new(),
+            family_tree: ArrayTrait::new(),
         };
 
         let parent2: Fish = FishTrait::create_fish_by_species(
@@ -605,6 +616,7 @@ mod tests {
             can_grow: false,
             aquarium_id: 1,
             offspings: ArrayTrait::new(),
+            family_tree: ArrayTrait::new(),
         };
 
         let parent2: Fish = FishTrait::create_fish_by_species(
@@ -644,6 +656,7 @@ mod tests {
             can_grow: false,
             aquarium_id: 1,
             offspings: ArrayTrait::new(),
+            family_tree: ArrayTrait::new(),
         };
 
         let new_fish: Fish = FishTrait::create_fish_by_species(
@@ -689,6 +702,7 @@ mod tests {
             can_grow: false,
             aquarium_id: 1,
             offspings: ArrayTrait::new(),
+            family_tree: ArrayTrait::new(),
         };
 
         let new_fish: Fish = FishTrait::create_fish_by_species(
