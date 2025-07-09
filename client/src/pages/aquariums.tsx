@@ -11,6 +11,9 @@ import { BubblesBackground } from "@/components/bubble-background";
 import { useBubbles } from "@/hooks/use-bubbles";
 import { Search, Filter } from "lucide-react";
 import { initialAquariums } from "@/data/mock-aquarium";
+import { useActiveAquarium } from "../store/active-aquarium";
+import { useNavigate } from "react-router-dom";
+import type { Aquarium } from "@/components/aquarium/aquarium-card";
 
 export default function AquariumsPage() {
   const [aquariums, setAquariums] = useState(initialAquariums);
@@ -27,6 +30,14 @@ export default function AquariumsPage() {
     maxDuration: 18,
     interval: 400,
   });
+
+  const setActiveAquariumId = useActiveAquarium((s) => s.setActiveAquariumId);
+  const navigate = useNavigate();
+
+  const handleSelectAquarium = (aquarium: Aquarium) => {
+    setActiveAquariumId(aquarium.id.toString());
+    navigate("/game");
+  };
 
   const handleAddAquarium = () => {
     // Add a new aquarium to the list
@@ -111,7 +122,7 @@ export default function AquariumsPage() {
             )}
           />
 
-          <AquariumList aquariums={filteredAquariums} />
+          <AquariumList aquariums={filteredAquariums} onSelectAquarium={handleSelectAquarium} />
 
           <CreateAquariumButton onClick={() => setShowPurchaseModal(true)} />
         </main>

@@ -15,9 +15,10 @@ interface Aquarium {
 
 interface AquariumListProps {
   aquariums: Aquarium[];
+  onSelectAquarium?: (aquarium: Aquarium) => void;
 }
 
-export function AquariumList({ aquariums }: AquariumListProps) {
+export function AquariumList({ aquariums, onSelectAquarium }: AquariumListProps) {
   return (
     <>
       <h2 className="text-2xl font-bold text-white mb-4">
@@ -32,7 +33,11 @@ export function AquariumList({ aquariums }: AquariumListProps) {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {aquariums.map((aquarium) => (
-            <AquariumCard key={aquarium.id} aquarium={aquarium} />
+            <AquariumCard
+              key={aquarium.id}
+              aquarium={aquarium}
+              onSelect={() => onSelectAquarium?.(aquarium)}
+            />
           ))}
         </div>
       )}
