@@ -15,8 +15,12 @@ import { useBubbles } from "@/hooks/use-bubbles";
 import { BubblesBackground } from "@/components/bubble-background";
 import { motion } from "framer-motion";
 import type { FishType } from "@/types/game";
+import { useActiveAquarium } from "../store/active-aquarium";
+import { initialAquariums } from "@/data/mock-aquarium";
 
 export default function GamePage() {
+  const activeAquariumId = useActiveAquarium((s) => s.activeAquariumId);
+  const aquarium = initialAquariums.find(a => a.id.toString() === activeAquariumId) || initialAquariums[0];
   const { happiness, food, energy } = useFishStats(INITIAL_GAME_STATE);
   const { selectedAquarium, handleAquariumChange, aquariums } = useAquarium();
   const [showMenu, setShowMenu] = useState(false);
@@ -95,7 +99,7 @@ export default function GamePage() {
 
   // Use fish from URL if available, otherwise use selected aquarium fish
   const displayFish =
-    fishObjects.length > 0 ? fishObjects : selectedAquarium.fishes;
+    fishObjects.length > 0 ? fishObjects : aquarium.fishes;
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-[#005C99]">
@@ -118,7 +122,7 @@ export default function GamePage() {
 
       {/* Fish */}
       <motion.div
-        key={selectedAquarium.id}
+        key={aquarium.id}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
@@ -152,7 +156,7 @@ export default function GamePage() {
       {/* Tabs */}
       <AquariumTabs
         aquariums={aquariums}
-        selectedAquarium={selectedAquarium}
+        selectedAquarium={aquarium}
         onAquariumSelect={handleAquariumChange}
       />
     </div>
