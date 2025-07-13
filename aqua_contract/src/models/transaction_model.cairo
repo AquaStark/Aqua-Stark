@@ -7,15 +7,15 @@ pub struct TransactionLog {
     pub id: u256,
     pub event_type_id: u256,
     pub player: ContractAddress,
-    pub description: ByteArray,
+    pub payload: Array<felt252>,
     pub timestamp: u64,
 }
 #[generate_trait]
 pub impl TransactionImpl of TransactionLogTrait {
     fn log_transaction(
-        id: u256, event_type_id: u256, player: ContractAddress, description: ByteArray,
+        id: u256, event_type_id: u256, player: ContractAddress, payload: Array<felt252>,
     ) -> TransactionLog {
-        TransactionLog { id, event_type_id, player, description, timestamp: get_block_timestamp() }
+        TransactionLog { id, event_type_id, player, payload, timestamp: get_block_timestamp() }
     }
 }
 
@@ -26,21 +26,14 @@ pub struct EventTypeDetails {
     #[key]
     pub type_id: u256,
     pub name: ByteArray,
-    pub logger: ContractAddress,
     pub total_logged: u32,
     pub transaction_history: Array<u256>,
 }
 
 #[generate_trait]
 pub impl EventDetailsImpl of EventDetailsTrait {
-    fn create_event(type_id: u256, name: ByteArray, logger: ContractAddress) -> EventTypeDetails {
-        EventTypeDetails { type_id, name, logger, total_logged: 0, transaction_history: array![] }
-    }
-    fn update_logger(
-        mut event_details: EventTypeDetails, new_logger: ContractAddress,
-    ) -> EventTypeDetails {
-        event_details.logger = new_logger;
-        event_details
+    fn create_event(type_id: u256, name: ByteArray) -> EventTypeDetails {
+        EventTypeDetails { type_id, name, total_logged: 0, transaction_history: array![] }
     }
 }
 
@@ -73,6 +66,14 @@ mod tests {
     use starknet::{contract_address_const, get_block_timestamp};
     use super::{*, EventTypeDetails, TransactionLog};
 
+    #[derive(Serde, Drop, Clone, Copy)]
+    pub struct AquariumCreatedData {
+        pub aquarium_id: u256,
+        pub name: felt252,
+        pub owner: ContractAddress,
+        pub capacity: u256,
+    }
+
     fn zero_address() -> ContractAddress {
         contract_address_const::<0>()
     }
@@ -82,7 +83,6 @@ mod tests {
         let event_details = EventTypeDetails {
             type_id: 0,
             name: "Transfer Transaction",
-            logger: zero_address(),
             total_logged: 0,
             transaction_history: array![],
         };
@@ -92,9 +92,21 @@ mod tests {
     #[test]
     fn test_transaction_log_creation() {
         let time = get_block_timestamp();
-        let txn_log = TransactionLog {
-            id: 0, event_type_id: 1, player: zero_address(), description: "Test", timestamp: time,
+
+        let aquarium_data = AquariumCreatedData {
+            aquarium_id: 0, name: 'FIRE', owner: zero_address(), capacity: 100,
         };
+
+        let mut payload: Array<felt252> = array![];
+        aquarium_data.aquarium_id.serialize(ref payload);
+        aquarium_data.name.serialize(ref payload);
+        aquarium_data.owner.serialize(ref payload);
+        aquarium_data.capacity.serialize(ref payload);
+
+        let txn_log = TransactionLog {
+            id: 0, event_type_id: 1, player: zero_address(), payload, timestamp: time,
+        };
+
         assert(txn_log.id == 0, 'Transaction log ID should match');
     }
 }

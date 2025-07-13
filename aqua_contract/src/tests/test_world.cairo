@@ -1,7 +1,11 @@
 #[cfg(test)]
 mod tests {
+    use dojo::world::IWorldDispatcherTrait;
     use aqua_stark::interfaces::IAquaStark::{
         IAquaStark, IAquaStarkDispatcher, IAquaStarkDispatcherTrait,
+    };
+    use aqua_stark::interfaces::ITransactionHistory::{
+        ITransactionHistory, ITransactionHistoryDispatcher, ITransactionHistoryDispatcherTrait,
     };
     use aqua_stark::models::aquarium_model::{
         Aquarium, AquariumCounter, AquariumOwner, m_Aquarium, m_AquariumCounter, m_AquariumOwner,
@@ -17,6 +21,12 @@ mod tests {
         AddressToUsername, Player, PlayerCounter, UsernameToAddress, m_AddressToUsername, m_Player,
         m_PlayerCounter, m_UsernameToAddress,
     };
+    use aqua_stark::models::transaction_model::{
+        TransactionLog, EventTypeDetails, EventCounter, TransactionCounter, m_TransactionLog,
+        m_EventTypeDetails, m_EventCounter, m_TransactionCounter,
+    };
+
+
     use aqua_stark::systems::AquaStark::AquaStark;
     use dojo::model::{ModelStorage, ModelStorageTest};
     use dojo::world::WorldStorageTrait;
@@ -24,7 +34,7 @@ mod tests {
         ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
         spawn_test_world,
     };
-    use starknet::{ContractAddress, contract_address_const, get_caller_address, testing};
+    use starknet::{contract_address_const, testing, get_block_timestamp, ContractAddress};
 
 
     fn namespace_def() -> NamespaceDef {
@@ -43,7 +53,13 @@ mod tests {
                 TestResource::Model(m_FishOwner::TEST_CLASS_HASH),
                 TestResource::Model(m_Decoration::TEST_CLASS_HASH),
                 TestResource::Model(m_DecorationCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_TransactionLog::TEST_CLASS_HASH),
+                TestResource::Model(m_EventTypeDetails::TEST_CLASS_HASH),
+                TestResource::Model(m_EventCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_TransactionCounter::TEST_CLASS_HASH),
                 TestResource::Event(AquaStark::e_PlayerCreated::TEST_CLASS_HASH),
+                TestResource::Event(AquaStark::e_PlayerEventLogged::TEST_CLASS_HASH),
+                TestResource::Event(AquaStark::e_EventTypeRegistered::TEST_CLASS_HASH),
                 TestResource::Contract(AquaStark::TEST_CLASS_HASH),
             ]
                 .span(),
@@ -122,6 +138,7 @@ mod tests {
         assert(player.aquarium_count == 2, 'Player aquarium count mismatch');
         assert(*player.player_aquariums[1] == aquarium.id, 'Player aquarium ID mismatch');
     }
+
     #[test]
     fn test_create_fish() {
         // Initialize test environment
@@ -294,6 +311,384 @@ mod tests {
         assert(player_fishes.len() == 3, 'Player fishes count mismatch');
         assert(*player_fishes[1].id == fish1.id, 'Player fish 1 ID mismatch');
         assert(*player_fishes[2].id == fish2.id, 'Player fish 2 ID mismatch');
+    }
+
+    #[test]
+    fn test_register_event() {
+        // Initialize test environment
+        let caller = contract_address_const::<'aji'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, caller);
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = ITransactionHistoryDispatcher { contract_address };
+        testing::set_contract_address(caller);
+        let id = actions_system.register_event_type("Purchase Event");
+
+        let event_details = actions_system.get_event_type_details(id);
+
+        assert(event_details.type_id == id, 'Event ID mismatch');
+        assert(event_details.name == "Purchase Event", 'Event Name mismatch');
+        assert(event_details.total_logged == 0, 'Total logged mismatch');
+        assert(event_details.transaction_history.len() == 0, 'Txn History count mismatch');
+    }
+
+    #[derive(Serde, Drop, Clone, Copy)]
+    pub struct DummyEvent {
+        pub fish_id: u256,
+        pub aquarium_id: u256,
+        pub player: ContractAddress,
+        pub species: Species,
+        pub timestamp: u64,
+    }
+
+    #[test]
+    fn test_log_event_successfully() {
+        // Initialize test environment
+        let owner = contract_address_const::<'owner'>();
+        let player = contract_address_const::<'player'>();
+        let username = 'player';
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, owner);
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+
+        // First Register player
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        testing::set_contract_address(player);
+        actions_system.register(username);
+
+        // Next Register Event
+        let actions_system = ITransactionHistoryDispatcher { contract_address };
+        testing::set_contract_address(owner);
+        let event_id = actions_system.register_event_type("NewFishCreated");
+
+        let payload = get_dummy_payload();
+
+        let txn_log = actions_system.log_event(event_id, player, payload.clone());
+
+        assert(txn_log.player == player, 'txn player mismatch');
+        assert(txn_log.event_type_id == event_id, 'txn event id mismatch');
+        assert(txn_log.payload == payload, 'txn payload mismatch');
+    }
+
+    #[test]
+    fn test_get_transaction_history_successfully_by_player_address() {
+        // Initialize test environment
+        let owner = contract_address_const::<'owner'>();
+        let player = contract_address_const::<'player'>();
+        let username = 'player';
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, owner);
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+
+        // First Register player
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        testing::set_contract_address(player);
+        actions_system.register(username);
+
+        // Next Register Event
+        let actions_system = ITransactionHistoryDispatcher { contract_address };
+        testing::set_contract_address(owner);
+        let event_id_1 = actions_system.register_event_type("NewFishCreated");
+        let event_id_2 = actions_system.register_event_type("NewAquariumCreated");
+
+        let payload = get_dummy_payload();
+
+        let txn_log_1 = actions_system.log_event(event_id_1, player, payload.clone());
+
+        let txn_log_2 = actions_system.log_event(event_id_2, player, payload.clone());
+
+        let player_txn = actions_system
+            .get_transaction_history(
+                Option::Some(player),
+                Option::None,
+                Option::None,
+                Option::None,
+                Option::None,
+                Option::None,
+            );
+        assert(player_txn.len() == 2, 'player_txn count mismatch');
+        assert(player_txn.at(0).event_type_id == @txn_log_1.event_type_id, 'event id mismatch');
+        assert(player_txn.at(0).id == @txn_log_1.id, 'txn id mismatch');
+        assert(player_txn.at(0).payload == @txn_log_1.payload, 'txn payload mismatch');
+        assert(player_txn.at(0).player == @txn_log_1.player, 'txn player mismatch');
+        assert(player_txn.at(1).event_type_id == @txn_log_2.event_type_id, 'event id mismatch');
+        assert(player_txn.at(1).id == @txn_log_2.id, 'txn id mismatch');
+        assert(player_txn.at(1).payload == @txn_log_2.payload, 'txn payload mismatch');
+        assert(player_txn.at(1).player == @txn_log_2.player, 'txn player mismatch');
+    }
+
+    #[test]
+    fn test_get_transaction_history_successfully_by_event_id() {
+        // Initialize test environment
+        let owner = contract_address_const::<'owner'>();
+        let player = contract_address_const::<'player'>();
+        let username = 'player';
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, owner);
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+
+        // First Register player
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        testing::set_contract_address(player);
+        actions_system.register(username);
+
+        // Next Register Event
+        let actions_system = ITransactionHistoryDispatcher { contract_address };
+        testing::set_contract_address(owner);
+        let event_id_1 = actions_system.register_event_type("NewFishCreated");
+        let event_id_2 = actions_system.register_event_type("NewAquariumCreated");
+
+        let payload = get_dummy_payload();
+
+        actions_system.log_event(event_id_1, player, payload.clone());
+
+        let txn_log_2 = actions_system.log_event(event_id_2, player, payload.clone());
+
+        let event_txn = actions_system
+            .get_transaction_history(
+                Option::None,
+                Option::Some(event_id_2),
+                Option::None,
+                Option::None,
+                Option::None,
+                Option::None,
+            );
+
+        assert(event_txn.len() == 1, 'count mismatch');
+        assert(event_txn.at(0).event_type_id == @txn_log_2.event_type_id, 'event id mismatch');
+        assert(event_txn.at(0).id == @txn_log_2.id, 'txn id mismatch');
+        assert(event_txn.at(0).payload == @txn_log_2.payload, 'txn payload mismatch');
+        assert(event_txn.at(0).player == @txn_log_2.player, 'txn player mismatch');
+    }
+
+    #[test]
+    fn test_get_transaction_history_successfully_by_event_type_and_player() {
+        // Initialize test environment
+        let owner = contract_address_const::<'owner'>();
+        let player = contract_address_const::<'player'>();
+        let username = 'player';
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, owner);
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+
+        // First Register player
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        testing::set_contract_address(player);
+        actions_system.register(username);
+
+        // Next Register Event
+        let actions_system = ITransactionHistoryDispatcher { contract_address };
+        testing::set_contract_address(owner);
+        let event_id_1 = actions_system.register_event_type("NewFishCreated");
+        let event_id_2 = actions_system.register_event_type("NewAquariumCreated");
+
+        let payload = get_dummy_payload();
+
+        let txn_log_1 = actions_system.log_event(event_id_1, player, payload.clone());
+
+        let _ = actions_system.log_event(event_id_2, player, payload.clone());
+
+        let event_txn = actions_system
+            .get_transaction_history(
+                Option::Some(player),
+                Option::Some(event_id_1),
+                Option::None,
+                Option::None,
+                Option::None,
+                Option::None,
+            );
+
+        assert(event_txn.len() == 1, 'count mismatch');
+        assert(event_txn.at(0).event_type_id == @txn_log_1.event_type_id, 'event id mismatch');
+        assert(event_txn.at(0).id == @txn_log_1.id, 'txn id mismatch');
+        assert(event_txn.at(0).payload == @txn_log_1.payload, 'txn payload mismatch');
+        assert(event_txn.at(0).player == @txn_log_1.player, 'txn player mismatch');
+    }
+
+    #[test]
+    fn test_get_transaction_history_with_no_filters_returns_all() {
+        // Initialize test environment
+        let owner = contract_address_const::<'owner'>();
+        let player = contract_address_const::<'player'>();
+        let player2 = contract_address_const::<'player2'>();
+
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, owner);
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+
+        // First Register player
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        testing::set_contract_address(player);
+        actions_system.register('player_1');
+
+        testing::set_contract_address(player2);
+        actions_system.register('player_2');
+
+        // Next Register Event
+        let actions_system = ITransactionHistoryDispatcher { contract_address };
+
+        testing::set_contract_address(owner);
+        let event_id_1 = actions_system.register_event_type("NewFishCreated");
+        let event_id_2 = actions_system.register_event_type("NewAquariumCreated");
+
+        let payload = get_dummy_payload();
+
+        actions_system.log_event(event_id_1, player, payload.clone());
+
+        actions_system.log_event(event_id_2, player2, payload.clone());
+
+        actions_system.log_event(event_id_1, player2, payload.clone());
+
+        let tx_log_4 = actions_system.log_event(event_id_2, player, payload.clone());
+
+        let event_txn = actions_system
+            .get_transaction_history(
+                Option::None, Option::None, Option::None, Option::None, Option::None, Option::None,
+            );
+
+        assert(event_txn.len() == 4, 'count mismatch');
+        assert(event_txn.at(3).event_type_id == @tx_log_4.event_type_id, 'event id mismatch');
+        assert(event_txn.at(3).id == @tx_log_4.id, 'txn id mismatch');
+        assert(event_txn.at(3).payload == @tx_log_4.payload, 'txn payload mismatch');
+        assert(event_txn.at(3).player == @tx_log_4.player, 'txn player mismatch');
+    }
+
+    #[test]
+    fn test_get_transaction_history_with_unmatched_event_type() {
+        // Initialize test environment
+        let owner = contract_address_const::<'owner'>();
+        let player = contract_address_const::<'player'>();
+        let player2 = contract_address_const::<'player2'>();
+
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, owner);
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+
+        // First Register player
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        testing::set_contract_address(player);
+        actions_system.register('player_1');
+
+        testing::set_contract_address(player2);
+        actions_system.register('player_2');
+
+        // Next Register Event
+        let actions_system = ITransactionHistoryDispatcher { contract_address };
+        testing::set_contract_address(owner);
+        let event_id_1 = actions_system.register_event_type("NewFishCreated");
+        let event_id_2 = actions_system.register_event_type("NewAquariumCreated");
+
+        let payload = get_dummy_payload();
+
+        actions_system.log_event(event_id_1, player, payload.clone());
+
+        actions_system.log_event(event_id_2, player2, payload.clone());
+
+        let event_txn = actions_system
+            .get_transaction_history(
+                Option::None,
+                Option::Some(5),
+                Option::None,
+                Option::None,
+                Option::None,
+                Option::None,
+            );
+
+        assert(event_txn.len() == 0, 'count mismatch');
+    }
+
+    #[test]
+    fn test_get_transaction_history_with_unmatched_player() {
+        // Initialize test environment
+        let owner = contract_address_const::<'owner'>();
+        let player = contract_address_const::<'player'>();
+        let player2 = contract_address_const::<'player2'>();
+
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, owner);
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+
+        // First Register player
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        testing::set_contract_address(player);
+        actions_system.register('player_1');
+
+        testing::set_contract_address(player2);
+        actions_system.register('player_2');
+
+        // Next Register Event
+        let actions_system = ITransactionHistoryDispatcher { contract_address };
+        testing::set_contract_address(owner);
+        let event_id_1 = actions_system.register_event_type("NewFishCreated");
+        let event_id_2 = actions_system.register_event_type("NewAquariumCreated");
+
+        let payload = get_dummy_payload();
+
+        actions_system.log_event(event_id_1, player, payload.clone());
+
+        actions_system.log_event(event_id_2, player2, payload.clone());
+
+        let event_txn = actions_system
+            .get_transaction_history(
+                Option::Some(contract_address_const::<'player5'>()),
+                Option::None,
+                Option::None,
+                Option::None,
+                Option::None,
+                Option::None,
+            );
+
+        assert(event_txn.len() == 0, 'count mismatch');
+    }
+
+    fn get_dummy_payload() -> Array<felt252> {
+        let new_event = DummyEvent {
+            fish_id: 100,
+            aquarium_id: 12,
+            species: Species::Betta,
+            player: contract_address_const::<0>(),
+            timestamp: get_block_timestamp(),
+        };
+
+        let mut payload: Array<felt252> = array![];
+
+        new_event.fish_id.serialize(ref payload);
+        new_event.aquarium_id.serialize(ref payload);
+        new_event.species.serialize(ref payload);
+        new_event.timestamp.serialize(ref payload);
+
+        payload
     }
 }
 

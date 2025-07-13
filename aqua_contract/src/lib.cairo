@@ -1,6 +1,5 @@
 pub mod systems {
     pub mod AquaStark;
-    pub mod TransactionsHistory;
 }
 
 pub mod achievements {
