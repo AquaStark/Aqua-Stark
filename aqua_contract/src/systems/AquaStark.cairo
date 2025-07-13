@@ -6,7 +6,7 @@ pub mod AquaStark {
     use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
     use aqua_stark::base::events::{
         PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
-        FishAddedToAquarium, DecorationAddedToAquarium,
+        FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
     };
     use starknet::{
         ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
@@ -31,24 +31,6 @@ pub mod AquaStark {
     use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
 
-    #[derive(Copy, Drop, Serde)]
-    #[dojo::event]
-    pub struct PlayerEventLogged {
-        #[key]
-        pub id: u256,
-        #[key]
-        pub event_type_id: u256,
-        pub player: ContractAddress,
-        pub timestamp: u64,
-    }
-
-    #[derive(Copy, Drop, Serde)]
-    #[dojo::event]
-    pub struct EventTypeRegistered {
-        #[key]
-        pub event_type_id: u256,
-        pub timestamp: u64,
-    }
 
     #[abi(embed_v0)]
     impl AquaStarkImpl of IAquaStark<ContractState> {

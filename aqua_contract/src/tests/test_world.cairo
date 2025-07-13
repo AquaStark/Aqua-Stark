@@ -58,8 +58,8 @@ mod tests {
                 TestResource::Model(m_EventTypeDetails::TEST_CLASS_HASH),
                 TestResource::Model(m_EventCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_TransactionCounter::TEST_CLASS_HASH),
-                TestResource::Event(AquaStark::e_PlayerEventLogged::TEST_CLASS_HASH),
-                TestResource::Event(AquaStark::e_EventTypeRegistered::TEST_CLASS_HASH),
+                TestResource::Event(events::e_PlayerEventLogged::TEST_CLASS_HASH),
+                TestResource::Event(events::e_EventTypeRegistered::TEST_CLASS_HASH),
                 TestResource::Event(events::e_PlayerCreated::TEST_CLASS_HASH),
                 TestResource::Event(events::e_DecorationCreated::TEST_CLASS_HASH),
                 TestResource::Event(events::e_FishCreated::TEST_CLASS_HASH),
@@ -401,10 +401,14 @@ mod tests {
 
         // This should panic: only 2 generations recorded (0 and 1)
         let _ = actions_system.get_fish_ancestor(grandchild_id, 2);
-     }
+    }
 
     #[test]
     fn test_register_event() {
+        let caller = contract_address_const::<'aji'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
         world.dispatcher.grant_owner(0, caller);
 
         let (contract_address, _) = world.dns(@"AquaStark").unwrap();
@@ -772,6 +776,8 @@ mod tests {
         new_event.aquarium_id.serialize(ref payload);
         new_event.species.serialize(ref payload);
         new_event.timestamp.serialize(ref payload);
+
+        payload
     }
 }
 
