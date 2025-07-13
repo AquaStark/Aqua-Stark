@@ -12,6 +12,7 @@ pub mod base {
 
 pub mod interfaces {
     pub mod IAquaStark;
+    pub mod ITransactionHistory;
 }
 
 pub mod models {
@@ -20,6 +21,7 @@ pub mod models {
     pub mod fish_model;
     pub mod game_model;
     pub mod player_model;
+    pub mod transaction_model;
 }
 pub mod tests {
     mod test_world;

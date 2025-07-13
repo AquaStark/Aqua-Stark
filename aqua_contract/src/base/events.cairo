@@ -91,3 +91,22 @@ pub struct DecorationAddedToAquarium {
     pub aquarium_id: u256,
     pub timestamp: u64,
 }
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct PlayerEventLogged {
+    #[key]
+    pub id: u256,
+    #[key]
+    pub event_type_id: u256,
+    pub player: ContractAddress,
+    pub timestamp: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct EventTypeRegistered {
+    #[key]
+    pub event_type_id: u256,
+    pub timestamp: u64,
+}
