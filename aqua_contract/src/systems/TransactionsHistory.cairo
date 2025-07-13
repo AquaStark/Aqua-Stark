@@ -185,10 +185,10 @@ pub mod TransactionHistory {
                 let player_data: Player = world.read_model(player_addr);
 
                 let mut i = start_index;
-
+                let mut count = 0;
                 let mut player_history: Array<TransactionLog> = array![];
 
-                while i != lim && i < player_data.transaction_count {
+                while i < player_data.transaction_count && count < lim {
                     let txn_event_id = player_data.transaction_history.at(i);
 
                     if let Option::Some(event_id) = event_type_id {
@@ -203,7 +203,7 @@ pub mod TransactionHistory {
                     if txn_log.timestamp >= s_timestamp && txn_log.timestamp <= e_timestamp {
                         player_history.append(txn_log);
                     }
-
+                    count += 1;
                     i += 1;
                 };
 
@@ -214,25 +214,18 @@ pub mod TransactionHistory {
                 let event_details: EventTypeDetails = world.read_model(event_id);
 
                 let mut i = start_index;
-
+                let mut count = 0;
                 let mut event_history: Array<TransactionLog> = array![];
 
-                while i != lim && i < event_details.total_logged {
+                while i < event_details.total_logged && count < lim {
                     let txn_event_id = event_details.transaction_history.at(i);
 
                     let txn_log: TransactionLog = world.read_model(*txn_event_id);
 
-                    if let Option::Some(player_addr) = player {
-                        if txn_log.player != player_addr {
-                            i += 1;
-                            continue;
-                        }
-                    }
-
                     if txn_log.timestamp >= s_timestamp && txn_log.timestamp <= e_timestamp {
                         event_history.append(txn_log);
                     }
-
+                    count += 1;
                     i += 1;
                 };
 
@@ -242,16 +235,17 @@ pub mod TransactionHistory {
             let total_transactions = self.get_transaction_count();
 
             let mut i = start_index;
+            let mut count = 0;
 
             let mut transaction_history: Array<TransactionLog> = array![];
 
-            while i != lim && i.into() < total_transactions {
+            while i.into() < total_transactions && count < lim {
                 let txn_log: TransactionLog = world.read_model(i);
 
                 if txn_log.timestamp >= s_timestamp && txn_log.timestamp <= e_timestamp {
                     transaction_history.append(txn_log);
                 }
-
+                count += 1;
                 i += 1;
             };
 
