@@ -1,6 +1,7 @@
 import { Edit, Trash2, Eye } from "lucide-react";
+import type { Fish } from "@/types/fish";
 
-interface Aquarium {
+export interface Aquarium {
   id: number;
   name: string;
   image: string;
@@ -11,15 +12,23 @@ interface Aquarium {
   fishCount: string;
   rating: number;
   isPremium?: boolean;
+  fishes: Fish[];
 }
 
 interface AquariumCardProps {
   aquarium: Aquarium;
+  onSelect?: () => void;
 }
 
-export function AquariumCard({ aquarium }: AquariumCardProps) {
+export function AquariumCard({ aquarium, onSelect }: AquariumCardProps) {
   return (
-    <div className="bg-blue-800/40 border border-blue-700/50 rounded-lg overflow-hidden">
+    <div
+      className="bg-blue-800/40 border border-blue-700/50 rounded-lg overflow-hidden cursor-pointer transition-transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+      onClick={onSelect}
+      tabIndex={0}
+      role="button"
+      aria-pressed="false"
+    >
       <div className="relative">
         <img
           src={aquarium.image || "/placeholder.svg"}

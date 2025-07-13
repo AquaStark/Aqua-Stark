@@ -4,7 +4,10 @@ pub mod AquaStark {
     use dojo::world::IWorldDispatcherTrait;
     use aqua_stark::interfaces::IAquaStark::{IAquaStark};
     use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
-
+    use aqua_stark::base::events::{
+        PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
+        FishAddedToAquarium, DecorationAddedToAquarium,
+    };
     use starknet::{
         ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
         contract_address_const,
@@ -16,7 +19,9 @@ pub mod AquaStark {
         Aquarium, AquariumTrait, AquariumCounter, AquariumOwner,
     };
     use aqua_stark::models::decoration_model::{Decoration, DecorationCounter, DecorationTrait};
-    use aqua_stark::models::fish_model::{Fish, FishCounter, Species, FishTrait, FishOwner};
+    use aqua_stark::models::fish_model::{
+        Fish, FishCounter, Species, FishTrait, FishOwner, FishParents,
+    };
 
     use aqua_stark::models::transaction_model::{
         TransactionLog, EventTypeDetails, EventCounter, TransactionCounter, event_id_target,
@@ -25,16 +30,6 @@ pub mod AquaStark {
 
     use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
-
-    #[derive(Copy, Drop, Serde)]
-    #[dojo::event]
-    pub struct PlayerCreated {
-        #[key]
-        pub username: felt252,
-        #[key]
-        pub player: ContractAddress,
-        pub timestamp: u64,
-    }
 
     #[derive(Copy, Drop, Serde)]
     #[dojo::event]
@@ -101,6 +96,12 @@ pub mod AquaStark {
 
             AquariumTrait::add_fish(aquarium.clone(), fish.id);
             world.write_model(@aquarium);
+            world
+                .emit_event(
+                    @FishAddedToAquarium {
+                        fish_id: fish.id, aquarium_id, timestamp: get_block_timestamp(),
+                    },
+                );
         }
 
         fn add_decoration_to_aquarium(
@@ -116,6 +117,12 @@ pub mod AquaStark {
             assert(decoration.owner == get_caller_address(), 'You do not own this deco');
             AquariumTrait::add_decoration(aquarium.clone(), decoration.id);
             world.write_model(@aquarium);
+            world
+                .emit_event(
+                    @DecorationAddedToAquarium {
+                        decoration_id: decoration.id, aquarium_id, timestamp: get_block_timestamp(),
+                    },
+                );
         }
 
         fn new_decoration(
@@ -147,6 +154,19 @@ pub mod AquaStark {
             world.write_model(@player);
             world.write_model(@decoration);
 
+            world
+                .emit_event(
+                    @DecorationCreated {
+                        id,
+                        aquarium_id,
+                        owner: get_caller_address(),
+                        name,
+                        rarity,
+                        price,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
+
             decoration
         }
 
@@ -159,6 +179,7 @@ pub mod AquaStark {
             let mut fish: Fish = world.read_model(fish_id);
 
             fish = FishTrait::create_fish_by_species(fish, aquarium_id, caller, species);
+            fish.family_tree = array![];
             aquarium = AquariumTrait::add_fish(aquarium.clone(), fish.id);
             let mut fish_owner: FishOwner = world.read_model(fish_id);
             fish_owner.owner = caller;
@@ -170,6 +191,13 @@ pub mod AquaStark {
             world.write_model(@player);
             world.write_model(@fish_owner);
             world.write_model(@fish);
+
+            world
+                .emit_event(
+                    @FishCreated {
+                        fish_id, owner: caller, aquarium_id, timestamp: get_block_timestamp(),
+                    },
+                );
             fish
         }
 
@@ -191,6 +219,8 @@ pub mod AquaStark {
             world.write_model(@fish);
             world.write_model(@aquarium_from);
             world.write_model(@aquarium_to);
+
+            world.emit_event(@FishMoved { fish_id, from, to, timestamp: get_block_timestamp() });
 
             true
         }
@@ -216,7 +246,10 @@ pub mod AquaStark {
             world.write_model(@decoration);
             world.write_model(@aquarium_from);
             world.write_model(@aquarium_to);
-
+            world
+                .emit_event(
+                    @DecorationMoved { decoration_id, from, to, timestamp: get_block_timestamp() },
+                );
             true
         }
 
@@ -225,6 +258,8 @@ pub mod AquaStark {
             let caller = get_caller_address();
             let mut parent1: Fish = world.read_model(parent1_id);
             let mut parent2: Fish = world.read_model(parent2_id);
+            let mut aquarium = self.get_aquarium(parent1.aquarium_id);
+            assert(aquarium.housed_fish.len() < aquarium.max_capacity, 'Aquarium full');
             assert(parent1.aquarium_id == parent2.aquarium_id, 'Fishes must have same aquarium');
             assert(parent1.owner == parent2.owner, 'Fishes must have same player');
 
@@ -245,7 +280,12 @@ pub mod AquaStark {
             parent1.offspings.append(new_fish.id);
             parent2.offspings.append(new_fish.id);
 
-            let mut aquarium = self.get_aquarium(parent1.aquarium_id);
+            let fish_parents = FishParents { parent1: parent1.id, parent2: parent2.id };
+
+            let mut offspring_tree = parent1.family_tree.clone(); // or copy if supported
+            offspring_tree.append(fish_parents);
+            new_fish.family_tree = offspring_tree;
+
             aquarium.fish_count += 1;
             aquarium.housed_fish.append(new_fish.id);
 
@@ -256,12 +296,24 @@ pub mod AquaStark {
             world.write_model(@fish_owner);
             world.write_model(@new_fish);
 
+            world
+                .emit_event(
+                    @FishBred {
+                        offspring_id: new_fish.id,
+                        owner: get_caller_address(),
+                        parent1_id: parent1.id,
+                        parent2_id: parent2.id,
+                        aquarium_id: parent1.aquarium_id,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
+
             new_fish.id
         }
 
         fn register(ref self: ContractState, username: felt252) {
             let mut world = self.world_default();
-            let caller = get_caller_address();
+            let player = get_caller_address();
 
             // Constants
             let zero_address: ContractAddress = contract_address_const::<0x0>();
@@ -276,33 +328,36 @@ pub mod AquaStark {
             assert(existing_player.address == zero_address, 'USERNAME ALREADY TAKEN');
 
             // Address must not already be registered
-            let existing_username = self.get_username_from_address(caller);
+            let existing_username = self.get_username_from_address(player);
             assert(existing_username == 0, 'USERNAME ALREADY CREATED');
             // --- Player Registration ---
 
             let id = self.create_new_player_id();
 
-            let mut new_player = PlayerTrait::register_player(id, username, caller, 0, 0);
+            let mut new_player = PlayerTrait::register_player(id, username, player, 0, 0);
 
             // --- Username ↔ Address Mappings ---
 
-            let username_to_address = UsernameToAddress { username, address: caller };
-            let address_to_username = AddressToUsername { address: caller, username };
+            let username_to_address = UsernameToAddress { username, address: player };
+            let address_to_username = AddressToUsername { address: player, username };
 
             // --- Aquarium Setup ---
 
-            let mut aquarium = self.new_aquarium(caller, 10, 5);
+            let mut aquarium = self.new_aquarium(player, 10, 5);
 
             new_player.aquarium_count += 1;
+            let aquarium_id = aquarium.id;
             new_player.player_aquariums.append(aquarium.id);
 
             let fish = self.new_fish(aquarium.id, Species::GoldFish);
             new_player.fish_count += 1;
             new_player.player_fishes.append(fish.id);
+            let fish_id = fish.id;
 
             let decoration = self.new_decoration(aquarium.id, 'Pebbles', 'Shiny rocks', 0, 0);
             new_player.decoration_count += 1;
             new_player.player_decorations.append(decoration.id);
+            let decoration_id = decoration.id;
 
             aquarium.fish_count += 1;
             aquarium.housed_fish.append(fish.id);
@@ -318,7 +373,15 @@ pub mod AquaStark {
             // --- Emit Event ---
             world
                 .emit_event(
-                    @PlayerCreated { username, player: caller, timestamp: get_block_timestamp() },
+                    @PlayerCreated {
+                        username,
+                        player,
+                        player_id: id,
+                        aquarium_id,
+                        decoration_id,
+                        fish_id,
+                        timestamp: get_block_timestamp(),
+                    },
                 );
         }
 
@@ -427,6 +490,20 @@ pub mod AquaStark {
         fn get_decoration_owner(self: @ContractState, id: u256) -> ContractAddress {
             let decoration = self.get_decoration(id);
             decoration.owner
+        }
+
+        fn get_fish_family_tree(self: @ContractState, fish_id: u256) -> Array<FishParents> {
+            let mut world = self.world_default();
+            let fish: Fish = world.read_model(fish_id);
+            fish.family_tree
+        }
+
+        fn get_fish_ancestor(self: @ContractState, fish_id: u256, generation: u32) -> FishParents {
+            let mut world = self.world_default();
+            let fish: Fish = world.read_model(fish_id);
+            assert(generation < fish.family_tree.len(), 'Generation out of bounds');
+            let fish_parent: FishParents = *fish.family_tree[generation];
+            fish_parent
         }
     }
 

@@ -79,6 +79,19 @@ const getFishOffspring = useCallback(
   [client]
 );
 
+const getFishAncestor = useCallback(
+  async (fishId: BigNumberish, generations: BigNumberish) => {
+    return await client.AquaStark.getFishAncestor(fishId, generations);
+  },
+  [client]
+);
+const getFishFamilyTree = useCallback(
+  async (fishId: BigNumberish) => {
+    return await client.AquaStark.getFishFamilyTree(fishId,);
+  },
+  [client]
+);
+
   return {
     createFishId,
     getFish,
@@ -89,5 +102,7 @@ const getFishOffspring = useCallback(
     getFishOwner,
     getFishParents,
     getFishOffspring,
+    getFishAncestor,
+getFishFamilyTree
   };
 };

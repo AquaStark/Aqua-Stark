@@ -9,6 +9,26 @@ export const initialAquariums = [
       lastVisited: "2 hours ago",
       fishCount: "2/10",
       rating: 3,
+      fishes: [
+        {
+          id: 1,
+          name: "Blue Striped Fish",
+          image: "/fish/fish1.png",
+          rarity: "Rare",
+          generation: 1,
+          level: 2,
+          traits: { color: "blue", pattern: "striped", fins: "long", size: "medium" }
+        },
+        {
+          id: 2,
+          name: "Tropical Coral Fish",
+          image: "/fish/fish2.png",
+          rarity: "Uncommon",
+          generation: 2,
+          level: 1,
+          traits: { color: "orange", pattern: "spotted", fins: "short", size: "small" }
+        }
+      ]
     },
     {
       id: 2,
@@ -20,6 +40,7 @@ export const initialAquariums = [
       lastVisited: "1 day ago",
       fishCount: "4/8",
       rating: 2,
+      fishes: []
     },
     {
       id: 3,
@@ -32,5 +53,6 @@ export const initialAquariums = [
       fishCount: "7/15",
       rating: 4,
       isPremium: true,
+      fishes: []
     },
   ];

@@ -119,6 +119,7 @@ export interface Fish {
 	can_grow: boolean;
 	aquarium_id: BigNumberish;
 	offspings: Array<BigNumberish>;
+	family_tree: Array<FishParents>;
 }
 
 // Type definition for `aqua_stark::models::fish_model::FishCounter` struct
@@ -143,6 +144,12 @@ export interface FishOwnerValue {
 	owner: string;
 }
 
+// Type definition for `aqua_stark::models::fish_model::FishParents` struct
+export interface FishParents {
+	parent1: BigNumberish;
+	parent2: BigNumberish;
+}
+
 // Type definition for `aqua_stark::models::fish_model::FishValue` struct
 export interface FishValue {
 	fish_type: BigNumberish;
@@ -165,6 +172,7 @@ export interface FishValue {
 	can_grow: boolean;
 	aquarium_id: BigNumberish;
 	offspings: Array<BigNumberish>;
+	family_tree: Array<FishParents>;
 }
 
 // Type definition for `aqua_stark::models::game_model::Game` struct
@@ -279,15 +287,181 @@ export interface UsernameToAddressValue {
 	address: string;
 }
 
-// Type definition for `aqua_stark::systems::AquaStark::AquaStark::PlayerCreated` struct
-export interface PlayerCreated {
-	username: BigNumberish;
-	player: string;
+// Type definition for `achievement::events::index::TrophyCreation` struct
+export interface TrophyCreation {
+	id: BigNumberish;
+	hidden: boolean;
+	index: BigNumberish;
+	points: BigNumberish;
+	start: BigNumberish;
+	end: BigNumberish;
+	group: BigNumberish;
+	icon: BigNumberish;
+	title: BigNumberish;
+	description: string;
+	tasks: Array<Task>;
+	data: string;
+}
+
+// Type definition for `achievement::events::index::TrophyCreationValue` struct
+export interface TrophyCreationValue {
+	hidden: boolean;
+	index: BigNumberish;
+	points: BigNumberish;
+	start: BigNumberish;
+	end: BigNumberish;
+	group: BigNumberish;
+	icon: BigNumberish;
+	title: BigNumberish;
+	description: string;
+	tasks: Array<Task>;
+	data: string;
+}
+
+// Type definition for `achievement::events::index::TrophyProgression` struct
+export interface TrophyProgression {
+	player_id: BigNumberish;
+	task_id: BigNumberish;
+	count: BigNumberish;
+	time: BigNumberish;
+}
+
+// Type definition for `achievement::events::index::TrophyProgressionValue` struct
+export interface TrophyProgressionValue {
+	count: BigNumberish;
+	time: BigNumberish;
+}
+
+// Type definition for `achievement::types::index::Task` struct
+export interface Task {
+	id: BigNumberish;
+	total: BigNumberish;
+	description: string;
+}
+
+// Type definition for `aqua_stark::base::events::DecorationAddedToAquarium` struct
+export interface DecorationAddedToAquarium {
+	decoration_id: BigNumberish;
+	aquarium_id: BigNumberish;
 	timestamp: BigNumberish;
 }
 
-// Type definition for `aqua_stark::systems::AquaStark::AquaStark::PlayerCreatedValue` struct
+// Type definition for `aqua_stark::base::events::DecorationAddedToAquariumValue` struct
+export interface DecorationAddedToAquariumValue {
+	timestamp: BigNumberish;
+}
+
+// Type definition for `aqua_stark::base::events::DecorationCreated` struct
+export interface DecorationCreated {
+	id: BigNumberish;
+	aquarium_id: BigNumberish;
+	owner: string;
+	name: BigNumberish;
+	rarity: BigNumberish;
+	price: BigNumberish;
+	timestamp: BigNumberish;
+}
+
+// Type definition for `aqua_stark::base::events::DecorationCreatedValue` struct
+export interface DecorationCreatedValue {
+	owner: string;
+	name: BigNumberish;
+	rarity: BigNumberish;
+	price: BigNumberish;
+	timestamp: BigNumberish;
+}
+
+// Type definition for `aqua_stark::base::events::DecorationMoved` struct
+export interface DecorationMoved {
+	decoration_id: BigNumberish;
+	from: BigNumberish;
+	to: BigNumberish;
+	timestamp: BigNumberish;
+}
+
+// Type definition for `aqua_stark::base::events::DecorationMovedValue` struct
+export interface DecorationMovedValue {
+	from: BigNumberish;
+	to: BigNumberish;
+	timestamp: BigNumberish;
+}
+
+// Type definition for `aqua_stark::base::events::FishAddedToAquarium` struct
+export interface FishAddedToAquarium {
+	fish_id: BigNumberish;
+	aquarium_id: BigNumberish;
+	timestamp: BigNumberish;
+}
+
+// Type definition for `aqua_stark::base::events::FishAddedToAquariumValue` struct
+export interface FishAddedToAquariumValue {
+	timestamp: BigNumberish;
+}
+
+// Type definition for `aqua_stark::base::events::FishBred` struct
+export interface FishBred {
+	offspring_id: BigNumberish;
+	owner: string;
+	parent1_id: BigNumberish;
+	parent2_id: BigNumberish;
+	aquarium_id: BigNumberish;
+	timestamp: BigNumberish;
+}
+
+// Type definition for `aqua_stark::base::events::FishBredValue` struct
+export interface FishBredValue {
+	parent1_id: BigNumberish;
+	parent2_id: BigNumberish;
+	aquarium_id: BigNumberish;
+	timestamp: BigNumberish;
+}
+
+// Type definition for `aqua_stark::base::events::FishCreated` struct
+export interface FishCreated {
+	fish_id: BigNumberish;
+	owner: string;
+	aquarium_id: BigNumberish;
+	timestamp: BigNumberish;
+}
+
+// Type definition for `aqua_stark::base::events::FishCreatedValue` struct
+export interface FishCreatedValue {
+	aquarium_id: BigNumberish;
+	timestamp: BigNumberish;
+}
+
+// Type definition for `aqua_stark::base::events::FishMoved` struct
+export interface FishMoved {
+	fish_id: BigNumberish;
+	from: BigNumberish;
+	to: BigNumberish;
+	timestamp: BigNumberish;
+}
+
+// Type definition for `aqua_stark::base::events::FishMovedValue` struct
+export interface FishMovedValue {
+	from: BigNumberish;
+	to: BigNumberish;
+	timestamp: BigNumberish;
+}
+
+// Type definition for `aqua_stark::base::events::PlayerCreated` struct
+export interface PlayerCreated {
+	username: BigNumberish;
+	player: string;
+	player_id: BigNumberish;
+	aquarium_id: BigNumberish;
+	decoration_id: BigNumberish;
+	fish_id: BigNumberish;
+	timestamp: BigNumberish;
+}
+
+// Type definition for `aqua_stark::base::events::PlayerCreatedValue` struct
 export interface PlayerCreatedValue {
+	player_id: BigNumberish;
+	aquarium_id: BigNumberish;
+	decoration_id: BigNumberish;
+	fish_id: BigNumberish;
 	timestamp: BigNumberish;
 }
 
@@ -331,6 +505,7 @@ export interface SchemaType extends ISchemaType {
 		FishCounterValue: FishCounterValue,
 		FishOwner: FishOwner,
 		FishOwnerValue: FishOwnerValue,
+		FishParents: FishParents,
 		FishValue: FishValue,
 		Game: Game,
 		GameCounter: GameCounter,
@@ -344,6 +519,27 @@ export interface SchemaType extends ISchemaType {
 		PlayerValue: PlayerValue,
 		UsernameToAddress: UsernameToAddress,
 		UsernameToAddressValue: UsernameToAddressValue,
+	},
+	achievement: {
+		TrophyCreation: TrophyCreation,
+		TrophyCreationValue: TrophyCreationValue,
+		TrophyProgression: TrophyProgression,
+		TrophyProgressionValue: TrophyProgressionValue,
+		Task: Task,
+		DecorationAddedToAquarium: DecorationAddedToAquarium,
+		DecorationAddedToAquariumValue: DecorationAddedToAquariumValue,
+		DecorationCreated: DecorationCreated,
+		DecorationCreatedValue: DecorationCreatedValue,
+		DecorationMoved: DecorationMoved,
+		DecorationMovedValue: DecorationMovedValue,
+		FishAddedToAquarium: FishAddedToAquarium,
+		FishAddedToAquariumValue: FishAddedToAquariumValue,
+		FishBred: FishBred,
+		FishBredValue: FishBredValue,
+		FishCreated: FishCreated,
+		FishCreatedValue: FishCreatedValue,
+		FishMoved: FishMoved,
+		FishMovedValue: FishMovedValue,
 		PlayerCreated: PlayerCreated,
 		PlayerCreatedValue: PlayerCreatedValue,
 	},
@@ -451,6 +647,7 @@ export const schema: SchemaType = {
 			can_grow: false,
 		aquarium_id: 0,
 			offspings: [0],
+			family_tree: [{ parent1: 0, parent2: 0, }],
 		},
 		FishCounter: {
 			id: 0,
@@ -465,6 +662,10 @@ export const schema: SchemaType = {
 		},
 		FishOwnerValue: {
 			owner: "",
+		},
+		FishParents: {
+		parent1: 0,
+		parent2: 0,
 		},
 		FishValue: {
 			fish_type: 0,
@@ -496,6 +697,7 @@ export const schema: SchemaType = {
 			can_grow: false,
 		aquarium_id: 0,
 			offspings: [0],
+			family_tree: [{ parent1: 0, parent2: 0, }],
 		},
 		Game: {
 			id: 0,
@@ -585,12 +787,140 @@ export const schema: SchemaType = {
 		UsernameToAddressValue: {
 			address: "",
 		},
+		TrophyCreation: {
+			id: 0,
+			hidden: false,
+			index: 0,
+			points: 0,
+			start: 0,
+			end: 0,
+			group: 0,
+			icon: 0,
+			title: 0,
+		description: "",
+			tasks: [{ id: 0, total: 0, description: "", }],
+		data: "",
+		},
+		TrophyCreationValue: {
+			hidden: false,
+			index: 0,
+			points: 0,
+			start: 0,
+			end: 0,
+			group: 0,
+			icon: 0,
+			title: 0,
+		description: "",
+			tasks: [{ id: 0, total: 0, description: "", }],
+		data: "",
+		},
+		TrophyProgression: {
+			player_id: 0,
+			task_id: 0,
+			count: 0,
+			time: 0,
+		},
+		TrophyProgressionValue: {
+			count: 0,
+			time: 0,
+		},
+		Task: {
+			id: 0,
+			total: 0,
+		description: "",
+		},
+		DecorationAddedToAquarium: {
+		decoration_id: 0,
+		aquarium_id: 0,
+			timestamp: 0,
+		},
+		DecorationAddedToAquariumValue: {
+			timestamp: 0,
+		},
+		DecorationCreated: {
+		id: 0,
+		aquarium_id: 0,
+			owner: "",
+			name: 0,
+			rarity: 0,
+		price: 0,
+			timestamp: 0,
+		},
+		DecorationCreatedValue: {
+			owner: "",
+			name: 0,
+			rarity: 0,
+		price: 0,
+			timestamp: 0,
+		},
+		DecorationMoved: {
+		decoration_id: 0,
+		from: 0,
+		to: 0,
+			timestamp: 0,
+		},
+		DecorationMovedValue: {
+		from: 0,
+		to: 0,
+			timestamp: 0,
+		},
+		FishAddedToAquarium: {
+		fish_id: 0,
+		aquarium_id: 0,
+			timestamp: 0,
+		},
+		FishAddedToAquariumValue: {
+			timestamp: 0,
+		},
+		FishBred: {
+		offspring_id: 0,
+			owner: "",
+		parent1_id: 0,
+		parent2_id: 0,
+		aquarium_id: 0,
+			timestamp: 0,
+		},
+		FishBredValue: {
+		parent1_id: 0,
+		parent2_id: 0,
+		aquarium_id: 0,
+			timestamp: 0,
+		},
+		FishCreated: {
+		fish_id: 0,
+			owner: "",
+		aquarium_id: 0,
+			timestamp: 0,
+		},
+		FishCreatedValue: {
+		aquarium_id: 0,
+			timestamp: 0,
+		},
+		FishMoved: {
+		fish_id: 0,
+		from: 0,
+		to: 0,
+			timestamp: 0,
+		},
+		FishMovedValue: {
+		from: 0,
+		to: 0,
+			timestamp: 0,
+		},
 		PlayerCreated: {
 			username: 0,
 			player: "",
+		player_id: 0,
+		aquarium_id: 0,
+		decoration_id: 0,
+		fish_id: 0,
 			timestamp: 0,
 		},
 		PlayerCreatedValue: {
+		player_id: 0,
+		aquarium_id: 0,
+		decoration_id: 0,
+		fish_id: 0,
 			timestamp: 0,
 		},
 	},
@@ -613,6 +943,7 @@ export enum ModelsMapping {
 	FishCounterValue = 'aqua_stark-FishCounterValue',
 	FishOwner = 'aqua_stark-FishOwner',
 	FishOwnerValue = 'aqua_stark-FishOwnerValue',
+	FishParents = 'aqua_stark-FishParents',
 	FishValue = 'aqua_stark-FishValue',
 	Pattern = 'aqua_stark-Pattern',
 	Species = 'aqua_stark-Species',
@@ -628,6 +959,25 @@ export enum ModelsMapping {
 	PlayerValue = 'aqua_stark-PlayerValue',
 	UsernameToAddress = 'aqua_stark-UsernameToAddress',
 	UsernameToAddressValue = 'aqua_stark-UsernameToAddressValue',
+	TrophyCreation = 'achievement-TrophyCreation',
+	TrophyCreationValue = 'achievement-TrophyCreationValue',
+	TrophyProgression = 'achievement-TrophyProgression',
+	TrophyProgressionValue = 'achievement-TrophyProgressionValue',
+	Task = 'achievement-Task',
+	DecorationAddedToAquarium = 'aqua_stark-DecorationAddedToAquarium',
+	DecorationAddedToAquariumValue = 'aqua_stark-DecorationAddedToAquariumValue',
+	DecorationCreated = 'aqua_stark-DecorationCreated',
+	DecorationCreatedValue = 'aqua_stark-DecorationCreatedValue',
+	DecorationMoved = 'aqua_stark-DecorationMoved',
+	DecorationMovedValue = 'aqua_stark-DecorationMovedValue',
+	FishAddedToAquarium = 'aqua_stark-FishAddedToAquarium',
+	FishAddedToAquariumValue = 'aqua_stark-FishAddedToAquariumValue',
+	FishBred = 'aqua_stark-FishBred',
+	FishBredValue = 'aqua_stark-FishBredValue',
+	FishCreated = 'aqua_stark-FishCreated',
+	FishCreatedValue = 'aqua_stark-FishCreatedValue',
+	FishMoved = 'aqua_stark-FishMoved',
+	FishMovedValue = 'aqua_stark-FishMovedValue',
 	PlayerCreated = 'aqua_stark-PlayerCreated',
 	PlayerCreatedValue = 'aqua_stark-PlayerCreatedValue',
 }

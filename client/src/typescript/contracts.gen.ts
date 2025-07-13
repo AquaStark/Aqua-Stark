@@ -236,6 +236,40 @@ export function setupWorld(provider: DojoProvider) {
 		}
 	};
 
+	const build_AquaStark_getFishAncestor_calldata = (fishId: BigNumberish, generation: BigNumberish): DojoCall => {
+		return {
+			contractName: "AquaStark",
+			entrypoint: "get_fish_ancestor",
+			calldata: [fishId, generation],
+		};
+	};
+
+	const AquaStark_getFishAncestor = async (fishId: BigNumberish, generation: BigNumberish) => {
+		try {
+			return await provider.call("aqua_stark", build_AquaStark_getFishAncestor_calldata(fishId, generation));
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	};
+
+	const build_AquaStark_getFishFamilyTree_calldata = (fishId: BigNumberish): DojoCall => {
+		return {
+			contractName: "AquaStark",
+			entrypoint: "get_fish_family_tree",
+			calldata: [fishId],
+		};
+	};
+
+	const AquaStark_getFishFamilyTree = async (fishId: BigNumberish) => {
+		try {
+			return await provider.call("aqua_stark", build_AquaStark_getFishFamilyTree_calldata(fishId));
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
+	};
+
 	const build_AquaStark_getFishOffspring_calldata = (fishId: BigNumberish): DojoCall => {
 		return {
 			contractName: "AquaStark",
@@ -594,6 +628,10 @@ export function setupWorld(provider: DojoProvider) {
 			buildGetDecorationOwnerCalldata: build_AquaStark_getDecorationOwner_calldata,
 			getFish: AquaStark_getFish,
 			buildGetFishCalldata: build_AquaStark_getFish_calldata,
+			getFishAncestor: AquaStark_getFishAncestor,
+			buildGetFishAncestorCalldata: build_AquaStark_getFishAncestor_calldata,
+			getFishFamilyTree: AquaStark_getFishFamilyTree,
+			buildGetFishFamilyTreeCalldata: build_AquaStark_getFishFamilyTree_calldata,
 			getFishOffspring: AquaStark_getFishOffspring,
 			buildGetFishOffspringCalldata: build_AquaStark_getFishOffspring_calldata,
 			getFishOwner: AquaStark_getFishOwner,
