@@ -422,19 +422,16 @@ pub mod AquaStark {
         }
 
         fn get_fish_owner(self: @ContractState, id: u256) -> ContractAddress {
-            let mut world = self.world_default();
             let fish = self.get_fish(id);
             fish.owner
         }
 
         fn get_aquarium_owner(self: @ContractState, id: u256) -> ContractAddress {
-            let mut world = self.world_default();
             let aquarium = self.get_aquarium(id);
             aquarium.owner
         }
 
         fn get_decoration_owner(self: @ContractState, id: u256) -> ContractAddress {
-            let mut world = self.world_default();
             let decoration = self.get_decoration(id);
             decoration.owner
         }
