@@ -16,7 +16,7 @@ export function BubblesBackground({
 }: BubblesBackgroundProps) {
   return (
     <div
-      className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}
+      className={`absolute inset-0 overflow-hidden pointer-events-none z-10 ${className}`}
       style={{ ...customStyles }}
     >
       {bubbles.map((bubble) => (
@@ -36,18 +36,7 @@ export function BubblesBackground({
         />
       ))}
 
-      <style jsx="true">{`
-        @keyframes ${animationName} {
-          0% {
-            transform: translateY(0);
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(-150vh);
-            opacity: 1;
-          }
-        }
-      `}</style>
+
     </div>
   );
 }
