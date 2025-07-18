@@ -19,7 +19,7 @@ importers:
         version: 0.5.9(encoding@0.1.13)
       '@cartridge/ui-next':
         specifier: ^0.7.13
-        version: 0.7.13(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(bufferutil@4.0.9)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(starknet@6.24.1(encoding@0.1.13))(tailwindcss@3.4.17)(typescript@5.7.3)(utf-8-validate@5.0.10)(viem@2.30.5(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.24.2))(zod@3.24.2)
+        version: 0.7.13(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(bufferutil@4.0.9)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@2.0.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(starknet@6.24.1(encoding@0.1.13))(tailwindcss@3.4.17)(typescript@5.7.3)(utf-8-validate@5.0.10)(viem@2.30.5(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.24.2))(zod@3.24.2)
       '@dojoengine/core':
         specifier: 1.4.4
         version: 1.4.4(bufferutil@4.0.9)(encoding@0.1.13)(typescript@5.7.3)(utf-8-validate@5.0.10)
@@ -104,6 +104,9 @@ importers:
       react-router-dom:
         specifier: ^7.1.5
         version: 7.1.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      sonner:
+        specifier: ^2.0.6
+        version: 2.0.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       starknet:
         specifier: 6.24.1
         version: 6.24.1(encoding@0.1.13)
@@ -3279,8 +3282,8 @@ packages:
   sonic-boom@2.8.0:
     resolution: {integrity: sha512-kuonw1YOYYNOve5iHdSahXPOK49GqwA+LZhI6Wz/l0rP57iKyXXIHaRagOBHAPmGwJC6od2Z9zgvZ5loSgMlVg==}
 
-  sonner@1.7.4:
-    resolution: {integrity: sha512-DIS8z4PfJRbIyfVFDVnK9rO3eYDtse4Omcm6bt0oEr5/jtLgysmjuBl1frJ9E/EQZrFmKx2A8m/s5s9CRXIzhw==}
+  sonner@2.0.6:
+    resolution: {integrity: sha512-yHFhk8T/DK3YxjFQXIrcHT1rGEeTLliVzWbO0xN8GberVun2RiBnxAjXAYpZrqwEVHBG9asI/Li8TAAhN9m59Q==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
       react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
@@ -3945,7 +3948,7 @@ snapshots:
 
   '@cartridge/penpal@6.2.4': {}
 
-  '@cartridge/ui-next@0.7.13(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(bufferutil@4.0.9)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(starknet@6.24.1(encoding@0.1.13))(tailwindcss@3.4.17)(typescript@5.7.3)(utf-8-validate@5.0.10)(viem@2.30.5(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.24.2))(zod@3.24.2)':
+  '@cartridge/ui-next@0.7.13(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(bufferutil@4.0.9)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@2.0.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(starknet@6.24.1(encoding@0.1.13))(tailwindcss@3.4.17)(typescript@5.7.3)(utf-8-validate@5.0.10)(viem@2.30.5(bufferutil@4.0.9)(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.24.2))(zod@3.24.2)':
     dependencies:
       '@cartridge/utils': 0.7.13(bufferutil@4.0.9)(encoding@0.1.13)(react-dom@18.3.1(react@18.3.1))(typescript@5.7.3)(utf-8-validate@5.0.10)(zod@3.24.2)
       '@radix-ui/react-accordion': 1.2.11(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -3975,7 +3978,7 @@ snapshots:
       cmdk: 1.1.1(@types/react-dom@18.3.5(@types/react@18.3.18))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      sonner: 1.7.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      sonner: 2.0.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       starknet: 6.24.1(encoding@0.1.13)
       tailwind-merge: 2.6.0
       tailwindcss-animate: 1.0.7(tailwindcss@3.4.17)
@@ -7104,7 +7107,7 @@ snapshots:
     dependencies:
       atomic-sleep: 1.0.0
 
-  sonner@1.7.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  sonner@2.0.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)

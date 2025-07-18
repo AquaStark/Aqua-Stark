@@ -11,5 +11,57 @@
   }
   
   html, body {
-    font-family: "Poppins-ExtraBold", sans-serif;
+  font-family: "Poppins-ExtraBold", sans-serif;
+}
+
+/* Animation classes */
+.animated-background {
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+.water-movement {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(0, 92, 153, 0.1), rgba(0, 123, 255, 0.1));
+  animation: waterFlow 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
   }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes waterFlow {
+  0%, 100% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(-2px) translateY(-1px);
+  }
+  50% {
+    transform: translateX(1px) translateY(-2px);
+  }
+  75% {
+    transform: translateX(-1px) translateY(1px);
+  }
+}
+
+@keyframes float-up {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-150vh);
+    opacity: 1;
+  }
+}

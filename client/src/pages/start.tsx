@@ -38,7 +38,7 @@ export default function Start() {
 
   const bubbles = useBubbles()
   const handleContinue = () => {
-    navigate("/create-aquarium")
+    navigate("/onboarding")
   }
 
   return (
