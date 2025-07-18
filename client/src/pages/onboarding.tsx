@@ -7,9 +7,8 @@ import { ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { BubblesBackground } from "@/components/bubble-background"
 import { useBubbles } from "@/hooks/use-bubbles"
-import { StarterFishCard } from "@/components/onboarding/starter-fish-card"
+import { FishCard } from "@/components/ui/FishCard"
 
-// Starter fish data based on the design
 const starterFish = [
   {
     id: 1,
@@ -64,10 +63,10 @@ export default function Onboarding() {
     console.log("Fish selected:", fishId)
     setSelectedFish(prev => {
       const newSelection = prev.includes(fishId)
-        ? prev.filter(id => id !== fishId) // Deselect if already selected
+        ? prev.filter(id => id !== fishId)
         : prev.length < 2
-          ? [...prev, fishId] // Select if less than 2 fish are selected
-          : [prev[1], fishId] // Replace the first selected fish if 2 are already selected
+          ? [...prev, fishId]
+          : [prev[1], fishId]
       
       console.log("New selection:", newSelection)
       return newSelection
@@ -77,7 +76,6 @@ export default function Onboarding() {
   const handleContinue = () => {
     console.log("Continue button clicked, selectedFish:", selectedFish)
     if (selectedFish.length === 2) {
-      // Navigate to the next screen with selected fish
       const fishParams = selectedFish.map(id => {
         const fish = starterFish.find(f => f.id === id)
         return fish?.name.toLowerCase() || ""
@@ -93,7 +91,6 @@ export default function Onboarding() {
       <div className="water-movement"></div>
       <BubblesBackground bubbles={bubbles} />
 
-      {/* Header with Next button */}
       <div className="absolute top-6 right-6 z-50 pointer-events-auto p-2">
         <Button
           onClick={handleContinue}
@@ -105,9 +102,7 @@ export default function Onboarding() {
         </Button>
       </div>
 
-      {/* Main content */}
       <main className="relative z-20 flex flex-col items-center justify-center min-h-screen px-4 py-16 pointer-events-auto">
-        {/* Title and welcome message */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -122,7 +117,6 @@ export default function Onboarding() {
           </p>
         </motion.div>
 
-        {/* Fish selection grid */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -136,16 +130,16 @@ export default function Onboarding() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
             >
-              <StarterFishCard
+              <FishCard
                 fish={fish}
                 isSelected={selectedFish.includes(fish.id)}
                 onSelect={() => handleFishSelect(fish.id)}
+                variant="onboarding"
               />
             </motion.div>
           ))}
         </motion.div>
 
-        {/* Selection indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
