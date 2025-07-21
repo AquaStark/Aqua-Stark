@@ -26,6 +26,7 @@ import Error404Page from "./pages/404.tsx";
 import Start from "./pages/start.tsx";
 import CreateAquarium from "./pages/create-aquarium.tsx";
 import Onboarding from "./pages/onboarding.tsx";
+import Credits from "./pages/credits.tsx";
 import { Game } from "./Game.tsx";
 
 const cartridgeConnector = new ControllerConnector({
@@ -66,6 +67,7 @@ function App() {
         <Route path="/storage-page" element={<StorePage />} />
         <Route path="/start" element={<Start />} />
         <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/credits" element={<Credits />} />
         <Route path="/create-aquarium" element={<CreateAquarium />} />
         <Route path="*" element={<Error404Page />} />
       </Routes>
