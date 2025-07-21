@@ -16,15 +16,21 @@ export default function Credits() {
   const creditsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    let hasTriggered = false
+    
     const checkScrollEnd = () => {
-      if (creditsRef.current) {
+      if (creditsRef.current && !hasTriggered) {
         const lastElement = creditsRef.current.lastElementChild as HTMLElement
         
         if (lastElement) {
           const lastElementRect = lastElement.getBoundingClientRect()
           
           if (lastElementRect.bottom < 0) {
-            setShowLogo(true)
+            hasTriggered = true
+            
+            setTimeout(() => {
+              setShowLogo(true)
+            }, 200)
           }
         }
       }
@@ -56,7 +62,7 @@ export default function Credits() {
         <motion.div
           className={`credits-container relative w-full max-w-2xl mx-auto px-4 ${showLogo ? 'opacity-0' : 'opacity-100'}`}
           ref={creditsRef}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 1 }}
         >
           <div className="credits-content text-center text-white">
             {creditsData.map((section, sectionIndex) => (
@@ -98,15 +104,12 @@ export default function Credits() {
         </motion.div>
 
         <motion.div
-          className={`absolute inset-0 flex items-center justify-center pointer-events-none ${showLogo ? 'opacity-100' : 'opacity-0'}`}
-          initial={{ opacity: 0, scale: 0 }}
-          animate={showLogo ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={showLogo ? { opacity: 1 } : { opacity: 0 }}
           transition={{ 
             duration: 1.5,
-            ease: "easeOut",
-            type: "spring",
-            stiffness: 100,
-            damping: 15
+            ease: "easeInOut"
           }}
         >
           <div className="text-center">
