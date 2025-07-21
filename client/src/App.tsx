@@ -20,6 +20,7 @@ import EventsCalendarPage from "./pages/events-calendar.tsx";
 import GamePage from "./pages/game.tsx";
 import HelpCenterPage from "./pages/help-center.tsx";
 import LandingPage from "./pages/landing-page.tsx";
+import MiniGames from "./pages/mini-games.tsx";
 import MyProfilePage from "./pages/my-profile.tsx";
 import OnboardingPage from "./pages/onboarding.tsx";
 import StartPage from "./pages/start.tsx";
@@ -60,6 +61,7 @@ function App() {
         <Route path="/events-calendar" element={<EventsCalendarPage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/help-center" element={<HelpCenterPage />} />
+        <Route path="/mini-games" element={<MiniGames />} />
         <Route path="/my-profile" element={<MyProfilePage />} />
         <Route path="/onboarding" element={<OnboardingPage />} />
         <Route path="/start" element={<StartPage />} />
