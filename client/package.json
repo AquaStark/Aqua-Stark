@@ -70,7 +70,7 @@
     "vite": "^6.3.5",
     "vite-plugin-mkcert": "^1.17.8"
   },
-  "packageManager": "pnpm@10.6.5",
+  "packageManager": "pnpm@10.13.1",
   "pnpm": {
     "overrides": {
       "starknet": "6.24.1"
