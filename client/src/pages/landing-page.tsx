@@ -37,7 +37,7 @@ export default function LandingPage() {
         toast.info("Settings coming soon!");
         break;
       case "credits":
-        toast.info("Credits coming soon!");
+        navigate("/credits");
         break;
       default:
         break;
