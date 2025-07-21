@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { Check } from "lucide-react"
+import { FishTank } from "@/components/fish-tank"
 
 interface Fish {
   id: number
@@ -65,25 +66,17 @@ export function FishCard({ fish, isSelected = false, onSelect, variant = "defaul
             {fish.name}
           </h3>
 
-          <div className="relative w-32 h-32 mx-auto mb-4 flex items-center justify-center">
-            <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${getColorClasses(fish.color)} opacity-20 blur-sm`} />
-            
-            <div className="relative w-full h-full flex items-center justify-center">
-              <img
-                src={fish.image}
-                alt={fish.name}
-                className="w-24 h-24 object-contain relative z-30"
-                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
-              />
-            </div>
-            
-            <img
-              src="/fish/fish-tank.svg"
-              alt="Fish Tank"
-              className="absolute inset-0 w-full h-full object-contain pointer-events-none z-20"
-            />
-
-            <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${getColorClasses(fish.color)} opacity-10 animate-pulse z-10`} />
+          <div className="relative w-40 h-40 mx-auto mb-4">
+            <FishTank className="w-full h-full" shadow={false}>
+              <div className="relative w-full h-full flex items-center justify-center">
+                <img
+                  src={fish.image}
+                  alt={fish.name}
+                  className="w-28 h-28 object-contain"
+                  style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
+                />
+              </div>
+            </FishTank>
           </div>
 
           <p className="text-sm text-white/80 leading-relaxed">
@@ -109,25 +102,17 @@ export function FishCard({ fish, isSelected = false, onSelect, variant = "defaul
           {fish.name}
         </h3>
 
-        <div className="relative w-32 h-32 mx-auto mb-4 flex items-center justify-center">
-          <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${getColorClasses(fish.color)} opacity-20 blur-sm`} />
-          
-          <div className="relative w-full h-full flex items-center justify-center">
-            <img
-              src={fish.image}
-              alt={fish.name}
-              className="w-24 h-24 object-contain relative z-30"
-              style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
-            />
-          </div>
-          
-          <img
-            src="/fish/fish-tank.svg"
-            alt="Fish Tank"
-            className="absolute inset-0 w-full h-full object-contain pointer-events-none z-20"
-          />
-
-          <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${getColorClasses(fish.color)} opacity-10 animate-pulse z-10`} />
+        <div className="relative w-40 h-40 mx-auto mb-4">
+          <FishTank className="w-full h-full" shadow={false}>
+            <div className="relative w-full h-full flex items-center justify-center">
+              <img
+                src={fish.image}
+                alt={fish.name}
+                className="w-28 h-28 object-contain"
+                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
+              />
+            </div>
+          </FishTank>
         </div>
 
         <p className="text-sm text-white/80 leading-relaxed">
