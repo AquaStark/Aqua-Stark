@@ -8,8 +8,6 @@ use starknet::ContractAddress;
 pub trait IAquaStark<T> {
     fn get_username_from_address(self: @T, address: ContractAddress) -> felt252;
     fn register(ref self: T, username: felt252);
-    fn create_new_player_id(ref self: T) -> u256;
-    fn create_decoration_id(ref self: T) -> u256;
     fn new_decoration(
         ref self: T,
         aquarium_id: u256,
@@ -18,8 +16,6 @@ pub trait IAquaStark<T> {
         price: u256,
         rarity: felt252,
     ) -> Decoration;
-    fn create_aquarium_id(ref self: T) -> u256;
-    fn create_fish_id(ref self: T) -> u256;
     fn new_aquarium(
         ref self: T, owner: ContractAddress, max_capacity: u32, max_decorations: u32,
     ) -> Aquarium;
