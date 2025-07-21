@@ -198,6 +198,20 @@
     }
   }
 
+  /* Float animation for cards */
+  .animate-float-delayed {
+    animation: floating 3s ease-in-out infinite;
+  }
+  .grid > div:nth-child(1) .animate-float-delayed {
+    animation-delay: 0s;
+  }
+  .grid > div:nth-child(2) .animate-float-delayed {
+    animation-delay: 1s;
+  }
+  .grid > div:nth-child(3) .animate-float-delayed {
+    animation-delay: 2s;
+  }
+
   /* More natural fish swimming animations with subtle body movements */
   /* Idle swimming - very subtle */
   .animate-swim-idle {

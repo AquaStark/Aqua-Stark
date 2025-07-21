@@ -6,7 +6,7 @@ import type { FishType } from "@/types/game";
 import { useFishMovement } from "@/hooks/use-fish-movement";
 import { Fish } from "@/components/aquarium/fish";
 import { useFoodSystem } from "@/hooks/use-food-system";
-import { Food } from "@/components/food/food";
+import { Food } from "@/components/food/Food";
 import { FoodParticles } from "@/components/food/FoodParticles";
 
 interface FishDisplayProps {
