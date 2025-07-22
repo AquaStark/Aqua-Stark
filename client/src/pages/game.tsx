@@ -17,6 +17,9 @@ import { motion } from "framer-motion";
 import type { FishType } from "@/types/game";
 import { useActiveAquarium } from "../store/active-aquarium";
 import { initialAquariums } from "@/data/mock-aquarium";
+import { useDirtSystemFixed as useDirtSystem } from "@/hooks/use-dirt-system-fixed"
+import { DirtOverlay } from "@/components/game/dirt-overlay"
+import { DirtDebugControls } from "@/components/game/dirt-debug-controls"
 
 export default function GamePage() {
   const activeAquariumId = useActiveAquarium((s) => s.activeAquariumId);
@@ -26,6 +29,19 @@ export default function GamePage() {
   const [showMenu, setShowMenu] = useState(false);
   const [showTips, setShowTips] = useState(false);
   const location = useLocation();
+
+  const [showDirtDebug, setShowDirtDebug] = useState(false) // Debug controls visibility  // Initialize dirt system
+  const dirtSystem = useDirtSystem({
+    spawnInterval: 5000, // 5 seconds
+    maxSpots: 5,
+    aquariumBounds: {
+      x: 0,
+      y: 0,
+      width: 2000,
+      height: 1000,
+    },
+    spawnChance: 0.7, // 70% chance
+  })
 
   const bubbles = useBubbles({
     initialCount: 10,
@@ -132,6 +148,12 @@ export default function GamePage() {
         <FishDisplay fish={displayFish} />
       </motion.div>
 
+      <DirtOverlay 
+        spots={dirtSystem.spots}
+        onRemoveSpot={dirtSystem.removeDirtSpot}
+        className="absolute inset-0 z-50"
+      />
+
       {/* Header */}
       <GameHeader
         happiness={happiness}
@@ -142,7 +164,40 @@ export default function GamePage() {
 
       {showMenu && <GameMenu show={showMenu} />}
 
-      <GameSidebarButtons />
+      <GameSidebarButtons />    
+      
+      {/* Debug Controls */}
+      {showDirtDebug && (
+        <div className="absolute top-4 right-4 z-40">
+          <DirtDebugControls
+            isSpawnerActive={dirtSystem.isSpawnerActive}
+            spotCount={dirtSystem.spots.length}
+            maxSpots={dirtSystem.config.maxSpots}
+            totalCreated={dirtSystem.totalSpotsCreated}
+            totalRemoved={dirtSystem.totalSpotsRemoved}
+            cleanlinessScore={dirtSystem.cleanlinessScore}
+            onToggleSpawner={dirtSystem.toggleSpawner}
+            onForceSpawn={dirtSystem.forceSpawnSpot}
+            onClearAll={dirtSystem.clearAllSpots}
+          />
+          <button
+            onClick={() => setShowDirtDebug(false)}
+            className="mt-2 w-full text-xs text-gray-400 hover:text-white transition-colors"
+          >
+            Hide Debug
+          </button>
+        </div>
+      )}
+
+      {/* Show Debug Button (when hidden) */}
+      {!showDirtDebug && (
+        <button
+          onClick={() => setShowDirtDebug(true)}
+          className="absolute top-4 right-4 z-40 bg-black/50 text-white px-3 py-1 rounded text-xs hover:bg-black/70 transition-colors"
+        >
+          🧹 Debug
+        </button>
+      )}
 
       {/* Tips */}
       <div className="absolute bottom-0 right-4 mb-4 z-30">
