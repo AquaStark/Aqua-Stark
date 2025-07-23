@@ -5,7 +5,7 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import type { FishType } from "@/types/game";
 import { useFishMovement } from "@/hooks/use-fish-movement";
 import { Fish } from "@/components/aquarium/fish";
-import { useFoodSystem } from "@/hooks/use-food-system";
+import { useFeedingSystem } from "@/systems/feeding-system";
 import { Food } from "@/components/food/Food";
 import { FoodParticles } from "@/components/food/FoodParticles";
 
@@ -13,12 +13,14 @@ interface FishDisplayProps {
   fish: FishType[];
   containerWidth?: number;
   containerHeight?: number;
+  feedingSystem?: ReturnType<typeof useFeedingSystem>;
 }
 
 export function FishDisplay({
   fish,
   containerWidth = 1000,
   containerHeight = 600,
+  feedingSystem,
 }: FishDisplayProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({
@@ -26,25 +28,35 @@ export function FishDisplay({
     height: containerHeight,
   });
 
-  // State for particle effects
-  const [particleEffects, setParticleEffects] = useState<
-    Array<{
-      id: number;
-      position: { x: number; y: number };
-      trigger: boolean;
-    }>
-  >([]);
+  // Use external feeding system if provided, otherwise create internal one
+  const internalFeedingSystem = useFeedingSystem({
+    aquariumBounds: dimensions,
+    maxFoodsPerSecond: 3,
+    foodLifetime: 10,
+    attractionRadius: 50,
+  });
 
-  // Initialize food system
-  const { foods, spawnFood, consumeFood, updateFoodAnimations, canSpawnFood } =
-    useFoodSystem({
-      aquariumBounds: dimensions,
-      maxFoodsPerSecond: 3,
-      foodLifetime: 10,
-      attractionRadius: 50,
-    });
+  const activeFeedingSystem = feedingSystem || internalFeedingSystem;
 
-  // Generate centered position for fish (your existing logic)
+  // Update external feeding system bounds when dimensions change
+  useEffect(() => {
+    if (feedingSystem && feedingSystem.updateAquariumBounds) {
+      feedingSystem.updateAquariumBounds(dimensions);
+    }
+  }, [dimensions, feedingSystem]);
+
+  const {
+    foods,
+    updateFoodAnimations,
+    isFeeding,
+    particleEffects,
+    handleFeedClick,
+    handleFoodConsumed,
+    handleParticleComplete,
+    getFeedingStatus,
+  } = activeFeedingSystem;
+
+  // Generate centered position for fish
   const generateCenteredPosition = (index: number, total: number) => {
     const angle = (index / total) * Math.PI * 2;
     const radius = 10 + Math.random() * 10; // 10–20% de dispersión
@@ -61,28 +73,6 @@ export function FishDisplay({
         : generateCenteredPosition(i, fish.length),
   }));
 
-  // Handle food consumption with particle effects
-  const handleFoodConsumed = useCallback(
-    (foodId: number) => {
-      const consumedFood = foods.find((f) => f.id === foodId);
-      if (consumedFood) {
-        // Add particle effect
-        setParticleEffects((prev) => [
-          ...prev,
-          {
-            id: foodId,
-            position: consumedFood.position,
-            trigger: true,
-          },
-        ]);
-
-        // Consume the food
-        consumeFood(foodId);
-      }
-    },
-    [foods, consumeFood]
-  );
-
   // Enhanced fish movement with food system
   const fishWithMovement = useFishMovement(fishWithInitialPosition, {
     aquariumBounds: dimensions,
@@ -90,7 +80,7 @@ export function FishDisplay({
     onFoodConsumed: handleFoodConsumed, // Pass consumption handler
   });
 
-  // Handle container resize (your existing logic)
+  // Handle container resize
   useEffect(() => {
     const handleResize = () => {
       const container = document.querySelector(".fish-container");
@@ -107,29 +97,20 @@ export function FishDisplay({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Handle aquarium clicks to spawn food
+  // Handle aquarium clicks (only when feeding is active)
   const handleContainerClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
-      if (!containerRef.current) return;
+      if (!containerRef.current || !isFeeding) return;
 
       const rect = containerRef.current.getBoundingClientRect();
-      const clickX = event.clientX - rect.left;
-      const clickY = event.clientY - rect.top;
+      const spawned = handleFeedClick(event.clientX, event.clientY, rect);
 
-      // Try to spawn food at click position
-      const spawned = spawnFood(clickX, clickY);
-
-      if (!spawned) {
+      if (!spawned && isFeeding) {
         console.log("Food spawning on cooldown");
       }
     },
-    [spawnFood]
+    [isFeeding, handleFeedClick]
   );
-
-  // Clean up completed particle effects
-  const handleParticleComplete = useCallback((foodId: number) => {
-    setParticleEffects((prev) => prev.filter((effect) => effect.id !== foodId));
-  }, []);
 
   // Update food animations
   useEffect(() => {
@@ -137,13 +118,15 @@ export function FishDisplay({
     return () => clearInterval(interval);
   }, [updateFoodAnimations]);
 
+  const feedingStatus = getFeedingStatus();
+
   return (
     <div
       ref={containerRef}
       className="relative w-full h-full fish-container overflow-hidden"
       onClick={handleContainerClick}
       style={{
-        cursor: canSpawnFood ? "crosshair" : "wait",
+        cursor: isFeeding ? "crosshair" : "default",
         userSelect: "none",
       }}
     >
@@ -187,11 +170,6 @@ export function FishDisplay({
         />
       ))}
 
-      {/* Feeding instructions overlay */}
-      <div className="absolute top-4 left-4 text-white text-sm bg-black/70 px-3 py-2 rounded-lg pointer-events-none z-50 border border-white/20 backdrop-blur-sm">
-        🐠 Click to feed fish • {foods.length} food items •{" "}
-        {canSpawnFood ? "✅ Ready" : "⏳ Cooldown"}
-      </div>
     </div>
   );
 }
