@@ -491,24 +491,9 @@ pub mod AquaStark {
         }
 
         fn purchase_fish(self: @ContractState, listing_id: felt252) {
-            // Listing exists and is active
-
-            // Buyer is not the seller
-
-            // Buyer has sufficient balance
-
-            // Transfer ownership of listed fish to buyer
-
-            // Transfer in-game currency from buyer to seller
-
-            // Remove listing from storage
-
-            // Unlock the fish from the listing state
-
-            // Emit a FishPurchased event with buyer, seller, price, fish IDs
             let mut world = self.world_default();
             let caller = get_caller_address();
-            let listing: Listing = world.read_model(listing_id);
+            let mut listing: Listing = world.read_model(listing_id);
             let mut player: Player = self.get_player(caller);
             let mut fish: Fish = world.read_model(listing.fish_id);
             assert(fish.owner != caller, 'You already own this fish');
@@ -516,9 +501,10 @@ pub mod AquaStark {
             fish.owner = caller; // transfer ownership to buyer
             player.fish_count += 1;
             player.player_fishes.append(fish.id);
+            listing.is_active = false;
 
             world.write_model(@fish);
-            world.write_model(@player_details);
+            world.write_model(@player);
             world.write_model(@listing);
             world
                 .emit_event(
