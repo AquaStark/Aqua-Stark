@@ -21,9 +21,7 @@ mod tests {
         AddressToUsername, Player, PlayerCounter, UsernameToAddress, m_AddressToUsername, m_Player,
         m_PlayerCounter, m_UsernameToAddress,
     };
-    use aqua_stark::models::listing_model::{
-        Listing, m_Listing,
-    };
+    use aqua_stark::models::listing_model::{Listing, m_Listing};
     use aqua_stark::models::transaction_model::{
         TransactionLog, EventTypeDetails, EventCounter, TransactionCounter, m_TransactionLog,
         m_EventTypeDetails, m_EventCounter, m_TransactionCounter,
@@ -806,7 +804,6 @@ mod tests {
 
         testing::set_contract_address(player2);
         actions_system.register('player2');
-        
 
         // Create a new aquarium for the player
         testing::set_contract_address(player);
@@ -815,14 +812,14 @@ mod tests {
         let fish = actions_system.new_fish(aquarium.id, Species::GoldFish);
 
         // TODO: complete this test after listing is implemented
-        
+
         testing::set_contract_address(player2);
         // actions_system.purchase_fish(listing.id);
 
         // let fish = actions_system.get_fish(fish.id);
-        // assert(fish.owner == player2, 'Fish owner mismatch');
-        // let listing: Listing = world.read_model(listing.id);
-        // assert(listing.is_active == false, 'Listing is not active');
+    // assert(fish.owner == player2, 'Fish owner mismatch');
+    // let listing: Listing = world.read_model(listing.id);
+    // assert(listing.is_active == false, 'Listing is not active');
     }
 }
 
