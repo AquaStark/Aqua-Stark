@@ -7,7 +7,7 @@ import { ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { BubblesBackground } from "@/components/bubble-background"
 import { useBubbles } from "@/hooks/use-bubbles"
-import { FishCard } from "@/components/ui/FishCard"
+import { FishCard } from "@/components/ui/fish-card/fish-card"
 
 const starterFish = [
   {
@@ -87,8 +87,11 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background">
-      <div className="water-movement"></div>
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-400 via-blue-600 to-blue-800">
+      {/* Ambient lights */}
+      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-cyan-300/10 rounded-full blur-2xl" />
+      <div className="absolute bottom-10 right-10 w-[350px] h-[350px] bg-yellow-300/10 rounded-full blur-2xl" />
+      
       <BubblesBackground bubbles={bubbles} />
 
       <div className="absolute top-6 right-6 z-50 pointer-events-auto p-2">
@@ -109,12 +112,14 @@ export default function Onboarding() {
           transition={{ duration: 0.8 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 drop-shadow-lg">
+          <h1 className="text-4xl sm:text-5xl font-extrabold uppercase tracking-widest text-white drop-shadow-lg mb-6">
             Welcome to Aqua Stark!
           </h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
-            We see you're new to our aquatic adventure. To get you started, we've gifted you a personalized aquarium and two unique fish to choose from as your initial companions.
-          </p>
+          <div className="bg-white/10 backdrop-blur-sm border border-white/20 px-6 py-4 rounded-2xl text-white/90 shadow-md max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl leading-relaxed">
+              We see you're new to our aquatic adventure. To get you started, we've gifted you a personalized aquarium and two unique fish to choose from as your initial companions.
+            </p>
+          </div>
         </motion.div>
 
         <motion.div
@@ -146,7 +151,7 @@ export default function Onboarding() {
           transition={{ duration: 0.5, delay: 0.8 }}
           className="mt-8 text-center"
         >
-          <p className="text-white/80 text-lg">
+          <p className="text-white/90 text-lg">
             {selectedFish.length === 0 && "Select 2 fish to continue"}
             {selectedFish.length === 1 && "Select 1 more fish"}
             {selectedFish.length === 2 && "Perfect! You can now continue"}
