@@ -15,6 +15,7 @@ pub trait IFishState<ContractState> {
     fn get_hunger_level(self: @ContractState, fish_id: u64) -> u32;
     fn get_growth_rate(self: @ContractState, fish_id: u64) -> u32;
     fn get_health(self: @ContractState, fish_id: u64) -> u32;
+    fn list_fish_for_sale(ref self: ContractState, fish_ids: Array<u64>, price: U256);
 }
 
 #[dojo::contract]
@@ -27,11 +28,65 @@ pub mod FishState {
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
     use starknet::get_caller_address;
+    use starknet::ContractAddress;
     use super::*;
+    use array::ArrayTrait;
+    use array::Array;
+    use u256::U256;
+
+    #[derive(Copy, Drop, Serde, Debug)]
+    pub struct Listing {
+        pub seller: ContractAddress,
+        pub fish_ids: Array<u64>,
+        pub price: U256,
+    }
+
+    #[dojo::event]
+    pub struct FishListed {
+        #[key]
+        pub seller: ContractAddress,
+        pub fish_ids: Array<u64>,
+        pub price: U256,
+    }
+
+    // Persistent storage for listings: fish_id => Listing
+    #[storage]
+    struct ListingsStorage {
+        fish_listings: dojo::model::ModelStorage<u64, Listing>,
+    }
     // use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 
     #[abi(embed_v0)]
     impl FishStateImpl of IFishState<ContractState> {
+        fn list_fish_for_sale(ref self: ContractState, fish_ids: Array<u64>, price: U256) {
+            let mut world = self.world_default();
+            let caller = get_caller_address();
+            let mut i = 0;
+            let len = fish_ids.len();
+            // Validate ownership and tradability
+            while i < len {
+                let fish_id = fish_ids.get(i);
+                let mut fish: Fish = world.read_model(fish_id);
+                assert(fish.owner == caller, CustomErrors::NOT_OWNER);
+                assert(!fish.locked, 'FISH_ALREADY_LISTED_OR_LOCKED');
+                // Lock the fish
+                fish.locked = true;
+                world.write_model(@fish);
+                i += 1;
+            }
+            // Save listing
+            let listing = Listing { seller: caller, fish_ids: fish_ids.clone(), price };
+            // For each fish, map to the listing (1:1 for now, can be improved for batch)
+            let mut j = 0;
+            while j < len {
+                let fish_id = fish_ids.get(j);
+                world.write_model_at::<Listing>(fish_id, @listing);
+                j += 1;
+            }
+            // Emit event
+            let event = FishListed { seller: caller, fish_ids, price };
+            world.emit_event(@event);
+        }
         fn create_fish(ref self: ContractState, owner: ContractAddress, fish_type: u32) -> u64 {
             let mut world = self.world_default();
 
