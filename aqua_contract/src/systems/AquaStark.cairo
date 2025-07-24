@@ -7,6 +7,7 @@ pub mod AquaStark {
     use aqua_stark::base::events::{
         PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
         FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
+        FishPurchased,
     };
     use starknet::{
         ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
@@ -22,6 +23,7 @@ pub mod AquaStark {
     use aqua_stark::models::fish_model::{
         Fish, FishCounter, Species, FishTrait, FishOwner, FishParents,
     };
+    use aqua_stark::models::listing_model::Listing;
 
     use aqua_stark::models::transaction_model::{
         TransactionLog, EventTypeDetails, EventCounter, TransactionCounter, event_id_target,
@@ -486,6 +488,48 @@ pub mod AquaStark {
             assert(generation < fish.family_tree.len(), 'Generation out of bounds');
             let fish_parent: FishParents = *fish.family_tree[generation];
             fish_parent
+        }
+
+        fn purchase_fish(self: @ContractState, listing_id: felt252) {
+            // Listing exists and is active
+
+            // Buyer is not the seller
+
+            // Buyer has sufficient balance
+
+            // Transfer ownership of listed fish to buyer
+
+            // Transfer in-game currency from buyer to seller
+
+            // Remove listing from storage
+
+            // Unlock the fish from the listing state
+
+            // Emit a FishPurchased event with buyer, seller, price, fish IDs
+            let mut world = self.world_default();
+            let caller = get_caller_address();
+            let listing: Listing = world.read_model(listing_id);
+            let mut player: Player = self.get_player(caller);
+            let mut fish: Fish = world.read_model(listing.fish_id);
+            assert(fish.owner != caller, 'You already own this fish');
+            assert(listing.is_active, 'Listing is not active');
+            fish.owner = caller; // transfer ownership to buyer
+            player.fish_count += 1;
+            player.player_fishes.append(fish.id);
+
+            world.write_model(@fish);
+            world.write_model(@player_details);
+            world.write_model(@listing);
+            world
+                .emit_event(
+                    @FishPurchased {
+                        buyer: caller,
+                        seller: fish.owner,
+                        price: listing.price,
+                        fish_id: fish.id,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
         }
     }
 
