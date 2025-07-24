@@ -498,6 +498,10 @@ pub mod AquaStark {
             let mut fish: Fish = world.read_model(listing.fish_id);
             assert(fish.owner != caller, 'You already own this fish');
             assert(listing.is_active, 'Listing is not active');
+            
+            // Store the original seller before transferring ownership
+            let original_seller = fish.owner;
+            
             fish.owner = caller; // transfer ownership to buyer
             player.fish_count += 1;
             player.player_fishes.append(fish.id);
@@ -510,7 +514,7 @@ pub mod AquaStark {
                 .emit_event(
                     @FishPurchased {
                         buyer: caller,
-                        seller: fish.owner,
+                        seller: original_seller,
                         price: listing.price,
                         fish_id: fish.id,
                         timestamp: get_block_timestamp(),

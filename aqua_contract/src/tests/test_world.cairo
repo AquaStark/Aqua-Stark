@@ -21,6 +21,9 @@ mod tests {
         AddressToUsername, Player, PlayerCounter, UsernameToAddress, m_AddressToUsername, m_Player,
         m_PlayerCounter, m_UsernameToAddress,
     };
+    use aqua_stark::models::listing_model::{
+        Listing, m_Listing,
+    };
     use aqua_stark::models::transaction_model::{
         TransactionLog, EventTypeDetails, EventCounter, TransactionCounter, m_TransactionLog,
         m_EventTypeDetails, m_EventCounter, m_TransactionCounter,
@@ -58,6 +61,7 @@ mod tests {
                 TestResource::Model(m_EventTypeDetails::TEST_CLASS_HASH),
                 TestResource::Model(m_EventCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_TransactionCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_Listing::TEST_CLASS_HASH),
                 TestResource::Event(events::e_PlayerEventLogged::TEST_CLASS_HASH),
                 TestResource::Event(events::e_EventTypeRegistered::TEST_CLASS_HASH),
                 TestResource::Event(events::e_PlayerCreated::TEST_CLASS_HASH),
@@ -68,6 +72,7 @@ mod tests {
                 TestResource::Event(events::e_DecorationMoved::TEST_CLASS_HASH),
                 TestResource::Event(events::e_FishAddedToAquarium::TEST_CLASS_HASH),
                 TestResource::Event(events::e_DecorationAddedToAquarium::TEST_CLASS_HASH),
+                TestResource::Event(events::e_FishPurchased::TEST_CLASS_HASH),
                 TestResource::Contract(AquaStark::TEST_CLASS_HASH),
             ]
                 .span(),
@@ -778,6 +783,46 @@ mod tests {
         new_event.timestamp.serialize(ref payload);
 
         payload
+    }
+
+    #[test]
+    fn test_purchase_fish() {
+        let owner = contract_address_const::<'owner'>();
+        let player = contract_address_const::<'player'>();
+        let player2 = contract_address_const::<'player2'>();
+
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, owner);
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+        testing::set_contract_address(owner);
+        actions_system.register('owner');
+
+        testing::set_contract_address(player);
+        actions_system.register('player');
+
+        testing::set_contract_address(player2);
+        actions_system.register('player2');
+        
+
+        // Create a new aquarium for the player
+        testing::set_contract_address(player);
+        let aquarium = actions_system.new_aquarium(player, 10, 10);
+
+        let fish = actions_system.new_fish(aquarium.id, Species::GoldFish);
+
+        // TODO: complete this test after listing is implemented
+        
+        testing::set_contract_address(player2);
+        // actions_system.purchase_fish(listing.id);
+
+        // let fish = actions_system.get_fish(fish.id);
+        // assert(fish.owner == player2, 'Fish owner mismatch');
+        // let listing: Listing = world.read_model(listing.id);
+        // assert(listing.is_active == false, 'Listing is not active');
     }
 }
 
