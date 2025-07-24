@@ -63,12 +63,12 @@ pub mod FishState {
             let caller = get_caller_address();
             let mut i = 0;
             let len = fish_ids.len();
-            // Validate ownership and tradability
+            // Validate ownership and tradability using reusable functions
             while i < len {
                 let fish_id = fish_ids.get(i);
                 let mut fish: Fish = world.read_model(fish_id);
-                assert(fish.owner == caller, CustomErrors::NOT_OWNER);
-                assert(!fish.locked, 'FISH_ALREADY_LISTED_OR_LOCKED');
+                assert(InternalTrait::is_owned_by(fish, caller), CustomErrors::NOT_OWNER);
+                assert(InternalTrait::is_tradable(fish), 'FISH_ALREADY_LISTED_OR_LOCKED');
                 // Lock the fish
                 fish.locked = true;
                 world.write_model(@fish);
@@ -87,6 +87,7 @@ pub mod FishState {
             let event = FishListed { seller: caller, fish_ids, price };
             world.emit_event(@event);
         }
+
         fn create_fish(ref self: ContractState, owner: ContractAddress, fish_type: u32) -> u64 {
             let mut world = self.world_default();
 
@@ -314,7 +315,6 @@ pub mod FishState {
     #[generate_trait]
     impl InternalImpl of InternalTrait {
         fn world_default(self: @ContractState) -> dojo::world::WorldStorage {
-            // self.world(@"aquastark")
             self.world(@"aqua_stark")
         }
 
@@ -325,6 +325,19 @@ pub mod FishState {
             fish_id.nonce = new_id;
             world.write_model(@fish_id);
             new_id
+        }
+
+        // Internal helpers
+        fn is_owned_by(fish: Fish, owner: ContractAddress) -> bool {
+            fish.owner == owner
+        }
+
+        fn is_tradable(fish: Fish) -> bool {
+            !fish.locked
+        }
+
+        fn fish_id_to_felt252(fish_id: u64) -> felt252 {
+            fish_id.into()
         }
     }
 }
