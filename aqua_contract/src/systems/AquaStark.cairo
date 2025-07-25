@@ -535,32 +535,36 @@ pub mod AquaStark {
             world.write_model(@fish_lock);
             world.write_model(@active_offers);
 
-            world.emit_event(
-                @TradeOfferCreated {
-                    offer_id,
-                    creator: caller,
-                    offered_fish_id,
-                    criteria,
-                    requested_fish_id,
-                    requested_species,
-                    requested_generation,
-                    expires_at: trade_offer.expires_at,
-                }
-            );
+            world
+                .emit_event(
+                    @TradeOfferCreated {
+                        offer_id,
+                        creator: caller,
+                        offered_fish_id,
+                        criteria,
+                        requested_fish_id,
+                        requested_species,
+                        requested_generation,
+                        expires_at: trade_offer.expires_at,
+                    },
+                );
 
-            world.emit_event(
-                @FishLocked {
-                    fish_id: offered_fish_id,
-                    owner: caller,
-                    locked_by_offer: offer_id,
-                    timestamp: get_block_timestamp(),
-                }
-            );
+            world
+                .emit_event(
+                    @FishLocked {
+                        fish_id: offered_fish_id,
+                        owner: caller,
+                        locked_by_offer: offer_id,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
 
             offer_id
         }
 
-        fn accept_trade_offer(ref self: ContractState, offer_id: u256, offered_fish_id: u256) -> bool {
+        fn accept_trade_offer(
+            ref self: ContractState, offer_id: u256, offered_fish_id: u256,
+        ) -> bool {
             let mut world = self.world_default();
             let caller = get_caller_address();
 
@@ -599,7 +603,7 @@ pub mod AquaStark {
                     acceptor_fish.generation,
                     fish_traits,
                 ),
-                'Fish does not match criteria'
+                'Fish does not match criteria',
             );
 
             // Perform the trade - swap ownership
@@ -630,32 +634,35 @@ pub mod AquaStark {
             world.write_model(@acceptor_fish_unlock);
             world.write_model(@trade_offer);
 
-            world.emit_event(
-                @TradeOfferAccepted {
-                    offer_id,
-                    acceptor: caller,
-                    creator: trade_offer.creator,
-                    creator_fish_id: trade_offer.offered_fish_id,
-                    acceptor_fish_id: offered_fish_id,
-                    timestamp: get_block_timestamp(),
-                }
-            );
+            world
+                .emit_event(
+                    @TradeOfferAccepted {
+                        offer_id,
+                        acceptor: caller,
+                        creator: trade_offer.creator,
+                        creator_fish_id: trade_offer.offered_fish_id,
+                        acceptor_fish_id: offered_fish_id,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
 
-            world.emit_event(
-                @FishUnlocked {
-                    fish_id: trade_offer.offered_fish_id,
-                    owner: caller,
-                    timestamp: get_block_timestamp(),
-                }
-            );
+            world
+                .emit_event(
+                    @FishUnlocked {
+                        fish_id: trade_offer.offered_fish_id,
+                        owner: caller,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
 
-            world.emit_event(
-                @FishUnlocked {
-                    fish_id: offered_fish_id,
-                    owner: trade_offer.creator,
-                    timestamp: get_block_timestamp(),
-                }
-            );
+            world
+                .emit_event(
+                    @FishUnlocked {
+                        fish_id: offered_fish_id,
+                        owner: trade_offer.creator,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
 
             true
         }
@@ -675,22 +682,24 @@ pub mod AquaStark {
             world.write_model(@trade_offer);
             world.write_model(@fish_unlock);
 
-            world.emit_event(
-                @TradeOfferCancelled {
-                    offer_id,
-                    creator: caller,
-                    offered_fish_id: trade_offer.offered_fish_id,
-                    timestamp: get_block_timestamp(),
-                }
-            );
+            world
+                .emit_event(
+                    @TradeOfferCancelled {
+                        offer_id,
+                        creator: caller,
+                        offered_fish_id: trade_offer.offered_fish_id,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
 
-            world.emit_event(
-                @FishUnlocked {
-                    fish_id: trade_offer.offered_fish_id,
-                    owner: caller,
-                    timestamp: get_block_timestamp(),
-                }
-            );
+            world
+                .emit_event(
+                    @FishUnlocked {
+                        fish_id: trade_offer.offered_fish_id,
+                        owner: caller,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
 
             true
         }
@@ -700,7 +709,9 @@ pub mod AquaStark {
             world.read_model(offer_id)
         }
 
-        fn get_active_trade_offers(self: @ContractState, creator: ContractAddress) -> Array<TradeOffer> {
+        fn get_active_trade_offers(
+            self: @ContractState, creator: ContractAddress,
+        ) -> Array<TradeOffer> {
             let world = self.world_default();
             let active_offers: ActiveTradeOffers = world.read_model(creator);
             let mut offers = array![];

@@ -20,10 +20,10 @@ pub enum TradeOfferStatus {
 #[derive(Serde, Copy, Introspect, Drop, PartialEq)]
 pub enum MatchCriteria {
     #[default]
-    ExactId,       
-    Species,       
-    SpeciesAndGen, 
-    Traits,        
+    ExactId,
+    Species,
+    SpeciesAndGen,
+    Traits,
 }
 
 #[derive(Drop, Introspect, Serde)]
@@ -41,7 +41,7 @@ pub struct TradeOffer {
     pub status: TradeOfferStatus,
     pub created_at: u64,
     pub expires_at: u64,
-    pub is_locked: bool, // Prevents double acceptance
+    pub is_locked: bool // Prevents double acceptance
 }
 
 #[derive(Serde, Copy, Drop, Introspect)]
@@ -81,7 +81,7 @@ pub trait TradeOfferTrait {
     fn lock_offer(offer: TradeOffer) -> TradeOffer;
     fn complete_offer(offer: TradeOffer) -> TradeOffer;
     fn cancel_offer(offer: TradeOffer) -> TradeOffer;
-    
+
     fn matches_criteria(
         offer: @TradeOffer,
         fish_id: u256,
@@ -177,9 +177,9 @@ impl TradeOfferImpl of TradeOfferTrait {
             },
             MatchCriteria::SpeciesAndGen => {
                 match (offer.requested_species, offer.requested_generation) {
-                    (Option::Some(species), Option::Some(gen)) => {
-                        fish_species == *species && fish_generation == *gen
-                    },
+                    (
+                        Option::Some(species), Option::Some(gen),
+                    ) => { fish_species == *species && fish_generation == *gen },
                     _ => false,
                 }
             },
@@ -217,20 +217,12 @@ impl TradeOfferImpl of TradeOfferTrait {
 impl FishLockImpl of FishLockTrait {
     fn lock_fish(fish_id: u256, offer_id: u256) -> FishLock {
         FishLock {
-            fish_id,
-            is_locked: true,
-            locked_by_offer: offer_id,
-            locked_at: get_block_timestamp(),
+            fish_id, is_locked: true, locked_by_offer: offer_id, locked_at: get_block_timestamp(),
         }
     }
 
     fn unlock_fish(fish_id: u256) -> FishLock {
-        FishLock {
-            fish_id,
-            is_locked: false,
-            locked_by_offer: 0,
-            locked_at: 0,
-        }
+        FishLock { fish_id, is_locked: false, locked_by_offer: 0, locked_at: 0 }
     }
 
     fn is_locked(lock: FishLock) -> bool {
@@ -282,14 +274,13 @@ mod tests {
             array![],
             24,
         );
-        
+
         assert(
-            TradeOfferImpl::matches_criteria(@offer, 200, 1, 1, array![]),
-            'Should match exact ID'
+            TradeOfferImpl::matches_criteria(@offer, 200, 1, 1, array![]), 'Should match exact ID',
         );
         assert(
             !TradeOfferImpl::matches_criteria(@offer, 201, 1, 1, array![]),
-            'Should not match different ID'
+            'Should not match different ID',
         );
     }
 
@@ -297,8 +288,8 @@ mod tests {
     fn test_fish_locking() {
         let lock = FishLockImpl::lock_fish(100, 1);
         assert(FishLockImpl::is_locked(lock), 'Fish should be locked');
-        
+
         let unlock = FishLockImpl::unlock_fish(100);
         assert(!FishLockImpl::is_locked(unlock), 'Fish should be unlocked');
     }
-} 
+}

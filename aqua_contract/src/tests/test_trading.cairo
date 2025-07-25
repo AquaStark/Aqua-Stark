@@ -2,8 +2,7 @@
 mod tests {
     use starknet::contract_address_const;
     use aqua_stark::models::trade_model::{
-        TradeOffer, TradeOfferStatus, MatchCriteria, FishLock,
-        TradeOfferTrait, FishLockTrait
+        TradeOffer, TradeOfferStatus, MatchCriteria, FishLock, TradeOfferTrait, FishLockTrait,
     };
 
     #[test]
@@ -26,13 +25,13 @@ mod tests {
         // Should match exact ID
         assert(
             TradeOfferTrait::matches_criteria(@offer, 42, 1, 5, array![100, 200]),
-            'Should match exact ID'
+            'Should match exact ID',
         );
 
         // Should not match different ID
         assert(
             !TradeOfferTrait::matches_criteria(@offer, 43, 1, 5, array![100, 200]),
-            'Should not match different ID'
+            'Should not match different ID',
         );
     }
 
@@ -56,13 +55,13 @@ mod tests {
         // Should match correct species
         assert(
             TradeOfferTrait::matches_criteria(@offer, 100, 0, 5, array![100, 200]),
-            'Should match AngelFish species'
+            'Should match AngelFish species',
         );
 
         // Should not match different species
         assert(
             !TradeOfferTrait::matches_criteria(@offer, 100, 1, 5, array![100, 200]),
-            'Should not match GoldFish'
+            'Should not match GoldFish',
         );
     }
 
@@ -86,13 +85,13 @@ mod tests {
         // Should match correct species and generation
         assert(
             TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![100, 200]),
-            'Should match species and gen'
+            'Should match species and gen',
         );
 
         // Should not match wrong generation
         assert(
             !TradeOfferTrait::matches_criteria(@offer, 100, 1, 4, array![100, 200]),
-            'Should not match wrong gen'
+            'Should not match wrong gen',
         );
     }
 
@@ -116,13 +115,13 @@ mod tests {
         // Should match when fish has all required traits
         assert(
             TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![100, 200, 300]),
-            'Should match all traits'
+            'Should match all traits',
         );
 
         // Should not match when fish lacks required traits
         assert(
             !TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![100, 300]),
-            'Should not match missing traits'
+            'Should not match missing traits',
         );
     }
 
@@ -187,7 +186,7 @@ mod tests {
             Option::Some(0),
             Option::None,
             array![],
-            24
+            24,
         );
 
         let cancelled_offer = TradeOfferTrait::cancel_offer(offer);
@@ -216,13 +215,12 @@ mod tests {
         // Should match when no traits required
         assert(
             TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![100, 200]),
-            'Should match no traits required'
+            'Should match no traits required',
         );
 
         // Should also match fish with no traits
         assert(
-            TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![]),
-            'Should match any fish'
+            TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![]), 'Should match any fish',
         );
     }
-} 
+}
