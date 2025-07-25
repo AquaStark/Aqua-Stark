@@ -27,7 +27,7 @@ pub mod AquaStark {
         TransactionLog, EventTypeDetails, EventCounter, TransactionCounter, event_id_target,
         transaction_id_target, EventDetailsTrait, TransactionLogTrait,
     };
-    use aqua_stark::models::auctions_model::{Auction, AuctionCounter, AuctionStarted, FishOwnerA, BidPlaced, AuctionEnded,  };
+    use aqua_stark::models::auctions_model::{Auction, AuctionCounter, AuctionStarted, BidPlaced, AuctionEnded,  };
     use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
 
@@ -44,13 +44,13 @@ pub mod AquaStark {
             let caller = get_caller_address();
             
             // Validate fish ownership and lock status
-            let fish_owner: FishOwnerA = world.read_model(fish_id);
+            let fish_owner: FishOwner = world.read_model(fish_id);
             assert!(fish_owner.owner == caller, "You don't own this fish");
             assert!(!fish_owner.locked, "Fish is already locked");
             
             // Lock the fish
-            world.write_model(@FishOwnerA {
-                fish_id,
+            world.write_model(@FishOwner {
+                id: fish_id,
                 owner: caller,
                 locked: true
             });
@@ -143,16 +143,16 @@ pub mod AquaStark {
             // Transfer fish ownership if there was a winning bid
             match auction.highest_bidder {
                 Option::Some(winner) => {
-                    world.write_model(@FishOwnerA {
-                        fish_id: auction.fish_id,
+                    world.write_model(@FishOwner {
+                        id: auction.fish_id,
                         owner: winner,
                         locked: false
                     });
                 },
                 Option::None(()) => {
                     // No winner, return fish to seller
-                    world.write_model(@FishOwnerA {
-                        fish_id: auction.fish_id,
+                    world.write_model(@FishOwner {
+                        id: auction.fish_id,
                         owner: auction.seller,
                         locked: false
                     });
