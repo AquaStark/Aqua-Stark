@@ -39,6 +39,7 @@ pub struct FishOwner {
     #[key]
     pub id: u256,
     pub owner: ContractAddress,
+    pub locked: bool,
 }
 
 #[derive(Clone, Drop, Introspect, Serde)]

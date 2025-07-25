@@ -17,7 +17,7 @@ pub struct Auction {
 
 #[derive(Serde, Copy, Drop, Introspect)]
 #[dojo::model]
-pub struct FishOwner {
+pub struct FishOwnerA {
     #[key]
     pub fish_id: u256,
     pub owner: ContractAddress,
@@ -104,12 +104,12 @@ pub mod AquaAuction {
             let caller = get_caller_address();
             
             // Validate fish ownership and lock status
-            let fish_owner: FishOwner  = world.read_model(fish_id);
+            let fish_owner: FishOwnerA  = world.read_model(fish_id);
             assert!(fish_owner.owner == caller, "You don't own this fish");
             assert!(!fish_owner.locked, "Fish is already locked");
             
             // Lock the fish
-            world.write_model(@FishOwner {
+            world.write_model(@FishOwnerA {
                 fish_id,
                 owner: caller,
                 locked: true
@@ -203,7 +203,7 @@ pub mod AquaAuction {
             // Transfer fish ownership if there was a winning bid
             match auction.highest_bidder {
                 Option::Some(winner) => {
-                    world.write_model(@FishOwner {
+                    world.write_model(@FishOwnerA {
                         fish_id: auction.fish_id,
                         owner: winner,
                         locked: false
@@ -211,7 +211,7 @@ pub mod AquaAuction {
                 },
                 Option::None(()) => {
                     // No winner, return fish to seller
-                    world.write_model(@FishOwner {
+                    world.write_model(@FishOwnerA {
                         fish_id: auction.fish_id,
                         owner: auction.seller,
                         locked: false
