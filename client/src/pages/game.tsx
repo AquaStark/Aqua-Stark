@@ -6,7 +6,6 @@ import { GameHeader } from "@/components/game/game-header";
 import { GameSidebarButtons } from "@/components/game/game-sidebar-buttons";
 import { AquariumTabs } from "@/components/game/aquarium-tabs";
 import { TipsPopup } from "@/components/game/tips-popup";
-import { FishDisplay } from "@/components/game/fish-display";
 import { INITIAL_GAME_STATE } from "@/data/game-data";
 import { useAquarium } from "@/hooks/use-aquarium";
 import { useFishStats } from "@/hooks/use-fish-stats";
@@ -22,6 +21,7 @@ import { DirtOverlay } from "@/components/game/dirt-overlay"
 import { DirtDebugControls } from "@/components/game/dirt-debug-controls"
 import { useFeedingSystem } from "@/systems/feeding-system";
 import { FeedFishButton } from "@/components/game/feed-fish-button";
+import { FeedingAquarium } from "@/components/game/feeding-aqaurium";
 
 export default function GamePage() {
   const activeAquariumId = useActiveAquarium((s) => s.activeAquariumId);
@@ -161,7 +161,7 @@ export default function GamePage() {
         transition={{ duration: 1 }}
         className="relative z-20 w-full h-full"
       >
-        <FishDisplay fish={displayFish} feedingSystem={feedingSystem} />
+        <FeedingAquarium fish={displayFish} feedingSystem={feedingSystem} />
       </motion.div>
 
       <DirtOverlay 

@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useFoodSystem } from "@/hooks/use-food-system";
-import type { FoodItem } from "@/types/food";
 
 interface FeedingSystemOptions {
   aquariumBounds: { width: number; height: number };
