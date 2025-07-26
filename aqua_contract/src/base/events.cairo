@@ -124,3 +124,13 @@ pub struct AuctionStarted {
     pub end_time: u64,
     pub reserve_price: u256,
 }
+
+
+#[derive(Drop, Serde)]
+#[dojo::event]
+pub struct BidPlaced {
+    #[key]
+    pub auction_id: u256,
+    pub bidder: ContractAddress,
+    pub amount: u256,
+}
