@@ -43,4 +43,5 @@ pub trait IAquaStark<T> {
     fn get_fish_offspring(self: @T, fish_id: u256) -> Array<Fish>;
     fn get_fish_family_tree(self: @T, fish_id: u256) -> Array<FishParents>;
     fn get_fish_ancestor(self: @T, fish_id: u256, generation: u32) -> FishParents;
+    fn purchase_fish(self: @T, listing_id: felt252);
 }
