@@ -110,3 +110,17 @@ pub struct EventTypeRegistered {
     pub event_type_id: u256,
     pub timestamp: u64,
 }
+
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct AuctionStarted {
+    #[key]
+    pub auction_id: u256,
+    #[key]
+    pub seller: ContractAddress,
+    pub fish_id: u256,
+    pub start_time: u64,
+    pub end_time: u64,
+    pub reserve_price: u256,
+}

@@ -1,6 +1,6 @@
 use aqua_stark::models::aquarium_model::Aquarium;
 use aqua_stark::models::decoration_model::Decoration;
-use aqua_stark::models::fish_model::{Fish, FishParents, Species};
+use aqua_stark::models::fish_model::{Fish, FishParents, FishOwner, Species};
 use aqua_stark::models::player_model::Player;
 use aqua_stark::models::auctions_model::*;
 use starknet::ContractAddress;
@@ -54,4 +54,5 @@ pub trait IAquaStark<T> {
 
     fn get_active_auctions(self: @T) -> Array<Auction>;
     fn get_auction_by_id(self: @T, auction_id: u256) -> Auction;
+    fn get_fish_owner_for_auction(self: @T, fish_id: u256) -> FishOwner;
 }

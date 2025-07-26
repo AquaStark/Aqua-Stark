@@ -6,7 +6,8 @@ pub mod AquaStark {
     use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
     use aqua_stark::base::events::{
         PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
-        FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
+        FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged, 
+        AuctionStarted,
     };
     use starknet::{
         ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
@@ -28,7 +29,7 @@ pub mod AquaStark {
         transaction_id_target, EventDetailsTrait, TransactionLogTrait,
     };
     use aqua_stark::models::auctions_model::{
-        Auction, AuctionCounter, AuctionStarted, BidPlaced, AuctionEnded,
+        Auction, AuctionCounter, BidPlaced, AuctionEnded,
     };
     use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
@@ -36,6 +37,9 @@ pub mod AquaStark {
 
     #[abi(embed_v0)]
     impl AquaStarkImpl of IAquaStark<ContractState> {
+        fn get_fish_owner_for_auction(self: @ContractState, fish_id: u256) -> FishOwner {
+            self.world_default().read_model(fish_id)
+        }
         fn start_auction(
             ref self: ContractState, fish_id: u256, duration_secs: u64, reserve_price: u256,
         ) -> Auction {
