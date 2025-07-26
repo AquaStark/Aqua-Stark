@@ -6,7 +6,7 @@ pub mod AquaStark {
     use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
     use aqua_stark::base::events::{
         PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
-        FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged, 
+        FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
         AuctionStarted,
     };
     use starknet::{
@@ -28,9 +28,7 @@ pub mod AquaStark {
         TransactionLog, EventTypeDetails, EventCounter, TransactionCounter, event_id_target,
         transaction_id_target, EventDetailsTrait, TransactionLogTrait,
     };
-    use aqua_stark::models::auctions_model::{
-        Auction, AuctionCounter, BidPlaced, AuctionEnded,
-    };
+    use aqua_stark::models::auctions_model::{Auction, AuctionCounter, BidPlaced, AuctionEnded};
     use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
 

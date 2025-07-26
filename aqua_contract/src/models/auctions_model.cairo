@@ -1,4 +1,4 @@
-use starknet::{ContractAddress };
+use starknet::{ContractAddress};
 // use aqua_stark::base::events::AuctionStarted;
 
 #[derive(Serde, Copy, Drop, Introspect)]
@@ -75,7 +75,6 @@ pub trait IAquaAuction<T> {
     fn get_active_auctions(self: @T) -> Array<Auction>;
     fn get_auction_by_id(self: @T, auction_id: u256) -> Auction;
 }
-
 // #[dojo::contract]
 // pub mod AquaAuction {
 //     use super::*;
@@ -180,7 +179,8 @@ pub trait IAquaAuction<T> {
 //                 Option::Some(winner) => {
 //                     world
 //                         .write_model(
-//                             @FishOwnerA { fish_id: auction.fish_id, owner: winner, locked: false },
+//                             @FishOwnerA { fish_id: auction.fish_id, owner: winner, locked: false
+//                             },
 //                         );
 //                 },
 //                 Option::None(()) => {
@@ -243,3 +243,4 @@ pub trait IAquaAuction<T> {
 //         }
 //     }
 // }
+

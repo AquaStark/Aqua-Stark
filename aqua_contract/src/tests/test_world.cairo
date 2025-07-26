@@ -775,82 +775,82 @@ mod tests {
 
     #[test]
     fn test_start_auction() {
-    let caller = contract_address_const::<'seller'>();
-    let ndef = namespace_def();
-    let mut world = spawn_test_world([ndef].span());
-    world.sync_perms_and_inits(contract_defs());
-    // world.grant_owner(0, seller);
+        let caller = contract_address_const::<'seller'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        // world.grant_owner(0, seller);
 
         let (contract_address, _) = world.dns(@"AquaStark").unwrap();
-    let actions_system = IAquaStarkDispatcher { contract_address };
+        let actions_system = IAquaStarkDispatcher { contract_address };
 
         // Register player and create a fish
-    testing::set_contract_address(caller);
-    actions_system.register('seller');
-    let fish = actions_system.new_fish(1, Species::GoldFish);
+        testing::set_contract_address(caller);
+        actions_system.register('seller');
+        let fish = actions_system.new_fish(1, Species::GoldFish);
 
         // Start auction
-    let duration = 3600; // 1 hour
-    let reserve_price = 100;
-    let auction = actions_system.start_auction(fish.id, duration, reserve_price);
+        let duration = 3600; // 1 hour
+        let reserve_price = 100;
+        let auction = actions_system.start_auction(fish.id, duration, reserve_price);
 
-    //     // Verify auction details
-    assert(auction.auction_id == 0, 'Auction ID mismatch');
-    assert(auction.seller == caller, 'Seller mismatch');
-    assert(auction.fish_id == fish.id, 'Fish ID mismatch');
-    assert(auction.reserve_price == reserve_price, 'Reserve price mismatch');
-    assert(auction.highest_bid == 0, 'Initial bid should be 0');
-    assert(auction.highest_bidder == Option::None(()), 'Initial bidder should be none');
-    assert(auction.active, 'Auction should be active');
+        //     // Verify auction details
+        assert(auction.auction_id == 0, 'Auction ID mismatch');
+        assert(auction.seller == caller, 'Seller mismatch');
+        assert(auction.fish_id == fish.id, 'Fish ID mismatch');
+        assert(auction.reserve_price == reserve_price, 'Reserve price mismatch');
+        assert(auction.highest_bid == 0, 'Initial bid should be 0');
+        assert(auction.highest_bidder == Option::None(()), 'Initial bidder should be none');
+        assert(auction.active, 'Auction should be active');
 
-    //     // Verify fish is locked
-    let fish_owner: FishOwner = actions_system.get_fish_owner_for_auction(fish.id);
-    assert(fish_owner.locked, 'Fish should be locked');
-}
-
-
-#[test]
-#[should_panic]
-fn test_start_auction_not_owner() {
-    let owner = contract_address_const::<'owner'>();
-    let not_owner = contract_address_const::<'not_owner'>();
-    let ndef = namespace_def();
-    let mut world = spawn_test_world([ndef].span());
-    world.sync_perms_and_inits(contract_defs());
-
-    let (contract_address, _) = world.dns(@"AquaStark").unwrap();
-    let actions_system = IAquaStarkDispatcher { contract_address };
-
-    // Owner creates fish
-    testing::set_contract_address(owner);
-    actions_system.register('owner');
-    let fish = actions_system.new_fish(1, Species::GoldFish);
-
-    // Not owner tries to start auction
-    testing::set_contract_address(not_owner);
-    actions_system.start_auction(fish.id, 3600, 100);
-}
+        //     // Verify fish is locked
+        let fish_owner: FishOwner = actions_system.get_fish_owner_for_auction(fish.id);
+        assert(fish_owner.locked, 'Fish should be locked');
+    }
 
 
-#[test]
-#[should_panic]
-fn test_start_auction_already_locked() {
-    let caller = contract_address_const::<'seller'>();
-    let ndef = namespace_def();
-    let mut world = spawn_test_world([ndef].span());
-    world.sync_perms_and_inits(contract_defs());
+    #[test]
+    #[should_panic]
+    fn test_start_auction_not_owner() {
+        let owner = contract_address_const::<'owner'>();
+        let not_owner = contract_address_const::<'not_owner'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
 
-    let (contract_address, _) = world.dns(@"AquaStark").unwrap();
-    let actions_system = IAquaStarkDispatcher { contract_address };
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
 
-    testing::set_contract_address(caller);
-    actions_system.register('seller');
-    let fish = actions_system.new_fish(1, Species::GoldFish);
+        // Owner creates fish
+        testing::set_contract_address(owner);
+        actions_system.register('owner');
+        let fish = actions_system.new_fish(1, Species::GoldFish);
 
-    // Start first auction
-    actions_system.start_auction(fish.id, 3600, 100);
+        // Not owner tries to start auction
+        testing::set_contract_address(not_owner);
+        actions_system.start_auction(fish.id, 3600, 100);
+    }
 
-    // Try to start another auction with same fish
-    actions_system.start_auction(fish.id, 3600, 100);
-}
+
+    #[test]
+    #[should_panic]
+    fn test_start_auction_already_locked() {
+        let caller = contract_address_const::<'seller'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        testing::set_contract_address(caller);
+        actions_system.register('seller');
+        let fish = actions_system.new_fish(1, Species::GoldFish);
+
+        // Start first auction
+        actions_system.start_auction(fish.id, 3600, 100);
+
+        // Try to start another auction with same fish
+        actions_system.start_auction(fish.id, 3600, 100);
+    }
 }
