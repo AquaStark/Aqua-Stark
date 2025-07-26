@@ -7,7 +7,7 @@ pub mod AquaStark {
     use aqua_stark::base::events::{
         PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
         FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
-        AuctionStarted, BidPlaced,
+        AuctionStarted, BidPlaced, AuctionEnded,
     };
     use starknet::{
         ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
@@ -28,7 +28,7 @@ pub mod AquaStark {
         TransactionLog, EventTypeDetails, EventCounter, TransactionCounter, event_id_target,
         transaction_id_target, EventDetailsTrait, TransactionLogTrait,
     };
-    use aqua_stark::models::auctions_model::{Auction, AuctionCounter, AuctionEnded};
+    use aqua_stark::models::auctions_model::{Auction, AuctionCounter};
     use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
 
@@ -136,6 +136,9 @@ pub mod AquaStark {
                         .write_model(
                             @FishOwner { id: auction.fish_id, owner: winner, locked: false },
                         );
+                    let mut fish: Fish = world.read_model(auction.fish_id);
+                    fish.owner = winner; // Directly update the owner field
+                    world.write_model(@fish);
                 },
                 Option::None(()) => {
                     // No winner, return fish to seller
