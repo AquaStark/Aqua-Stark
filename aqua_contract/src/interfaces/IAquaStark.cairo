@@ -2,6 +2,7 @@ use aqua_stark::models::aquarium_model::Aquarium;
 use aqua_stark::models::decoration_model::Decoration;
 use aqua_stark::models::fish_model::{Fish, FishParents, Species};
 use aqua_stark::models::player_model::Player;
+use aqua_stark::models::trade_model::{TradeOffer, MatchCriteria, FishLock};
 use starknet::ContractAddress;
 // define the interface
 #[starknet::interface]
@@ -43,4 +44,20 @@ pub trait IAquaStark<T> {
     fn get_fish_offspring(self: @T, fish_id: u256) -> Array<Fish>;
     fn get_fish_family_tree(self: @T, fish_id: u256) -> Array<FishParents>;
     fn get_fish_ancestor(self: @T, fish_id: u256, generation: u32) -> FishParents;
+    fn create_trade_offer(
+        ref self: T,
+        offered_fish_id: u256,
+        criteria: MatchCriteria,
+        requested_fish_id: Option<u256>,
+        requested_species: Option<u8>,
+        requested_generation: Option<u8>,
+        requested_traits: Array<felt252>,
+        duration_hours: u64,
+    ) -> u256;
+    fn accept_trade_offer(ref self: T, offer_id: u256, offered_fish_id: u256) -> bool;
+    fn cancel_trade_offer(ref self: T, offer_id: u256) -> bool;
+    fn get_trade_offer(self: @T, offer_id: u256) -> TradeOffer;
+    fn get_active_trade_offers(self: @T, creator: ContractAddress) -> Array<TradeOffer>;
+    fn get_fish_lock_status(self: @T, fish_id: u256) -> FishLock;
+    fn is_fish_locked(self: @T, fish_id: u256) -> bool;
 }

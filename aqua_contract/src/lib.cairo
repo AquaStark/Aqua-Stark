@@ -22,8 +22,10 @@ pub mod models {
     pub mod game_model;
     pub mod player_model;
     pub mod transaction_model;
+    pub mod trade_model;
 }
 pub mod tests {
     mod test_world;
+    mod test_trading;
 }
 
