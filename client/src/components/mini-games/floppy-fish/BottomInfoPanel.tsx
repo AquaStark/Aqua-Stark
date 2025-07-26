@@ -10,24 +10,21 @@ interface BottomInfoPanelProps {
 }
 
 export function BottomInfoPanel({ selectedFish, score, bestScore }: BottomInfoPanelProps) {
-  // Always use the forward-facing (right direction) version of the fish image
-  let fishImage = selectedFish.image;
-  if (!fishImage.endsWith("-flip.png")) {
-    fishImage = fishImage.replace(".png", "-flip.png");
-  }
-
+  // (right direction) version of the fish image
+  const fishImage = selectedFish.image.replace(".png", "-flip.png");
+  
   return (
-    <div className="w-full max-w-2xl bg-blue-800/30 border border-blue-600/30 rounded-2xl p-6 flex items-center justify-between shadow-md mt-4">
-      <div className="flex items-center gap-6">
-        <img src={fishImage} alt={selectedFish.name} className="w-20 h-20 object-contain" />
+    <div className="w-full max-w-xl bg-blue-800/30 border border-blue-600/30 rounded-xl p-4 flex items-center justify-between shadow-sm mt-2">
+      <div className="flex items-center gap-4">
+        <img src={fishImage} alt={selectedFish.name} className="w-16 h-16 object-contain" />
         <div>
-          <div className="text-white font-bold text-lg">{selectedFish.name}</div>
-          <div className="text-blue-200 text-sm">Experience Multiplier: {selectedFish.experienceMultiplier}x</div>
+          <div className="text-white font-bold">{selectedFish.name}</div>
+          <div className="text-blue-200 text-xs">Experience Multiplier: {selectedFish.experienceMultiplier}x</div>
         </div>
       </div>
-      <div className="flex flex-col items-end gap-2">
-        <div className="text-white font-bold text-xl">Score: {score}</div>
-        <div className="text-blue-200 text-sm">Best: {bestScore}</div>
+      <div className="flex flex-col items-end gap-1">
+        <div className="text-white font-bold">Score: {score}</div>
+        <div className="text-blue-200 text-xs">Best: {bestScore}</div>
       </div>
     </div>
   );
