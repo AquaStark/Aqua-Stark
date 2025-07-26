@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { useFoodSystem } from "@/hooks/use-food-system";
 
 interface FeedingSystemOptions {
@@ -52,6 +52,7 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
   });
 
   const feedingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const animationIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Start feeding mode
   const startFeeding = useCallback((duration: number = 30000) => {
@@ -91,18 +92,18 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
     console.log("🛑 Feeding mode stopped");
   }, []);
 
-  // Handle food spawning (only when feeding is active)
+  // Handle food spawning 
   const handleFeedClick = useCallback(
-    (clientX: number, clientY: number, containerRect: DOMRect) => {
-      if (!feedingState.isFeeding) {
-        console.log("🚫 Cannot feed - feeding mode is not active");
+    (clientX: number, clientY: number, containerRect: DOMRect | undefined) => {
+      if (!containerRect || !feedingState.isFeeding) {
+        console.log("🚫 Cannot feed - feeding mode is not active or container not ready");
         return false;
       }
 
       const clickX = clientX - containerRect.left;
       const clickY = clientY - containerRect.top;
 
-      // Try to spawn food at click position
+      // spawn food at click position
       const spawned = spawnFood(clickX, clickY);
 
       if (!spawned) {
@@ -173,12 +174,26 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
   // Update aquarium bounds
   const updateAquariumBounds = useCallback((newBounds: { width: number; height: number }) => {
     setAquariumBounds(newBounds);
-  }, [aquariumBounds]);
+  }, []);
+
+  // Handle animations
+  useEffect(() => {
+    // Start animation interval
+    animationIntervalRef.current = setInterval(() => {
+      updateFoodAnimations();
+    }, 100);
+
+    // Cleanup
+    return () => {
+      if (animationIntervalRef.current) {
+        clearInterval(animationIntervalRef.current);
+      }
+    };
+  }, [updateFoodAnimations]);
 
   return {
     // Food system
     foods,
-    updateFoodAnimations,
     canSpawnFood,
     
     // Feeding system

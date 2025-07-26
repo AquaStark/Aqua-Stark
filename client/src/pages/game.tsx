@@ -21,7 +21,7 @@ import { DirtOverlay } from "@/components/game/dirt-overlay"
 import { DirtDebugControls } from "@/components/game/dirt-debug-controls"
 import { useFeedingSystem } from "@/systems/feeding-system";
 import { FeedFishButton } from "@/components/game/feed-fish-button";
-import { FeedingAquarium } from "@/components/game/feeding-aqaurium";
+import { FeedingAquarium } from "@/components/game/feeding-aquarium";
 
 export default function GamePage() {
   const activeAquariumId = useActiveAquarium((s) => s.activeAquariumId);

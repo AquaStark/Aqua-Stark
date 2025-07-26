@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import { Fish } from "@/components/aquarium/fish";
 
 interface FishDisplayProps {
@@ -16,20 +15,9 @@ interface FishDisplayProps {
   }>;
 }
 
-export function FishDisplay({
-  fish,
-}: FishDisplayProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
+export function FishDisplay({ fish }: FishDisplayProps) {
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-full fish-container overflow-hidden"
-      style={{
-        cursor: "default",
-        userSelect: "none",
-      }}
-    >
+    <div className="relative w-full h-full">
       {fish.map((fishState) => (
         <Fish
           key={fishState.id}
