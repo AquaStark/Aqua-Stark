@@ -1,3 +1,4 @@
+
 import { Fragment } from "react";
 
 interface ObstaclesProps {
