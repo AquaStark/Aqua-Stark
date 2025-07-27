@@ -21,8 +21,13 @@ rpc_url = "https://free-rpc.nethermind.io/sepolia-juno/v0_7"  # env: STARKNET_RP
 # private_key = ""     # env: DOJO_PRIVATE_KEY
 # world_address = ""   # env: DOJO_WORLD_ADDRESS
 
+[init_call_args]
+"aqua_stark-ShopCatalog" = [
+  "0x0" # shop catalog owner
+]
+
 [writers]
-"aqua_stark" = ["aqua_stark-AquaStark"]
+"aqua_stark" = ["aqua_stark-AquaStark", "aqua_stark-ShopCatalog"]
 "aqua_stark-Aquarium" = ["aqua_stark-AquaStark"]
 "aqua_stark-AquariumCounter" = ["aqua_stark-AquaStark"]
 "aqua_stark-AquariumOwner" = ["aqua_stark-AquaStark"]
@@ -41,3 +46,5 @@ rpc_url = "https://free-rpc.nethermind.io/sepolia-juno/v0_7"  # env: STARKNET_RP
 "aqua_stark-AddressToUsername" = ["aqua_stark-AquaStark"]
 "aqua_stark-Player" = ["aqua_stark-AquaStark"]
 "aqua_stark-Listing" = ["aqua_stark-AquaStark"]
+"aqua_stark-ShopItemModel" = ["aqua_stark-ShopCatalog"]
+"aqua_stark-ShopCatalogModel" = ["aqua_stark-ShopCatalog"]

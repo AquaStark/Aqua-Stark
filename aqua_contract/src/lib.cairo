@@ -2,6 +2,7 @@ pub mod systems {
     pub mod AquaStark;
     pub mod daily_challenge;
     pub mod Auctions;
+    pub mod ShopCatalog;
 }
 
 pub mod achievements {
@@ -17,6 +18,7 @@ pub mod base {
 
 pub mod interfaces {
     pub mod IAquaStark;
+    pub mod IShopCatalog;
     pub mod ITransactionHistory;
 }
 
@@ -26,6 +28,7 @@ pub mod models {
     pub mod fish_model;
     pub mod game_model;
     pub mod player_model;
+    pub mod shop_model;
     pub mod transaction_model;
     pub mod auctions_model;
     pub mod trade_model;
