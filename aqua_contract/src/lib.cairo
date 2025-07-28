@@ -9,6 +9,9 @@ pub mod base {
     pub mod events;
 }
 
+// pub mod contracts {
+//     pub mod auctions;
+// }
 
 pub mod interfaces {
     pub mod IAquaStark;
@@ -23,6 +26,7 @@ pub mod models {
     pub mod player_model;
     pub mod transaction_model;
     pub mod listing_model;
+    pub mod auctions_model;
 }
 pub mod tests {
     mod test_world;

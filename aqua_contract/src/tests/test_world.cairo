@@ -1,36 +1,26 @@
 #[cfg(test)]
 mod tests {
     use dojo::world::IWorldDispatcherTrait;
-    use aqua_stark::interfaces::IAquaStark::{
-        IAquaStark, IAquaStarkDispatcher, IAquaStarkDispatcherTrait,
-    };
+    use aqua_stark::interfaces::IAquaStark::{IAquaStarkDispatcher, IAquaStarkDispatcherTrait};
     use aqua_stark::interfaces::ITransactionHistory::{
-        ITransactionHistory, ITransactionHistoryDispatcher, ITransactionHistoryDispatcherTrait,
+        ITransactionHistoryDispatcher, ITransactionHistoryDispatcherTrait,
     };
-    use aqua_stark::models::aquarium_model::{
-        Aquarium, AquariumCounter, AquariumOwner, m_Aquarium, m_AquariumCounter, m_AquariumOwner,
-    };
-    use aqua_stark::models::decoration_model::{
-        Decoration, DecorationCounter, m_Decoration, m_DecorationCounter,
-    };
-    use aqua_stark::models::fish_model::{
-        Fish, FishCounter, FishOwner, FishTrait, Pattern, Species, m_Fish, m_FishCounter,
-        m_FishOwner,
-    };
+    use aqua_stark::models::aquarium_model::{m_Aquarium, m_AquariumCounter, m_AquariumOwner};
+    use aqua_stark::models::decoration_model::{m_Decoration, m_DecorationCounter};
+    use aqua_stark::models::fish_model::{FishOwner, Species, m_Fish, m_FishCounter, m_FishOwner};
     use aqua_stark::models::player_model::{
-        AddressToUsername, Player, PlayerCounter, UsernameToAddress, m_AddressToUsername, m_Player,
-        m_PlayerCounter, m_UsernameToAddress,
+        m_AddressToUsername, m_Player, m_PlayerCounter, m_UsernameToAddress,
     };
     use aqua_stark::models::listing_model::{Listing, m_Listing};
     use aqua_stark::models::transaction_model::{
-        TransactionLog, EventTypeDetails, EventCounter, TransactionCounter, m_TransactionLog,
-        m_EventTypeDetails, m_EventCounter, m_TransactionCounter,
+        m_TransactionLog, m_EventTypeDetails, m_EventCounter, m_TransactionCounter,
     };
+    use aqua_stark::models::auctions_model::{m_Auction, m_AuctionCounter};
 
 
     use aqua_stark::systems::AquaStark::AquaStark;
     use aqua_stark::base::events;
-    use dojo::model::{ModelStorage, ModelStorageTest};
+    // use dojo::model::{ModelStorageTest};
     use dojo::world::WorldStorageTrait;
     use dojo_cairo_test::{
         ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
@@ -43,6 +33,8 @@ mod tests {
         let ndef = NamespaceDef {
             namespace: "aqua_stark",
             resources: [
+                TestResource::Model(m_Auction::TEST_CLASS_HASH),
+                TestResource::Model(m_AuctionCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_Player::TEST_CLASS_HASH),
                 TestResource::Model(m_PlayerCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_UsernameToAddress::TEST_CLASS_HASH),
@@ -71,6 +63,9 @@ mod tests {
                 TestResource::Event(events::e_FishAddedToAquarium::TEST_CLASS_HASH),
                 TestResource::Event(events::e_DecorationAddedToAquarium::TEST_CLASS_HASH),
                 TestResource::Event(events::e_FishPurchased::TEST_CLASS_HASH),
+                TestResource::Event(events::e_AuctionStarted::TEST_CLASS_HASH),
+                TestResource::Event(events::e_BidPlaced::TEST_CLASS_HASH),
+                TestResource::Event(events::e_AuctionEnded::TEST_CLASS_HASH),
                 TestResource::Contract(AquaStark::TEST_CLASS_HASH),
             ]
                 .span(),
@@ -850,3 +845,297 @@ mod tests {
 
 }
 
+    #[test]
+    fn test_start_auction() {
+        let caller = contract_address_const::<'seller'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        // world.grant_owner(0, seller);
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        // Register player and create a fish
+        testing::set_contract_address(caller);
+        actions_system.register('seller');
+        let fish = actions_system.new_fish(1, Species::GoldFish);
+
+        // Start auction
+        let duration = 3600; // 1 hour
+        let reserve_price = 100;
+        let auction = actions_system.start_auction(fish.id, duration, reserve_price);
+
+        //     // Verify auction details
+        assert(auction.auction_id == 0, 'Auction ID mismatch');
+        assert(auction.seller == caller, 'Seller mismatch');
+        assert(auction.fish_id == fish.id, 'Fish ID mismatch');
+        assert(auction.reserve_price == reserve_price, 'Reserve price mismatch');
+        assert(auction.highest_bid == 0, 'Initial bid should be 0');
+        assert(auction.highest_bidder == Option::None(()), 'Initial bidder should be none');
+        assert(auction.active, 'Auction should be active');
+
+        //     // Verify fish is locked
+        let fish_owner: FishOwner = actions_system.get_fish_owner_for_auction(fish.id);
+        assert(fish_owner.locked, 'Fish should be locked');
+    }
+
+
+    #[test]
+    #[should_panic]
+    fn test_start_auction_not_owner() {
+        let owner = contract_address_const::<'owner'>();
+        let not_owner = contract_address_const::<'not_owner'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        // Owner creates fish
+        testing::set_contract_address(owner);
+        actions_system.register('owner');
+        let fish = actions_system.new_fish(1, Species::GoldFish);
+
+        // Not owner tries to start auction
+        testing::set_contract_address(not_owner);
+        actions_system.start_auction(fish.id, 3600, 100);
+    }
+
+
+    #[test]
+    #[should_panic]
+    fn test_start_auction_already_locked() {
+        let caller = contract_address_const::<'seller'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        testing::set_contract_address(caller);
+        actions_system.register('seller');
+        let fish = actions_system.new_fish(1, Species::GoldFish);
+
+        // Start first auction
+        actions_system.start_auction(fish.id, 3600, 100);
+
+        // Try to start another auction with same fish
+        actions_system.start_auction(fish.id, 3600, 100);
+    }
+
+
+    #[test]
+    fn test_place_bid() {
+        let seller = contract_address_const::<'seller'>();
+        let bidder = contract_address_const::<'bidder'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        // Seller creates fish and starts auction
+        testing::set_contract_address(seller);
+        actions_system.register('seller');
+        let fish = actions_system.new_fish(1, Species::GoldFish);
+        let auction = actions_system.start_auction(fish.id, 3600, 100);
+
+        // Bidder places bid
+        testing::set_contract_address(bidder);
+        actions_system.register('bidder');
+        let bid_amount = 150;
+        actions_system.place_bid(auction.auction_id, bid_amount);
+
+        // Verify auction updated
+        let updated_auction = actions_system.get_auction_by_id(auction.auction_id);
+        assert(updated_auction.highest_bid == bid_amount, 'Bid amount not updated');
+        assert(updated_auction.highest_bidder == Option::Some(bidder), 'Bidder not updated');
+    }
+
+
+    #[test]
+    #[should_panic]
+    fn test_place_bid_too_low() {
+        let seller = contract_address_const::<'seller'>();
+        let bidder = contract_address_const::<'bidder'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        testing::set_contract_address(seller);
+        actions_system.register('seller');
+        let fish = actions_system.new_fish(1, Species::GoldFish);
+        let auction = actions_system.start_auction(fish.id, 3600, 100);
+
+        testing::set_contract_address(bidder);
+        actions_system.register('bidder');
+
+        // First valid bid
+        actions_system.place_bid(auction.auction_id, 150);
+
+        // Second bid that's too low
+        actions_system.place_bid(auction.auction_id, 140);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_place_bid_below_reserve() {
+        let seller = contract_address_const::<'seller'>();
+        let bidder = contract_address_const::<'bidder'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        testing::set_contract_address(seller);
+        actions_system.register('seller');
+        let fish = actions_system.new_fish(1, Species::GoldFish);
+        let auction = actions_system.start_auction(fish.id, 3600, 100);
+
+        testing::set_contract_address(bidder);
+        actions_system.register('bidder');
+
+        // Bid below reserve price
+        actions_system.place_bid(auction.auction_id, 90);
+    }
+
+
+    #[test]
+    fn test_end_auction_with_winner() {
+        let seller = contract_address_const::<'seller'>();
+        let bidder = contract_address_const::<'bidder'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        // Seller creates fish and starts auction
+        testing::set_contract_address(seller);
+        actions_system.register('seller');
+        let fish = actions_system.new_fish(1, Species::GoldFish);
+        let auction = actions_system.start_auction(fish.id, 3600, 100);
+
+        // Bidder places bid
+        testing::set_contract_address(bidder);
+        actions_system.register('bidder');
+        let bid_amount = 150;
+        actions_system.place_bid(auction.auction_id, bid_amount);
+
+        // Fast forward time to end auction
+        testing::set_block_timestamp(auction.end_time + 1);
+
+        // End auction
+        testing::set_contract_address(seller);
+        actions_system.end_auction(auction.auction_id);
+
+        // Verify auction is closed
+        let updated_auction = actions_system.get_auction_by_id(auction.auction_id);
+        assert(!updated_auction.active, 'Auction should be inactive');
+
+        // Verify fish ownership transferred
+        let fish_owner = actions_system.get_fish_owner(fish.id);
+        assert(fish_owner == bidder, 'Fish should belong to bidder');
+
+        // Verify fish is unlocked
+        let fish_owner_model: FishOwner = actions_system.get_fish_owner_for_auction(fish.id);
+        assert(!fish_owner_model.locked, 'Fish should be unlocked');
+    }
+
+
+    #[test]
+    fn test_end_auction_no_winner() {
+        let seller = contract_address_const::<'seller'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        // Seller creates fish and starts auction
+        testing::set_contract_address(seller);
+        actions_system.register('seller');
+        let fish = actions_system.new_fish(1, Species::GoldFish);
+        let auction = actions_system.start_auction(fish.id, 3600, 100);
+
+        // Fast forward time to end auction
+        testing::set_block_timestamp(auction.end_time + 1);
+
+        // End auction with no bids
+        actions_system.end_auction(auction.auction_id);
+
+        // Verify auction is closed
+        let updated_auction = actions_system.get_auction_by_id(auction.auction_id);
+        assert(!updated_auction.active, 'Auction should be inactive');
+
+        // Verify fish returned to seller
+        let fish_owner = actions_system.get_fish_owner(fish.id);
+        assert!(fish_owner == seller, "Fish should be returned to seller");
+
+        // Verify fish is unlocked
+        let fish_owner_model: FishOwner = actions_system.get_fish_owner_for_auction(fish.id);
+        assert(!fish_owner_model.locked, 'Fish should be unlocked');
+    }
+
+
+    #[test]
+    fn test_get_active_auctions() {
+        let seller = contract_address_const::<'seller'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        testing::set_contract_address(seller);
+        actions_system.register('seller');
+
+        // Create 3 fish and start auctions
+        let fish1 = actions_system.new_fish(1, Species::GoldFish);
+        let auction1 = actions_system.start_auction(fish1.id, 3600, 100);
+
+        let fish2 = actions_system.new_fish(1, Species::Betta);
+        let auction2 = actions_system.start_auction(fish2.id, 7200, 200);
+
+        let fish3 = actions_system.new_fish(1, Species::AngelFish);
+        let auction3 = actions_system.start_auction(fish3.id, 1800, 50);
+
+        // End one auction
+        testing::set_block_timestamp(auction3.end_time + 1);
+        actions_system.end_auction(auction3.auction_id);
+
+        // Get active auctions
+        let active_auctions = actions_system.get_active_auctions();
+
+        // Should return 2 active auctions (auction1 and auction2)
+        assert(active_auctions.len() == 2, 'Should have 2 active auctions');
+
+        // Verify correct auctions are active
+        let mut found_auction1 = false;
+        let mut found_auction2 = false;
+
+        for auction in active_auctions {
+            if auction.auction_id == auction1.auction_id {
+                found_auction1 = true;
+            }
+            if auction.auction_id == auction2.auction_id {
+                found_auction2 = true;
+            }
+        };
+
+        assert!(found_auction1, "Auction1 not found in active auctions");
+        assert!(found_auction2, "Auction2 not found in active auctions");
+    }
+}
