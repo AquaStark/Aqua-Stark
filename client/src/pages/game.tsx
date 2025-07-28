@@ -6,7 +6,6 @@ import { GameHeader } from "@/components/game/game-header";
 import { GameSidebarButtons } from "@/components/game/game-sidebar-buttons";
 import { AquariumTabs } from "@/components/game/aquarium-tabs";
 import { TipsPopup } from "@/components/game/tips-popup";
-import { FishDisplay } from "@/components/game/fish-display";
 import { INITIAL_GAME_STATE } from "@/data/game-data";
 import { useAquarium } from "@/hooks/use-aquarium";
 import { useFishStats } from "@/hooks/use-fish-stats";
@@ -20,6 +19,9 @@ import { initialAquariums } from "@/data/mock-aquarium";
 import { useDirtSystemFixed as useDirtSystem } from "@/hooks/use-dirt-system-fixed"
 import { DirtOverlay } from "@/components/game/dirt-overlay"
 import { DirtDebugControls } from "@/components/game/dirt-debug-controls"
+import { useFeedingSystem } from "@/systems/feeding-system";
+import { FeedFishButton } from "@/components/game/feed-fish-button";
+import { FeedingAquarium } from "@/components/game/feeding-aquarium";
 
 export default function GamePage() {
   const activeAquariumId = useActiveAquarium((s) => s.activeAquariumId);
@@ -51,6 +53,17 @@ export default function GamePage() {
     minDuration: 10,
     maxDuration: 18,
     interval: 400,
+  });
+
+  // Initialize feeding system - use reasonable default bounds that will be updated by FishDisplay
+  const feedingSystem = useFeedingSystem({
+    aquariumBounds: {
+      width: 1000,
+      height: 600,
+    },
+    maxFoodsPerSecond: 3,
+    foodLifetime: 10,
+    attractionRadius: 50,
   });
 
   const handleTipsToggle = () => {
@@ -115,7 +128,10 @@ export default function GamePage() {
 
   // Use fish from URL if available, otherwise use selected aquarium fish
   const displayFish =
-    fishObjects.length > 0 ? fishObjects : aquarium.fishes;
+    fishObjects.length > 0 ? fishObjects : aquarium.fishes.map(fish => ({
+      ...fish,
+      position: { x: 0, y: 0 }, // Will be repositioned by FishDisplay
+    }));
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-[#005C99]">
@@ -145,7 +161,7 @@ export default function GamePage() {
         transition={{ duration: 1 }}
         className="relative z-20 w-full h-full"
       >
-        <FishDisplay fish={displayFish} />
+        <FeedingAquarium fish={displayFish} feedingSystem={feedingSystem} />
       </motion.div>
 
       <DirtOverlay 
@@ -164,7 +180,29 @@ export default function GamePage() {
 
       {showMenu && <GameMenu show={showMenu} />}
 
-      <GameSidebarButtons />    
+      <GameSidebarButtons />
+      
+      {/* Click to Feed Instructions - Under Header */}
+      {!feedingSystem.isFeeding && (
+        <div className="absolute top-[9rem] left-1/2 transform -translate-x-1/2 z-30">
+          <div className="bg-black/50 text-white text-sm px-4 py-2 rounded-lg border border-gray-500/20 backdrop-blur-sm">
+            <div className="flex items-center gap-2 text-gray-300">
+              <span>🐠</span>
+              <span>Click "Feed Fish" to start feeding your aquarium</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Feed Fish Button - Bottom Center */}
+      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-30">
+        <FeedFishButton
+          isFeeding={feedingSystem.isFeeding}
+          timeRemaining={feedingSystem.getFeedingStatus().timeRemaining}
+          onStartFeeding={() => feedingSystem.startFeeding(30000)} // 30 seconds
+          onStopFeeding={feedingSystem.stopFeeding}
+        />
+      </div>
       
       {/* Debug Controls */}
       {showDirtDebug && (
@@ -211,7 +249,7 @@ export default function GamePage() {
       {/* Tabs */}
       <AquariumTabs
         aquariums={aquariums}
-        selectedAquarium={aquarium}
+        selectedAquarium={selectedAquarium}
         onAquariumSelect={handleAquariumChange}
       />
     </div>

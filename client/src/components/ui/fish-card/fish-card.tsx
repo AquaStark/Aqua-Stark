@@ -20,34 +20,16 @@ interface FishCardProps {
 }
 
 export function FishCard({ fish, isSelected = false, onSelect, variant = "default" }: FishCardProps) {
-  const getColorClasses = (color: string) => {
-    switch (color) {
-      case "orange-red":
-        return "from-orange-500 to-red-500"
-      case "blue":
-        return "from-blue-400 to-cyan-400"
-      case "orange-pink":
-        return "from-orange-400 to-pink-500"
-      case "purple":
-        return "from-purple-600 to-purple-400"
-      case "golden":
-        return "from-yellow-400 to-orange-400"
-      case "deep-blue":
-        return "from-blue-600 to-blue-400"
-      default:
-        return "from-blue-400 to-cyan-400"
-    }
-  }
 
   if (variant === "onboarding") {
     return (
       <motion.div
-        className={`relative bg-gray-800/40 backdrop-blur-sm rounded-xl border-2 cursor-pointer overflow-hidden transition-all duration-300 ${
+        className={`relative bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 cursor-pointer overflow-hidden transition-all duration-300 shadow-md ${
           isSelected 
-            ? "border-green-400 shadow-lg shadow-green-400/30 scale-105" 
-            : "border-gray-600 hover:border-gray-400 hover:scale-102"
+            ? "ring-2 ring-blue-300 scale-[1.02]" 
+            : "hover:scale-[1.015]"
         }`}
-        whileHover={{ scale: 1.02 }}
+        whileHover={{ scale: isSelected ? 1.02 : 1.015 }}
         whileTap={{ scale: 0.98 }}
         onClick={onSelect}
       >
@@ -55,7 +37,7 @@ export function FishCard({ fish, isSelected = false, onSelect, variant = "defaul
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="absolute top-2 right-2 z-20 bg-green-500 rounded-full p-1"
+            className="absolute top-2 right-2 bg-blue-500 rounded-full p-1 z-20"
           >
             <Check className="w-4 h-4 text-white" />
           </motion.div>
@@ -72,8 +54,8 @@ export function FishCard({ fish, isSelected = false, onSelect, variant = "defaul
                 <img
                   src={fish.image}
                   alt={fish.name}
-                  className="w-28 h-28 object-contain"
-                  style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
+                  className="w-24 h-24 object-contain"
+                  style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}
                 />
               </div>
             </FishTank>
@@ -91,10 +73,11 @@ export function FishCard({ fish, isSelected = false, onSelect, variant = "defaul
       </motion.div>
     )
   }
+  
   return (
     <motion.div
-      className="relative bg-gray-800/40 backdrop-blur-sm rounded-xl border-2 border-gray-600 overflow-hidden transition-all duration-300"
-      whileHover={{ scale: 1.02 }}
+      className="relative bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden transition-all duration-300 shadow-md hover:scale-[1.015]"
+      whileHover={{ scale: 1.015 }}
       onClick={onSelect}
     >
       <div className="p-4 text-center">
@@ -108,8 +91,8 @@ export function FishCard({ fish, isSelected = false, onSelect, variant = "defaul
               <img
                 src={fish.image}
                 alt={fish.name}
-                className="w-28 h-28 object-contain"
-                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))' }}
+                className="w-24 h-24 object-contain"
+                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}
               />
             </div>
           </FishTank>

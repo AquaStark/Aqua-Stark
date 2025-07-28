@@ -1,8 +1,8 @@
 use aqua_stark::models::aquarium_model::Aquarium;
 use aqua_stark::models::decoration_model::Decoration;
-use aqua_stark::models::fish_model::{Fish, FishParents, Species};
+use aqua_stark::models::fish_model::{Fish, FishParents, FishOwner, Species};
 use aqua_stark::models::player_model::Player;
-use aqua_stark::models::trade_model::{TradeOffer, MatchCriteria, FishLock};
+use aqua_stark::models::auctions_model::*;
 use starknet::ContractAddress;
 // define the interface
 #[starknet::interface]
@@ -44,6 +44,17 @@ pub trait IAquaStark<T> {
     fn get_fish_offspring(self: @T, fish_id: u256) -> Array<Fish>;
     fn get_fish_family_tree(self: @T, fish_id: u256) -> Array<FishParents>;
     fn get_fish_ancestor(self: @T, fish_id: u256, generation: u32) -> FishParents;
+    fn start_auction(
+        ref self: T, fish_id: u256, duration_secs: u64, reserve_price: u256,
+    ) -> Auction;
+
+    fn place_bid(ref self: T, auction_id: u256, amount: u256);
+
+    fn end_auction(ref self: T, auction_id: u256);
+
+    fn get_active_auctions(self: @T) -> Array<Auction>;
+    fn get_auction_by_id(self: @T, auction_id: u256) -> Auction;
+    fn get_fish_owner_for_auction(self: @T, fish_id: u256) -> FishOwner;
     fn create_trade_offer(
         ref self: T,
         offered_fish_id: u256,

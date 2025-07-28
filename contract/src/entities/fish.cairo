@@ -11,6 +11,7 @@ pub struct Fish {
     pub health: u32, // 0-100 scale
     pub growth: u32, // 0-100 scale
     pub owner: ContractAddress,
+    pub locked: bool, // true if fish is locked for trade/listing
 }
 
 #[generate_trait]

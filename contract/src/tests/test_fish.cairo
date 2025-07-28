@@ -5,6 +5,9 @@ use aqua_stark::tests::test_utils::setup;
 use dojo::model::ModelStorage;
 use dojo::world::WorldStorageTrait;
 use starknet::{ContractAddress, contract_address_const, testing};
+use array::ArrayTrait;
+use array::Array;
+use u256::U256;
 
 fn OWNER() -> ContractAddress {
     contract_address_const::<'owner'>()
@@ -177,4 +180,85 @@ fn test_unauthorized_access() {
     // Try to feed fish as non-owner (should panic)
     testing::set_contract_address(user);
     fish_system.feed(fish_id, 10_u32);
+}
+#[test]
+fn test_list_fish_for_sale_success() {
+    let mut world = setup();
+    let owner = OWNER();
+    let (contract_address, _) = world.dns(@"FishState").unwrap();
+    let fish_system = IFishStateDispatcher { contract_address };
+    testing::set_contract_address(owner);
+    let mut fish_ids = ArrayTrait::new();
+    let fish_id = fish_system.create_fish(owner, 1_u32);
+    fish_ids.append(fish_id);
+    let price = U256 { low: 100, high: 0 };
+    fish_system.list_fish_for_sale(fish_ids.clone(), price);
+    let fish: Fish = world.read_model(fish_id);
+    assert(fish.locked, "Fish should be locked after listing");
+}
+
+#[test]
+#[should_panic]
+fn test_list_fish_for_sale_unowned_should_fail() {
+    let mut world = setup();
+    let owner = OWNER();
+    let user = USER();
+    let (contract_address, _) = world.dns(@"FishState").unwrap();
+    let fish_system = IFishStateDispatcher { contract_address };
+    testing::set_contract_address(owner);
+    let mut fish_ids = ArrayTrait::new();
+    let fish_id = fish_system.create_fish(owner, 1_u32);
+    fish_ids.append(fish_id);
+    let price = U256 { low: 100, high: 0 };
+    testing::set_contract_address(user);
+    fish_system.list_fish_for_sale(fish_ids, price);
+}
+
+#[test]
+#[should_panic]
+fn test_list_fish_for_sale_locked_should_fail() {
+    let mut world = setup();
+    let owner = OWNER();
+    let (contract_address, _) = world.dns(@"FishState").unwrap();
+    let fish_system = IFishStateDispatcher { contract_address };
+    testing::set_contract_address(owner);
+    let mut fish_ids = ArrayTrait::new();
+    let fish_id = fish_system.create_fish(owner, 1_u32);
+    fish_ids.append(fish_id);
+    let price = U256 { low: 100, high: 0 };
+    fish_system.list_fish_for_sale(fish_ids.clone(), price);
+    fish_system.list_fish_for_sale(fish_ids, price); // should panic
+}
+
+#[test]
+fn test_list_fish_for_sale_event_emitted() {
+    let mut world = setup();
+    let owner = OWNER();
+    let (contract_address, _) = world.dns(@"FishState").unwrap();
+    let fish_system = IFishStateDispatcher { contract_address };
+    testing::set_contract_address(owner);
+    let mut fish_ids = ArrayTrait::new();
+    let fish_id = fish_system.create_fish(owner, 1_u32);
+    fish_ids.append(fish_id);
+    let price = U256 { low: 100, high: 0 };
+    fish_system.list_fish_for_sale(fish_ids.clone(), price);
+    // Uncomment and adapt when event testing infra is available
+    // let events = world.get_events();
+    // assert(events.contains(FishListed), "FishListed event should be emitted");
+}
+
+#[test]
+fn test_listed_fish_is_locked() {
+    let mut world = setup();
+    let owner = OWNER();
+    let (contract_address, _) = world.dns(@"FishState").unwrap();
+    let fish_system = IFishStateDispatcher { contract_address };
+    testing::set_contract_address(owner);
+    let mut fish_ids = ArrayTrait::new();
+    let fish_id = fish_system.create_fish(owner, 1_u32);
+    fish_ids.append(fish_id);
+    let price = U256 { low: 100, high: 0 };
+    fish_system.list_fish_for_sale(fish_ids.clone(), price);
+    let fish: Fish = world.read_model(fish_id);
+    assert(fish.locked, "Fish should be locked after listing");
 }
