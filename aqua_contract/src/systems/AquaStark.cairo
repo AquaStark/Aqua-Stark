@@ -7,11 +7,7 @@ pub mod AquaStark {
     use aqua_stark::base::events::{
         PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
         FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
-<<<<<<< HEAD
-        FishPurchased,
-=======
-        AuctionStarted, BidPlaced, AuctionEnded,
->>>>>>> main
+        FishPurchased, AuctionStarted, BidPlaced, AuctionEnded,
     };
     use starknet::{
         ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,

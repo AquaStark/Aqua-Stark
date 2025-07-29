@@ -1,4 +1,25 @@
 use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
+use core::poseidon::poseidon_hash_span;
+use core::array::ArrayTrait;
+use core::span::SpanTrait;
+
+fn generate_listing_id() -> felt252 {
+    let timestamp = get_block_timestamp();
+    let caller = get_caller_address();
+    let mut data: Array<felt252> = array![timestamp.into(), caller.into()];
+    poseidon_hash_span(data.span())
+}
+
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::model]
+pub struct Listing {
+    #[key]
+    pub id: felt252,
+    pub fish_id: u256,
+    pub price: u256,
+    pub is_active: bool,
+}
 
 #[derive(Serde, Copy, Drop, Introspect, PartialEq)]
 #[dojo::model]
@@ -93,6 +114,8 @@ pub trait FishTrait {
     fn get_hunger_level(fish: Fish) -> u8;
     fn get_growth_rate(fish: Fish) -> u8;
     fn get_health(fish: Fish) -> u8;
+    fn list_fish(fish: Fish, price: u256) -> Listing;
+    fn purchase_fish(listing_id: felt252) -> Fish;
 }
 
 impl FishImpl of FishTrait {
@@ -431,6 +454,19 @@ impl FishImpl of FishTrait {
             fish.mutation_rate = 3;
         }
 
+        fish
+    }
+    fn list_fish(fish: Fish, price: u256) -> Listing {
+        let listing_id = generate_listing_id();
+        assert(fish.owner == get_caller_address(), 'Not your Fish');
+        let listing = Listing { id: listing_id, fish_id: fish.id, price: price, is_active: true };
+        listing
+    }
+    fn purchase_fish(fish: Fish, listing: Listing) -> Fish {
+        assert(listing.is_active, 'Listing is not active');
+        assert(fish.owner == get_caller_address(), 'Not your Fish');
+        fish.owner = get_caller_address();
+        fish.aquarium_id = 0;
         fish
     }
 }
