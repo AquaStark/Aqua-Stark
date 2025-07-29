@@ -10,9 +10,8 @@ interface BottomInfoPanelProps {
 }
 
 export function BottomInfoPanel({ selectedFish, score, bestScore }: BottomInfoPanelProps) {
-  // (right direction) version of the fish image
   const fishImage = selectedFish.image.replace(".png", "-flip.png");
-  
+
   return (
     <div className="w-full max-w-xl bg-blue-800/30 border border-blue-600/30 rounded-xl p-4 flex items-center justify-between shadow-sm mt-2">
       <div className="flex items-center gap-4">

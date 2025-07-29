@@ -1,4 +1,3 @@
-
 import { Fragment } from "react";
 
 interface ObstaclesProps {
@@ -24,7 +23,8 @@ export function Obstacles({ columns, scale, COLUMN_WIDTH, GAP_HEIGHT, GAME_HEIGH
               top: 0,
               width: COLUMN_WIDTH * scale,
               height: col.gapY * scale,
-              objectFit: "fill",
+              objectFit: "cover", // Changed from "fill" to maintain aspect ratio
+              objectPosition: "bottom", // Align to bottom for top pipe
               zIndex: 5,
             }}
           />
@@ -38,7 +38,8 @@ export function Obstacles({ columns, scale, COLUMN_WIDTH, GAP_HEIGHT, GAME_HEIGH
               top: (col.gapY + GAP_HEIGHT) * scale,
               width: COLUMN_WIDTH * scale,
               height: (GAME_HEIGHT - col.gapY - GAP_HEIGHT) * scale,
-              objectFit: "fill",
+              objectFit: "cover", // Changed from "fill" to maintain aspect ratio
+              objectPosition: "top", // Align to top for bottom pipe
               zIndex: 5,
             }}
           />

@@ -1,14 +1,12 @@
-
-
 interface FishProps {
+  fishY: number;
+  scale: number;
   selectedFish: {
     id: string;
     name: string;
     image: string;
     experienceMultiplier: number;
   };
-  fishY: number;
-  scale: number;
   started: boolean;
   gameOver: boolean;
   FISH_X: number;
@@ -16,14 +14,13 @@ interface FishProps {
 }
 
 export function Fish({ selectedFish, fishY, scale, started, gameOver, FISH_X, FISH_SIZE }: FishProps) {
-  // (right direction) version of the fish image
   const fishImage = selectedFish.image.replace(".png", "-flip.png");
-  
+
   return (
     <img
       src={fishImage}
       alt={selectedFish.name}
-      className="absolute z-10"
+      className="absolute"
       style={{
         left: FISH_X * scale,
         top: fishY * scale,
