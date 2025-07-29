@@ -463,10 +463,10 @@ impl FishImpl of FishTrait {
         listing
     }
     fn purchase_fish(fish: Fish, listing: Listing) -> Fish {
+        let caller = get_caller_address();
         assert(listing.is_active, 'Listing is not active');
-        assert(fish.owner == get_caller_address(), 'Not your Fish');
-        fish.owner = get_caller_address();
-        fish.aquarium_id = 0;
+        assert(fish.owner != caller, 'You already own this fish');
+        fish.owner = caller;
         fish
     }
 }

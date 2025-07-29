@@ -647,10 +647,24 @@ pub mod AquaStark {
             fish_parent
         }
 
+        fn list_fish(self: @ContractState, fish_id: u256, price: u256) -> Listing {
+            let mut world = self.world_default();
+            let fish: Fish = world.read_model(fish_id);
+            let listing: Listing = fish.list_fish(price);
+            world.write_model(@listing);
+            listing
+        }
+
+        fn get_listing(self: @ContractState, listing_id: felt252) -> Listing {
+            let mut world = self.world_default();
+            let listing: Listing = world.read_model(listing_id);
+            listing
+        }
+
         fn purchase_fish(self: @ContractState, listing_id: felt252) {
             let mut world = self.world_default();
             let caller = get_caller_address();
-            let mut listing: Listing = world.read_model(listing_id);
+            let mut listing: Listing = self.get_listing(listing_id);
             let mut player: Player = self.get_player(caller);
             let mut fish: Fish = world.read_model(listing.fish_id);
             assert(fish.owner != caller, 'You already own this fish');
@@ -659,7 +673,8 @@ pub mod AquaStark {
             // Store the original seller before transferring ownership
             let original_seller = fish.owner;
 
-            fish.owner = caller; // transfer ownership to buyer
+            // Purchase the fish
+            let fish = fish.purchase_fish(listing);
             player.fish_count += 1;
             player.player_fishes.append(fish.id);
             listing.is_active = false;
