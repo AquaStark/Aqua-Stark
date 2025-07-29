@@ -21,9 +21,8 @@ pub mod AquaStark {
     };
     use aqua_stark::models::decoration_model::{Decoration, DecorationCounter, DecorationTrait};
     use aqua_stark::models::fish_model::{
-        Fish, FishCounter, Species, FishTrait, FishOwner, FishParents,
+        Fish, FishCounter, Species, FishTrait, FishOwner, FishParents, Listing,
     };
-    use aqua_stark::models::listing_model::Listing;
 
     use aqua_stark::models::transaction_model::{
         TransactionLog, EventTypeDetails, EventCounter, TransactionCounter, event_id_target,
@@ -650,7 +649,7 @@ pub mod AquaStark {
         fn list_fish(self: @ContractState, fish_id: u256, price: u256) -> Listing {
             let mut world = self.world_default();
             let fish: Fish = world.read_model(fish_id);
-            let listing: Listing = fish.list_fish(price);
+            let listing: Listing = FishTrait::list(fish, price);
             world.write_model(@listing);
             listing
         }
@@ -674,7 +673,7 @@ pub mod AquaStark {
             let original_seller = fish.owner;
 
             // Purchase the fish
-            let fish = fish.purchase_fish(listing);
+            let fish = FishTrait::purchase(fish, listing);
             player.fish_count += 1;
             player.player_fishes.append(fish.id);
             listing.is_active = false;

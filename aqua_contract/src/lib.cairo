@@ -25,7 +25,6 @@ pub mod models {
     pub mod game_model;
     pub mod player_model;
     pub mod transaction_model;
-    pub mod listing_model;
     pub mod auctions_model;
 }
 pub mod tests {
