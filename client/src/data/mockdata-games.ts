@@ -3,21 +3,25 @@ export const mockFish = [
       id: "fish001",
       name: "Aqua Puffer",
       image: "/fish/fish1.png",
+      experienceMultiplier: 1.0,
     },
     {
       id: "fish002",
       name: "Crimson Koi",
       image: "/fish/fish2.png",
+      experienceMultiplier: 1.2,
     },
     {
       id: "fish003",
       name: "Neon Tetra",
       image: "/fish/fish3.png",
+      experienceMultiplier: 1.5,
     },
     {
       id: "fish004",
       name: "Golden Scale",
       image: "/fish/fish4.png",
+      experienceMultiplier: 2.0,
     },
   ]
   
@@ -25,7 +29,7 @@ export const mockFish = [
     {
       id: "game001",
       name: "Floppy Fish",
-      image: "/habitat/freshwater.png",
+      image: "/mini-games/element-up.webp",
       link: "/game/floppy-fish",
     },
     {

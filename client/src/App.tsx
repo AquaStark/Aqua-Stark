@@ -26,6 +26,7 @@ import OnboardingPage from "./pages/onboarding.tsx";
 import StartPage from "./pages/start.tsx";
 import StoragePage from "./pages/storage-page.tsx";
 import TradingMarketPage from "./pages/trading-market.tsx";
+import FloppyFishGamePage from "./pages/floppy-fish.tsx";
 
 // Extra Game Test
 import { Game } from "./Game.tsx";
@@ -60,6 +61,7 @@ function App() {
         <Route path="/encyclopedia" element={<EncyclopediaPage />} />
         <Route path="/events-calendar" element={<EventsCalendarPage />} />
         <Route path="/game" element={<GamePage />} />
+        <Route path="/game/floppy-fish" element={<FloppyFishGamePage />} />
         <Route path="/help-center" element={<HelpCenterPage />} />
         <Route path="/mini-games" element={<MiniGames />} />
         <Route path="/my-profile" element={<MyProfilePage />} />
