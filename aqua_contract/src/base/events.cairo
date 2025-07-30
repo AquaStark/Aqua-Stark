@@ -111,6 +111,16 @@ pub struct EventTypeRegistered {
     pub timestamp: u64,
 }
 
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct FishPurchased {
+    #[key]
+    pub buyer: ContractAddress,
+    pub seller: ContractAddress,
+    pub price: u256,
+    pub fish_id: u256,
+    pub timestamp: u64,
+}
 
 #[derive(Copy, Drop, Serde)]
 #[dojo::event]

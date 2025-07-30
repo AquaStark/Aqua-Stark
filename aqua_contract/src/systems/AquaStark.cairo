@@ -7,7 +7,7 @@ pub mod AquaStark {
     use aqua_stark::base::events::{
         PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
         FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
-        AuctionStarted, BidPlaced, AuctionEnded,
+        FishPurchased, AuctionStarted, BidPlaced, AuctionEnded,
     };
     use starknet::{
         ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
@@ -21,7 +21,7 @@ pub mod AquaStark {
     };
     use aqua_stark::models::decoration_model::{Decoration, DecorationCounter, DecorationTrait};
     use aqua_stark::models::fish_model::{
-        Fish, FishCounter, Species, FishTrait, FishOwner, FishParents,
+        Fish, FishCounter, Species, FishTrait, FishOwner, FishParents, Listing,
     };
 
     use aqua_stark::models::transaction_model::{
@@ -644,6 +644,53 @@ pub mod AquaStark {
             assert(generation < fish.family_tree.len(), 'Generation out of bounds');
             let fish_parent: FishParents = *fish.family_tree[generation];
             fish_parent
+        }
+
+        fn list_fish(self: @ContractState, fish_id: u256, price: u256) -> Listing {
+            let mut world = self.world_default();
+            let fish: Fish = world.read_model(fish_id);
+            let listing: Listing = FishTrait::list(fish, price);
+            world.write_model(@listing);
+            listing
+        }
+
+        fn get_listing(self: @ContractState, listing_id: felt252) -> Listing {
+            let mut world = self.world_default();
+            let listing: Listing = world.read_model(listing_id);
+            listing
+        }
+
+        fn purchase_fish(self: @ContractState, listing_id: felt252) {
+            let mut world = self.world_default();
+            let caller = get_caller_address();
+            let mut listing: Listing = self.get_listing(listing_id);
+            let mut player: Player = self.get_player(caller);
+            let mut fish: Fish = world.read_model(listing.fish_id);
+            assert(fish.owner != caller, 'You already own this fish');
+            assert(listing.is_active, 'Listing is not active');
+
+            // Store the original seller before transferring ownership
+            let original_seller = fish.owner;
+
+            // Purchase the fish
+            let fish = FishTrait::purchase(fish, listing);
+            player.fish_count += 1;
+            player.player_fishes.append(fish.id);
+            listing.is_active = false;
+
+            world.write_model(@fish);
+            world.write_model(@player);
+            world.write_model(@listing);
+            world
+                .emit_event(
+                    @FishPurchased {
+                        buyer: caller,
+                        seller: original_seller,
+                        price: listing.price,
+                        fish_id: fish.id,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
         }
     }
 

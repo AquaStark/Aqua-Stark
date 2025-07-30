@@ -40,3 +40,4 @@ default = "aqua_stark"
 "aqua_stark-UsernameToAddress" = ["aqua_stark-AquaStark"]
 "aqua_stark-AddressToUsername" = ["aqua_stark-AquaStark"]
 "aqua_stark-Player" = ["aqua_stark-AquaStark"]
+"aqua_stark-Listing" = ["aqua_stark-AquaStark"]

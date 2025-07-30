@@ -41,3 +41,4 @@ private_key = "0x05d67e95f8d5913249452a410db389110c390a36eb0e2ecb092c670ba945b8b
 "aqua_stark-UsernameToAddress" = ["aqua_stark-AquaStark"]
 "aqua_stark-AddressToUsername" = ["aqua_stark-AquaStark"]
 "aqua_stark-Player" = ["aqua_stark-AquaStark"]
+"aqua_stark-Listing" = ["aqua_stark-AquaStark"]
