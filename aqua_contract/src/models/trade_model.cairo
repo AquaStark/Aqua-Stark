@@ -1,6 +1,6 @@
 use starknet::{ContractAddress, get_block_timestamp};
 
-#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
+#[derive(Serde, Copy, Drop, PartialEq, Introspect)]
 #[dojo::model]
 pub struct TradeOfferCounter {
     #[key]
@@ -8,7 +8,7 @@ pub struct TradeOfferCounter {
     pub current_val: u256,
 }
 
-#[derive(Serde, Copy, Introspect, Drop, PartialEq)]
+#[derive(Serde, Copy, Drop, PartialEq, Introspect)]
 pub enum TradeOfferStatus {
     #[default]
     Active,
@@ -17,7 +17,7 @@ pub enum TradeOfferStatus {
     Expired,
 }
 
-#[derive(Serde, Copy, Introspect, Drop, PartialEq)]
+#[derive(Serde, Copy, Drop, PartialEq, Introspect)]
 pub enum MatchCriteria {
     #[default]
     ExactId,
@@ -26,7 +26,7 @@ pub enum MatchCriteria {
     Traits,
 }
 
-#[derive(Drop, Introspect, Serde)]
+#[derive(Drop, Serde, Introspect)]
 #[dojo::model]
 pub struct TradeOffer {
     #[key]
@@ -41,7 +41,7 @@ pub struct TradeOffer {
     pub status: TradeOfferStatus,
     pub created_at: u64,
     pub expires_at: u64,
-    pub is_locked: bool // Prevents double acceptance
+    pub is_locked: bool, // Prevents double acceptance
 }
 
 #[derive(Serde, Copy, Drop, Introspect)]
@@ -54,7 +54,7 @@ pub struct FishLock {
     pub locked_at: u64,
 }
 
-#[derive(Drop, Introspect, Serde)]
+#[derive(Drop, Serde, Introspect)]
 #[dojo::model]
 pub struct ActiveTradeOffers {
     #[key]
@@ -71,7 +71,7 @@ pub trait TradeOfferTrait {
         requested_fish_id: Option<u256>,
         requested_species: Option<u8>,
         requested_generation: Option<u8>,
-        requested_traits: Array<felt252>,
+        requested_traits: Span<felt252>,
         duration_hours: u64,
     ) -> TradeOffer;
 
@@ -87,7 +87,7 @@ pub trait TradeOfferTrait {
         fish_id: u256,
         fish_species: u8,
         fish_generation: u8,
-        fish_traits: Array<felt252>,
+        fish_traits: Span<felt252>,
     ) -> bool;
 }
 
@@ -106,10 +106,20 @@ impl TradeOfferImpl of TradeOfferTrait {
         requested_fish_id: Option<u256>,
         requested_species: Option<u8>,
         requested_generation: Option<u8>,
-        requested_traits: Array<felt252>,
+        requested_traits: Span<felt252>,
         duration_hours: u64,
     ) -> TradeOffer {
         let current_time = get_block_timestamp();
+        let mut traits_array = ArrayTrait::new();
+        let mut i = 0;
+        loop {
+            if i >= requested_traits.len() {
+                break;
+            }
+            traits_array.append(*requested_traits.at(i));
+            i += 1;
+        };
+        
         TradeOffer {
             id,
             creator,
@@ -118,7 +128,7 @@ impl TradeOfferImpl of TradeOfferTrait {
             requested_fish_id,
             requested_species,
             requested_generation,
-            requested_traits,
+            requested_traits: traits_array,
             status: TradeOfferStatus::Active,
             created_at: current_time,
             expires_at: current_time + (duration_hours * 3600),
@@ -160,7 +170,7 @@ impl TradeOfferImpl of TradeOfferTrait {
         fish_id: u256,
         fish_species: u8,
         fish_generation: u8,
-        fish_traits: Array<felt252>,
+        fish_traits: Span<felt252>,
     ) -> bool {
         match *offer.requested_fish_criteria {
             MatchCriteria::ExactId => {
@@ -186,7 +196,7 @@ impl TradeOfferImpl of TradeOfferTrait {
             MatchCriteria::Traits => {
                 // Check if all requested traits are present in the fish
                 let mut i = 0;
-                let required_traits = offer.requested_traits;
+                let required_traits = offer.requested_traits.span();
                 loop {
                     if i >= required_traits.len() {
                         break true;
@@ -254,7 +264,7 @@ mod tests {
             Option::Some(200),
             Option::None,
             Option::None,
-            array![],
+            array![].span(),
             24,
         );
         assert(offer.id == 1, 'Offer ID should match');
@@ -271,15 +281,15 @@ mod tests {
             Option::Some(200),
             Option::None,
             Option::None,
-            array![],
+            array![].span(),
             24,
         );
 
         assert(
-            TradeOfferImpl::matches_criteria(@offer, 200, 1, 1, array![]), 'Should match exact ID',
+            TradeOfferImpl::matches_criteria(@offer, 200, 1, 1, array![].span()), 'Should match exact ID',
         );
         assert(
-            !TradeOfferImpl::matches_criteria(@offer, 201, 1, 1, array![]),
+            !TradeOfferImpl::matches_criteria(@offer, 201, 1, 1, array![].span()),
             'Should not match different ID',
         );
     }

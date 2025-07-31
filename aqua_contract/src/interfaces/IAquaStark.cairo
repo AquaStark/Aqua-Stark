@@ -3,6 +3,7 @@ use aqua_stark::models::decoration_model::Decoration;
 use aqua_stark::models::fish_model::{Fish, FishParents, FishOwner, Species};
 use aqua_stark::models::player_model::Player;
 use aqua_stark::models::auctions_model::*;
+use aqua_stark::models::trade_model::{TradeOffer, FishLock, MatchCriteria};
 use starknet::ContractAddress;
 // define the interface
 #[starknet::interface]
@@ -62,7 +63,7 @@ pub trait IAquaStark<T> {
         requested_fish_id: Option<u256>,
         requested_species: Option<u8>,
         requested_generation: Option<u8>,
-        requested_traits: Array<felt252>,
+        requested_traits: Span<felt252>,
         duration_hours: u64,
     ) -> u256;
     fn accept_trade_offer(ref self: T, offer_id: u256, offered_fish_id: u256) -> bool;

@@ -24,13 +24,13 @@ mod tests {
 
         // Should match exact ID
         assert(
-            TradeOfferTrait::matches_criteria(@offer, 42, 1, 5, array![100, 200]),
+            TradeOfferTrait::matches_criteria(@offer, 42, 1, 5, array![100, 200].span()),
             'Should match exact ID',
         );
 
         // Should not match different ID
         assert(
-            !TradeOfferTrait::matches_criteria(@offer, 43, 1, 5, array![100, 200]),
+            !TradeOfferTrait::matches_criteria(@offer, 43, 1, 5, array![100, 200].span()),
             'Should not match different ID',
         );
     }
@@ -54,13 +54,13 @@ mod tests {
 
         // Should match correct species
         assert(
-            TradeOfferTrait::matches_criteria(@offer, 100, 0, 5, array![100, 200]),
+            TradeOfferTrait::matches_criteria(@offer, 100, 0, 5, array![100, 200].span()),
             'Should match AngelFish species',
         );
 
         // Should not match different species
         assert(
-            !TradeOfferTrait::matches_criteria(@offer, 100, 1, 5, array![100, 200]),
+            !TradeOfferTrait::matches_criteria(@offer, 100, 1, 5, array![100, 200].span()),
             'Should not match GoldFish',
         );
     }
@@ -84,13 +84,13 @@ mod tests {
 
         // Should match correct species and generation
         assert(
-            TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![100, 200]),
+            TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![100, 200].span()),
             'Should match species and gen',
         );
 
         // Should not match wrong generation
         assert(
-            !TradeOfferTrait::matches_criteria(@offer, 100, 1, 4, array![100, 200]),
+            !TradeOfferTrait::matches_criteria(@offer, 100, 1, 4, array![100, 200].span()),
             'Should not match wrong gen',
         );
     }
@@ -114,13 +114,13 @@ mod tests {
 
         // Should match when fish has all required traits
         assert(
-            TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![100, 200, 300]),
+            TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![100, 200, 300].span()),
             'Should match all traits',
         );
 
         // Should not match when fish lacks required traits
         assert(
-            !TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![100, 300]),
+            !TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![100, 300].span()),
             'Should not match missing traits',
         );
     }
@@ -154,7 +154,7 @@ mod tests {
             Option::None,
             Option::Some(0),
             Option::None,
-            array![],
+            array![].span(),
             24 // 24 hours
         );
 
@@ -185,7 +185,7 @@ mod tests {
             Option::None,
             Option::Some(0),
             Option::None,
-            array![],
+            array![].span(),
             24,
         );
 
@@ -214,13 +214,13 @@ mod tests {
 
         // Should match when no traits required
         assert(
-            TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![100, 200]),
+            TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![100, 200].span()),
             'Should match no traits required',
         );
 
         // Should also match fish with no traits
         assert(
-            TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![]), 'Should match any fish',
+            TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![].span()), 'Should match any fish',
         );
     }
 }

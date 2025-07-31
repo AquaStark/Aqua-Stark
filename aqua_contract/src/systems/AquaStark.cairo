@@ -659,7 +659,7 @@ pub mod AquaStark {
             requested_fish_id: Option<u256>,
             requested_species: Option<u8>,
             requested_generation: Option<u8>,
-            requested_traits: Array<felt252>,
+            requested_traits: Span<felt252>,
             duration_hours: u64,
         ) -> u256 {
             let mut world = self.world_default();
@@ -752,7 +752,7 @@ pub mod AquaStark {
                 Species::Hybrid => 5_u8,
             };
 
-            let fish_traits = array![acceptor_fish.color];
+            let fish_traits = array![acceptor_fish.color].span();
 
             assert(
                 TradeOfferTrait::matches_criteria(
