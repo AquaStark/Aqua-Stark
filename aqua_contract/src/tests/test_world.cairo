@@ -7,7 +7,9 @@ mod tests {
     };
     use aqua_stark::models::aquarium_model::{m_Aquarium, m_AquariumCounter, m_AquariumOwner};
     use aqua_stark::models::decoration_model::{m_Decoration, m_DecorationCounter};
-    use aqua_stark::models::fish_model::{FishOwner, Species, m_Fish, m_FishCounter, m_FishOwner};
+    use aqua_stark::models::fish_model::{
+        FishOwner, Species, Listing, m_Listing, m_Fish, m_FishCounter, m_FishOwner,
+    };
     use aqua_stark::models::player_model::{
         m_AddressToUsername, m_Player, m_PlayerCounter, m_UsernameToAddress,
     };
@@ -50,6 +52,7 @@ mod tests {
                 TestResource::Model(m_EventTypeDetails::TEST_CLASS_HASH),
                 TestResource::Model(m_EventCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_TransactionCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_Listing::TEST_CLASS_HASH),
                 TestResource::Event(events::e_PlayerEventLogged::TEST_CLASS_HASH),
                 TestResource::Event(events::e_EventTypeRegistered::TEST_CLASS_HASH),
                 TestResource::Event(events::e_PlayerCreated::TEST_CLASS_HASH),
@@ -60,6 +63,7 @@ mod tests {
                 TestResource::Event(events::e_DecorationMoved::TEST_CLASS_HASH),
                 TestResource::Event(events::e_FishAddedToAquarium::TEST_CLASS_HASH),
                 TestResource::Event(events::e_DecorationAddedToAquarium::TEST_CLASS_HASH),
+                TestResource::Event(events::e_FishPurchased::TEST_CLASS_HASH),
                 TestResource::Event(events::e_AuctionStarted::TEST_CLASS_HASH),
                 TestResource::Event(events::e_BidPlaced::TEST_CLASS_HASH),
                 TestResource::Event(events::e_AuctionEnded::TEST_CLASS_HASH),
@@ -773,6 +777,123 @@ mod tests {
         new_event.timestamp.serialize(ref payload);
 
         payload
+    }
+
+    #[test]
+    fn test_list_fish() {
+        let owner = contract_address_const::<'owner'>();
+        let player = contract_address_const::<'player'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, owner);
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+        testing::set_contract_address(owner);
+        actions_system.register('owner');
+
+        testing::set_contract_address(player);
+        actions_system.register('player');
+
+        let aquarium = actions_system.new_aquarium(player, 10, 10);
+        let fish = actions_system.new_fish(aquarium.id, Species::GoldFish);
+        let listing = actions_system.list_fish(fish.id, 100);
+        assert(listing.is_active, 'Listing is not active');
+        assert(listing.fish_id == fish.id, 'Fish ID mismatch');
+        assert(listing.price == 100, 'Price mismatch');
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_list_fish_not_owner() {
+        let owner = contract_address_const::<'owner'>();
+        let player = contract_address_const::<'player'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, owner);
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+        testing::set_contract_address(owner);
+        actions_system.register('owner');
+
+        testing::set_contract_address(player);
+        actions_system.register('player');
+
+        let aquarium = actions_system.new_aquarium(player, 10, 10);
+        let fish = actions_system.new_fish(aquarium.id, Species::GoldFish);
+
+        testing::set_contract_address(owner);
+        actions_system
+            .list_fish(fish.id, 100); // should fail because owner is not the owner of the fish
+    }
+
+    #[test]
+    fn test_purchase_fish() {
+        let owner = contract_address_const::<'owner'>();
+        let player = contract_address_const::<'player'>();
+        let player2 = contract_address_const::<'player2'>();
+
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, owner);
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+        testing::set_contract_address(owner);
+        actions_system.register('owner');
+
+        testing::set_contract_address(player);
+        actions_system.register('player');
+
+        testing::set_contract_address(player2);
+        actions_system.register('player2');
+
+        // Create a new aquarium for the player
+        testing::set_contract_address(player);
+        let aquarium = actions_system.new_aquarium(player, 10, 10);
+
+        let fish = actions_system.new_fish(aquarium.id, Species::GoldFish);
+        let listing = actions_system.list_fish(fish.id, 100);
+
+        // Change caller to player2
+        testing::set_contract_address(player2);
+        // Purchase the fish
+        actions_system.purchase_fish(listing.id);
+
+        let fish = actions_system.get_fish(fish.id);
+        assert(fish.owner == player2, 'Fish owner mismatch');
+        let listing: Listing = actions_system.get_listing(listing.id);
+        assert(!listing.is_active, 'Listing is not active');
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_purchase_fish_fail_already_own_fish() {
+        let owner = contract_address_const::<'owner'>();
+        let player = contract_address_const::<'player'>();
+
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, owner);
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        testing::set_contract_address(player);
+        actions_system.register('player');
+
+        let aquarium = actions_system.new_aquarium(player, 10, 10);
+        let fish = actions_system.new_fish(aquarium.id, Species::GoldFish);
+        let listing = actions_system.list_fish(fish.id, 100);
+
+        testing::set_contract_address(player);
+        actions_system
+            .purchase_fish(listing.id); // should fail because player already owns the fish
     }
 
     #[test]

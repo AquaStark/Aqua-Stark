@@ -16,7 +16,7 @@ export default function GamesPage() {
   } = useGames()
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-blue-600 to-blue-950 overflow-hidden">
+    <div className="relative min-h-screen bg-gradient-to-b from-blue-600 to-blue-950">
 
       <PageHeader
         title="Aqua Stark Arcade"
@@ -25,7 +25,7 @@ export default function GamesPage() {
         rightContent={null}
       />
 
-      <main className="relative z-10 max-w-7xl mx-auto px-4 py-8 flex flex-col gap-8">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 py-4 sm:py-6 lg:py-8 flex flex-col gap-4 sm:gap-6 lg:gap-8">
         <SelectedFishPanel
           selectedFish={selectedFish}
           onChangeFish={() => {

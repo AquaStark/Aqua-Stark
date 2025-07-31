@@ -5,7 +5,7 @@ import { ModelsMapping, schema } from "../typescript/models.gen.ts";
 import { dojoConfig } from "../../dojoConfig.ts";
 import { Account, constants } from "starknet";
 
-export function DojeService = {
+export function DojeService() {
     const sdk = await init<ModelsMapping>()
     const { client, account, provider } = useDojo();
     const playerKey = account.account.address;
