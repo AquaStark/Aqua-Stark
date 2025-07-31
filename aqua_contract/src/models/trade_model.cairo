@@ -41,7 +41,7 @@ pub struct TradeOffer {
     pub status: TradeOfferStatus,
     pub created_at: u64,
     pub expires_at: u64,
-    pub is_locked: bool // Prevents double acceptance
+    pub is_locked: bool, // Prevents double acceptance
 }
 
 #[derive(Serde, Copy, Drop, Introspect)]
