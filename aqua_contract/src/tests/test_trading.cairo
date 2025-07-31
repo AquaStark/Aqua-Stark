@@ -220,7 +220,8 @@ mod tests {
 
         // Should also match fish with no traits
         assert(
-            TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![].span()), 'Should match any fish',
+            TradeOfferTrait::matches_criteria(@offer, 100, 1, 3, array![].span()),
+            'Should match any fish',
         );
     }
 }

@@ -41,7 +41,7 @@ pub struct TradeOffer {
     pub status: TradeOfferStatus,
     pub created_at: u64,
     pub expires_at: u64,
-    pub is_locked: bool, // Prevents double acceptance
+    pub is_locked: bool // Prevents double acceptance
 }
 
 #[derive(Serde, Copy, Drop, Introspect)]
@@ -119,7 +119,7 @@ impl TradeOfferImpl of TradeOfferTrait {
             traits_array.append(*requested_traits.at(i));
             i += 1;
         };
-        
+
         TradeOffer {
             id,
             creator,
@@ -286,7 +286,8 @@ mod tests {
         );
 
         assert(
-            TradeOfferImpl::matches_criteria(@offer, 200, 1, 1, array![].span()), 'Should match exact ID',
+            TradeOfferImpl::matches_criteria(@offer, 200, 1, 1, array![].span()),
+            'Should match exact ID',
         );
         assert(
             !TradeOfferImpl::matches_criteria(@offer, 201, 1, 1, array![].span()),
