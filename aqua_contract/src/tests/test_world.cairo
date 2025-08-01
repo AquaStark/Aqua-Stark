@@ -2,6 +2,9 @@
 mod tests {
     use dojo::world::IWorldDispatcherTrait;
     use aqua_stark::interfaces::IAquaStark::{IAquaStarkDispatcher, IAquaStarkDispatcherTrait};
+    use aqua_stark::interfaces::IShopCatalog::{
+        IShopCatalog, IShopCatalogDispatcher, IShopCatalogDispatcherTrait,
+    };
     use aqua_stark::interfaces::ITransactionHistory::{
         ITransactionHistoryDispatcher, ITransactionHistoryDispatcherTrait,
     };
@@ -13,6 +16,7 @@ mod tests {
     use aqua_stark::models::player_model::{
         m_AddressToUsername, m_Player, m_PlayerCounter, m_UsernameToAddress,
     };
+    use aqua_stark::models::shop_model::{ShopItemModel, ShopCatalogModel, m_ShopItemModel, m_ShopCatalogModel};
     use aqua_stark::models::transaction_model::{
         m_TransactionLog, m_EventTypeDetails, m_EventCounter, m_TransactionCounter,
     };
@@ -20,6 +24,7 @@ mod tests {
 
 
     use aqua_stark::systems::AquaStark::AquaStark;
+    use aqua_stark::systems::ShopCatalog::ShopCatalog;
     use aqua_stark::base::events;
     // use dojo::model::{ModelStorageTest};
     use dojo::world::WorldStorageTrait;
@@ -38,6 +43,8 @@ mod tests {
                 TestResource::Model(m_AuctionCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_Player::TEST_CLASS_HASH),
                 TestResource::Model(m_PlayerCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_ShopItemModel::TEST_CLASS_HASH),
+                TestResource::Model(m_ShopCatalogModel::TEST_CLASS_HASH),
                 TestResource::Model(m_UsernameToAddress::TEST_CLASS_HASH),
                 TestResource::Model(m_AddressToUsername::TEST_CLASS_HASH),
                 TestResource::Model(m_Aquarium::TEST_CLASS_HASH),
@@ -68,6 +75,7 @@ mod tests {
                 TestResource::Event(events::e_BidPlaced::TEST_CLASS_HASH),
                 TestResource::Event(events::e_AuctionEnded::TEST_CLASS_HASH),
                 TestResource::Contract(AquaStark::TEST_CLASS_HASH),
+                TestResource::Contract(ShopCatalog::TEST_CLASS_HASH),
             ]
                 .span(),
         };
@@ -759,6 +767,24 @@ mod tests {
 
         assert(event_txn.len() == 0, 'count mismatch');
     }
+
+    #[test]
+    fn test_add_new_item_to_shop_catalog() {
+        let owner = contract_address_const::<'owner'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, owner);
+        let (contract_address, _) = world.dns(@"ShopCatalog").unwrap();
+        let shop_catalog_system = IShopCatalogDispatcher { contract_address };
+        testing::set_contract_address(owner);
+        shop_catalog_system.add_new_item(100, 100, 'test');
+
+        let shop_item: ShopItemModel = world.read_model(1);
+        assert(shop_item.price == 100, 'price mismatch');
+        assert(shop_item.stock == 100, 'stock mismatch');
+        assert(shop_item.description == 'test', 'description mismatch');
+    }gi
 
     fn get_dummy_payload() -> Array<felt252> {
         let new_event = DummyEvent {
