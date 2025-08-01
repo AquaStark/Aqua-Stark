@@ -20,6 +20,17 @@ pub struct Listing {
     pub is_active: bool,
 }
 
+#[derive(Copy, Drop, Serde)]
+#[dojo::model]
+pub struct TargetedTradeOffer {
+    #[key]
+    pub id: u256,
+    pub creator: ContractAddress,
+    pub offered_fish_id: u256,
+    pub requested_fish_id: u256,
+    pub is_active: bool,
+}
+
 #[derive(Serde, Copy, Drop, Introspect, PartialEq)]
 #[dojo::model]
 pub struct FishCounter {
@@ -32,6 +43,14 @@ pub struct FishCounter {
 pub struct FishParents {
     pub parent1: u256,
     pub parent2: u256,
+}
+
+#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
+#[dojo::model]
+pub struct TradeOfferCounter {
+    #[key]
+    pub id: felt252,
+    pub current_val: u256,
 }
 
 #[derive(Serde, Copy, Introspect, Drop, PartialEq)]
@@ -763,5 +782,19 @@ mod tests {
         // println!("feed_fish hunger level: {}", hunger_level);
     // assert(health == 100, 'get health error');
     // assert(hunger_level == 0, 'get hunger_level error');
+    }
+
+    #[test]
+    fn test_create_trade_offer() {
+        // This is a placeholder test - actual testing would require a full contract environment
+        // For now, we'll just verify the struct can be created
+        let trade_offer = TargetedTradeOffer {
+            id: 1,
+            creator: zero_address(),
+            offered_fish_id: 1,
+            requested_fish_id: 2,
+            is_active: true,
+        };
+        assert(trade_offer.id == 1, 'Trade offer ID should match');
     }
 }

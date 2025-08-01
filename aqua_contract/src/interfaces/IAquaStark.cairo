@@ -58,4 +58,8 @@ pub trait IAquaStark<T> {
     fn get_active_auctions(self: @T) -> Array<Auction>;
     fn get_auction_by_id(self: @T, auction_id: u256) -> Auction;
     fn get_fish_owner_for_auction(self: @T, fish_id: u256) -> FishOwner;
+    
+    // Trade offer functions
+    fn create_trade_offer(ref self: T, offered_fish_id: u256, requested_fish_id: u256) -> u256;
+    fn get_trade_offer(self: @T, offer_id: u256) -> TargetedTradeOffer;
 }

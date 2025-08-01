@@ -21,7 +21,7 @@ pub mod AquaStark {
     };
     use aqua_stark::models::decoration_model::{Decoration, DecorationCounter, DecorationTrait};
     use aqua_stark::models::fish_model::{
-        Fish, FishCounter, Species, FishTrait, FishOwner, FishParents, Listing,
+        Fish, FishCounter, Species, FishTrait, FishOwner, FishParents, Listing, TargetedTradeOffer,
     };
 
     use aqua_stark::models::transaction_model::{
@@ -692,6 +692,59 @@ pub mod AquaStark {
                     },
                 );
         }
+
+        fn create_trade_offer(ref self: ContractState, offered_fish_id: u256, requested_fish_id: u256) -> u256 {
+            let mut world = self.world_default();
+            let caller = get_caller_address();
+            let current_time = get_block_timestamp();
+
+            // Validate that caller owns the offered fish
+            let offered_fish_owner: FishOwner = world.read_model(offered_fish_id);
+            assert!(offered_fish_owner.owner == caller, "You don't own the offered fish");
+            assert!(!offered_fish_owner.locked, "Offered fish is already locked");
+
+            // Validate that caller doesn't own the requested fish
+            let requested_fish_owner: FishOwner = world.read_model(requested_fish_id);
+            assert!(requested_fish_owner.owner != caller, "You already own the requested fish");
+
+            // Lock the offered fish
+            world.write_model(@FishOwner { id: offered_fish_id, owner: caller, locked: true });
+
+            // Get next trade offer ID
+            let offer_id = self.create_trade_offer_id();
+
+            // Create new trade offer
+            let trade_offer = TargetedTradeOffer {
+                id: offer_id,
+                creator: caller,
+                offered_fish_id,
+                requested_fish_id,
+                is_active: true,
+            };
+
+            // Store the offer
+            world.write_model(@trade_offer);
+
+            // Emit event
+            world
+                .emit_event(
+                    @TradeOfferCreated {
+                        offer_id,
+                        creator: caller,
+                        offered_fish_id,
+                        requested_fish_id,
+                        timestamp: current_time,
+                    },
+                );
+
+            offer_id
+        }
+
+        fn get_trade_offer(self: @ContractState, offer_id: u256) -> TargetedTradeOffer {
+            let world = self.world_default();
+            let trade_offer: TargetedTradeOffer = world.read_model(offer_id);
+            trade_offer
+        }
     }
 
 
@@ -942,6 +995,17 @@ pub mod AquaStark {
             let new_id = txn_counter.current_val + 1;
             txn_counter.current_val = new_id;
             world.write_model(@txn_counter);
+            new_id
+        }
+
+        fn create_trade_offer_id(ref self: ContractState) -> u256 {
+            let mut world = self.world_default();
+            // Using a string key to differentiate from other counters
+            let counter_key = 'trade_offer_counter';
+            let mut counter: FishCounter = world.read_model(counter_key);
+            let new_id = counter.current_val + 1;
+            counter.current_val = new_id;
+            world.write_model(@counter);
             new_id
         }
     }
