@@ -2,7 +2,7 @@
 name: Frontend
 about: This template is for creating frontend issues.
 title: "[Frontend]"
-labels: Frontend, May Be Rewarded
+labels: enhancement, Frontend, good first issue
 assignees: ''
 
 ---
