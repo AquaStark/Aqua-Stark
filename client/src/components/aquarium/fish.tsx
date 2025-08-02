@@ -19,11 +19,11 @@ interface FishProps {
     | "turning"
     | "feeding"
     | "exploring"
-    | "playful"; // Added new states
+    | "playful"; 
   style?: React.CSSProperties;
 }
 
-// Define valid rarity types for type safety
+
 type RarityType =
   | "common"
   | "uncommon"
@@ -39,29 +39,29 @@ export function Fish({
   behaviorState,
   style = {},
 }: FishProps) {
-  // Track previous facing direction to detect changes for flip animation
+  
   const prevFacingLeftRef = useRef(facingLeft);
   const [isFlipping, setIsFlipping] = useState(false);
 
-  // Apply flip animation when direction changes
+  
   useEffect(() => {
     if (prevFacingLeftRef.current !== facingLeft) {
-      // Direction changed, trigger flip animation
+      
       setIsFlipping(true);
 
-      // Clear animation after it completes
+      
       const timer = setTimeout(() => {
         setIsFlipping(false);
-      }, 400); // Match animation duration
+      }, 400); 
 
-      // Update ref to current direction
+      
       prevFacingLeftRef.current = facingLeft;
 
       return () => clearTimeout(timer);
     }
   }, [facingLeft]);
 
-  // Calculate fish size based on rarity
+  
   const getFishSize = () => {
     const rarityFactor: Record<RarityType, number> = {
       common: 80,
@@ -72,10 +72,10 @@ export function Fish({
       exotic: 130,
     };
 
-    // Get the lowercase rarity and check if it's a valid key
+    
     const rarityKey = fish.rarity.toLowerCase() as RarityType;
 
-    // Default to medium size if rarity is not recognized
+    
     const baseSize = rarityFactor[rarityKey] || 100;
 
     return Math.round(baseSize);
@@ -83,7 +83,7 @@ export function Fish({
 
   const fishSize = getFishSize();
 
-  // Get the correct image based on direction
+  
   const getCorrectFishImage = () => {
     const originalImagePath = fish.image || "/fish/fish1.png";
     const fallbackImage = "/fish/fish1.png";
@@ -96,9 +96,9 @@ export function Fish({
         "/fish/fish4.png",
       ];
 
-      // Check if fish is moving right (not facing left)
+      
       if (!facingLeft) {
-        // For RIGHT movement, use flipped images
+        
         const isKnownFish = knownValidFish.some((validPath) =>
           originalImagePath.endsWith(validPath)
         );
@@ -109,7 +109,7 @@ export function Fish({
           return "/fish/fish1-flip.png";
         }
       } else {
-        // For LEFT movement, ensure we use non-flipped images
+        
         if (originalImagePath.includes("-flip.")) {
           return originalImagePath.replace("-flip.", ".");
         }
@@ -124,17 +124,17 @@ export function Fish({
 
   const fishImage = getCorrectFishImage();
 
-  // Handle image loading errors
+  
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
   ) => {
     e.currentTarget.src = "/fish/fish1.png";
   };
 
-  // Determine bubble position based on facing direction
+  
   const bubblePosition = facingLeft ? "right-[-5px]" : "left-[-5px]";
 
-  // Enhanced animation based on behavior state
+  
   const getAnimationProps = () => {
     switch (behaviorState) {
       case "feeding":
@@ -142,7 +142,7 @@ export function Fish({
           animate: {
             rotate: [-2, 2, -2],
             y: [0, -1, 0],
-            scale: [1, 1.05, 1], // Slight excitement scaling
+            scale: [1, 1.05, 1], 
           },
           transition: {
             duration: 0.4,
@@ -217,12 +217,12 @@ export function Fish({
 
   const animationProps = getAnimationProps();
 
-  // Get visual effects based on behavior
+  
   const getVisualEffects = () => {
     switch (behaviorState) {
       case "feeding":
         return {
-          zIndex: 15, // Higher z-index when feeding
+          zIndex: 15, 
         };
       case "playful":
         return {
@@ -245,7 +245,6 @@ export function Fish({
 
   const visualEffects = getVisualEffects();
 
-  // CSS classes for different behaviors
   const getFishClasses = () => {
     const baseClasses = "transition-all hover:scale-105 fish-image";
     const flipClass = isFlipping ? "fish-flipping" : "";
@@ -254,7 +253,6 @@ export function Fish({
     return `${baseClasses} ${flipClass} ${behaviorClass}`.trim();
   };
 
-  // Get behavior display text
   const getBehaviorDisplay = () => {
     switch (behaviorState) {
       case "feeding":
@@ -280,9 +278,9 @@ export function Fish({
           left: `${position.x}%`,
           top: `${position.y}%`,
           zIndex: visualEffects.zIndex,
-          ...style, // Apply the passed style prop
+          ...style, 
         }}
-        // Smooth position transitions
+        
         transition={{
           type: "spring",
           stiffness:
@@ -332,13 +330,53 @@ export function Fish({
             </div>
           </motion.div>
 
-          {/* Tooltip on hover */}
-          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 game-container p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20">
-            <div className="font-bold text-white">{fish.name}</div>
-            <div className="text-xs text-white/80">
-              Rarity: {fish.rarity} • Gen {fish.generation}
-              {getBehaviorDisplay()}
+          {/* Enhanced Tooltip on hover */}
+          <div className="absolute -top-32 left-1/2 transform -translate-x-1/2 bg-blue-900/90 backdrop-blur-sm rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-all duration-200 z-20 min-w-[180px] border border-blue-400/30 shadow-lg">
+            <div className="flex flex-col gap-1">
+              <div className="font-bold text-white text-center text-sm mb-1">{fish.name}</div>
+              <div className="text-xs text-blue-200 text-center mb-2">
+                {fish.rarity} • Gen {fish.generation} {getBehaviorDisplay()}
+              </div>
+              
+              {/* Stats Bars */}
+              <div className="space-y-1.5 mt-1">
+                {/* Happiness */}
+                <div className="flex items-center">
+                  <span className="w-16 text-xs text-blue-100">😊</span>
+                  <div className="h-2 bg-blue-800/60 rounded-full flex-1 overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full transition-all duration-300"
+                      style={{ width: `${Math.max(10, Math.random() * 100)}%` }}
+                    />
+                  </div>
+                </div>
+                
+                  
+                <div className="flex items-center">
+                  <span className="w-16 text-xs text-blue-100">🍽️</span>
+                  <div className="h-2 bg-blue-800/60 rounded-full flex-1 overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-green-400 to-green-500 rounded-full transition-all duration-300"
+                      style={{ width: `${Math.max(10, Math.random() * 100)}%` }}
+                    />
+                  </div>
+                </div>
+                
+                
+                <div className="flex items-center">
+                  <span className="w-16 text-xs text-blue-100">⚡</span>
+                  <div className="h-2 bg-blue-800/60 rounded-full flex-1 overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-blue-400 to-blue-500 rounded-full transition-all duration-300"
+                      style={{ width: `${Math.max(10, Math.random() * 100)}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
+            
+            {/* Tooltip arrow */}
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-blue-900/90 rotate-45 -z-10 border-b border-r border-blue-400/30"></div>
           </div>
 
           {/* Enhanced bubbles for active behaviors */}
@@ -382,7 +420,7 @@ export function Fish({
             </motion.div>
           )}
 
-          {/* Behavior indicators */}
+          
           {(behaviorState === "feeding" || behaviorState === "playful") && (
             <motion.div
               className="absolute -top-6 left-1/2 transform -translate-x-1/2"
