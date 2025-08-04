@@ -7,7 +7,7 @@ pub mod AquaStark {
     use aqua_stark::base::events::{
         PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
         FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
-            FishPurchased, AuctionStarted, BidPlaced, AuctionEnded, TradeOfferCreated,
+        FishPurchased, AuctionStarted, BidPlaced, AuctionEnded, TradeOfferCreated,
         TradeOfferAccepted, TradeOfferCancelled, FishLocked, FishUnlocked,
     };
     use starknet::{
@@ -34,6 +34,7 @@ pub mod AquaStark {
         TradeOffer, TradeOfferStatus, MatchCriteria, FishLock, TradeOfferCounter, ActiveTradeOffers,
         TradeOfferTrait, FishLockTrait, trade_offer_id_target,
     };
+
     use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
 
@@ -699,6 +700,7 @@ pub mod AquaStark {
                 );
         }
 
+        
         fn create_trade_offer(
             ref self: ContractState,
             offered_fish_id: u256,
