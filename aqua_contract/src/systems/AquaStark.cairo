@@ -693,7 +693,6 @@ pub mod AquaStark {
                 );
         }
 
-
         fn create_trade_offer(
             ref self: ContractState,
             offered_fish_id: u256,
@@ -942,6 +941,7 @@ pub mod AquaStark {
             FishLockTrait::is_locked(fish_lock)
         }
     }
+
 
     #[abi(embed_v0)]
     impl TransactionHistoryImpl of ITransactionHistory<ContractState> {
