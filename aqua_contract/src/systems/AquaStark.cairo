@@ -699,7 +699,6 @@ pub mod AquaStark {
                     },
                 );
         }
-
         
         fn create_trade_offer(
             ref self: ContractState,
