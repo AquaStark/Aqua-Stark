@@ -27,6 +27,7 @@ import StartPage from "./pages/start.tsx";
 import StoragePage from "./pages/storage-page.tsx";
 import TradingMarketPage from "./pages/trading-market.tsx";
 import FloppyFishGamePage from "./pages/floppy-fish.tsx";
+import AquariumsPage from "./pages/aquariums.tsx";
 
 // Extra Game Test
 import { Game } from "./Game.tsx";
@@ -71,6 +72,7 @@ function App() {
         <Route path="/store" element={<StoragePage />} />
         <Route path="/test-game" element={<Game />} />
         <Route path="/trading-market" element={<TradingMarketPage />} />
+        <Route path="/aquariums" element={<AquariumsPage />} />
         <Route path="*" element={<Error404Page />} />
       </Routes>
     </StarknetConfig>
