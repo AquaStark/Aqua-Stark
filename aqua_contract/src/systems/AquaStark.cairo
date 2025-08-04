@@ -693,6 +693,7 @@ pub mod AquaStark {
                 );
         }
 
+
         fn create_trade_offer(
             ref self: ContractState,
             offered_fish_id: u256,
