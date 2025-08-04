@@ -33,6 +33,7 @@ pub mod AquaStark {
         TradeOffer, TradeOfferStatus, MatchCriteria, FishLock, TradeOfferCounter, ActiveTradeOffers,
         TradeOfferTrait, FishLockTrait, trade_offer_id_target,
     };
+
     use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
 
