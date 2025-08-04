@@ -24,7 +24,6 @@ pub mod AquaStark {
     use aqua_stark::models::fish_model::{
         Fish, FishCounter, Species, FishTrait, FishOwner, FishParents, Listing,
     };
-
     use aqua_stark::models::transaction_model::{
         TransactionLog, EventTypeDetails, EventCounter, TransactionCounter, event_id_target,
         transaction_id_target, EventDetailsTrait, TransactionLogTrait,
@@ -34,10 +33,8 @@ pub mod AquaStark {
         TradeOffer, TradeOfferStatus, MatchCriteria, FishLock, TradeOfferCounter, ActiveTradeOffers,
         TradeOfferTrait, FishLockTrait, trade_offer_id_target,
     };
-
     use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
-
 
     #[abi(embed_v0)]
     impl AquaStarkImpl of IAquaStark<ContractState> {
@@ -201,9 +198,7 @@ pub mod AquaStark {
 
         fn get_username_from_address(self: @ContractState, address: ContractAddress) -> felt252 {
             let mut world = self.world_default();
-
             let address_map: AddressToUsername = world.read_model(address);
-
             address_map.username
         }
 
@@ -286,7 +281,6 @@ pub mod AquaStark {
             let id = self.create_decoration_id();
 
             let mut decoration = world.read_model(id);
-
             decoration =
                 DecorationTrait::decoration(
                     decoration, id, aquarium_id, name, description, price, rarity,
@@ -429,7 +423,7 @@ pub mod AquaStark {
 
             let fish_parents = FishParents { parent1: parent1.id, parent2: parent2.id };
 
-            let mut offspring_tree = parent1.family_tree.clone(); // or copy if supported
+            let mut offspring_tree = parent1.family_tree.clone();
             offspring_tree.append(fish_parents);
             new_fish.family_tree = offspring_tree;
 
@@ -466,32 +460,22 @@ pub mod AquaStark {
             let zero_address: ContractAddress = contract_address_const::<0x0>();
 
             // --- Validations ---
-
-            // Username should not be zero
             assert(username != 0, 'USERNAME CANNOT BE ZERO');
-
-            // Username must be unique (not already registered)
             let existing_player: UsernameToAddress = world.read_model(username);
             assert(existing_player.address == zero_address, 'USERNAME ALREADY TAKEN');
-
-            // Address must not already be registered
             let existing_username = self.get_username_from_address(player);
             assert(existing_username == 0, 'USERNAME ALREADY CREATED');
+
             // --- Player Registration ---
-
             let id = self.create_new_player_id();
-
             let mut new_player = PlayerTrait::register_player(id, username, player, 0, 0);
 
             // --- Username ↔ Address Mappings ---
-
             let username_to_address = UsernameToAddress { username, address: player };
             let address_to_username = AddressToUsername { address: player, username };
 
             // --- Aquarium Setup ---
-
             let mut aquarium = self.new_aquarium(player, 10, 5);
-
             new_player.aquarium_count += 1;
             let aquarium_id = aquarium.id;
             new_player.player_aquariums.append(aquarium.id);
@@ -538,27 +522,30 @@ pub mod AquaStark {
             player_model.is_verified
         }
 
-
         fn get_player(self: @ContractState, address: ContractAddress) -> Player {
             let mut world = self.world_default();
             let player: Player = world.read_model(address);
             player
         }
+
         fn get_fish(self: @ContractState, id: u256) -> Fish {
             let mut world = self.world_default();
             let fish: Fish = world.read_model(id);
             fish
         }
+
         fn get_aquarium(self: @ContractState, id: u256) -> Aquarium {
             let mut world = self.world_default();
             let aquarium: Aquarium = world.read_model(id);
             aquarium
         }
+
         fn get_decoration(self: @ContractState, id: u256) -> Decoration {
             let mut world = self.world_default();
             let decoration: Decoration = world.read_model(id);
             decoration
         }
+
         fn get_player_fishes(self: @ContractState, player: ContractAddress) -> Array<Fish> {
             let mut world = self.world_default();
             let player_model: Player = world.read_model(player);
@@ -569,6 +556,7 @@ pub mod AquaStark {
             };
             fishes
         }
+
         fn get_player_aquariums(self: @ContractState, player: ContractAddress) -> Array<Aquarium> {
             let mut world = self.world_default();
             let player_model: Player = world.read_model(player);
@@ -579,6 +567,7 @@ pub mod AquaStark {
             };
             aquariums
         }
+
         fn get_player_decorations(
             self: @ContractState, player: ContractAddress,
         ) -> Array<Decoration> {
@@ -591,16 +580,19 @@ pub mod AquaStark {
             };
             decorations
         }
+
         fn get_player_fish_count(self: @ContractState, player: ContractAddress) -> u32 {
             let mut world = self.world_default();
             let player_model: Player = world.read_model(player);
             player_model.fish_count
         }
+
         fn get_player_aquarium_count(self: @ContractState, player: ContractAddress) -> u32 {
             let mut world = self.world_default();
             let player_model: Player = world.read_model(player);
             player_model.aquarium_count
         }
+
         fn get_player_decoration_count(self: @ContractState, player: ContractAddress) -> u32 {
             let mut world = self.world_default();
             let player_model: Player = world.read_model(player);
@@ -699,7 +691,7 @@ pub mod AquaStark {
                     },
                 );
         }
-        
+
         fn create_trade_offer(
             ref self: ContractState,
             offered_fish_id: u256,
@@ -712,11 +704,13 @@ pub mod AquaStark {
         ) -> u256 {
             let mut world = self.world_default();
             let caller = get_caller_address();
+
             let fish_owner: FishOwner = world.read_model(offered_fish_id);
             assert(fish_owner.owner == caller, 'You do not own this fish');
 
             let fish_lock: FishLock = world.read_model(offered_fish_id);
             assert(!FishLockTrait::is_locked(fish_lock), 'Fish is already locked');
+
             let offer_id = self.create_trade_offer_id();
 
             let trade_offer = TradeOfferTrait::create_offer(
@@ -740,7 +734,6 @@ pub mod AquaStark {
             world.write_model(@fish_lock);
             world.write_model(@active_offers);
 
-            // Emit event
             world
                 .emit_event(
                     @TradeOfferCreated {
@@ -839,6 +832,7 @@ pub mod AquaStark {
             world.write_model(@creator_fish_unlock);
             world.write_model(@acceptor_fish_unlock);
             world.write_model(@trade_offer);
+
             world
                 .emit_event(
                     @TradeOfferAccepted {
@@ -850,6 +844,7 @@ pub mod AquaStark {
                         timestamp: get_block_timestamp(),
                     },
                 );
+
             world
                 .emit_event(
                     @FishUnlocked {
@@ -858,6 +853,7 @@ pub mod AquaStark {
                         timestamp: get_block_timestamp(),
                     },
                 );
+
             world
                 .emit_event(
                     @FishUnlocked {
@@ -952,16 +948,13 @@ pub mod AquaStark {
             let caller = get_caller_address();
 
             assert(world.dispatcher.is_owner(0, caller), 'Only owner');
-
             assert(event_name.len() != 0, 'Event name cannot be empty');
 
-            // assert that caller is dojo creator
             let event_type_id = self.create_event_id();
             let mut event_details: EventTypeDetails = world.read_model(event_type_id);
             event_details = EventDetailsTrait::create_event(event_type_id, event_name);
             world.write_model(@event_details);
 
-            // --- Emit Event ---
             world
                 .emit_event(
                     @EventTypeRegistered {
@@ -982,14 +975,12 @@ pub mod AquaStark {
             let txn_id = self.create_transaction_id();
 
             let caller = get_caller_address();
-
             let is_owner = world.dispatcher.is_owner(0, caller);
             let is_contract = get_contract_address() == caller;
 
             assert(is_owner || is_contract, 'Only owner or contract');
 
             let mut event_details: EventTypeDetails = world.read_model(event_type_id);
-
             event_details.total_logged += 1;
             event_details.transaction_history.append(txn_id);
 
