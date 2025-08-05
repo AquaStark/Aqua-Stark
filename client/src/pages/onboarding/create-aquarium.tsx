@@ -1,7 +1,7 @@
 "use client"
 
 import { useAccount } from "@starknet-react/core"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { CairoCustomEnum } from "starknet"
 import { useAquarium } from "@/hooks/dojo/useAquarium"
 import { useFish } from "@/hooks/dojo/useFish"
@@ -12,6 +12,7 @@ import { useBubbles } from "@/hooks/use-bubbles"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { useNavigate } from "react-router-dom"
+import { ComingSoonModal } from "@/components/ui/coming-soon-modal"
 
 const fishImages: Record<string, string> = {
   AngelFish: "/fish/fish1.png",
@@ -33,12 +34,18 @@ export default function CreateAquarium() {
   const [addingFish, setAddingFish] = useState(false)
   const [fishHash, setFishHash] = useState<string | null>(null)
   const [fishList, setFishList] = useState<string[]>([])
+  const [showComingSoon, setShowComingSoon] = useState(false);
+
+  // Mostrar el modal automáticamente al cargar la página
+  useEffect(() => {
+    setShowComingSoon(true);
+  }, []);
 
   const handleCreateAquarium = async () => {
     if (!account) return toast.error("Please connect your wallet first")
     setLoading(true)
     try {
-      const res = await newAquarium(account, account.address, 1)
+      const res = await newAquarium(account, account.address, 1, 5)
       setAquariumHash(res.transaction_hash)
       toast.success("Aquarium purchased successfully!")
     } catch (e) {
@@ -167,6 +174,15 @@ export default function CreateAquarium() {
       </main>
 
       <Footer className="bg-blue-900/60 backdrop-blur-md border-t border-blue-400/30 fixed bottom-0 left-0 w-full" />
+
+      {/* Modal Coming Soon */}
+      <ComingSoonModal
+        isOpen={showComingSoon}
+        onClose={() => setShowComingSoon(false)}
+        title="Aquarium Creation Under Development"
+        description="The aquarium creation system is being built. Soon you'll be able to purchase and customize your own aquariums with unique fish."
+        closable={false}
+      />
     </div>
   )
 }
