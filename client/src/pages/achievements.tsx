@@ -1,14 +1,21 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { BubblesBackground } from "@/components/bubble-background"
 import { useBubbles } from "@/hooks/use-bubbles"
 import { PageHeader } from "@/components/layout/page-header"
 import { Footer } from "@/components/layout/footer"
 import { Trophy } from "lucide-react"
 import { AchievementsTabs } from "@/components/achievements/achievements-tabs"
+import { ComingSoonModal } from "@/components/ui/coming-soon-modal"
 
 export default function AchievementsPage() {
   const bubbles = useBubbles()
   const [activeTab, setActiveTab] = useState("achievements")
+  const [showComingSoon, setShowComingSoon] = useState(false);
+
+  // Mostrar el modal automáticamente al cargar la página
+  useEffect(() => {
+    setShowComingSoon(true);
+  }, []);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900">
@@ -42,6 +49,15 @@ export default function AchievementsPage() {
       </main>
 
       <Footer className="bg-blue-900/60 backdrop-blur-md border-t border-blue-400/30" />
+
+      {/* Modal Coming Soon */}
+      <ComingSoonModal
+        isOpen={showComingSoon}
+        onClose={() => setShowComingSoon(false)}
+        title="Achievements Under Development"
+        description="The achievements system is being built. Soon you'll unlock badges, rewards, and track your progress in Aqua Stark."
+        closable={false}
+      />
     </div>
   )
 }
