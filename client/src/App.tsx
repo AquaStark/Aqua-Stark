@@ -78,7 +78,6 @@ function App() {
         {/* Main Game Routes */}
         <Route path="/game" element={<GamePage />} />
         <Route path="/aquariums" element={<AquariumsPage />} />
-        <Route path="/storage" element={<StoragePage />} />
         <Route path="/store" element={<StoragePage />} />
         <Route path="/trading-market" element={<TradingMarketPage />} />
         <Route path="/breeding-laboratory" element={<BreedingLaboratoryPage />} />
