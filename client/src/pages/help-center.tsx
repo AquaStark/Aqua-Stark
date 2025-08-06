@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Search } from "lucide-react"
 import { featuredTopics } from "@/data/help-center-data"
 import HelpCenterSidebar from "@/components/help-center/help-sidebar"
@@ -10,8 +11,10 @@ import { PageHeader } from "@/components/layout/page-header"
 import { Footer } from "@/components/layout/footer"
 import { Input } from "@/components/ui/input"
 import { useHelpCenter } from "@/hooks/use-help-center"
+import { ComingSoonModal } from "@/components/ui/coming-soon-modal"
 
 function HelpCenter() {
+  const [showComingSoon, setShowComingSoon] = useState(false);
   const {
     activeCategory,
     activeTopic,
@@ -26,6 +29,11 @@ function HelpCenter() {
   } = useHelpCenter()
 
   const bubbles = useBubbles()
+
+  // Mostrar el modal automáticamente al cargar la página
+  useEffect(() => {
+    setShowComingSoon(true);
+  }, []);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background">
@@ -68,6 +76,15 @@ function HelpCenter() {
       </main>
 
       <Footer />
+
+      {/* Modal Coming Soon */}
+      <ComingSoonModal
+        isOpen={showComingSoon}
+        onClose={() => setShowComingSoon(false)}
+        title="Help Center Under Development"
+        description="The help center is being built. Soon you'll have access to comprehensive guides, FAQs, and support resources."
+        closable={false}
+      />
     </div>
   )
 }

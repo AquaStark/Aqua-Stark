@@ -1,4 +1,4 @@
-![Aqua Stark Banner](https://github.com/user-attachments/assets/f2d38439-8e4f-45c6-a087-c53dd8bdca98)
+
 
 # 🌊Aqua Stark 🐠
 
