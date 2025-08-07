@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "typecheck": "tsc -b --noEmit",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview --https"
   },
   "dependencies": {
     "@cartridge/connector": "^0.5.9",
