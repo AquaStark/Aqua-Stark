@@ -1,0 +1,44 @@
+name: Client CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  client:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.13.1
+
+      - name: Install dependencies
+        working-directory: client
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        working-directory: client
+        run: pnpm lint
+
+      - name: Typecheck
+        working-directory: client
+        run: pnpm typecheck
+
+      - name: Build
+        working-directory: client
+        env:
+          VITE_DOJO_MANIFEST: sepolia
+          VITE_RPC_URL: https://api.cartridge.gg/x/starknet/sepolia
+        run: pnpm build
