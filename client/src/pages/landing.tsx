@@ -119,7 +119,7 @@ export default function LandingPage() {
           </div>
 
           {/* Featured fish section - Takes remaining space */}
-          <div className="flex items-center justify-center min-h-0">
+          <div className="flex items-center justify-center ">
             <FeaturedFish />
           </div>
 
