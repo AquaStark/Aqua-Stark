@@ -1,6 +1,86 @@
 use starknet::ContractAddress;
 use core::traits::{Into};
 
+////////////////////////////////////////
+///   MODELS
+///////////////////////////////////////
+#[derive(Drop, Copy, Serde)]
+#[dojo::model]
+pub struct Challenge_Counter {
+    #[key]
+    pub id: felt252,
+    pub counter: u64,
+}
+
+#[derive(Copy, Drop, Serde, PartialEq)]
+#[dojo::model]
+pub struct DailyChallenge {
+    #[key]
+    pub challenge_id: u64,
+    pub challenge_type: felt252,
+    pub param1: felt252,
+    pub param2: felt252,
+    pub value1: u64,
+    pub value2: u64,
+    pub difficulty: u8,
+    pub active: bool,
+}
+
+#[derive(Copy, Drop, Serde, PartialEq)]
+#[dojo::model]
+pub struct ChallengeParticipation {
+    #[key]
+    pub challenge_id: u64,
+    #[key]
+    pub participant: ContractAddress,
+    pub joined: bool,
+    pub completed: bool,
+    pub reward_claimed: bool,
+}
+
+////////////// Events//////////////////////
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct ChallengeCreated {
+    #[key]
+    pub challenge_id: u64,
+    pub challenge_type: felt252,
+    pub param1: felt252,
+    pub param2: felt252,
+    pub value1: u64,
+    pub value2: u64,
+    pub difficulty: u8,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct ChallengeCompleted {
+    #[key]
+    pub challenge_id: u64,
+    pub participant: ContractAddress,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct RewardClaimed {
+    #[key]
+    pub challenge_id: u64,
+    #[key]
+    pub participant: ContractAddress,
+    pub reward_amount: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct ParticipantJoined {
+    #[key]
+    pub challenge_id: u64,
+    pub participant: ContractAddress,
+}
+
+///////////////////////////////////////////
+
 #[derive(Copy, Drop, Serde, Debug)]
 pub enum DailyChallengeType {
     BreedTarget, // Breed X fish of species
@@ -36,7 +116,7 @@ pub trait DailyChallengeTrait {
     fn generate_saturday_challenge(seed: u64) -> (felt252, felt252, felt252, u64, u64, u8);
 }
 
-impl DailyChallengeImpl of DailyChallengeTrait {
+pub impl DailyChallengeImpl of DailyChallengeTrait {
     fn generate_sunday_challenge(seed: u64) -> (felt252, felt252, felt252, u64, u64, u8) {
         let challenge_type = DailyChallengeType::BreedTarget.into();
         let species_selector = seed % 3;
