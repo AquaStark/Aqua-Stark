@@ -98,10 +98,15 @@ export default function AquariumsPage() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="bg-blue-600/30 border border-blue-400/30 text-white placeholder-blue-200 rounded-lg pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      aria-label="Search aquariums"
+                      role="searchbox"
                     />
                   </div>
-                  <button className="bg-blue-600/30 border border-blue-400/30 text-white rounded-lg px-4 py-2 flex items-center w-full sm:w-auto justify-center">
-                    <Filter className="h-5 w-5 mr-2" />
+                  <button 
+                    className="bg-blue-600/30 border border-blue-400/30 text-white rounded-lg px-4 py-2 flex items-center w-full sm:w-auto justify-center"
+                    aria-label="Filter Aquariums"
+                  >
+                    <Filter className="h-5 w-5 mr-2" aria-hidden="true" />
                     Filter
                   </button>
                 </div>

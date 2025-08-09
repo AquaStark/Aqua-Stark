@@ -140,6 +140,7 @@ export default function GamePage() {
         src="/backgrounds/background2.png"
         alt="Underwater Background"
         className="absolute inset-0 w-full h-full object-cover z-0"
+        role="presentation"
       />
 
       {/* Bubbles */}
@@ -221,6 +222,7 @@ export default function GamePage() {
           <button
             onClick={() => setShowDirtDebug(false)}
             className="mt-2 w-full text-xs text-gray-400 hover:text-white transition-colors"
+            aria-label="Hide Debug Panel"
           >
             Hide Debug
           </button>
@@ -232,8 +234,9 @@ export default function GamePage() {
         <button
           onClick={() => setShowDirtDebug(true)}
           className="absolute top-4 right-4 z-40 bg-black/50 text-white px-3 py-1 rounded text-xs hover:bg-black/70 transition-colors"
+          aria-label="Show Debug Panel"
         >
-          🧹 Debug
+          <span role="img" aria-label="Broom">🧹</span> Debug
         </button>
       )}
 

@@ -16,6 +16,9 @@ function PageButton({
           ? "bg-blue-400 text-white"
           : "bg-blue-700 text-white hover:bg-blue-600"
       )}
+      aria-current={active ? "page" : undefined}
+      role="button"
+      aria-label={`Go to page ${children}`}
     >
       {children}
     </button>

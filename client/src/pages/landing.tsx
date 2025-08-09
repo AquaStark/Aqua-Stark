@@ -76,6 +76,8 @@ export default function LandingPage() {
               activeButton === "start" ? "scale-105 ring-2 sm:ring-3 ring-blue-300" : ""
             }`}
             title="Start Game"
+            aria-label="Start Game"
+            aria-pressed={activeButton === "start"}
           >
             <span className="text-white text-sm sm:text-base md:text-lg font-bold whitespace-nowrap">Start</span>
           </button>

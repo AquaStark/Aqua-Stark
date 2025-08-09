@@ -14,25 +14,31 @@ export default function EncyclopediaTabs() {
         <TabsTrigger
           value="catalog"
           className="relative py-3 data-[state=active]:bg-gradient-to-b data-[state=active]:from-blue-500 data-[state=active]:to-blue-700 data-[state=active]:text-white data-[state=active]:shadow-md text-blue-200 transition-all duration-300 hover:bg-blue-600/60 hover:text-white group"
+          aria-controls="catalog-panel"
+          role="tab"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-500/20 opacity-0 data-[state=active]:opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none" />
-          <Book className="h-5 w-5 mr-2 md:mr-2 transition-transform group-hover:scale-110 duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-500/20 opacity-0 data-[state=active]:opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none" aria-hidden="true" />
+          <Book className="h-5 w-5 mr-2 md:mr-2 transition-transform group-hover:scale-110 duration-300" aria-hidden="true" />
           <span className="hidden md:inline font-medium">Fish Catalog</span>
         </TabsTrigger>
         <TabsTrigger
           value="habitats"
           className="relative py-3 data-[state=active]:bg-gradient-to-b data-[state=active]:from-blue-500 data-[state=active]:to-blue-700 data-[state=active]:text-white data-[state=active]:shadow-md text-blue-200 transition-all duration-300 hover:bg-blue-600/60 hover:text-white group"
+          aria-controls="habitats-panel"
+          role="tab"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-500/20 opacity-0 data-[state=active]:opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none" />
-          <Droplet className="h-5 w-5 mr-2 md:mr-2 transition-transform group-hover:scale-110 duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-500/20 opacity-0 data-[state=active]:opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none" aria-hidden="true" />
+          <Droplet className="h-5 w-5 mr-2 md:mr-2 transition-transform group-hover:scale-110 duration-300" aria-hidden="true" />
           <span className="hidden md:inline font-medium">Habitats</span>
         </TabsTrigger>
         <TabsTrigger
           value="stats"
           className="relative py-3 data-[state=active]:bg-gradient-to-b data-[state=active]:from-blue-500 data-[state=active]:to-blue-700 data-[state=active]:text-white data-[state=active]:shadow-md text-blue-200 transition-all duration-300 hover:bg-blue-600/60 hover:text-white group"
+          aria-controls="stats-panel"
+          role="tab"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-500/20 opacity-0 data-[state=active]:opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none" />
-          <BarChart3 className="h-5 w-5 mr-2 md:mr-2 transition-transform group-hover:scale-110 duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-500/20 opacity-0 data-[state=active]:opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none" aria-hidden="true" />
+          <BarChart3 className="h-5 w-5 mr-2 md:mr-2 transition-transform group-hover:scale-110 duration-300" aria-hidden="true" />
           <span className="hidden md:inline font-medium">Collection Stats</span>
         </TabsTrigger>
       </TabsList>

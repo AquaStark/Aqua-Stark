@@ -59,6 +59,7 @@ export default function Start() {
           alt="Ocean Background"
           className="absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none"
           draggable="false"
+          role="presentation"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#001a2e] via-[#021d3b] to-[#000d1a] opacity-95" />
         {/* Glow spots for dynamic lighting */}
@@ -84,9 +85,10 @@ export default function Start() {
           <div className="w-64 sm:w-72 lg:w-80 animate-float hidden sm:block mr-20 z-20 pointer-events-none select-none">
             <img
               src="/fish/fish2.png"
-              alt="Intro Fish"
+              alt="Decorative Fish Swimming"
               className="w-full h-auto drop-shadow-2xl -scale-x-110"
               draggable="false"
+              role="presentation"
             />
           </div>
           {/* Form card with highlight strip and glow */}

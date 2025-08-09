@@ -52,8 +52,9 @@ export default function Credits() {
         <Button
           onClick={handleBackToMain}
           className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-lg flex items-center gap-2 transition-all duration-200"
+          aria-label="Back to Main Menu"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4" aria-hidden="true" />
           Back to Main
         </Button>
       </div>
