@@ -33,7 +33,7 @@ async function main() {
           <App />
         </BrowserRouter>
       </DojoSdkProvider>
-    </React.StrictMode>
+    </React.StrictMode>,
   );
 }
 

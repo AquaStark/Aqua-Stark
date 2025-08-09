@@ -19,7 +19,7 @@ interface FishProps {
     | "turning"
     | "feeding"
     | "exploring"
-    | "playful"; // Added new states
+    | "playful"; //add new state
   style?: React.CSSProperties;
 }
 
@@ -43,6 +43,22 @@ export function Fish({
   const prevFacingLeftRef = useRef(facingLeft);
   const [isFlipping, setIsFlipping] = useState(false);
 
+  // Initialize stable stats using useState
+  const [stats, setStats] = useState({
+    happiness: fish.stats?.happiness ?? 50, // Default to 50 if stats unavailable
+    hunger: fish.stats?.hunger ?? 50,
+    energy: fish.stats?.energy ?? 50,
+  });
+
+  // Update stats when fish prop changes
+  useEffect(() => {
+    setStats({
+      happiness: fish.stats?.happiness ?? 50,
+      hunger: fish.stats?.hunger ?? 50,
+      energy: fish.stats?.energy ?? 50,
+    });
+  }, [fish]);
+
   // Apply flip animation when direction changes
   useEffect(() => {
     if (prevFacingLeftRef.current !== facingLeft) {
@@ -51,8 +67,8 @@ export function Fish({
 
       // Clear animation after it completes
       const timer = setTimeout(() => {
-        setIsFlipping(false);
-      }, 400); // Match animation duration
+        setIsFlipping(false); // Match animation duration
+      }, 400);
 
       // Update ref to current direction
       prevFacingLeftRef.current = facingLeft;
@@ -71,7 +87,6 @@ export function Fish({
       legendary: 120,
       exotic: 130,
     };
-
     // Get the lowercase rarity and check if it's a valid key
     const rarityKey = fish.rarity.toLowerCase() as RarityType;
 
@@ -96,20 +111,20 @@ export function Fish({
         "/fish/fish4.png",
       ];
 
-      // Check if fish is moving right (not facing left)
       if (!facingLeft) {
-        // For RIGHT movement, use flipped images
         const isKnownFish = knownValidFish.some((validPath) =>
-          originalImagePath.endsWith(validPath)
+          originalImagePath.endsWith(validPath),
         );
 
+        // Check if fish is moving right (not facing left)
         if (isKnownFish) {
+          // For RIGHT movement, use flipped images
           return originalImagePath.replace(".png", "-flip.png");
         } else {
           return "/fish/fish1-flip.png";
         }
       } else {
-        // For LEFT movement, ensure we use non-flipped images
+        // For LEFT movement, use original images
         if (originalImagePath.includes("-flip.")) {
           return originalImagePath.replace("-flip.", ".");
         }
@@ -124,9 +139,9 @@ export function Fish({
 
   const fishImage = getCorrectFishImage();
 
-  // Handle image loading errors
+  //Handle image loading errors
   const handleImageError = (
-    e: React.SyntheticEvent<HTMLImageElement, Event>
+    e: React.SyntheticEvent<HTMLImageElement, Event>,
   ) => {
     e.currentTarget.src = "/fish/fish1.png";
   };
@@ -280,23 +295,22 @@ export function Fish({
           left: `${position.x}%`,
           top: `${position.y}%`,
           zIndex: visualEffects.zIndex,
-          ...style, // Apply the passed style prop
+          ...style,
         }}
-        // Smooth position transitions
         transition={{
           type: "spring",
           stiffness:
             behaviorState === "feeding"
               ? 150
               : behaviorState === "playful"
-              ? 130
-              : 100,
+                ? 130
+                : 100,
           damping:
             behaviorState === "feeding"
               ? 20
               : behaviorState === "playful"
-              ? 18
-              : 15,
+                ? 18
+                : 15,
           mass: 0.8,
         }}
       >
@@ -332,13 +346,53 @@ export function Fish({
             </div>
           </motion.div>
 
-          {/* Tooltip on hover */}
-          <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 game-container p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20">
-            <div className="font-bold text-white">{fish.name}</div>
-            <div className="text-xs text-white/80">
-              Rarity: {fish.rarity} • Gen {fish.generation}
-              {getBehaviorDisplay()}
+          {/* Enhanced Tooltip on hover */}
+          <div className="absolute -top-32 left-1/2 transform -translate-x-1/2 bg-blue-900/90 backdrop-blur-sm rounded-lg p-3 opacity-0 group-hover:opacity-100 transition-all duration-200 z-20 min-w-[180px] border border-blue-400/30 shadow-lg">
+            <div className="flex flex-col gap-1">
+              <div className="font-bold text-white text-center text-sm mb-1">
+                {fish.name}
+              </div>
+              <div className="text-xs text-blue-200 text-center mb-2">
+                {fish.rarity} • Gen {fish.generation} {getBehaviorDisplay()}
+              </div>
+
+              {/* Stats Bars */}
+              <div className="space-y-1.5 mt-1">
+                {/* Happiness */}
+                <div className="flex items-center">
+                  <span className="w-16 text-xs text-blue-100">😊</span>
+                  <div className="h-2 bg-blue-800/60 rounded-full flex-1 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full transition-all duration-300"
+                      style={{ width: `${Math.max(10, stats.happiness)}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center">
+                  <span className="w-16 text-xs text-blue-100">🍽️</span>
+                  <div className="h-2 bg-blue-800/60 rounded-full flex-1 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-green-400 to-green-500 rounded-full transition-all duration-300"
+                      style={{ width: `${Math.max(10, stats.hunger)}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center">
+                  <span className="w-16 text-xs text-blue-100">⚡</span>
+                  <div className="h-2 bg-blue-800/60 rounded-full flex-1 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-blue-400 to-blue-500 rounded-full transition-all duration-300"
+                      style={{ width: `${Math.max(10, stats.energy)}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
+
+            {/* Tooltip arrow */}
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-blue-900/90 rotate-45 -z-10 border-b border-r border-blue-400/30"></div>
           </div>
 
           {/* Enhanced bubbles for active behaviors */}
@@ -358,15 +412,15 @@ export function Fish({
                   behaviorState === "feeding"
                     ? 0.5
                     : behaviorState === "playful"
-                    ? 0.4
-                    : 0.7,
+                      ? 0.4
+                      : 0.7,
                 repeat: Number.POSITIVE_INFINITY,
                 repeatDelay:
                   behaviorState === "feeding"
                     ? 0.2
                     : behaviorState === "playful"
-                    ? 0.1
-                    : 0.3,
+                      ? 0.1
+                      : 0.3,
                 ease: "easeInOut",
               }}
             >
@@ -375,14 +429,13 @@ export function Fish({
                   behaviorState === "feeding"
                     ? "bg-yellow-300/40"
                     : behaviorState === "playful"
-                    ? "bg-pink-300/40"
-                    : "bg-white/25"
+                      ? "bg-pink-300/40"
+                      : "bg-white/25"
                 }`}
               />
             </motion.div>
           )}
 
-          {/* Behavior indicators */}
           {(behaviorState === "feeding" || behaviorState === "playful") && (
             <motion.div
               className="absolute -top-6 left-1/2 transform -translate-x-1/2"
@@ -394,8 +447,8 @@ export function Fish({
                 {behaviorState === "feeding"
                   ? "🍽️"
                   : behaviorState === "playful"
-                  ? "🎉"
-                  : ""}
+                    ? "🎉"
+                    : ""}
               </div>
             </motion.div>
           )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BubblesBackground } from "@/components/bubble-background";
@@ -8,10 +8,17 @@ import { useBubbles } from "@/hooks/use-bubbles";
 import { PageHeader } from "@/components/layout/page-header";
 import { Footer } from "@/components/layout/footer";
 import { CommunityTabs } from "@/components/community/community-tabs";
+import { ComingSoonModal } from "@/components/ui/coming-soon-modal";
 
 export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState("gallery");
+  const [showComingSoon, setShowComingSoon] = useState(false);
   const bubbles = useBubbles();
+
+  // Mostrar el modal automáticamente al cargar la página
+  useEffect(() => {
+    setShowComingSoon(true);
+  }, []);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background text-white/80">
@@ -36,6 +43,15 @@ export default function CommunityPage() {
       </main>
 
       <Footer />
+
+      {/* Modal Coming Soon */}
+      <ComingSoonModal
+        isOpen={showComingSoon}
+        onClose={() => setShowComingSoon(false)}
+        title="Community Under Development"
+        description="The community functionality is being built. Soon you'll be able to connect with other players, share your fish, and participate in community events."
+        closable={false}
+      />
     </div>
   );
 }
