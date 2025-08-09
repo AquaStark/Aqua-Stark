@@ -9,6 +9,7 @@ mod tests {
     use aqua_stark::models::decoration_model::{m_Decoration, m_DecorationCounter};
     use aqua_stark::models::fish_model::{
         FishOwner, Species, Listing, m_Listing, m_Fish, m_FishCounter, m_FishOwner,
+        TargetedTradeOffer, m_TargetedTradeOffer, TradeOfferCounter, m_TradeOfferCounter,
     };
     use aqua_stark::models::player_model::{
         m_AddressToUsername, m_Player, m_PlayerCounter, m_UsernameToAddress,
@@ -53,6 +54,8 @@ mod tests {
                 TestResource::Model(m_EventCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_TransactionCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_Listing::TEST_CLASS_HASH),
+                TestResource::Model(m_TargetedTradeOffer::TEST_CLASS_HASH),
+                TestResource::Model(m_TradeOfferCounter::TEST_CLASS_HASH),
                 TestResource::Event(events::e_PlayerEventLogged::TEST_CLASS_HASH),
                 TestResource::Event(events::e_EventTypeRegistered::TEST_CLASS_HASH),
                 TestResource::Event(events::e_PlayerCreated::TEST_CLASS_HASH),
@@ -67,6 +70,7 @@ mod tests {
                 TestResource::Event(events::e_AuctionStarted::TEST_CLASS_HASH),
                 TestResource::Event(events::e_BidPlaced::TEST_CLASS_HASH),
                 TestResource::Event(events::e_AuctionEnded::TEST_CLASS_HASH),
+                TestResource::Event(events::e_TradeOfferCreated::TEST_CLASS_HASH),
                 TestResource::Contract(AquaStark::TEST_CLASS_HASH),
             ]
                 .span(),
@@ -1188,5 +1192,51 @@ mod tests {
 
         assert!(found_auction1, "Auction1 not found in active auctions");
         assert!(found_auction2, "Auction2 not found in active auctions");
+    }
+
+    #[test]
+    fn test_create_trade_offer() {
+        let owner = contract_address_const::<'owner'>();
+        let requester = contract_address_const::<'requester'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, owner);
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        // Register players
+        testing::set_contract_address(owner);
+        actions_system.register('owner');
+
+        testing::set_contract_address(requester);
+        actions_system.register('requester');
+
+        // Create fish for owner
+        testing::set_contract_address(owner);
+        let aquarium = actions_system.new_aquarium(owner, 10, 10);
+        let offered_fish = actions_system.new_fish(aquarium.id, Species::GoldFish);
+
+        // Create fish for requester
+        testing::set_contract_address(requester);
+        let aquarium2 = actions_system.new_aquarium(requester, 10, 10);
+        let requested_fish = actions_system.new_fish(aquarium2.id, Species::Betta);
+
+        // Owner creates trade offer
+        testing::set_contract_address(owner);
+        let offer_id = actions_system.create_trade_offer(offered_fish.id, requested_fish.id);
+
+        // Verify trade offer was created
+        let trade_offer = actions_system.get_trade_offer(offer_id);
+        assert(trade_offer.id == offer_id, 'Trade offer ID mismatch');
+        assert(trade_offer.creator == owner, 'Trade offer creator mismatch');
+        assert(trade_offer.offered_fish_id == offered_fish.id, 'Offered fish ID mismatch');
+        assert(trade_offer.requested_fish_id == requested_fish.id, 'Requested fish ID mismatch');
+        assert(trade_offer.is_active, 'Trade offer should be active');
+
+        // Verify offered fish is locked
+        let offered_fish_owner: FishOwner = actions_system.get_fish_owner_for_auction(offered_fish.id);
+        assert(offered_fish_owner.locked, 'Offered fish should be locked');
     }
 }
