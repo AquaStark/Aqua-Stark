@@ -20,8 +20,11 @@ function AquariumTab({ name, active, icon, onClick }: AquariumTabProps) {
           ? "bg-gradient-to-b from-blue-400 to-blue-600 text-white translate-y-0"
           : "bg-blue-800/50 text-white/70 hover:bg-blue-700/50 translate-y-2",
       )}
+      role="tab"
+      aria-selected={active}
+      aria-controls={`${name.toLowerCase()}-panel`}
     >
-      {icon && icon}
+      {icon && <span className="mr-2" aria-hidden="true">{icon}</span>}
       {name}
     </button>
   )

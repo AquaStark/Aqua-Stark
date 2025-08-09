@@ -57,14 +57,20 @@ export function ComingSoonModal({
       />
       
       {/* Modal */}
-      <div className="relative bg-gradient-to-br from-blue-600/95 via-blue-700/95 to-blue-800/95 backdrop-blur-lg border-2 border-blue-400/60 rounded-3xl p-10 max-w-2xl w-full mx-6 shadow-2xl">
-        {/* Botón de cerrar solo si es cerrable */}
+      <div 
+        className="relative bg-gradient-to-br from-blue-600/95 via-blue-700/95 to-blue-800/95 backdrop-blur-lg border-2 border-blue-400/60 rounded-3xl p-10 max-w-2xl w-full mx-6 shadow-2xl"
+        role="dialog"
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        {/* Close button - only if closable */}
         {closable && (
           <button
             onClick={onClose}
             className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors z-10"
+            aria-label="Close modal"
           >
-            <X className="w-7 h-7" />
+            <X className="w-7 h-7" aria-hidden="true" />
           </button>
         )}
 

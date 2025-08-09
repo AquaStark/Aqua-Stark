@@ -48,12 +48,17 @@ export default function EncyclopediaCatalog({
         <div className="flex gap-2 w-full md:w-auto">
           <Button
             variant="outline"
-            className="bg-blue-800/50 border-blue-700/50 text-white  flex-1 md:flex-none"
+            className="bg-blue-800/50 border-blue-700/50 text-white flex-1 md:flex-none"
             onClick={() => setShowFilters(!showFilters)}
+            aria-expanded={showFilters}
+            aria-controls="filters-panel"
           >
-            <Filter className="h-4 w-4 mr-2" />
+            <Filter className="h-4 w-4 mr-2" aria-hidden="true" />
             Filters
-            {showFilters ? <ChevronUp className="ml-2 h-4 w-4" /> : <ChevronDown className="ml-2 h-4 w-4" />}
+            {showFilters ? 
+              <ChevronUp className="ml-2 h-4 w-4" aria-hidden="true" /> : 
+              <ChevronDown className="ml-2 h-4 w-4" aria-hidden="true" />
+            }
           </Button>
           <select
             className="bg-blue-800/50 border border-blue-700/50 text-white rounded-md px-3 py-2 flex-1 md:flex-none"
@@ -72,32 +77,79 @@ export default function EncyclopediaCatalog({
         setFilters={setFilters}
         resetFilters={resetFilters}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        role="grid"
+        aria-label="Fish catalog"
+      >
         {sortedFish.length > 0 ? (
-          sortedFish.map((fish) => (
+          sortedFish.map((fish, index) => (
             <motion.div
               key={fish.id}
+              role="gridcell"
+              tabIndex={0}
               className={cn(
-                "bg-blue-800/50 backdrop-blur-sm rounded-xl border overflow-hidden cursor-pointer",
+                "bg-blue-800/50 backdrop-blur-sm rounded-xl border overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-blue-900",
                 fish.discovered ? "border-blue-700/50" : "border-gray-700/50",
               )}
               whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
               onClick={() => handleFishClick(fish)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleFishClick(fish);
+                }
+                // Grid navigation
+                const gridCells = document.querySelectorAll('[role="gridcell"]');
+                const currentIndex = Array.from(gridCells).indexOf(e.currentTarget);
+                const colCount = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+                let nextIndex;
+
+                switch(e.key) {
+                  case 'ArrowRight':
+                    nextIndex = currentIndex + 1;
+                    break;
+                  case 'ArrowLeft':
+                    nextIndex = currentIndex - 1;
+                    break;
+                  case 'ArrowDown':
+                    nextIndex = currentIndex + colCount;
+                    break;
+                  case 'ArrowUp':
+                    nextIndex = currentIndex - colCount;
+                    break;
+                  case 'Home':
+                    nextIndex = 0;
+                    break;
+                  case 'End':
+                    nextIndex = gridCells.length - 1;
+                    break;
+                  default:
+                    return;
+                }
+
+                if (nextIndex >= 0 && nextIndex < gridCells.length) {
+                  e.preventDefault();
+                  (gridCells[nextIndex] as HTMLElement).focus();
+                }
+              }}
+              aria-label={`${fish.discovered ? fish.name : "Unknown Species"}, ${fish.discovered ? fish.rarity + " rarity" : "Undiscovered"}`}
             >
               <div className="relative h-40 bg-blue-900/50">
                 {fish.discovered ? (
                   <FishTank className="h-40">
                     <img
                       src={fish.image || "/placeholder.svg"}
-                      alt={fish.name}
+                      alt=""
                       width={100}
                       height={100}
                       className="object-contain"
+                      aria-hidden="true"
                     />
                   </FishTank>
                 ) : (
-                  <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
                     <Lock className="h-16 w-16 text-gray-500/50" />
                   </div>
                 )}
@@ -114,16 +166,17 @@ export default function EncyclopediaCatalog({
                             ? "bg-purple-500/80"
                             : "bg-amber-500/80",
                   )}
+                  aria-hidden="true"
                 >
                   {fish.rarity}
                 </div>
               </div>
               <div className="p-4">
-                <h3 className="font-bold text-white">{fish.discovered ? fish.name : "Unknown Species"}</h3>
+                <h3 className="font-bold text-white sr-only">{fish.discovered ? fish.name : "Unknown Species"}</h3>
                 {fish.discovered ? (
-                  <p className="text-blue-300 text-sm italic">{fish.scientificName}</p>
+                  <p className="text-blue-300 text-sm italic sr-only">{fish.scientificName}</p>
                 ) : (
-                  <p className="text-blue-300 text-sm italic">This species has not been discovered yet.</p>
+                  <p className="text-blue-300 text-sm italic sr-only">This species has not been discovered yet.</p>
                 )}
               </div>
             </motion.div>

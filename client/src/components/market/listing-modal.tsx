@@ -37,16 +37,25 @@ export function ListingModal() {
 
   return (
     <Dialog open={showListingModal} onOpenChange={setShowListingModal}>
-      <DialogContent className="bg-blue-900/95 border-blue-700 text-white max-w-md">
+      <DialogContent 
+        className="bg-blue-900/95 border-blue-700 text-white max-w-md"
+        role="dialog"
+        aria-labelledby="listing-title"
+        aria-describedby="listing-description"
+      >
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-center">List Your Fish</DialogTitle>
+          <DialogTitle id="listing-title" className="text-xl font-bold text-center">List Your Fish</DialogTitle>
         </DialogHeader>
 
         <div className="flex items-center space-x-4 mb-4">
-          <div className="w-16 h-16 bg-blue-800/50 rounded-lg overflow-hidden flex items-center justify-center">
+          <div 
+            className="w-16 h-16 bg-blue-800/50 rounded-lg overflow-hidden flex items-center justify-center"
+            role="img"
+            aria-label={`Preview of ${selectedFish.name}`}
+          >
             <img
               src={selectedFish.image || "/placeholder.svg?height=50&width=50"}
-              alt={selectedFish.name}
+              alt=""
               className="w-12 h-12 object-contain"
             />
           </div>

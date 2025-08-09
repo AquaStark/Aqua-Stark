@@ -176,6 +176,14 @@ export function CalendarView({ events = [], onEventClick }: CalendarViewProps) {
                         key={`${event.id}-${eventIndex}`}
                         className={`${bgColor} text-white text-xs p-1 rounded truncate cursor-pointer hover:opacity-80`}
                         onClick={() => onEventClick(event)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            onEventClick(event);
+                          }
+                        }}
+                        role="button"
+                        tabIndex={0}
                       >
                         {event.title}
                       </div>

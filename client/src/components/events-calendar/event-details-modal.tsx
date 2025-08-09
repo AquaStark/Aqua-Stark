@@ -37,13 +37,26 @@ export function EventDetailsModal({ event, onClose }: EventDetailsModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/70" onClick={onClose}></div>
-      <div className="relative bg-blue-800 rounded-xl w-full max-w-lg overflow-hidden">
+      <div 
+        className="absolute inset-0 bg-black/70" 
+        onClick={onClose}
+        role="presentation"
+      ></div>
+      <div 
+        className="relative bg-blue-800 rounded-xl w-full max-w-lg overflow-hidden"
+        role="dialog"
+        aria-labelledby="event-title"
+        aria-describedby="event-description"
+      >
         {/* Header */}
         <div className="px-6 py-2 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-white">Event Details</h2>
-          <button onClick={onClose} className="text-white hover:text-blue-200">
-            <X className="w-6 h-6" />
+          <h2 id="event-title" className="text-xl font-bold text-white">Event Details</h2>
+          <button 
+            onClick={onClose} 
+            className="text-white hover:text-blue-200"
+            aria-label="Close event details"
+          >
+            <X className="w-6 h-6" aria-hidden="true" />
           </button>
         </div>
 
@@ -53,7 +66,7 @@ export function EventDetailsModal({ event, onClose }: EventDetailsModalProps) {
             <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center">
               <img
                 src="/placeholder.svg?height=80&width=80"
-                alt=""
+                alt={`${event.title} event icon`}
                 className="w-10 h-10"
               />
             </div>

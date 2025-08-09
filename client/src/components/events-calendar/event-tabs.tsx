@@ -82,6 +82,14 @@ export default function EventTabs() {
         <button
           className="w-full bg-blue-700 rounded-lg p-3 flex items-center justify-between"
           onClick={() => setMobileOpen(!mobileOpen)}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              setMobileOpen(false);
+            }
+          }}
+          aria-expanded={mobileOpen}
+          aria-haspopup="true"
+          aria-controls="mobile-menu"
         >
           <div className="flex items-center gap-2">
             {tabs.find((t) => t.id === activeTab)?.icon}
@@ -91,6 +99,7 @@ export default function EventTabs() {
           </div>
           <ChevronDown
             className={`w-5 h-5 transition-transform ${mobileOpen ? "rotate-180" : ""}`}
+            aria-hidden="true"
           />
         </button>
 
@@ -135,8 +144,10 @@ export default function EventTabs() {
             className={`px-3 py-2 rounded-md text-sm font-medium ${
               viewType === "list" ? "bg-blue-600 text-white" : "bg-blue-800/50 text-blue-200"
             }`}
+            aria-pressed={viewType === "list"}
+            aria-label="Show list view"
           >
-            <ListFilter className="w-4 h-4 inline mr-2" />
+            <ListFilter className="w-4 h-4 inline mr-2" aria-hidden="true" />
             List
           </button>
           <button
@@ -144,8 +155,10 @@ export default function EventTabs() {
             className={`px-3 py-2 rounded-md text-sm font-medium ${
               viewType === "calendar" ? "bg-blue-600 text-white" : "bg-blue-800/50 text-blue-200"
             }`}
+            aria-pressed={viewType === "calendar"}
+            aria-label="Show calendar view"
           >
-            <Calendar className="w-4 h-4 inline mr-2" />
+            <Calendar className="w-4 h-4 inline mr-2" aria-hidden="true" />
             Calendar
           </button>
         </div>
