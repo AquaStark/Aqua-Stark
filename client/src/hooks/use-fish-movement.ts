@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useRef } from "react";
-import type { FishType } from "@/types/game";
-import type { FoodItem } from "@/types/food";
+import { useState, useEffect, useRef } from 'react';
+import type { FishType } from '@/types/game';
+import type { FoodItem } from '@/types/food';
 
 interface MovementParams {
   speed: number;
@@ -33,13 +33,13 @@ interface FishMovementState {
   velocity: { x: number; y: number };
   targetPosition: { x: number; y: number };
   behaviorState:
-    | "idle"
-    | "darting"
-    | "hovering"
-    | "turning"
-    | "feeding"
-    | "exploring"
-    | "playful";
+    | 'idle'
+    | 'darting'
+    | 'hovering'
+    | 'turning'
+    | 'feeding'
+    | 'exploring'
+    | 'playful';
   behaviorTimer: number;
   facingLeft: boolean;
   lastDirectionChangeTime: number;
@@ -51,7 +51,7 @@ interface FishMovementState {
   energyLevel: number;
   explorationTimer: number;
   playfulnessTimer: number;
-  swimmingPattern: "straight" | "zigzag" | "circular" | "spiral";
+  swimmingPattern: 'straight' | 'zigzag' | 'circular' | 'spiral';
   patternTimer: number;
 }
 
@@ -68,7 +68,7 @@ export function useFishMovement(
   const { aquariumBounds, foods = [], onFoodConsumed } = options;
 
   const [fishStates, setFishStates] = useState<FishMovementState[]>(() =>
-    initialFish.map((fish) => initializeFishState(fish))
+    initialFish.map(fish => initializeFishState(fish))
   );
 
   const fishParamsRef = useRef<Map<number, MovementParams>>(new Map());
@@ -102,7 +102,7 @@ export function useFishMovement(
         x: 50 + Math.random() * (aquariumBounds.width - 100),
         y: 50 + Math.random() * (aquariumBounds.height - 100),
       },
-      behaviorState: "exploring",
+      behaviorState: 'exploring',
       behaviorTimer: 0,
       facingLeft: velocityX < 0,
       lastDirectionChangeTime: Date.now(),
@@ -113,16 +113,16 @@ export function useFishMovement(
       energyLevel: 0.7 + Math.random() * 0.3,
       explorationTimer: Math.random() * 2,
       playfulnessTimer: Math.random() * 5,
-      swimmingPattern: "straight",
+      swimmingPattern: 'straight',
       patternTimer: 0,
     };
   }
 
   function generateMovementParams(fish: FishType): MovementParams {
     const isExotic =
-      fish.rarity.toLowerCase().includes("legendary") ||
-      fish.rarity.toLowerCase().includes("epic");
-    const isRare = fish.rarity.toLowerCase().includes("rare");
+      fish.rarity.toLowerCase().includes('legendary') ||
+      fish.rarity.toLowerCase().includes('epic');
+    const isRare = fish.rarity.toLowerCase().includes('rare');
 
     return {
       speed: isExotic ? 45 + Math.random() * 20 : 35 + Math.random() * 15,
@@ -180,7 +180,7 @@ export function useFishMovement(
     if (!fishState.targetFoodId) return false;
 
     const targetFood = foods.find(
-      (f) => f.id === fishState.targetFoodId && !f.consumed
+      f => f.id === fishState.targetFoodId && !f.consumed
     );
     if (!targetFood) return false;
 
@@ -247,13 +247,13 @@ export function useFishMovement(
     const modifiedVelocity = { ...baseVelocity };
 
     switch (state.swimmingPattern) {
-      case "zigzag": {
+      case 'zigzag': {
         const zigzagOffset = Math.sin(time * 4) * 15;
         modifiedVelocity.y += zigzagOffset;
         break;
       }
 
-      case "circular": {
+      case 'circular': {
         const circularForce = 20;
         const perpX = -baseVelocity.y;
         const perpY = baseVelocity.x;
@@ -265,7 +265,7 @@ export function useFishMovement(
         break;
       }
 
-      case "spiral": {
+      case 'spiral': {
         const spiralTime = time * 2;
         const spiralRadius = 10 + Math.sin(spiralTime * 0.5) * 5;
         modifiedVelocity.x += Math.cos(spiralTime) * spiralRadius;
@@ -273,7 +273,7 @@ export function useFishMovement(
         break;
       }
 
-      case "straight":
+      case 'straight':
       default: {
         modifiedVelocity.x += (Math.random() - 0.5) * 8;
         modifiedVelocity.y += (Math.random() - 0.5) * 6;
@@ -288,7 +288,7 @@ export function useFishMovement(
     prevStates: FishMovementState[],
     deltaTime: number
   ): FishMovementState[] {
-    return prevStates.map((fishState) => {
+    return prevStates.map(fishState => {
       const params = fishParamsRef.current.get(fishState.id);
       if (!params) return fishState;
 
@@ -313,18 +313,18 @@ export function useFishMovement(
       );
 
       if (newState.patternTimer <= 0) {
-        const patterns: Array<"straight" | "zigzag" | "circular" | "spiral"> = [
-          "straight",
-          "zigzag",
-          "circular",
-          "spiral",
+        const patterns: Array<'straight' | 'zigzag' | 'circular' | 'spiral'> = [
+          'straight',
+          'zigzag',
+          'circular',
+          'spiral',
         ];
         newState.swimmingPattern =
           patterns[Math.floor(Math.random() * patterns.length)];
         newState.patternTimer = 2 + Math.random() * 4;
       }
 
-      if (newState.behaviorState === "feeding" && checkFoodReached(newState)) {
+      if (newState.behaviorState === 'feeding' && checkFoodReached(newState)) {
         console.log(
           `🐠 Fish ${newState.id} ATE food ${newState.targetFoodId}! (Close contact)`
         );
@@ -334,7 +334,7 @@ export function useFishMovement(
         }
 
         newState.energyLevel = Math.min(1, newState.energyLevel + 0.3);
-        newState.behaviorState = "playful";
+        newState.behaviorState = 'playful';
         newState.targetFoodId = undefined;
         newState.feedingCooldown = 0.5;
         newState.behaviorTimer = 2 + Math.random() * 2;
@@ -352,7 +352,7 @@ export function useFishMovement(
 
         if (nearestFood && nearestFood.id !== newState.targetFoodId) {
           const foodExists = foods.find(
-            (f) => f.id === nearestFood.id && !f.consumed
+            f => f.id === nearestFood.id && !f.consumed
           );
 
           if (foodExists) {
@@ -360,7 +360,7 @@ export function useFishMovement(
               `🎯 Fish ${newState.id} targeting food ${nearestFood.id}`
             );
 
-            newState.behaviorState = "feeding";
+            newState.behaviorState = 'feeding';
             newState.targetFoodId = nearestFood.id;
             newState.behaviorTimer = 6;
 
@@ -375,10 +375,10 @@ export function useFishMovement(
 
       if (newState.targetFoodId) {
         const targetFood = foods.find(
-          (f) => f.id === newState.targetFoodId && !f.consumed
+          f => f.id === newState.targetFoodId && !f.consumed
         );
         if (!targetFood) {
-          newState.behaviorState = "exploring";
+          newState.behaviorState = 'exploring';
           newState.targetFoodId = undefined;
           newState.behaviorTimer = 1;
           newState.targetPosition = getSafeTargetPosition(
@@ -388,25 +388,25 @@ export function useFishMovement(
         }
       }
 
-      if (newState.behaviorTimer <= 0 && newState.behaviorState !== "feeding") {
+      if (newState.behaviorTimer <= 0 && newState.behaviorState !== 'feeding') {
         const rand = Math.random();
 
         if (newState.energyLevel > 0.8 && rand < 0.3) {
-          newState.behaviorState = "darting";
+          newState.behaviorState = 'darting';
           newState.behaviorTimer = 0.8 + Math.random() * 0.5;
         } else if (newState.playfulnessTimer <= 0 && rand < 0.4) {
-          newState.behaviorState = "playful";
+          newState.behaviorState = 'playful';
           newState.behaviorTimer = 2 + Math.random() * 2;
           newState.playfulnessTimer = 8 + Math.random() * 5;
         } else if (newState.explorationTimer <= 0 && rand < 0.6) {
-          newState.behaviorState = "exploring";
+          newState.behaviorState = 'exploring';
           newState.behaviorTimer = 3 + Math.random() * 3;
           newState.explorationTimer = 5 + Math.random() * 3;
         } else if (rand < 0.1) {
-          newState.behaviorState = "hovering";
+          newState.behaviorState = 'hovering';
           newState.behaviorTimer = 1 + Math.random() * 1.5;
         } else {
-          newState.behaviorState = "exploring";
+          newState.behaviorState = 'exploring';
           newState.behaviorTimer = 2 + Math.random() * 2;
         }
 
@@ -423,22 +423,22 @@ export function useFishMovement(
       let speed = params.speed * newState.energyLevel;
 
       switch (newState.behaviorState) {
-        case "feeding":
+        case 'feeding':
           speed = params.feedingSpeed;
           if (distToTarget < 40) {
             speed *= 0.7;
           }
           break;
-        case "darting":
+        case 'darting':
           speed *= params.darting.speedMultiplier;
           break;
-        case "playful":
+        case 'playful':
           speed *= 1.4;
           break;
-        case "exploring":
+        case 'exploring':
           speed *= 1.2;
           break;
-        case "hovering":
+        case 'hovering':
           speed *= 0.3;
           break;
       }
@@ -453,12 +453,12 @@ export function useFishMovement(
         };
       }
 
-      if (newState.behaviorState !== "feeding") {
+      if (newState.behaviorState !== 'feeding') {
         desiredVelocity = applySwimmingPattern(newState, desiredVelocity);
       }
 
       const turnSpeed =
-        newState.behaviorState === "feeding"
+        newState.behaviorState === 'feeding'
           ? params.turnRate * 2
           : params.turnRate * 1.5;
       newState.velocity = {
@@ -470,16 +470,16 @@ export function useFishMovement(
           (desiredVelocity.y - newState.velocity.y) * turnSpeed * deltaTime,
       };
 
-      const minSpeed = newState.behaviorState === "hovering" ? 5 : 15;
+      const minSpeed = newState.behaviorState === 'hovering' ? 5 : 15;
       if (
         Math.abs(newState.velocity.x) < minSpeed &&
-        newState.behaviorState !== "hovering"
+        newState.behaviorState !== 'hovering'
       ) {
         newState.velocity.x = Math.sign(newState.velocity.x || 1) * minSpeed;
       }
       if (
         Math.abs(newState.velocity.y) < minSpeed * 0.7 &&
-        newState.behaviorState !== "hovering"
+        newState.behaviorState !== 'hovering'
       ) {
         newState.velocity.y =
           Math.sign(newState.velocity.y || 1) * (minSpeed * 0.7);
@@ -538,7 +538,7 @@ export function useFishMovement(
         newState.directionChangeCooldown = params.directionChangeCooldown;
         newState.lastVelocityX = newState.velocity.x;
 
-        if (newState.behaviorState !== "feeding") {
+        if (newState.behaviorState !== 'feeding') {
           newState.targetPosition = getSafeTargetPosition(
             newState.position,
             params.minTargetDistance
@@ -555,7 +555,7 @@ export function useFishMovement(
       fishParamsRef.current.clear();
     }
 
-    initialFish.forEach((fish) => {
+    initialFish.forEach(fish => {
       if (!fishParamsRef.current.has(fish.id)) {
         fishParamsRef.current.set(fish.id, generateMovementParams(fish));
       }
@@ -566,7 +566,7 @@ export function useFishMovement(
       const deltaTime = Math.min((now - lastUpdateTimeRef.current) / 1000, 0.1);
       lastUpdateTimeRef.current = now;
 
-      setFishStates((prevStates) => updateFishStates(prevStates, deltaTime));
+      setFishStates(prevStates => updateFishStates(prevStates, deltaTime));
 
       animationFrameRef.current = requestAnimationFrame(animate);
     };
@@ -582,11 +582,11 @@ export function useFishMovement(
 
   useEffect(() => {
     if (initialFish.length > 0) {
-      setFishStates(initialFish.map((fish) => initializeFishState(fish)));
+      setFishStates(initialFish.map(fish => initializeFishState(fish)));
     }
   }, [initialFish.length]);
 
-  return fishStates.map((state) => ({
+  return fishStates.map(state => ({
     id: state.id,
     position: {
       x: (state.position.x / aquariumBounds.width) * 100,

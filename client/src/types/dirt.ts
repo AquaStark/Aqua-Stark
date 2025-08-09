@@ -12,7 +12,7 @@ export enum DirtType {
   BASIC = 'basic',
   ALGAE = 'algae',
   WASTE = 'waste',
-  DEBRIS = 'debris'
+  DEBRIS = 'debris',
 }
 
 export interface DirtSystemConfig {

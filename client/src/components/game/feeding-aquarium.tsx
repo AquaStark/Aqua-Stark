@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import React, { useRef, useState, useCallback, useEffect } from "react";
-import type { FishType } from "@/types/game";
-import { useFishMovement } from "@/hooks/use-fish-movement";
-import { FishDisplay } from "./fish-display";
-import { Food } from "@/components/food/Food";
-import { FoodParticles } from "@/components/food/FoodParticles";
-import type { FoodItem } from "@/types/food";
+import React, { useRef, useState, useCallback, useEffect } from 'react';
+import type { FishType } from '@/types/game';
+import { useFishMovement } from '@/hooks/use-fish-movement';
+import { FishDisplay } from './fish-display';
+import { Food } from '@/components/food/Food';
+import { FoodParticles } from '@/components/food/FoodParticles';
+import type { FoodItem } from '@/types/food';
 
 interface FeedingSystemProps {
   isFeeding: boolean;
@@ -16,7 +16,11 @@ interface FeedingSystemProps {
     position: { x: number; y: number };
     trigger: boolean;
   }>;
-  handleFeedClick: (clientX: number, clientY: number, containerRect: DOMRect | undefined) => boolean;
+  handleFeedClick: (
+    clientX: number,
+    clientY: number,
+    containerRect: DOMRect | undefined
+  ) => boolean;
   handleFoodConsumed: (foodId: number) => void;
   handleParticleComplete: (foodId: number) => void;
   updateAquariumBounds: (bounds: { width: number; height: number }) => void;
@@ -53,10 +57,10 @@ export function FeedingAquarium({
         feedingSystem.updateAquariumBounds(newDimensions);
       }
     };
-    
+
     handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [feedingSystem]);
 
   // Handle container clicks for feeding
@@ -73,17 +77,18 @@ export function FeedingAquarium({
 
   // Create a lookup map for fish metadata
   const fishMetadataMap = React.useMemo(
-    () => Object.fromEntries(
-      fish.map(f => [
-        f.id,
-        {
-          name: f.name,
-          image: f.image,
-          rarity: f.rarity,
-          generation: f.generation
-        }
-      ])
-    ),
+    () =>
+      Object.fromEntries(
+        fish.map(f => [
+          f.id,
+          {
+            name: f.name,
+            image: f.image,
+            rarity: f.rarity,
+            generation: f.generation,
+          },
+        ])
+      ),
     [fish]
   );
 
@@ -94,24 +99,24 @@ export function FeedingAquarium({
     onFoodConsumed: feedingSystem.handleFoodConsumed,
   }).map(state => ({
     ...state,
-    ...fishMetadataMap[state.id]
+    ...fishMetadataMap[state.id],
   }));
 
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full fish-container overflow-hidden"
+      className='relative w-full h-full fish-container overflow-hidden'
       onClick={handleContainerClick}
       style={{
-        cursor: feedingSystem.isFeeding ? "pointer" : "default",
-        userSelect: "none",
+        cursor: feedingSystem.isFeeding ? 'pointer' : 'default',
+        userSelect: 'none',
       }}
     >
       <FishDisplay fish={fishWithMovement} />
       {feedingSystem.foods.map((food: FoodItem) => (
         <Food key={food.id} food={food} aquariumBounds={dimensions} />
       ))}
-      {feedingSystem.particleEffects.map((effect) => (
+      {feedingSystem.particleEffects.map(effect => (
         <FoodParticles
           key={effect.id}
           position={effect.position}
@@ -121,4 +126,4 @@ export function FeedingAquarium({
       ))}
     </div>
   );
-} 
+}

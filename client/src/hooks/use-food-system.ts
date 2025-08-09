@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState, useCallback, useRef, useEffect } from "react";
-import type { FoodItem, FoodSystemState } from "@/types/food";
+import { useState, useCallback, useRef, useEffect } from 'react';
+import type { FoodItem, FoodSystemState } from '@/types/food';
 
 interface UseFoodSystemOptions {
   aquariumBounds: { width: number; height: number };
@@ -31,9 +31,9 @@ export function useFoodSystem(options: UseFoodSystemOptions) {
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Date.now();
-      setFoodState((prev) => ({
+      setFoodState(prev => ({
         ...prev,
-        foods: prev.foods.filter((food) => {
+        foods: prev.foods.filter(food => {
           const age = (now - food.createdAt) / 1000;
           if (age > foodLifetime) {
             console.log(`⏰ Food ${food.id} expired after ${age.toFixed(1)}s`);
@@ -76,7 +76,7 @@ export function useFoodSystem(options: UseFoodSystemOptions) {
         )}%, ${foodPosition.y.toFixed(1)}%)`
       );
 
-      setFoodState((prev) => ({
+      setFoodState(prev => ({
         ...prev,
         foods: [...prev.foods, newFood],
         lastSpawnTime: now,
@@ -96,17 +96,17 @@ export function useFoodSystem(options: UseFoodSystemOptions) {
   const consumeFood = useCallback((foodId: number) => {
     console.log(`🍽️ CONSUMING food ${foodId} - removing immediately!`);
 
-    setFoodState((prev) => ({
+    setFoodState(prev => ({
       ...prev,
-      foods: prev.foods.filter((food) => food.id !== foodId), // Remove immediately!
+      foods: prev.foods.filter(food => food.id !== foodId), // Remove immediately!
     }));
   }, []);
 
   // Update food animations
   const updateFoodAnimations = useCallback(() => {
-    setFoodState((prev) => ({
+    setFoodState(prev => ({
       ...prev,
-      foods: prev.foods.map((food) => {
+      foods: prev.foods.map(food => {
         if (food.scale < 1 && !food.consumed) {
           return { ...food, scale: Math.min(1, food.scale + 0.2) };
         }

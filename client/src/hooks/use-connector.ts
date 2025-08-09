@@ -1,5 +1,5 @@
-import { useConnect, useAccount } from "@starknet-react/core";
-import { useState, useCallback } from "react";
+import { useConnect, useAccount } from '@starknet-react/core';
+import { useState, useCallback } from 'react';
 
 export function useStarknetConnect() {
   const { connect, connectors } = useConnect();
@@ -13,7 +13,7 @@ export function useStarknetConnect() {
     if (!connector) return;
     setHasTriedConnect(true);
     await connect({ connector });
-    console.log("exit");
+    console.log('exit');
   }, [connect, connectors]);
 
   return { status, handleConnect, hasTriedConnect, setHasTriedConnect };

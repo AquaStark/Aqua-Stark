@@ -1,4 +1,4 @@
-import { getWalletConfig, WALLET_MODES, type WalletMode } from "../config";
+import { getWalletConfig, WALLET_MODES, type WalletMode } from '../config';
 
 /**
  * Utility functions for managing wallet modes
@@ -34,8 +34,8 @@ export class WalletModeManager {
    */
   static getModeDescription(): string {
     return this.config.useKatanaAccounts
-      ? "Development Mode (Katana Prefunded Accounts)"
-      : "Production Mode (Cartridge Controller)";
+      ? 'Development Mode (Katana Prefunded Accounts)'
+      : 'Production Mode (Cartridge Controller)';
   }
 
   /**
@@ -52,8 +52,8 @@ export class WalletModeManager {
     };
 
     // Add console logging for debugging
-    console.log("🔗 Wallet Mode:", this.getModeDescription());
-    console.log("📊 Debug Info:", debugInfo);
+    console.log('🔗 Wallet Mode:', this.getModeDescription());
+    console.log('📊 Debug Info:', debugInfo);
 
     return debugInfo;
   }
@@ -64,17 +64,17 @@ export class WalletModeManager {
   static getRecommendations(): string[] {
     if (this.isKatanaMode()) {
       return [
-        "✅ Perfect for development and testing",
-        "🚀 Fast iteration with no gas costs",
-        "🔧 Easy debugging with known accounts",
-        "⚠️ Remember to test with Cartridge before production",
+        '✅ Perfect for development and testing',
+        '🚀 Fast iteration with no gas costs',
+        '🔧 Easy debugging with known accounts',
+        '⚠️ Remember to test with Cartridge before production',
       ];
     } else {
       return [
-        "✅ Production-ready wallet experience",
-        "🔐 Secure passkey authentication",
-        "🎮 Optimized for gaming with session keys",
-        "💰 Real transactions with gas costs",
+        '✅ Production-ready wallet experience',
+        '🔐 Secure passkey authentication',
+        '🎮 Optimized for gaming with session keys',
+        '💰 Real transactions with gas costs',
       ];
     }
   }

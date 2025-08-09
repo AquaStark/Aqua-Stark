@@ -1,8 +1,8 @@
-import { Account, constants } from "starknet";
-import { dojoConfig } from "../../dojoConfig";
-import AquaStarkService from "../dojoclient/index";
-import { setupWorld } from "../typescript/contracts.gen";
-import { useAccount } from "@starknet-react/core";
+import { Account, constants } from 'starknet';
+import { dojoConfig } from '../../dojoConfig';
+import AquaStarkService from '../dojoclient/index';
+import { setupWorld } from '../typescript/contracts.gen';
+import { useAccount } from '@starknet-react/core';
 
 // Mock or real setup for Dojo client and account
 // In a real test, you would use actual provider and account details
@@ -12,15 +12,15 @@ const manifest = dojoConfig.manifest;
 async function main() {
   try {
     // Setup DojoProvider and client
-    const { DojoProvider } = await import("@dojoengine/core");
+    const { DojoProvider } = await import('@dojoengine/core');
     const dojoProvider = new DojoProvider(manifest, providerUrl);
     const client = setupWorld(dojoProvider);
 
     // Use a test account (replace with real keys for integration)
     const testAddress =
-      "0x0620fd15e0b464c174933b5235c72a50376379ee1528719848e144385d0a1ed4";
+      '0x0620fd15e0b464c174933b5235c72a50376379ee1528719848e144385d0a1ed4';
     const testPrivateKey =
-      "0x05d67e95f8d5913249452a410db389110c390a36eb0e2ecb092c670ba945b8b9";
+      '0x05d67e95f8d5913249452a410db389110c390a36eb0e2ecb092c670ba945b8b9';
     const account = new Account(
       dojoProvider.provider,
       testAddress,
@@ -59,12 +59,12 @@ async function main() {
     // console.log("getAquarium result:", aquariumInfo);
 
     const aquarium = await aquaService.newAquarium(
-      "0x0620fd15e0b464c174933b5235c72a50376379ee1528719848e144385d0a1ed4",
+      '0x0620fd15e0b464c174933b5235c72a50376379ee1528719848e144385d0a1ed4',
       10
     );
-    console.log("aquarium:", aquarium);
+    console.log('aquarium:', aquarium);
   } catch (error) {
-    console.error("AquaStarkService test failed:", error);
+    console.error('AquaStarkService test failed:', error);
     process.exit(1);
   }
 }

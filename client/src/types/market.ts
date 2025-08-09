@@ -10,7 +10,7 @@ export interface Fish {
   id: number;
   name: string;
   image: string;
-  rarity: "Common" | "Uncommon" | "Rare" | "Epic" | "Legendary";
+  rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
   generation: number;
   level: number;
   traits: {
@@ -45,13 +45,13 @@ export interface MarketFilter {
   minPrice: number;
   maxPrice: number;
   traits: string[];
-  listingType: "all" | "sale" | "auction" | "exchange";
-  sort: "newest" | "price-low" | "price-high" | "rarity" | "level";
+  listingType: 'all' | 'sale' | 'auction' | 'exchange';
+  sort: 'newest' | 'price-low' | 'price-high' | 'rarity' | 'level';
 }
 
 export interface Transaction {
   id: number;
-  type: "purchase" | "sale" | "exchange" | "auction_win";
+  type: 'purchase' | 'sale' | 'exchange' | 'auction_win';
   fishName: string;
   image: string;
   price?: number;
