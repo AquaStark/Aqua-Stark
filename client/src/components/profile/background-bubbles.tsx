@@ -1,10 +1,10 @@
 export function BackgroundBubbles() {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className='absolute inset-0 overflow-hidden pointer-events-none'>
       {[...Array(15)].map((_, i) => (
         <div
           key={i}
-          className="absolute rounded-full bg-blue-600/20 animate-float"
+          className='absolute rounded-full bg-blue-600/20 animate-float'
           style={{
             width: `${Math.random() * 60 + 20}px`,
             height: `${Math.random() * 60 + 20}px`,
@@ -16,5 +16,5 @@ export function BackgroundBubbles() {
         />
       ))}
     </div>
-  )
+  );
 }

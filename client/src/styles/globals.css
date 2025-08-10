@@ -2,16 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @font-face {
-    font-family: "Poppins-ExtraBold";
-    src: url("@/assets/gui/fonts/Poppins-ExtraBold.ttf") format("truetype");
-    font-weight: 800;
-    font-style: normal;
-  }
-  
-  html, body {
-  font-family: "Poppins-ExtraBold", sans-serif;
+  font-family: 'Poppins-ExtraBold';
+  src: url('@/assets/gui/fonts/Poppins-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+html,
+body {
+  font-family: 'Poppins-ExtraBold', sans-serif;
 }
 
 /* Animation classes */
@@ -26,13 +26,18 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, rgba(0, 92, 153, 0.1), rgba(0, 123, 255, 0.1));
+  background: linear-gradient(
+    45deg,
+    rgba(0, 92, 153, 0.1),
+    rgba(0, 123, 255, 0.1)
+  );
   animation: waterFlow 8s ease-in-out infinite;
   pointer-events: none;
 }
 
 @keyframes gradientShift {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
   50% {
@@ -41,7 +46,8 @@
 }
 
 @keyframes waterFlow {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0) translateY(0);
   }
   25% {

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState, useCallback, useRef, useEffect } from "react";
-import { useFoodSystem } from "@/hooks/use-food-system";
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { useFoodSystem } from '@/hooks/use-food-system';
 
 interface FeedingSystemOptions {
   aquariumBounds: { width: number; height: number };
@@ -89,14 +89,16 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
       feedingTimeoutRef.current = null;
     }
 
-    console.log("🛑 Feeding mode stopped");
+    console.log('🛑 Feeding mode stopped');
   }, []);
 
-  // Handle food spawning 
+  // Handle food spawning
   const handleFeedClick = useCallback(
     (clientX: number, clientY: number, containerRect: DOMRect | undefined) => {
       if (!containerRect || !feedingState.isFeeding) {
-        console.log("🚫 Cannot feed - feeding mode is not active or container not ready");
+        console.log(
+          '🚫 Cannot feed - feeding mode is not active or container not ready'
+        );
         return false;
       }
 
@@ -107,7 +109,7 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
       const spawned = spawnFood(clickX, clickY);
 
       if (!spawned) {
-        console.log("⏳ Food spawning on cooldown");
+        console.log('⏳ Food spawning on cooldown');
       }
 
       return spawned;
@@ -118,7 +120,7 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
   // Handle food consumption with particle effects
   const handleFoodConsumed = useCallback(
     (foodId: number) => {
-      const consumedFood = foods.find((f) => f.id === foodId);
+      const consumedFood = foods.find(f => f.id === foodId);
       if (consumedFood) {
         // Add particle effect
         setFeedingState(prev => ({
@@ -144,14 +146,16 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
   const handleParticleComplete = useCallback((foodId: number) => {
     setFeedingState(prev => ({
       ...prev,
-      particleEffects: prev.particleEffects.filter(effect => effect.id !== foodId),
+      particleEffects: prev.particleEffects.filter(
+        effect => effect.id !== foodId
+      ),
     }));
   }, []);
 
   // Get feeding status info
   const getFeedingStatus = useCallback(() => {
     const { isFeeding, feedingStartTime, feedingDuration } = feedingState;
-    
+
     if (!isFeeding || !feedingStartTime) {
       return {
         isActive: false,
@@ -172,9 +176,12 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
   }, [feedingState]);
 
   // Update aquarium bounds
-  const updateAquariumBounds = useCallback((newBounds: { width: number; height: number }) => {
-    setAquariumBounds(newBounds);
-  }, []);
+  const updateAquariumBounds = useCallback(
+    (newBounds: { width: number; height: number }) => {
+      setAquariumBounds(newBounds);
+    },
+    []
+  );
 
   // Handle animations
   useEffect(() => {
@@ -195,7 +202,7 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
     // Food system
     foods,
     canSpawnFood,
-    
+
     // Feeding system
     feedingState,
     startFeeding,
@@ -205,9 +212,9 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
     handleParticleComplete,
     getFeedingStatus,
     updateAquariumBounds,
-    
+
     // Status
     isFeeding: feedingState.isFeeding,
     particleEffects: feedingState.particleEffects,
   };
-} 
+}

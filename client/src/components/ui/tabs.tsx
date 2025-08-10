@@ -1,10 +1,10 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import * as TabsPrimitive from "@radix-ui/react-tabs"
-import { cn } from "@/lib/utils"
+import * as React from 'react';
+import * as TabsPrimitive from '@radix-ui/react-tabs';
+import { cn } from '@/lib/utils';
 
-const Tabs = TabsPrimitive.Root
+const Tabs = TabsPrimitive.Root;
 
 const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
@@ -12,14 +12,11 @@ const TabsList = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <TabsPrimitive.List
     ref={ref}
-    className={cn(
-      "flex w-full gap-2 p-1 bg-blue-700 rounded-lg",
-      className
-    )}
+    className={cn('flex w-full gap-2 p-1 bg-blue-700 rounded-lg', className)}
     {...props}
   />
-))
-TabsList.displayName = TabsPrimitive.List.displayName
+));
+TabsList.displayName = TabsPrimitive.List.displayName;
 
 const TabsTrigger = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Trigger>,
@@ -28,15 +25,15 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex-1 flex items-center justify-center gap-1 text-xs md:text-sm font-normal px-4 py-0.5 md:py-1 rounded-lg transition-all duration-200",
-      "data-[state=active]:bg-blue-500/30 data-[state=active]:text-white",
-      "data-[state=inactive]:text-gray-200 hover:data-[state=inactive]:bg-blue-700",
+      'flex-1 flex items-center justify-center gap-1 text-xs md:text-sm font-normal px-4 py-0.5 md:py-1 rounded-lg transition-all duration-200',
+      'data-[state=active]:bg-blue-500/30 data-[state=active]:text-white',
+      'data-[state=inactive]:text-gray-200 hover:data-[state=inactive]:bg-blue-700',
       className
     )}
     {...props}
   />
-))
-TabsTrigger.displayName = TabsPrimitive.Trigger.displayName
+));
+TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
 
 const TabsContent = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Content>,
@@ -44,10 +41,10 @@ const TabsContent = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <TabsPrimitive.Content
     ref={ref}
-    className={cn("mt-4", className)}
+    className={cn('mt-4', className)}
     {...props}
   />
-))
-TabsContent.displayName = TabsPrimitive.Content.displayName
+));
+TabsContent.displayName = TabsPrimitive.Content.displayName;
 
-export { Tabs, TabsList, TabsTrigger, TabsContent }
+export { Tabs, TabsList, TabsTrigger, TabsContent };

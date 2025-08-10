@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import type React from "react";
-import { useEffect, useState } from "react";
+import type React from 'react';
+import { useEffect, useState } from 'react';
 
 interface Particle {
   id: number;
@@ -14,7 +14,7 @@ interface Particle {
   color: string;
   rotation: number;
   rotationSpeed: number;
-  type: "coin" | "sparkle" | "bubble";
+  type: 'coin' | 'sparkle' | 'bubble';
   scale: number;
   opacity: number;
 }
@@ -35,12 +35,12 @@ export const FoodParticles: React.FC<FoodParticlesProps> = ({
   useEffect(() => {
     if (!trigger) return;
 
-    console.log("🎆 Creating AMAZING particles at", position);
+    console.log('🎆 Creating AMAZING particles at', position);
 
     // Create diverse particles
     const newParticles: Particle[] = [];
-    const coinColors = ["#FFD700", "#FFA500", "#FF8C00", "#DAA520", "#B8860B"];
-    const sparkleColors = ["#FFFFFF", "#FFFF00", "#FFE4B5", "#F0E68C"];
+    const coinColors = ['#FFD700', '#FFA500', '#FF8C00', '#DAA520', '#B8860B'];
+    const sparkleColors = ['#FFFFFF', '#FFFF00', '#FFE4B5', '#F0E68C'];
 
     // Create coin particles (main effect)
     for (let i = 0; i < 12; i++) {
@@ -57,7 +57,7 @@ export const FoodParticles: React.FC<FoodParticlesProps> = ({
         color: coinColors[Math.floor(Math.random() * coinColors.length)],
         rotation: Math.random() * 360,
         rotationSpeed: (Math.random() - 0.5) * 10,
-        type: "coin",
+        type: 'coin',
         scale: 1,
         opacity: 1,
       });
@@ -78,7 +78,7 @@ export const FoodParticles: React.FC<FoodParticlesProps> = ({
         color: sparkleColors[Math.floor(Math.random() * sparkleColors.length)],
         rotation: 0,
         rotationSpeed: 0,
-        type: "sparkle",
+        type: 'sparkle',
         scale: 1,
         opacity: 1,
       });
@@ -96,10 +96,10 @@ export const FoodParticles: React.FC<FoodParticlesProps> = ({
         vy: Math.sin(angle) * speed - 0.5,
         life: 1,
         size: 4 + Math.random() * 3,
-        color: "rgba(255, 255, 255, 0.6)",
+        color: 'rgba(255, 255, 255, 0.6)',
         rotation: 0,
         rotationSpeed: 0,
-        type: "bubble",
+        type: 'bubble',
         scale: 1,
         opacity: 0.6,
       });
@@ -110,9 +110,9 @@ export const FoodParticles: React.FC<FoodParticlesProps> = ({
     // Animate particles with physics
     let animationId: number;
     const animate = () => {
-      setParticles((prev) => {
+      setParticles(prev => {
         const updated = prev
-          .map((particle) => {
+          .map(particle => {
             const newParticle = { ...particle };
 
             // Update position
@@ -125,7 +125,7 @@ export const FoodParticles: React.FC<FoodParticlesProps> = ({
             newParticle.vy *= 0.98;
 
             // Update rotation for coins
-            if (newParticle.type === "coin") {
+            if (newParticle.type === 'coin') {
               newParticle.rotation += newParticle.rotationSpeed;
             }
 
@@ -134,16 +134,16 @@ export const FoodParticles: React.FC<FoodParticlesProps> = ({
 
             // Different fade patterns for different particle types
             switch (newParticle.type) {
-              case "coin":
+              case 'coin':
                 newParticle.opacity = newParticle.life * 0.9;
                 newParticle.scale = 1 + (1 - newParticle.life) * 0.3; // Slight growth
                 break;
-              case "sparkle":
+              case 'sparkle':
                 newParticle.opacity = newParticle.life * newParticle.life; // Faster fade
                 newParticle.scale =
                   1 + Math.sin(Date.now() * 0.01 + newParticle.id) * 0.2; // Twinkling
                 break;
-              case "bubble":
+              case 'bubble':
                 newParticle.opacity = newParticle.life * 0.4;
                 newParticle.scale = 1 + (1 - newParticle.life) * 0.5; // Growth
                 break;
@@ -151,10 +151,10 @@ export const FoodParticles: React.FC<FoodParticlesProps> = ({
 
             return newParticle;
           })
-          .filter((particle) => particle.life > 0);
+          .filter(particle => particle.life > 0);
 
         if (updated.length === 0) {
-          console.log("🎆 Amazing particles finished!");
+          console.log('🎆 Amazing particles finished!');
           onComplete();
           return [];
         }
@@ -175,37 +175,37 @@ export const FoodParticles: React.FC<FoodParticlesProps> = ({
 
   return (
     <>
-      {particles.map((particle) => {
+      {particles.map(particle => {
         // Render different particle types
         switch (particle.type) {
-          case "coin":
+          case 'coin':
             return (
               <div
                 key={particle.id}
-                className="absolute pointer-events-none"
+                className='absolute pointer-events-none'
                 style={{
                   left: `${particle.x}%`,
                   top: `${particle.y}%`,
                   width: `${particle.size}px`,
                   height: `${particle.size}px`,
                   backgroundColor: particle.color,
-                  borderRadius: "50%",
+                  borderRadius: '50%',
                   opacity: particle.opacity,
                   transform: `translate(-50%, -50%) scale(${particle.scale}) rotate(${particle.rotation}deg)`,
                   zIndex: 60,
                   boxShadow: `0 0 ${particle.size * 0.5}px ${
                     particle.color
                   }, inset 0 1px 2px rgba(255,255,255,0.8)`,
-                  border: "1px solid rgba(255,255,255,0.3)",
+                  border: '1px solid rgba(255,255,255,0.3)',
                 }}
               />
             );
 
-          case "sparkle":
+          case 'sparkle':
             return (
               <div
                 key={particle.id}
-                className="absolute pointer-events-none"
+                className='absolute pointer-events-none'
                 style={{
                   left: `${particle.x}%`,
                   top: `${particle.y}%`,
@@ -219,11 +219,11 @@ export const FoodParticles: React.FC<FoodParticlesProps> = ({
                 {/* Star shape using CSS */}
                 <div
                   style={{
-                    width: "100%",
-                    height: "100%",
+                    width: '100%',
+                    height: '100%',
                     background: particle.color,
                     clipPath:
-                      "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)",
+                      'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)',
                     filter: `drop-shadow(0 0 ${particle.size * 0.3}px ${
                       particle.color
                     })`,
@@ -232,24 +232,24 @@ export const FoodParticles: React.FC<FoodParticlesProps> = ({
               </div>
             );
 
-          case "bubble":
+          case 'bubble':
             return (
               <div
                 key={particle.id}
-                className="absolute pointer-events-none"
+                className='absolute pointer-events-none'
                 style={{
                   left: `${particle.x}%`,
                   top: `${particle.y}%`,
                   width: `${particle.size}px`,
                   height: `${particle.size}px`,
-                  backgroundColor: "transparent",
-                  border: "1px solid rgba(255,255,255,0.8)",
-                  borderRadius: "50%",
+                  backgroundColor: 'transparent',
+                  border: '1px solid rgba(255,255,255,0.8)',
+                  borderRadius: '50%',
                   opacity: particle.opacity,
                   transform: `translate(-50%, -50%) scale(${particle.scale})`,
                   zIndex: 55,
                   background:
-                    "radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.1))",
+                    'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.1))',
                 }}
               />
             );

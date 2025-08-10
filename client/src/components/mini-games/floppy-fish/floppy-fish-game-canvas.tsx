@@ -1,10 +1,10 @@
-import { useGameLogic } from "../../../hooks/minigames/floppy-fish/use-game-logic";
-import { useInputHandler } from "../../../hooks/minigames/floppy-fish/use-input-handler";
-import { Fish } from "./fish";
-import { Obstacles } from "./obstacles";
-import { BottomInfoPanel } from "./bottom-info-panel";
-import { GameOverScreen } from "./game-over-screen";
-import { GameUI } from "./game-ui";
+import { useGameLogic } from '../../../hooks/minigames/floppy-fish/use-game-logic';
+import { useInputHandler } from '../../../hooks/minigames/floppy-fish/use-input-handler';
+import { Fish } from './fish';
+import { Obstacles } from './obstacles';
+import { BottomInfoPanel } from './bottom-info-panel';
+import { GameOverScreen } from './game-over-screen';
+import { GameUI } from './game-ui';
 
 interface FloppyFishGameCanvasProps {
   selectedFish: {
@@ -15,7 +15,9 @@ interface FloppyFishGameCanvasProps {
   };
 }
 
-export function FloppyFishGameCanvas({ selectedFish }: FloppyFishGameCanvasProps) {
+export function FloppyFishGameCanvas({
+  selectedFish,
+}: FloppyFishGameCanvasProps) {
   const {
     fishY,
     columns,
@@ -43,17 +45,17 @@ export function FloppyFishGameCanvas({ selectedFish }: FloppyFishGameCanvasProps
   const scale = Math.min(scaleX, scaleY, 1.5); // Cap scale at 1.5 for better visibility
 
   return (
-    <div className="flex flex-col items-center justify-center w-full">
+    <div className='flex flex-col items-center justify-center w-full'>
       {/* Game Canvas */}
       <div
         ref={gameAreaRef}
-        className="relative bg-blue-900/20 border border-blue-600/30 rounded-2xl overflow-hidden cursor-pointer"
+        className='relative bg-blue-900/20 border border-blue-600/30 rounded-2xl overflow-hidden cursor-pointer'
         style={{
           width: GAME_WIDTH * scale,
           height: GAME_HEIGHT * scale,
           backgroundImage: "url('/mini-games/background.webp')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       >
         {/* Game Elements */}
@@ -66,7 +68,7 @@ export function FloppyFishGameCanvas({ selectedFish }: FloppyFishGameCanvasProps
           FISH_X={FISH_X}
           FISH_SIZE={FISH_SIZE}
         />
-        
+
         <Obstacles
           columns={columns}
           scale={scale}
@@ -74,12 +76,12 @@ export function FloppyFishGameCanvas({ selectedFish }: FloppyFishGameCanvasProps
           GAP_HEIGHT={GAP_HEIGHT}
           GAME_HEIGHT={GAME_HEIGHT}
         />
-        
+
         <GameUI score={score} started={started} />
-        
+
         {gameOver && <GameOverScreen score={score} onRestart={resetGame} />}
       </div>
-      
+
       {/* Bottom Info Panel */}
       <BottomInfoPanel
         selectedFish={selectedFish}
@@ -88,4 +90,4 @@ export function FloppyFishGameCanvas({ selectedFish }: FloppyFishGameCanvasProps
       />
     </div>
   );
-} 
+}

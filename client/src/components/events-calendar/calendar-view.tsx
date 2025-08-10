@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface CalendarViewProps {
   events: any[];
@@ -24,7 +24,7 @@ export function CalendarView({ events = [], onEventClick }: CalendarViewProps) {
   };
 
   // Get month name and year
-  const monthName = currentDate.toLocaleString("default", { month: "long" });
+  const monthName = currentDate.toLocaleString('default', { month: 'long' });
   const year = currentDate.getFullYear();
 
   // Get days in month
@@ -55,7 +55,7 @@ export function CalendarView({ events = [], onEventClick }: CalendarViewProps) {
   }
 
   // Get events for the current month
-  const monthEvents = (events || []).filter((event) => {
+  const monthEvents = (events || []).filter(event => {
     const eventStartDate = new Date(event.startDate);
     const eventEndDate = new Date(event.endDate);
 
@@ -75,7 +75,7 @@ export function CalendarView({ events = [], onEventClick }: CalendarViewProps) {
   // Group events by day
   const eventsByDay: Record<number, any[]> = {};
 
-  monthEvents.forEach((event) => {
+  monthEvents.forEach(event => {
     const eventStartDate = new Date(event.startDate);
     const eventEndDate = new Date(event.endDate);
 
@@ -100,33 +100,33 @@ export function CalendarView({ events = [], onEventClick }: CalendarViewProps) {
   });
 
   return (
-    <div className="bg-blue-700 rounded-xl p-4">
+    <div className='bg-blue-700 rounded-xl p-4'>
       {/* Calendar Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className='flex items-center justify-between mb-6'>
         <button
           onClick={prevMonth}
-          className="p-1 rounded-full hover:bg-blue-700/50"
+          className='p-1 rounded-full hover:bg-blue-700/50'
         >
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className='w-6 h-6' />
         </button>
 
-        <h2 className="text-xl font-bold">
+        <h2 className='text-xl font-bold'>
           {monthName} {year}
         </h2>
 
         <button
           onClick={nextMonth}
-          className="p-1 rounded-full hover:bg-blue-700/50"
+          className='p-1 rounded-full hover:bg-blue-700/50'
         >
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className='w-6 h-6' />
         </button>
       </div>
 
       {/* Calendar Grid */}
-      <div className="grid grid-cols-7 gap-1">
+      <div className='grid grid-cols-7 gap-1'>
         {/* Weekday Headers */}
-        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-          <div key={day} className="text-center py-2 text-blue-300 font-medium">
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+          <div key={day} className='text-center py-2 text-blue-300 font-medium'>
             {day}
           </div>
         ))}
@@ -136,39 +136,39 @@ export function CalendarView({ events = [], onEventClick }: CalendarViewProps) {
           <div
             key={index}
             className={`min-h-[70px] 2xl:min-h-[100px] p-1 rounded ${
-              day ? "bg-blue-800/40" : ""
+              day ? 'bg-blue-800/40' : ''
             }`}
           >
             {day && (
               <>
-                <div className="flex justify-between items-center mb-1 px-1">
-                  <span className="text-sm font-medium">{day}</span>
+                <div className='flex justify-between items-center mb-1 px-1'>
+                  <span className='text-sm font-medium'>{day}</span>
                   {eventsByDay[day] && (
-                    <span className="text-xs bg-blue-600 rounded-full px-1.5 py-0.5">
+                    <span className='text-xs bg-blue-600 rounded-full px-1.5 py-0.5'>
                       {eventsByDay[day].length}
                     </span>
                   )}
                 </div>
 
-                <div className="space-y-1 max-h-[80px] overflow-y-auto">
+                <div className='space-y-1 max-h-[80px] overflow-y-auto'>
                   {eventsByDay[day]?.map((event, eventIndex) => {
                     // Determine event color based on category
                     let bgColor;
                     switch (event.category) {
-                      case "special":
-                        bgColor = "bg-purple-500";
+                      case 'special':
+                        bgColor = 'bg-purple-500';
                         break;
-                      case "tournament":
-                        bgColor = "bg-yellow-500";
+                      case 'tournament':
+                        bgColor = 'bg-yellow-500';
                         break;
-                      case "offer":
-                        bgColor = "bg-blue-400";
+                      case 'offer':
+                        bgColor = 'bg-blue-400';
                         break;
-                      case "season":
-                        bgColor = "bg-green-500";
+                      case 'season':
+                        bgColor = 'bg-green-500';
                         break;
                       default:
-                        bgColor = "bg-gray-500";
+                        bgColor = 'bg-gray-500';
                     }
 
                     return (
@@ -176,13 +176,13 @@ export function CalendarView({ events = [], onEventClick }: CalendarViewProps) {
                         key={`${event.id}-${eventIndex}`}
                         className={`${bgColor} text-white text-xs p-1 rounded truncate cursor-pointer hover:opacity-80`}
                         onClick={() => onEventClick(event)}
-                        onKeyDown={(e) => {
+                        onKeyDown={e => {
                           if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault();
                             onEventClick(event);
                           }
                         }}
-                        role="button"
+                        role='button'
                         tabIndex={0}
                       >
                         {event.title}

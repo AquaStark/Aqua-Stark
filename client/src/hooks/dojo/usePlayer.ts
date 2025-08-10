@@ -1,7 +1,7 @@
-import { stringToFelt } from "@/utils/starknet";
-import { useDojoSDK } from "@dojoengine/sdk/react";
-import { useCallback } from "react";
-import { Account, AccountInterface, BigNumberish } from "starknet";
+import { stringToFelt } from '@/utils/starknet';
+import { useDojoSDK } from '@dojoengine/sdk/react';
+import { useCallback } from 'react';
+import { Account, AccountInterface, BigNumberish } from 'starknet';
 
 export const usePlayer = () => {
   const { client } = useDojoSDK();
@@ -11,14 +11,14 @@ export const usePlayer = () => {
       try {
         const usernameFelt = stringToFelt(username);
         if (Array.isArray(usernameFelt)) {
-          throw new Error("Username is too long.");
+          throw new Error('Username is too long.');
         }
         return await client.AquaStark.register(
           account,
           usernameFelt as BigNumberish
         );
       } catch (error) {
-        console.error("Error registering player:", error);
+        console.error('Error registering player:', error);
         throw error;
       }
     },
@@ -28,10 +28,10 @@ export const usePlayer = () => {
   const getPlayer = useCallback(
     async (address: string) => {
       try {
-        if (!client || !client.AquaStark) return alert("No client found");
+        if (!client || !client.AquaStark) return alert('No client found');
         return await client.AquaStark.getPlayer(address);
       } catch (error) {
-        console.error("Error getting player:", error);
+        console.error('Error getting player:', error);
         throw error;
       }
     },
@@ -43,7 +43,7 @@ export const usePlayer = () => {
       try {
         return await client.AquaStark.getUsernameFromAddress(address);
       } catch (error) {
-        console.error("Error getting username from address:", error);
+        console.error('Error getting username from address:', error);
         throw error;
       }
     },
@@ -55,19 +55,19 @@ export const usePlayer = () => {
       try {
         return await client.AquaStark.createNewPlayerId(account);
       } catch (error) {
-        console.error("Error creating new player ID:", error);
+        console.error('Error creating new player ID:', error);
         throw error;
       }
     },
     [client]
   );
 
-    const isVerified = useCallback(
+  const isVerified = useCallback(
     async (playerAddress: string): Promise<boolean> => {
       try {
         return await client.AquaStark.isVerified(playerAddress);
       } catch (error) {
-        console.error("Error checking verification status:", error);
+        console.error('Error checking verification status:', error);
         throw error;
       }
     },

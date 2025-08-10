@@ -13,22 +13,30 @@ interface FishProps {
   FISH_SIZE: number;
 }
 
-export function Fish({ selectedFish, fishY, scale, started, gameOver, FISH_X, FISH_SIZE }: FishProps) {
-  const fishImage = selectedFish.image.replace(".png", "-flip.png");
+export function Fish({
+  selectedFish,
+  fishY,
+  scale,
+  started,
+  gameOver,
+  FISH_X,
+  FISH_SIZE,
+}: FishProps) {
+  const fishImage = selectedFish.image.replace('.png', '-flip.png');
 
   return (
     <img
       src={fishImage}
       alt={selectedFish.name}
-      className="absolute"
+      className='absolute'
       style={{
         left: FISH_X * scale,
         top: fishY * scale,
         width: FISH_SIZE * scale,
         height: FISH_SIZE * scale,
-        transition: started ? "none" : "top 0.3s",
-        filter: gameOver ? "grayscale(1)" : "none",
+        transition: started ? 'none' : 'top 0.3s',
+        filter: gameOver ? 'grayscale(1)' : 'none',
       }}
     />
   );
-} 
+}

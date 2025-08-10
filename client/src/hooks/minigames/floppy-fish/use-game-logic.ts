@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState, useCallback } from 'react';
 
 // Game constants - wider screen for better gameplay
 const GAME_WIDTH = 600; // Increased from 400
@@ -35,7 +35,7 @@ export function useGameLogic(onGameOver?: (score: number) => void) {
 
   // Load best score from localStorage
   useEffect(() => {
-    const stored = localStorage.getItem("floppyFishBestScore");
+    const stored = localStorage.getItem('floppyFishBestScore');
     if (stored) setBestScore(Number(stored));
   }, []);
 
@@ -43,7 +43,7 @@ export function useGameLogic(onGameOver?: (score: number) => void) {
   useEffect(() => {
     if (score > bestScore) {
       setBestScore(score);
-      localStorage.setItem("floppyFishBestScore", String(score));
+      localStorage.setItem('floppyFishBestScore', String(score));
     }
   }, [score, bestScore]);
 
@@ -76,22 +76,24 @@ export function useGameLogic(onGameOver?: (score: number) => void) {
         // Column movement
         setColumns((cols: { x: number; gapY: number; scored?: boolean }[]) =>
           cols
-            .map((col) => ({ ...col, x: col.x - COLUMN_SPEED }))
-            .filter((col) => col.x + COLUMN_WIDTH > 0)
+            .map(col => ({ ...col, x: col.x - COLUMN_SPEED }))
+            .filter(col => col.x + COLUMN_WIDTH > 0)
         );
         // Spawn new columns
         if (now - lastColumnTime.current > COLUMN_INTERVAL) {
-          setColumns((cols: { x: number; gapY: number; scored?: boolean }[]) => [
-            ...cols,
-            { x: GAME_WIDTH, gapY: getRandomGapY() },
-          ]);
+          setColumns(
+            (cols: { x: number; gapY: number; scored?: boolean }[]) => [
+              ...cols,
+              { x: GAME_WIDTH, gapY: getRandomGapY() },
+            ]
+          );
           lastColumnTime.current = now;
         }
         // Score: passed columns
         setColumns((cols: { x: number; gapY: number; scored?: boolean }[]) => {
           let scored = false;
-          const updated = cols.map((col) => {
-            if (!col["scored"] && col.x + COLUMN_WIDTH < FISH_X) {
+          const updated = cols.map(col => {
+            if (!col['scored'] && col.x + COLUMN_WIDTH < FISH_X) {
               scored = true;
               return { ...col, scored: true };
             }
@@ -131,7 +133,12 @@ export function useGameLogic(onGameOver?: (score: number) => void) {
           bottom: GAME_HEIGHT,
         };
         // Check collision
-        type Rect = { left: number; right: number; top: number; bottom: number };
+        type Rect = {
+          left: number;
+          right: number;
+          top: number;
+          bottom: number;
+        };
         function overlap(a: Rect, b: Rect) {
           return (
             a.left < b.right &&
@@ -152,7 +159,6 @@ export function useGameLogic(onGameOver?: (score: number) => void) {
     return () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
-     
   }, [started, fishY, velocity, columns, gameOver, onGameOver, score]);
 
   // Reset on game over
@@ -181,4 +187,4 @@ export function useGameLogic(onGameOver?: (score: number) => void) {
     COLUMN_WIDTH,
     GAP_HEIGHT,
   };
-} 
+}
