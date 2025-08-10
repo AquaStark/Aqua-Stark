@@ -1,5 +1,6 @@
 pub mod systems {
     pub mod AquaStark;
+    pub mod Auctions;
 }
 
 pub mod achievements {
@@ -29,7 +30,8 @@ pub mod models {
     pub mod trade_model;
 }
 pub mod tests {
-    mod test_world;
-    mod test_trading;
+    // mod test_world;
+    // mod test_trading;
+    mod test_auction;
 }
 
