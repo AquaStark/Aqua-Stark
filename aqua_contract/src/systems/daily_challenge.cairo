@@ -4,7 +4,7 @@ pub trait IDailyChallenge<T> {
     fn create_challenge(ref self: T, day: u8, seed: u64) -> u64;
     fn join_challenge(ref self: T, challenge_id: u64);
     fn complete_challenge(ref self: T, challenge_id: u64);
-    fn claim_reward(ref self: T, challenge_id: u64, amount: u64);
+    fn claim_reward(ref self: T, challenge_id: u64);
 }
 
 //@ryzen-xp
@@ -13,7 +13,7 @@ pub mod daily_challenge {
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
     use starknet::get_caller_address;
-    use aqua_stark::models::dailyChallange::{
+    use aqua_stark::models::daily_challange::{
         Challenge_Counter, DailyChallengeTrait, ChallengeParticipation, DailyChallenge,
         ChallengeCreated, RewardClaimed, ParticipantJoined, ChallengeCompleted,
     };
@@ -21,7 +21,7 @@ pub mod daily_challenge {
 
 
     #[abi(embed_v0)]
-    impl DailyChallengeImpl of IDailyChallenge<ContractState> {
+    pub impl DailyChallengeImpl of IDailyChallenge<ContractState> {
         fn create_challenge(ref self: ContractState, day: u8, seed: u64) -> u64 {
             let mut world = self.world_default();
 
@@ -69,11 +69,11 @@ pub mod daily_challenge {
 
             assert(challenge.active, 'Challenge not active');
 
-            let participation_obj = ChallengeParticipation {
-                challenge_id, participant, joined: true, completed: false, reward_claimed: false,
-            };
-            world.write_model(@participation_obj);
-
+            let mut participation: ChallengeParticipation = world
+                .read_model((challenge_id, participant));
+            assert(participation.joined == false, 'Already_joined');
+            participation.joined = true;
+            world.write_model(@participation);
             world.emit_event(@ParticipantJoined { challenge_id, participant });
         }
 
@@ -92,20 +92,25 @@ pub mod daily_challenge {
             world.emit_event(@ChallengeCompleted { challenge_id, participant });
         }
 
-        fn claim_reward(ref self: ContractState, challenge_id: u64, amount: u64) {
+        fn claim_reward(ref self: ContractState, challenge_id: u64) {
             let mut world = self.world_default();
             let participant = get_caller_address();
 
+            let challenge: DailyChallenge = world.read_model(challenge_id);
             let mut participation: ChallengeParticipation = world
                 .read_model((challenge_id, participant));
 
             assert(participation.completed, 'Challenge_not_completed');
-            assert(participation.reward_claimed, 'Reward_already_claimed');
+            assert(participation.reward_claimed == false, 'Reward_already_claimed');
+            let expected_amount: u256 = calculate_reward(challenge);
 
             participation.reward_claimed = true;
             world.write_model(@participation);
 
-            world.emit_event(@RewardClaimed { challenge_id, participant, reward_amount: amount });
+            world
+                .emit_event(
+                    @RewardClaimed { challenge_id, participant, reward_amount: expected_amount },
+                );
         }
     }
 
@@ -127,5 +132,9 @@ pub mod daily_challenge {
             5 => DailyChallengeTrait::generate_friday_challenge(seed),
             _ => DailyChallengeTrait::generate_saturday_challenge(seed),
         }
+    }
+
+    pub fn calculate_reward(challenge: DailyChallenge) -> u256 {
+        1_u256
     }
 }

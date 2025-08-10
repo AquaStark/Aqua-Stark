@@ -28,7 +28,7 @@ pub mod models {
     pub mod transaction_model;
     pub mod auctions_model;
     pub mod trade_model;
-    pub mod dailyChallange;
+    pub mod daily_challange;
 }
 pub mod tests {
     mod test_world;
