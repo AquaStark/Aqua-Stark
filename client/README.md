@@ -11,25 +11,38 @@ This is the **frontend** of **Aqua Stark**, a Web3 aquarium game built with **Re
 ## 🛠️ Tech Stack  
 - **Framework**: React + Vite  
 - **Styling**: TailwindCSS  
-- **State Management**: Context API  
+- **State Management**: Context API + Zustand
+- **Testing**: Vitest + React Testing Library
 - **Package Manager**: pnpm  
 - **Alias Support**: Uses `@/` instead of relative paths  
 
 ## 📂 Project Structure  
 ```sh
 /client
-│── /public
+│── /public                 # Static assets (images, icons)
 │── /src
-│   ├── /components
-│   ├── /pages
-│   ├── /hooks
-│   ├── /utils
+│   ├── /components         # Reusable React components
+│   │   ├── /ui            # Base UI components (Button, Card, etc.)
+│   │   ├── /aquarium      # Aquarium-related components
+│   │   ├── /game          # Game interface components
+│   │   ├── /market        # Trading marketplace components
+│   │   ├── /mini-games    # Mini-game implementations
+│   │   └── ...
+│   ├── /pages             # Main application routes/screens
+│   ├── /hooks             # Custom React hooks
+│   ├── /store             # Zustand state management
+│   ├── /lib               # Utility libraries
+│   ├── /data              # Mock data and configurations
+│   ├── /types             # TypeScript type definitions
+│   └── /test              # Test setup and utilities
 │── .gitignore
 │── package.json
 │── pnpm-lock.yaml
-│── vite.config.ts
-│── tailwind.config.js
-│── tsconfig.json
+│── vite.config.ts          # Vite build configuration
+│── vitest.config.ts        # Vitest test configuration
+│── tailwind.config.js     # TailwindCSS configuration
+│── tsconfig.json          # TypeScript configuration
+│── dojoConfig.ts          # Dojo/StarkNet configuration
 │── README.md
 ```
 ## 📦 Installation & Running  
@@ -58,7 +71,37 @@ Run the following command to start the frontend in development mode:
 pnpm dev  
 ```
 
-The application will be available at http://localhost:5173/ (default Vite port).  
+The application will be available at http://localhost:5173/ (default Vite port).
+
+## 🧪 Testing  
+
+The project uses **Vitest** and **React Testing Library** for comprehensive testing:
+
+### Run Tests
+```sh
+# Run all tests once
+pnpm test
+
+# Run tests in watch mode (reruns on file changes)
+pnpm test:watch
+
+# Run tests with coverage report
+pnpm test:coverage
+
+# Open Vitest UI for interactive testing
+pnpm test:ui
+```
+
+### Test Coverage
+- **Minimum Coverage**: 15% configured in `vitest.config.ts`
+- **Hook Testing**: Game logic tests for food systems, fish movement, and aquarium management
+- **Component Testing**: UI component tests for Button, Card, MetricDisplay, etc.
+- **CI Integration**: Tests run automatically on PRs and pushes
+
+### Writing Tests
+- Place test files next to the component/hook being tested
+- Use `.test.ts` or `.test.tsx` extension
+- Follow the existing test patterns in `/src/hooks/` and `/src/components/ui/`  
 
 ## 🔄 Code Guidelines  
 - **Component & file naming**: Use **kebab-case** for consistency.  
