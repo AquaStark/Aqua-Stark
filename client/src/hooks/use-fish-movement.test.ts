@@ -6,10 +6,10 @@ import type { FoodItem } from '@/types/food';
 
 // Mock requestAnimationFrame
 beforeEach(() => {
-  vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+  vi.spyOn(window, 'requestAnimationFrame').mockImplementation(cb => {
     return setTimeout(cb, 16) as any;
   });
-  vi.spyOn(window, 'cancelAnimationFrame').mockImplementation((id) => {
+  vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(id => {
     clearTimeout(id);
   });
   vi.useFakeTimers();
@@ -51,7 +51,7 @@ describe('useFishMovement', () => {
 
     // Should have the correct number of fish
     expect(result.current).toHaveLength(1);
-    
+
     // Should have the correct structure
     const fishState = result.current[0];
     expect(fishState).toMatchObject({

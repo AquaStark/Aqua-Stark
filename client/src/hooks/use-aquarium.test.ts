@@ -27,9 +27,7 @@ vi.mock('@/data/game-data', () => ({
     {
       id: 2,
       name: 'Coral Reef',
-      fishes: [
-        { id: 3, name: 'Blue Tang', species: 'Paracanthurus' },
-      ],
+      fishes: [{ id: 3, name: 'Blue Tang', species: 'Paracanthurus' }],
     },
   ],
 }));
@@ -66,9 +64,7 @@ describe('useAquarium', () => {
     const newAquarium = {
       id: 2,
       name: 'Coral Reef',
-      fishes: [
-        { id: 3, name: 'Blue Tang', species: 'Paracanthurus' },
-      ],
+      fishes: [{ id: 3, name: 'Blue Tang', species: 'Paracanthurus' }],
     };
 
     act(() => {
@@ -139,18 +135,24 @@ describe('useAquarium', () => {
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
     // Re-mock the module to simulate error case
-    vi.doMock('@dojoengine/sdk/react', () => ({
-      useDojoSDK: () => ({
-        client: {
-          AquaStark: {
-            newAquarium: vi.fn().mockRejectedValue(new Error('Network error')),
+    vi.doMock(
+      '@dojoengine/sdk/react',
+      () => ({
+        useDojoSDK: () => ({
+          client: {
+            AquaStark: {
+              newAquarium: vi
+                .fn()
+                .mockRejectedValue(new Error('Network error')),
+            },
           },
-        },
+        }),
       }),
-    }), { virtual: true });
+      { virtual: true }
+    );
 
     // We need to test the error handling within the actual hook
-    // Since vi.doMock doesn't affect already rendered hooks, 
+    // Since vi.doMock doesn't affect already rendered hooks,
     // we'll test the error path differently
     const mockSDK = {
       client: {
@@ -162,19 +164,29 @@ describe('useAquarium', () => {
 
     // Temporarily mock the hook to use our error SDK
     const originalHook = await import('./use-aquarium');
-    const useAquariumSpy = vi.spyOn(originalHook, 'useAquarium').mockImplementation(() => ({
-      selectedAquarium: { id: 1, name: 'Test', fishes: [] },
-      handleAquariumChange: vi.fn(),
-      aquariums: [],
-      handleNewAquarium: async (account: any, owner: string, maxCapacity: number) => {
-        try {
-          return await mockSDK.client.AquaStark.newAquarium(account, owner, maxCapacity);
-        } catch (error) {
-          console.log('error creating aquarium', error);
-          return undefined;
-        }
-      },
-    }));
+    const useAquariumSpy = vi
+      .spyOn(originalHook, 'useAquarium')
+      .mockImplementation(() => ({
+        selectedAquarium: { id: 1, name: 'Test', fishes: [] },
+        handleAquariumChange: vi.fn(),
+        aquariums: [],
+        handleNewAquarium: async (
+          account: any,
+          owner: string,
+          maxCapacity: number
+        ) => {
+          try {
+            return await mockSDK.client.AquaStark.newAquarium(
+              account,
+              owner,
+              maxCapacity
+            );
+          } catch (error) {
+            console.log('error creating aquarium', error);
+            return undefined;
+          }
+        },
+      }));
 
     const { result } = renderHook(() => useAquariumSpy());
 

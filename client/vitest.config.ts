@@ -20,7 +20,7 @@ export default defineConfig({
       '**/cypress/**',
       '**/.{idea,git,cache,output,temp}/**',
       '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
-      '**/src/hooks/use-fish-movement.test.ts' // Temporarily exclude until animation frame issues are resolved
+      '**/src/hooks/use-fish-movement.test.ts', // Temporarily exclude until animation frame issues are resolved
     ],
     coverage: {
       provider: 'v8',
@@ -35,17 +35,17 @@ export default defineConfig({
         'coverage/',
         '**/__tests__/**',
         '**/*.test.*',
-        '**/*.spec.*'
+        '**/*.spec.*',
       ],
       thresholds: {
         global: {
           branches: 15,
           functions: 15,
           lines: 15,
-          statements: 15
-        }
-      }
-    }
+          statements: 15,
+        },
+      },
+    },
   },
   resolve: {
     alias: {

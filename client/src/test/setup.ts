@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: vi.fn().mockImplementation((query) => ({
+  value: vi.fn().mockImplementation(query => ({
     matches: false,
     media: query,
     onchange: null,
@@ -18,12 +18,12 @@ Object.defineProperty(window, 'matchMedia', {
 // Mock requestAnimationFrame and cancelAnimationFrame
 Object.defineProperty(window, 'requestAnimationFrame', {
   writable: true,
-  value: vi.fn().mockImplementation((cb) => setTimeout(cb, 16)),
+  value: vi.fn().mockImplementation(cb => setTimeout(cb, 16)),
 });
 
 Object.defineProperty(window, 'cancelAnimationFrame', {
   writable: true,
-  value: vi.fn().mockImplementation((id) => clearTimeout(id)),
+  value: vi.fn().mockImplementation(id => clearTimeout(id)),
 });
 
 // Mock IntersectionObserver
