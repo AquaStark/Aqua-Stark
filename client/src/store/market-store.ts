@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { Fish, MarketFilter } from '../types/market';
+import type { Fish, MarketFilters as MarketFilter } from '../types/market';
 
 interface MarketState {
   selectedFish: Fish | null;
@@ -22,13 +22,12 @@ interface MarketState {
 }
 
 const defaultFilters: MarketFilter = {
-  search: '',
   rarity: [],
-  minPrice: 0,
-  maxPrice: 10000,
   traits: [],
   listingType: 'all',
   sort: 'newest',
+  priceRange: { min: 0, max: 10000 },
+  level: { min: 1, max: 100 },
 };
 
 export const useMarketStore = create<MarketState>(set => ({
