@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { CommunityGalleryFilters } from '@/types/community';
 import { useCommunity } from '@/hooks/use-community';
 import { Input } from '@/components/ui/input';
 
@@ -107,11 +108,11 @@ export function FilterPanel() {
                   filters.sort === option.value
                     ? 'bg-blue-700/70 border-blue-500/70'
                     : 'bg-blue-800/30 hover:bg-blue-700/50'
-                )}
+                                  )}
                 onClick={() => {
                   setFilters({
                     ...filters,
-                    sort: option.value as any,
+                    sort: option.value as CommunityGalleryFilters['sort'],
                   });
                 }}
               >
