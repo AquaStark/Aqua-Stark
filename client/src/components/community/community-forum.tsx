@@ -151,17 +151,22 @@ export default function CommunityForum() {
 
         {/* "View All Topics" como enlace subrayado al hover */}
         <div className='text-center mt-4'>
-          <a
-            href='#'
+          <button
+            type='button'
             className='
               inline-block text-blue-300 
               hover:underline 
               transition-all 
               font-semibold
+              bg-transparent border-none cursor-pointer
             '
+            onClick={() => {
+              // TODO: Implement navigation to all topics
+              console.log('Navigate to all topics');
+            }}
           >
             View All Topics &gt;
-          </a>
+          </button>
         </div>
       </div>
     </div>
