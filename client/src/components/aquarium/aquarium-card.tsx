@@ -21,10 +21,18 @@ interface AquariumCardProps {
 }
 
 export function AquariumCard({ aquarium, onSelect }: AquariumCardProps) {
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onSelect?.();
+    }
+  };
+
   return (
     <div
       className='bg-blue-800/40 border border-blue-700/50 rounded-lg overflow-hidden cursor-pointer transition-transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl'
       onClick={onSelect}
+      onKeyDown={handleKeyDown}
       tabIndex={0}
       role='button'
       aria-pressed='false'

@@ -12,7 +12,8 @@ interface DojoContextValue {
 
 const DojoContext = createContext<DojoContextValue | null>(null);
 
-export const DojoProvider = ({ children }: { children: React.ReactNode }) => {
+// Separate component to avoid react-refresh warning
+const DojoProviderComponent = ({ children }: { children: React.ReactNode }) => {
   const { client } = useDojoSDK();
   const systemCalls = useSystemCalls();
 
@@ -26,6 +27,8 @@ export const DojoProvider = ({ children }: { children: React.ReactNode }) => {
 
   return <DojoContext.Provider value={value}>{children}</DojoContext.Provider>;
 };
+
+export const DojoProvider = DojoProviderComponent;
 
 export const useDojo = () => {
   const context = useContext(DojoContext);
