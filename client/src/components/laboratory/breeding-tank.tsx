@@ -21,7 +21,9 @@ export function BreedingTank({
 }: BreedingTankProps) {
   const [isBreeding, setIsBreeding] = useState(false);
   const [breedingProgress, setBreedingProgress] = useState(0);
-  const [breedingResult, setBreedingResult] = useState<BreedingResult | null>(null);
+  const [breedingResult, setBreedingResult] = useState<BreedingResult | null>(
+    null
+  );
   const [showBreedingResult, setShowBreedingResult] = useState(false);
   const [showCompatibilityWarning, setShowCompatibilityWarning] =
     useState(false);
