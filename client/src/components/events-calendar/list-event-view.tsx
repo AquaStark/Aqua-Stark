@@ -50,9 +50,11 @@ function formatTimeLeft(dateString: string): string {
   }
 }
 
+import { CalendarEvent, EventClickHandler } from '@/types/events';
+
 interface ListEventViewProps {
-  events: any[];
-  onEventClick: (event: any) => void;
+  events: CalendarEvent[];
+  onEventClick: EventClickHandler;
   searchQuery: string;
 }
 
@@ -301,7 +303,7 @@ export function ListEventView({
 }
 
 interface EventCardProps {
-  event: any;
+  event: CalendarEvent;
   onClick: () => void;
   isPast?: boolean;
 }

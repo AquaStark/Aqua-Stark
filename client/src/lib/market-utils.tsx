@@ -1,4 +1,6 @@
-import type { FishRarity, ListingType } from '@/types/market';
+// Local fallbacks to avoid tight coupling with external types
+export type FishRarity = 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
+export type ListingType = 'Sale' | 'Auction' | 'Exchange';
 import { ShoppingCart, Hammer, RefreshCw } from 'lucide-react';
 // Get background color based on rarity
 export const getRarityColor = (rarity: FishRarity) => {

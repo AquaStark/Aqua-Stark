@@ -16,7 +16,7 @@ export const StoreCarousel = () => {
           modules={[Navigation, Pagination, Autoplay]}
           pagination={{
             clickable: true,
-            renderBullet: (index, className) =>
+            renderBullet: (_index: number, className: string) =>
               `<span class="${className} w-3 h-3 bg-white/80 rounded-full mx-1 transition-all z"></span>`,
           }}
           spaceBetween={30}
@@ -32,8 +32,8 @@ export const StoreCarousel = () => {
           }}
           loop={true}
         >
-          {banners.map((banner, index) => (
-            <SwiperSlide key={index}>
+          {banners.map((banner: any) => (
+            <SwiperSlide key={String((banner as any).title)}>
               <div
                 className={`relative rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between  text-white`}
                 style={{ backgroundImage: `${banner.background}` }}

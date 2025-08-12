@@ -1,4 +1,5 @@
 import type { SchemaType as ISchemaType } from "@dojoengine/sdk";
+import { DecorationAddedToAquarium, DecorationAddedToAquariumValue } from "@/models";
 
 import { CairoCustomEnum, BigNumberish } from 'starknet';
 
@@ -500,6 +501,7 @@ export interface SchemaType extends ISchemaType {
 		DecorationCounter: DecorationCounter,
 		DecorationCounterValue: DecorationCounterValue,
 		DecorationValue: DecorationValue,
+		DecorationAddedToAquarium: DecorationAddedToAquarium,
 		Fish: Fish,
 		FishCounter: FishCounter,
 		FishCounterValue: FishCounterValue,
@@ -520,29 +522,7 @@ export interface SchemaType extends ISchemaType {
 		UsernameToAddress: UsernameToAddress,
 		UsernameToAddressValue: UsernameToAddressValue,
 	},
-	achievement: {
-		TrophyCreation: TrophyCreation,
-		TrophyCreationValue: TrophyCreationValue,
-		TrophyProgression: TrophyProgression,
-		TrophyProgressionValue: TrophyProgressionValue,
-		Task: Task,
-		DecorationAddedToAquarium: DecorationAddedToAquarium,
-		DecorationAddedToAquariumValue: DecorationAddedToAquariumValue,
-		DecorationCreated: DecorationCreated,
-		DecorationCreatedValue: DecorationCreatedValue,
-		DecorationMoved: DecorationMoved,
-		DecorationMovedValue: DecorationMovedValue,
-		FishAddedToAquarium: FishAddedToAquarium,
-		FishAddedToAquariumValue: FishAddedToAquariumValue,
-		FishBred: FishBred,
-		FishBredValue: FishBredValue,
-		FishCreated: FishCreated,
-		FishCreatedValue: FishCreatedValue,
-		FishMoved: FishMoved,
-		FishMovedValue: FishMovedValue,
-		PlayerCreated: PlayerCreated,
-		PlayerCreatedValue: PlayerCreatedValue,
-	},
+	achievement: any,
 }
 export const schema: SchemaType = {
 	aqua_stark: {
@@ -787,48 +767,7 @@ export const schema: SchemaType = {
 		UsernameToAddressValue: {
 			address: "",
 		},
-		TrophyCreation: {
-			id: 0,
-			hidden: false,
-			index: 0,
-			points: 0,
-			start: 0,
-			end: 0,
-			group: 0,
-			icon: 0,
-			title: 0,
-		description: "",
-			tasks: [{ id: 0, total: 0, description: "", }],
-		data: "",
-		},
-		TrophyCreationValue: {
-			hidden: false,
-			index: 0,
-			points: 0,
-			start: 0,
-			end: 0,
-			group: 0,
-			icon: 0,
-			title: 0,
-		description: "",
-			tasks: [{ id: 0, total: 0, description: "", }],
-		data: "",
-		},
-		TrophyProgression: {
-			player_id: 0,
-			task_id: 0,
-			count: 0,
-			time: 0,
-		},
-		TrophyProgressionValue: {
-			count: 0,
-			time: 0,
-		},
-		Task: {
-			id: 0,
-			total: 0,
-		description: "",
-		},
+
 		DecorationAddedToAquarium: {
 		decoration_id: 0,
 		aquarium_id: 0,

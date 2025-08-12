@@ -34,11 +34,12 @@ export default function MarketPage() {
       return false;
     if (
       fish.price &&
-      (fish.price < filters.minPrice || fish.price > filters.maxPrice)
+      (fish.price < filters.priceRange.min ||
+        fish.price > filters.priceRange.max)
     )
       return false;
     if (filters.listingType !== 'all') {
-      if (filters.listingType === 'sale' && !fish.price) return false;
+      if (filters.listingType === 'buy' && !fish.price) return false;
       if (filters.listingType === 'auction' && !fish.auction) return false;
       if (filters.listingType === 'exchange' && !fish.exchange) return false;
     }
@@ -50,8 +51,8 @@ export default function MarketPage() {
       if (!hasMatchingTrait) return false;
     }
     if (
-      filters.search &&
-      !fish.name.toLowerCase().includes(filters.search.toLowerCase())
+      (filters as any).search &&
+      !fish.name.toLowerCase().includes((filters as any).search.toLowerCase())
     )
       return false;
     return true;
@@ -111,7 +112,7 @@ export default function MarketPage() {
               type='text'
               placeholder='Search fish...'
               className='w-full bg-blue-800/50 backdrop-blur-sm border border-blue-700/50 rounded-full px-4 py-2 pl-10 text-white placeholder:text-blue-300'
-              value={filters.search}
+              value={filters.search ?? ''}
               onChange={e => setFilters({ search: e.target.value })}
             />
             <Search

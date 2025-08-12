@@ -26,6 +26,7 @@ export function GameStatusBar({
   const [displayValue, setDisplayValue] = useState(value);
   const [isIncreasing, setIsIncreasing] = useState(false);
   const [isDecreasing, setIsDecreasing] = useState(false);
+
   const prevValueRef = useRef(value);
 
   const percentage = Math.min(Math.max(0, (value / maxValue) * 100), 100);
@@ -93,7 +94,7 @@ export function GameStatusBar({
           <div
             className={cn(
               'absolute top-0 left-0 h-full rounded-full transition-all duration-500 overflow-hidden',
-              isIncreasing ? 'animate-pulse' : ''
+              isIncreasing ? 'animate-pulse' : isDecreasing ? 'opacity-80' : ''
             )}
             style={{ width: `${percentage}%` }}
           >

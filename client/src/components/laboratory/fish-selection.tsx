@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { ChevronLeft, ChevronRight, List, Grid } from 'lucide-react';
+import { List, Grid } from 'lucide-react';
 import type { Fish } from '@/types/fish';
 import { Button } from '@/components/ui/button';
 
@@ -16,9 +16,9 @@ export function FishSelection({
   onSelectFish,
 }: FishSelectionProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [showLeftArrow, setShowLeftArrow] = useState(false);
-  const [showRightArrow, setShowRightArrow] = useState(true);
-  const [cardWidth, setCardWidth] = useState(220); // Default card width (200px + 20px margin)
+  // const [cardWidth, setCardWidth] = useState<number>(0);
+  // const [showLeftArrow, setShowLeftArrow] = useState(false);
+  // const [showRightArrow, setShowRightArrow] = useState(false);
   const [viewMode, setViewMode] = useState<'scroll' | 'grid'>(
     typeof window !== 'undefined' && window.innerWidth >= 1024
       ? 'grid'
@@ -33,13 +33,12 @@ export function FishSelection({
 
       if (cards.length > 0) {
         // Get the first card's full width including margins
-        const firstCard = cards[0] as HTMLElement;
-        const cardRect = firstCard.getBoundingClientRect();
-        const computedStyle = window.getComputedStyle(firstCard);
-        const marginRight = parseInt(computedStyle.marginRight) || 0;
-
+        // const firstCard = cards[0] as HTMLElement;
+        // const cardRect = firstCard.getBoundingClientRect();
+        // const computedStyle = window.getComputedStyle(firstCard);
+        // const marginRight = parseInt(computedStyle.marginRight) || 0;
         // Set card width including margin for precise scrolling
-        setCardWidth(cardRect.width + marginRight);
+        // setCardWidth(cardRect.width + marginRight);
       }
     }
   }, [filteredFish]);
@@ -48,29 +47,13 @@ export function FishSelection({
   const handleScroll = () => {
     if (!scrollContainerRef.current) return;
 
-    const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+    // const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
 
     // Show left arrow when scrolled at all
-    setShowLeftArrow(scrollLeft > 0);
+    // setShowLeftArrow(scrollLeft > 0);
 
     // Show right arrow if there's more content to scroll
-    setShowRightArrow(Math.ceil(scrollLeft) < scrollWidth - clientWidth);
-  };
-
-  // Handle arrow button scrolling - exactly one card at a time
-  const scroll = (direction: 'left' | 'right') => {
-    if (!scrollContainerRef.current) return;
-
-    const currentScroll = scrollContainerRef.current.scrollLeft;
-    const targetScroll =
-      direction === 'left'
-        ? currentScroll - cardWidth
-        : currentScroll + cardWidth;
-
-    scrollContainerRef.current.scrollTo({
-      left: targetScroll,
-      behavior: 'smooth',
-    });
+    // setShowRightArrow(Math.ceil(scrollLeft) < scrollWidth - clientWidth);
   };
 
   // Force a check of the scroll position

@@ -2,10 +2,11 @@
 
 import { CalendarClock, Flame } from 'lucide-react';
 import { EventCard } from './event-card';
+import { CalendarEvent, EventClickHandler } from '@/types/events';
 
 interface SpecialEventsViewProps {
-  events: any[];
-  onEventClick: (event: any) => void;
+  events: CalendarEvent[];
+  onEventClick: EventClickHandler;
   searchQuery: string;
 }
 

@@ -22,7 +22,7 @@ export const Achievements = () => {
       : achievements.filter(achievement => achievement.category === activeTab);
 
   // Animation variants for the card
-  const cardVariants = {
+  const cardVariants: any = {
     initial: {
       scale: 1,
       y: 0,

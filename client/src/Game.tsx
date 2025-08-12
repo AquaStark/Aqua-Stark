@@ -12,24 +12,14 @@ export const Game = () => {
   const {
     getAquarium,
     newAquarium,
-    getPlayerAquariums,
     getAquariumOwner,
-    getPlayerAquariumCount,
     moveFishToAquarium,
     moveDecorationToAquarium,
   } = useAquarium();
-  const {
-    getDecoration,
-    newDecoration,
-    getPlayerDecorations,
-    getPlayerDecorationCount,
-    getDecorationOwner,
-  } = useDecoration();
+  const { getDecoration, newDecoration, getDecorationOwner } = useDecoration();
   const {
     getFish,
     newFish,
-    getPlayerFishes,
-    getPlayerFishCount,
     breedFishes,
     getFishOwner,
     getFishParents,
@@ -52,10 +42,7 @@ export const Game = () => {
   const [decorationRarity, setDecorationRarity] = useState('1');
   const [fishId, setFishId] = useState('1');
   const [fishSpecies, setFishSpecies] = useState('GoldFish');
-  const [playerAddressCounts, setPlayerAddressCounts] = useState('');
-  const [playerAddressAquariums, setPlayerAddressAquariums] = useState('');
-  const [playerAddressDecorations, setPlayerAddressDecorations] = useState('');
-  const [playerAddressFishes, setPlayerAddressFishes] = useState('');
+
   const [parent1Id, setParent1Id] = useState('');
   const [parent2Id, setParent2Id] = useState('');
   const [fromAquariumId, setFromAquariumId] = useState('');
@@ -164,51 +151,6 @@ export const Game = () => {
 
   const handleGetFish = async () => {
     handleRequest(() => getFish(parseInt(fishId)), 'getFish');
-  };
-
-  const handleGetDecorationCount = async () => {
-    handleRequest(
-      () => getPlayerDecorationCount(playerAddressCounts),
-      'getPlayerDecorationCount'
-    );
-  };
-
-  const handleGetAquariumCount = async () => {
-    handleRequest(
-      () => getPlayerAquariumCount(playerAddressCounts),
-      'getPlayerAquariumCount'
-    );
-  };
-
-  const handleGetFishCount = async () => {
-    handleRequest(
-      () => getPlayerFishCount(playerAddressCounts),
-      'getPlayerFishCount'
-    );
-  };
-
-  const handleGetPlayerAquariums = async () => {
-    if (!playerAddressAquariums) return setError('Player address required');
-    handleRequest(
-      () => getPlayerAquariums(playerAddressAquariums),
-      'getPlayerAquariums'
-    );
-  };
-
-  const handleGetPlayerDecorations = async () => {
-    if (!playerAddressDecorations) return setError('Player address required');
-    handleRequest(
-      () => getPlayerDecorations(playerAddressDecorations),
-      'getPlayerDecorations'
-    );
-  };
-
-  const handleGetPlayerFishes = async () => {
-    if (!playerAddressFishes) return setError('Player address required');
-    handleRequest(
-      () => getPlayerFishes(playerAddressFishes),
-      'getPlayerFishes'
-    );
   };
 
   // Verification Handler
@@ -748,7 +690,7 @@ export const Game = () => {
               <pre className='text-green-400 whitespace-pre-wrap'>
                 {JSON.stringify(
                   response,
-                  (key, value) =>
+                  (_key, value) =>
                     typeof value === 'bigint' ? value.toString() : value,
                   2
                 )}

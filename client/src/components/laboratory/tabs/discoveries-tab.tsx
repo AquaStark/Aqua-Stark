@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Filter, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { FishTank } from '@/components/fish-tank';
+
 import { breedingResults } from '@/data/fish-data';
 import { fishCollection } from '@/data/fish-data';
 
@@ -97,7 +97,9 @@ export function DiscoveriesTab() {
   );
 }
 
-function DiscoveryCard({ result }) {
+import type { BreedingResult } from '@/types/fish';
+
+function DiscoveryCard({ result }: { result: BreedingResult }) {
   return (
     <div
       className='bg-blue-700/30 rounded-lg overflow-hidden'
@@ -173,7 +175,7 @@ function DiscoveryCard({ result }) {
   );
 }
 
-function UndiscoveredCard({ index }) {
+function UndiscoveredCard({ index }: { index: number }) {
   return (
     <div className='bg-blue-700/30 rounded-lg overflow-hidden'>
       <div className='h-40 bg-blue-800/50 flex items-center justify-center'>
