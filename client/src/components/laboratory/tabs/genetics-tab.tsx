@@ -1,5 +1,7 @@
 'use client';
 
+import type React from 'react';
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dna, Info } from 'lucide-react';
@@ -11,7 +13,7 @@ interface GeneticsTabProps {
 }
 
 export function GeneticsTab({ setActiveTab }: GeneticsTabProps) {
-  const [breedingPair, setBreedingPair] = useState<{
+  const [breedingPair] = useState<{
     father: Fish | null;
     mother: Fish | null;
   }>({
@@ -337,6 +339,12 @@ function TraitInheritanceCard({
   description,
   traits,
   columns = 3,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  description: string;
+  traits: string[];
+  columns?: number;
 }) {
   return (
     <div className='bg-blue-700/30 rounded-lg p-4'>
@@ -346,7 +354,7 @@ function TraitInheritanceCard({
       </h4>
       <p className='text-blue-200 text-sm mb-3'>{description}</p>
       <div className={`grid grid-cols-${columns} gap-2`}>
-        {traits.map(trait => (
+        {traits.map((trait: string) => (
           <div key={trait} className='bg-blue-800/50 rounded p-2 text-center'>
             <div className='text-white text-sm'>{trait}</div>
           </div>
@@ -402,7 +410,7 @@ function RarityInfluenceCard() {
   );
 }
 
-function Droplet(props) {
+function Droplet(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -421,7 +429,7 @@ function Droplet(props) {
   );
 }
 
-function Flame(props) {
+function Flame(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -440,7 +448,7 @@ function Flame(props) {
   );
 }
 
-function Zap(props) {
+function Zap(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -459,7 +467,7 @@ function Zap(props) {
   );
 }
 
-function Star(props) {
+function Star(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
