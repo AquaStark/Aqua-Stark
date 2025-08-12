@@ -63,7 +63,6 @@ export function FeedFishButton({
         className={`relative overflow-hidden transition-all duration-300 hover:scale-105 ${
           isFeeding ? 'animate-pulse' : ''
         }`}
-        
       />
 
       {/* Progress indicator when feeding */}
