@@ -1,4 +1,5 @@
 import type { SchemaType as ISchemaType } from "@dojoengine/sdk";
+import { DecorationAddedToAquarium, DecorationAddedToAquariumValue } from "@/models";
 
 import { CairoCustomEnum, BigNumberish } from 'starknet';
 
@@ -500,6 +501,7 @@ export interface SchemaType extends ISchemaType {
 		DecorationCounter: DecorationCounter,
 		DecorationCounterValue: DecorationCounterValue,
 		DecorationValue: DecorationValue,
+		DecorationAddedToAquarium: DecorationAddedToAquarium,
 		Fish: Fish,
 		FishCounter: FishCounter,
 		FishCounterValue: FishCounterValue,
