@@ -1,4 +1,4 @@
-import React from 'react';
+// React import is not needed in React 18+ with jsx: 'react-jsx'
 import { Play, Pause, Plus, Trash2 } from 'lucide-react';
 
 interface DirtDebugControlsProps {
