@@ -86,7 +86,7 @@ export default function EncyclopediaCatalog({
         aria-label='Fish catalog'
       >
         {sortedFish.length > 0 ? (
-          sortedFish.map((fish) => (
+          sortedFish.map(fish => (
             <motion.div
               key={fish.id}
               role='gridcell'
