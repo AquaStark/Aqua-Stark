@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { mockEvents } from '@/data/event-calendar-data';
+import { CalendarEvent } from '@/types/events';
 
 export type TabType = 'all' | 'special' | 'seasons' | 'tournaments' | 'offers';
 export type ViewType = 'list' | 'calendar';
@@ -7,13 +8,13 @@ export type ViewType = 'list' | 'calendar';
 export function useEventsCalendar() {
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const [viewType, setViewType] = useState<ViewType>('list');
-  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const handleEventClick = (event: any) => {
+  const handleEventClick = (event: CalendarEvent) => {
     setSelectedEvent(event);
   };
 
