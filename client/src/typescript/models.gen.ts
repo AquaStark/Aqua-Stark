@@ -1,5 +1,4 @@
 import type { SchemaType as ISchemaType } from "@dojoengine/sdk";
-import { DecorationAddedToAquarium, DecorationAddedToAquariumValue } from "@/models";
 
 import { CairoCustomEnum, BigNumberish } from 'starknet';
 
@@ -502,6 +501,11 @@ export interface SchemaType extends ISchemaType {
 		DecorationCounterValue: DecorationCounterValue,
 		DecorationValue: DecorationValue,
 		DecorationAddedToAquarium: DecorationAddedToAquarium,
+		DecorationAddedToAquariumValue: DecorationAddedToAquariumValue,
+		DecorationCreated: DecorationCreated,
+		DecorationCreatedValue: DecorationCreatedValue,
+		DecorationMoved: DecorationMoved,
+		DecorationMovedValue: DecorationMovedValue,
 		Fish: Fish,
 		FishCounter: FishCounter,
 		FishCounterValue: FishCounterValue,
@@ -509,6 +513,14 @@ export interface SchemaType extends ISchemaType {
 		FishOwnerValue: FishOwnerValue,
 		FishParents: FishParents,
 		FishValue: FishValue,
+		FishAddedToAquarium: FishAddedToAquarium,
+		FishAddedToAquariumValue: FishAddedToAquariumValue,
+		FishBred: FishBred,
+		FishBredValue: FishBredValue,
+		FishCreated: FishCreated,
+		FishCreatedValue: FishCreatedValue,
+		FishMoved: FishMoved,
+		FishMovedValue: FishMovedValue,
 		Game: Game,
 		GameCounter: GameCounter,
 		GameCounterValue: GameCounterValue,
@@ -519,6 +531,8 @@ export interface SchemaType extends ISchemaType {
 		PlayerCounter: PlayerCounter,
 		PlayerCounterValue: PlayerCounterValue,
 		PlayerValue: PlayerValue,
+		PlayerCreated: PlayerCreated,
+		PlayerCreatedValue: PlayerCreatedValue,
 		UsernameToAddress: UsernameToAddress,
 		UsernameToAddressValue: UsernameToAddressValue,
 	},
@@ -863,6 +877,7 @@ export const schema: SchemaType = {
 			timestamp: 0,
 		},
 	},
+	achievement: {},
 };
 export enum ModelsMapping {
 	Aquarium = 'aqua_stark-Aquarium',
