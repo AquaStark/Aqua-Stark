@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { MarketFilters } from '@/types/market';
 import { useMarketStore } from '@/store/market-store';
 
 export function FilterPanel() {
@@ -50,20 +51,20 @@ export function FilterPanel() {
           <h3 className='font-bold text-white mb-2'>Price Range</h3>
           <div className='px-2'>
             <Slider
-              defaultValue={[filters.minPrice, filters.maxPrice]}
+              defaultValue={[0, 10000]}
               max={10000}
               step={100}
               onValueChange={value => {
+                // Your MarketFilters type uses priceRange {min,max}
                 setFilters({
-                  minPrice: value[0],
-                  maxPrice: value[1],
-                });
+                  priceRange: { min: value[0], max: value[1] },
+                } as Partial<MarketFilters>);
               }}
               className='mb-4'
             />
             <div className='flex justify-between text-sm text-blue-200'>
-              <span>{filters.minPrice} coins</span>
-              <span>{filters.maxPrice} coins</span>
+              <span>{filters.priceRange.min} coins</span>
+              <span>{filters.priceRange.max} coins</span>
             </div>
           </div>
         </div>
@@ -87,10 +88,10 @@ export function FilterPanel() {
                   filters.listingType === type.value
                     ? 'bg-blue-700/70 border-blue-500/70'
                     : 'bg-blue-800/30 hover:bg-blue-700/50 hover:text-white'
-                )}
+                                  )}
                 onClick={() => {
                   setFilters({
-                    listingType: type.value as any,
+                    listingType: type.value as MarketFilters['listingType'],
                   });
                 }}
               >
@@ -165,7 +166,7 @@ export function FilterPanel() {
                 )}
                 onClick={() => {
                   setFilters({
-                    sort: option.value as any,
+                    sort: option.value as MarketFilters['sort'],
                   });
                 }}
               >
