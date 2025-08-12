@@ -1,7 +1,7 @@
 import { useGameLogic } from '../../../hooks/minigames/floppy-fish/use-game-logic';
 import { useInputHandler } from '../../../hooks/minigames/floppy-fish/use-input-handler';
-import { Fish } from './fish';
-import { Obstacles } from './obstacles';
+import { Fish } from './Fish';
+import { Obstacles } from './Obstacles';
 import { BottomInfoPanel } from './bottom-info-panel';
 import { GameOverScreen } from './game-over-screen';
 import { GameUI } from './game-ui';
