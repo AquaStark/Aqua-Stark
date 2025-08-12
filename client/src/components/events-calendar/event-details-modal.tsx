@@ -26,8 +26,10 @@ function formatDate(dateString: string): string {
   });
 }
 
+import { CalendarEvent } from '@/types/events';
+
 interface EventDetailsModalProps {
-  event: any;
+  event: CalendarEvent;
   onClose: () => void;
 }
 
@@ -137,7 +139,7 @@ export function EventDetailsModal({ event, onClose }: EventDetailsModalProps) {
                 Rewards
               </h3>
               <ul className='space-y-2 text-xs bg-blue-700/40 p-2 rounded-md'>
-                {event.rewards.map((reward: any, index: number) => (
+                {event.rewards.map((reward: string, index: number) => (
                   <li key={index} className='flex items-start'>
                     <span className='text-yellow-400 mr-2'>
                       <Star className='w-3 h-3' />
@@ -157,7 +159,7 @@ export function EventDetailsModal({ event, onClose }: EventDetailsModalProps) {
                 Requirements
               </h3>
               <ul className='space-y-2 text-xs bg-blue-700/40 p-2 rounded-md'>
-                {event.requirements.map((req: any, index: number) => (
+                {event.requirements.map((req: string, index: number) => (
                   <li key={index} className='flex items-start'>
                     <CircleCheckBig className='w-4 h-4 text-green-400 mr-2 mt-0.5' />
                     <span className='text-blue-100'>{req}</span>
