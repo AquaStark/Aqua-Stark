@@ -327,11 +327,16 @@ export default function StorePage() {
                       Sort
                     </button>
                     {isSortDropdownOpen && (
-                    <SortDropdown
-                      sort={sort}
-                      updateSort={updateSort as unknown as (field: string, direction: string) => void}
-                      onClose={() => setIsSortDropdownOpen(false)}
-                    />
+                      <SortDropdown
+                        sort={sort}
+                        updateSort={
+                          updateSort as unknown as (
+                            field: string,
+                            direction: string
+                          ) => void
+                        }
+                        onClose={() => setIsSortDropdownOpen(false)}
+                      />
                     )}
                   </div>
                 </div>
