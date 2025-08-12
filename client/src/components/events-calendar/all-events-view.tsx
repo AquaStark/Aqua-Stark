@@ -10,6 +10,7 @@ import {
   Users,
 } from 'lucide-react';
 import { EventCard } from './event-card';
+import { CalendarEvent, EventClickHandler } from '@/types/events';
 
 // Moved utility function directly into component
 function formatDate(dateString: string): string {
@@ -22,8 +23,8 @@ function formatDate(dateString: string): string {
 }
 
 interface AllEventsViewProps {
-  events: any[];
-  onEventClick: (event: any) => void;
+  events: CalendarEvent[];
+  onEventClick: EventClickHandler;
   searchQuery: string;
 }
 
