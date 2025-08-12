@@ -1,25 +1,12 @@
 import { ControllerConnector } from '@cartridge/connector';
-import {
-  default as ColorMode,
-  ControllerOptions,
-  default as SessionPolicies,
-} from '@cartridge/controller';
+import { ControllerOptions } from '@cartridge/controller';
 import { Connector } from '@starknet-react/core';
 import { constants } from 'starknet';
 
-const CONTRACT_ADDRESS_GAME =
-  '0x681ea222117a7e68124fdb1dbbdee016a560fd453b846fb54bef34be325882d';
-
-const policies: SessionPolicies = {
-  contracts: {
-    [CONTRACT_ADDRESS_GAME]: {
-      methods: [],
-    },
-  },
-};
+// Note: New controller versions handle policies internally; omit for now
 
 // Controller basic configuration
-const colorMode: ColorMode = 'dark';
+const colorMode = 'dark' as const;
 const theme = 'aqua-stark';
 
 const options: ControllerOptions = {
@@ -29,7 +16,6 @@ const options: ControllerOptions = {
     },
   ],
   defaultChainId: constants.StarknetChainId.SN_SEPOLIA,
-  policies,
   theme,
   colorMode,
 
