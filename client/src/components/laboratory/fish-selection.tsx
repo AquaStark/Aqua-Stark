@@ -37,7 +37,6 @@ export function FishSelection({
         // const cardRect = firstCard.getBoundingClientRect();
         // const computedStyle = window.getComputedStyle(firstCard);
         // const marginRight = parseInt(computedStyle.marginRight) || 0;
-
         // Set card width including margin for precise scrolling
         // setCardWidth(cardRect.width + marginRight);
       }
@@ -56,8 +55,6 @@ export function FishSelection({
     // Show right arrow if there's more content to scroll
     // setShowRightArrow(Math.ceil(scrollLeft) < scrollWidth - clientWidth);
   };
-
-
 
   // Force a check of the scroll position
   const forceScrollCheck = () => {
