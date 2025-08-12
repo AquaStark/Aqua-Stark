@@ -8,14 +8,14 @@ edition = "2024_07"
 sierra-replace-ids = true
 
 [scripts]
-# Development deployment (local katana)
-dev = "sozo --profile dev clean && sozo --profile dev build && sozo --profile dev migrate"
+# Development deployment (local katana) via migrate.sh
+dev = "./migrate.sh --profile dev"
 
-# Sepolia testnet deployment with environment variables
-sepolia = "sozo --profile sepolia clean && sozo --profile sepolia build && sozo --profile sepolia migrate --account-address $DOJO_ACCOUNT_ADDRESS --private-key $DOJO_PRIVATE_KEY --fee strk"
+# Sepolia testnet deployment via migrate.sh (loads .env.sepolia)
+sepolia = "./migrate.sh --profile sepolia"
 
-# Dry-run mode for sepolia (build and inspect without deploying)
-sepolia-dry = "sozo --profile sepolia clean && sozo --profile sepolia build && sozo --profile sepolia inspect"
+# Dry-run mode for sepolia via migrate.sh
+sepolia-dry = "./migrate.sh --profile sepolia --dry-run"
 
 # Build only for sepolia
 sepolia-build = "sozo --profile sepolia clean && sozo --profile sepolia build"

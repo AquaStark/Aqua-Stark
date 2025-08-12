@@ -74,10 +74,12 @@ if [[ "$PROFILE" != "dev" && "$PROFILE" != "sepolia" ]]; then
 fi
 
 # Load environment variables from file if it exists
-ENV_FILE=".env.${PROFILE}"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="${SCRIPT_DIR}/.env.${PROFILE}"
 if [ -f "$ENV_FILE" ]; then
     echo -e "${BLUE}Loading environment variables from $ENV_FILE...${NC}"
     set -a  # automatically export all variables
+    # shellcheck source=/dev/null
     source "$ENV_FILE"
     set +a
 fi
@@ -148,8 +150,9 @@ if [[ "$PROFILE" == "dev" ]]; then
     # Local development deployment
     sozo --profile "$PROFILE" migrate
 elif [[ "$PROFILE" == "sepolia" ]]; then
-    # Sepolia deployment with credentials
-    sozo --profile "$PROFILE" migrate --account-address "$DOJO_ACCOUNT_ADDRESS" --private-key "$DOJO_PRIVATE_KEY" --fee strk
+    # Sepolia deployment with credentials from environment variables
+    # sozo reads DOJO_ACCOUNT_ADDRESS and DOJO_PRIVATE_KEY from environment
+    sozo --profile "$PROFILE" migrate --fee strk
 fi
 
 # Success message

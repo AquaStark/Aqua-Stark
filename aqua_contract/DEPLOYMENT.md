@@ -86,28 +86,31 @@ The `migrate.sh` script provides the most features and safety checks.
 
 ### Method 2: Scarb Scripts
 
-Use the predefined scripts in `Scarb.toml`:
+Use the predefined scripts in `Scarb.toml` (these now call `migrate.sh` internally):
 
 ```bash
-# Development
+# Development (calls ./migrate.sh --profile dev)
 scarb run dev
 
-# Sepolia deployment  
+# Sepolia deployment (calls ./migrate.sh --profile sepolia)  
 scarb run sepolia
 
-# Dry run (build + inspect)
+# Dry run (calls ./migrate.sh --profile sepolia --dry-run)
 scarb run sepolia-dry
 
 # Build only
 scarb run sepolia-build
 ```
 
+**Note:** The Scarb scripts for `dev`, `sepolia`, and `sepolia-dry` now use the enhanced `migrate.sh` script internally, which automatically loads the appropriate `.env` files. This ensures consistent behavior and security across all deployment methods.
+
 ## Safety Features
 
 ### 🔒 Credential Protection
 
 - Environment files are auto-excluded from git
-- Private keys are masked in output
+- Private keys are never exposed in command line arguments
+- Environment variables are used securely (sozo reads DOJO_ACCOUNT_ADDRESS and DOJO_PRIVATE_KEY)
 - Automatic cleanup on script exit
 
 ### 🧪 Dry Run Mode
