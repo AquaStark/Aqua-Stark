@@ -37,6 +37,14 @@ export function PurchaseModal({
       <div
         className='absolute inset-0 bg-black/30 backdrop-blur-md'
         onClick={onClose}
+        onKeyDown={(e) => {
+          if (e.key === 'Escape') {
+            onClose();
+          }
+        }}
+        tabIndex={-1}
+        role='button'
+        aria-label='Close modal'
       ></div>
 
       <div className='relative bg-blue-800  overflow-y-auto border border-blue-700 rounded-xl shadow-xl w-full max-w-3xl overflow-hidden'>
