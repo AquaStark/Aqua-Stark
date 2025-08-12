@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import type { Aquarium } from '@/components/aquarium/aquarium-card';
 
 export default function AquariumsPage() {
-  const [aquariums, setAquariums] = useState(initialAquariums);
+  const [aquariums, setAquariums] = useState(initialAquariums as Aquarium[]);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [coinBalance, setCoinBalance] = useState(12500);
   const [searchQuery, setSearchQuery] = useState('');
@@ -41,7 +41,7 @@ export default function AquariumsPage() {
 
   const handleAddAquarium = () => {
     // Add a new aquarium to the list
-    const newAquarium = {
+    const newAquarium: Aquarium = {
       id: aquariums.length + 1,
       name: `Standard Aquarium ${aquariums.length + 1}`,
       image: '/items/aquarium.png',
@@ -51,6 +51,7 @@ export default function AquariumsPage() {
       lastVisited: 'Just now',
       fishCount: '0/15',
       rating: 3,
+      fishes: [],
     };
 
     setAquariums([...aquariums, newAquarium]);
@@ -127,8 +128,8 @@ export default function AquariumsPage() {
           />
 
           <AquariumList
-            aquariums={filteredAquariums}
-            onSelectAquarium={handleSelectAquarium}
+            aquariums={filteredAquariums as unknown as Omit<Aquarium, 'fishes'>[]}
+            onSelectAquarium={handleSelectAquarium as unknown as (aquarium: any) => void}
           />
 
           <CreateAquariumButton onClick={() => setShowPurchaseModal(true)} />
