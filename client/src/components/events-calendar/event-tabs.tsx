@@ -30,7 +30,9 @@ export default function EventTabs() {
   const [viewType, setViewType] = useState<ViewType>('list');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null
+  );
   const [mobileOpen, setMobileOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -60,11 +62,11 @@ export default function EventTabs() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const filteredEvents: CalendarEvent[] = (
-    activeTab === 'all'
-      ? mockEvents
-      : mockEvents.filter(e => e.category === activeTab)
-  ) as unknown as CalendarEvent[];
+  const filteredEvents: CalendarEvent[] = (activeTab === 'all'
+    ? mockEvents
+    : mockEvents.filter(
+        e => e.category === activeTab
+      )) as unknown as CalendarEvent[];
 
   const handleEventClick = (event: CalendarEvent) => setSelectedEvent(event);
   const closeModal = () => setSelectedEvent(null);
