@@ -6,12 +6,12 @@ import { Progress } from '@/components/ui/progress';
 import { FishTank } from '@/components/fish-tank';
 import { X, Heart, Clock, AlertTriangle, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { Fish, BreedingPair } from '@/types/fish';
+import type { BreedingPair, BreedingResult } from '@/types/fish';
 
 interface BreedingTankProps {
   breedingPair: BreedingPair;
   onReset: () => void;
-  breedingResults: any[];
+  breedingResults: BreedingResult[];
 }
 
 export function BreedingTank({
@@ -21,7 +21,7 @@ export function BreedingTank({
 }: BreedingTankProps) {
   const [isBreeding, setIsBreeding] = useState(false);
   const [breedingProgress, setBreedingProgress] = useState(0);
-  const [breedingResult, setBreedingResult] = useState<Fish | null>(null);
+  const [breedingResult, setBreedingResult] = useState<BreedingResult | null>(null);
   const [showBreedingResult, setShowBreedingResult] = useState(false);
   const [showCompatibilityWarning, setShowCompatibilityWarning] =
     useState(false);
