@@ -128,8 +128,12 @@ export default function AquariumsPage() {
           />
 
           <AquariumList
-            aquariums={filteredAquariums as unknown as Omit<Aquarium, 'fishes'>[]}
-            onSelectAquarium={handleSelectAquarium as unknown as (aquarium: any) => void}
+            aquariums={
+              filteredAquariums as unknown as Omit<Aquarium, 'fishes'>[]
+            }
+            onSelectAquarium={
+              handleSelectAquarium as unknown as (aquarium: any) => void
+            }
           />
 
           <CreateAquariumButton onClick={() => setShowPurchaseModal(true)} />
