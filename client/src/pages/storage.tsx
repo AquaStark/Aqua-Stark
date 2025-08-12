@@ -138,7 +138,7 @@ export default function StorePage() {
       filters.categories.length === 0 ||
       (item.rarity &&
         filters.categories.includes(
-          item.rarity.toLowerCase() as any as FilterCategory
+          item.rarity.toLowerCase() as FilterCategory
         ));
 
     // Apply on sale filter
@@ -327,11 +327,11 @@ export default function StorePage() {
                       Sort
                     </button>
                     {isSortDropdownOpen && (
-                      <SortDropdown
-                        sort={sort}
-                        updateSort={updateSort}
-                        onClose={() => setIsSortDropdownOpen(false)}
-                      />
+                    <SortDropdown
+                      sort={sort}
+                      updateSort={updateSort as unknown as (field: string, direction: string) => void}
+                      onClose={() => setIsSortDropdownOpen(false)}
+                    />
                     )}
                   </div>
                 </div>
