@@ -108,7 +108,7 @@ export function FilterPanel() {
                   filters.sort === option.value
                     ? 'bg-blue-700/70 border-blue-500/70'
                     : 'bg-blue-800/30 hover:bg-blue-700/50'
-                                  )}
+                )}
                 onClick={() => {
                   setFilters({
                     ...filters,
