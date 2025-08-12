@@ -3,8 +3,20 @@
 import React from 'react';
 import { useConnect, Connector } from '@starknet-react/core';
 const wallets = [
-  { id: 'argentX', name: 'Argent X', description: 'Browser wallet', icon: '🦊', bgColor: 'bg-purple-700/60' },
-  { id: 'braavos', name: 'Braavos', description: 'Browser wallet', icon: '🦁', bgColor: 'bg-blue-700/60' },
+  {
+    id: 'argentX',
+    name: 'Argent X',
+    description: 'Browser wallet',
+    icon: '🦊',
+    bgColor: 'bg-purple-700/60',
+  },
+  {
+    id: 'braavos',
+    name: 'Braavos',
+    description: 'Browser wallet',
+    icon: '🦁',
+    bgColor: 'bg-blue-700/60',
+  },
 ];
 
 interface WalletModalProps {
