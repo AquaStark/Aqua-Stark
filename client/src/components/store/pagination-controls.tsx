@@ -25,8 +25,7 @@ function PageButton({
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function PaginationControls({ items }: { items: any[] }) {
+export function PaginationControls({ items }: { items: unknown[] }) {
   if (items.length > 0) {
     return (
       <div className='flex justify-between mt-6'>
