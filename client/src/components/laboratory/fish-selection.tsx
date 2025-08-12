@@ -56,15 +56,6 @@ export function FishSelection({
     // setShowRightArrow(Math.ceil(scrollLeft) < scrollWidth - clientWidth);
   };
 
-  // Force a check of the scroll position
-  const forceScrollCheck = () => {
-    setTimeout(() => {
-      if (scrollContainerRef.current) {
-        handleScroll();
-      }
-    }, 100);
-  };
-
   // Initialize scroll position check on mount and when filteredFish changes
   useEffect(() => {
     // Initial check
@@ -96,6 +87,15 @@ export function FishSelection({
 
   // Update view mode based on screen size
   useEffect(() => {
+    // Force a check of the scroll position
+    const forceScrollCheck = () => {
+      setTimeout(() => {
+        if (scrollContainerRef.current) {
+          handleScroll();
+        }
+      }, 100);
+    };
+
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
         setViewMode('grid');
