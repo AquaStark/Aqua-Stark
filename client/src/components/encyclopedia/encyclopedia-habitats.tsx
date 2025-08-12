@@ -17,12 +17,24 @@ export default function EncyclopediaHabitats() {
     }));
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent, section: keyof typeof expandedSections) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggleSection(section);
+    }
+  };
+
   return (
     <div className='bg-gradient-to-b from-[#014eaa] to-[#012c5f] backdrop-blur-sm rounded-xl p-6 text-white space-y-6 border border-blue-600'>
       <div>
         <div
           className='flex justify-between items-center cursor-pointer'
           onClick={() => toggleSection('habitats')}
+          onKeyDown={(e) => handleKeyDown(e, 'habitats')}
+          tabIndex={0}
+          role='button'
+          aria-expanded={expandedSections.habitats}
+          aria-label='Toggle habitats section'
         >
           <h2 className='text-base font-bold mb-4'>Aquatic Habitats</h2>
           {expandedSections.habitats ? (
@@ -52,6 +64,11 @@ export default function EncyclopediaHabitats() {
         <div
           className='flex justify-between items-center cursor-pointer'
           onClick={() => toggleSection('compatibility')}
+          onKeyDown={(e) => handleKeyDown(e, 'compatibility')}
+          tabIndex={0}
+          role='button'
+          aria-expanded={expandedSections.compatibility}
+          aria-label='Toggle compatibility section'
         >
           <h2 className='text-base font-bold mb-4'>Compatibility Guide</h2>
           {expandedSections.compatibility ? (
