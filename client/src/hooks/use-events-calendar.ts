@@ -8,7 +8,9 @@ export type ViewType = 'list' | 'calendar';
 export function useEventsCalendar() {
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const [viewType, setViewType] = useState<ViewType>('list');
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null
+  );
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
