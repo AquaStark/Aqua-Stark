@@ -88,7 +88,7 @@ export function FilterPanel() {
                   filters.listingType === type.value
                     ? 'bg-blue-700/70 border-blue-500/70'
                     : 'bg-blue-800/30 hover:bg-blue-700/50 hover:text-white'
-                                  )}
+                )}
                 onClick={() => {
                   setFilters({
                     listingType: type.value as MarketFilters['listingType'],
