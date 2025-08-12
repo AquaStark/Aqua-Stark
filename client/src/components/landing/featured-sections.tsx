@@ -1,7 +1,16 @@
 'use client';
 import { FeatureCards } from './featured-card';
 import mockData from '@/data/mock-data';
-const mockGameFeatures = (mockData as unknown as { mockGameFeatures?: Array<{title: string; description: string; icon: string}> }).mockGameFeatures ?? [];
+const mockGameFeatures =
+  (
+    mockData as unknown as {
+      mockGameFeatures?: Array<{
+        title: string;
+        description: string;
+        icon: string;
+      }>;
+    }
+  ).mockGameFeatures ?? [];
 
 export function FeaturesSection() {
   return (
