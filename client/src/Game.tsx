@@ -16,11 +16,7 @@ export const Game = () => {
     moveFishToAquarium,
     moveDecorationToAquarium,
   } = useAquarium();
-  const {
-    getDecoration,
-    newDecoration,
-    getDecorationOwner,
-  } = useDecoration();
+  const { getDecoration, newDecoration, getDecorationOwner } = useDecoration();
   const {
     getFish,
     newFish,
@@ -156,8 +152,6 @@ export const Game = () => {
   const handleGetFish = async () => {
     handleRequest(() => getFish(parseInt(fishId)), 'getFish');
   };
-
-
 
   // Verification Handler
   const handleIsVerified = async () => {
