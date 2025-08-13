@@ -1,30 +1,30 @@
 export type IconType =
-  | "info"
-  | "gamepad"
-  | "droplets"
-  | "heart"
-  | "fish"
-  | "waves"
-  | "sparkles"
-  | "utensils"
-  | "leaf"
-  | "shrimp"
-  | "thermometer"
-  | "lightbulb"
-  | "dna"
-  | "palette"
-  | "trophy";
+  | 'info'
+  | 'gamepad'
+  | 'droplets'
+  | 'heart'
+  | 'fish'
+  | 'waves'
+  | 'sparkles'
+  | 'utensils'
+  | 'leaf'
+  | 'shrimp'
+  | 'thermometer'
+  | 'lightbulb'
+  | 'dna'
+  | 'palette'
+  | 'trophy';
 
 export interface ContentSection {
   type:
-    | "paragraph"
-    | "heading"
-    | "list"
-    | "tip"
-    | "grid"
-    | "image"
-    | "divider"
-    | "center";
+    | 'paragraph'
+    | 'heading'
+    | 'list'
+    | 'tip'
+    | 'grid'
+    | 'image'
+    | 'divider'
+    | 'center';
   content: string;
   items?: string[];
   columns?: number;

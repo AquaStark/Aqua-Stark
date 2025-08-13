@@ -1,6 +1,6 @@
-import { useDojoSDK } from "@dojoengine/sdk/react";
-import { useCallback } from "react";
-import { Account, AccountInterface, BigNumberish } from "starknet";
+import { useDojoSDK } from '@dojoengine/sdk/react';
+import { useCallback } from 'react';
+import { Account, AccountInterface, BigNumberish } from 'starknet';
 
 export const useDecoration = () => {
   const { client } = useDojoSDK();
@@ -41,25 +41,25 @@ export const useDecoration = () => {
   );
 
   const getPlayerDecorations = useCallback(
-  async (playerAddress: string) => {
-    return await client.AquaStark.getPlayerDecorations(playerAddress);
-  },
-  [client]
-);
+    async (playerAddress: string) => {
+      return await client.AquaStark.getPlayerDecorations(playerAddress);
+    },
+    [client]
+  );
 
-const getPlayerDecorationCount = useCallback(
-  async (playerAddress: string) => {
-    return await client.AquaStark.getPlayerDecorationCount(playerAddress);
-  },
-  [client]
-);
+  const getPlayerDecorationCount = useCallback(
+    async (playerAddress: string) => {
+      return await client.AquaStark.getPlayerDecorationCount(playerAddress);
+    },
+    [client]
+  );
 
-const getDecorationOwner = useCallback(
-  async (decorationId: BigNumberish) => {
-    return await client.AquaStark.getDecorationOwner(decorationId);
-  },
-  [client]
-);
+  const getDecorationOwner = useCallback(
+    async (decorationId: BigNumberish) => {
+      return await client.AquaStark.getDecorationOwner(decorationId);
+    },
+    [client]
+  );
 
   return {
     createDecorationId,
@@ -67,6 +67,6 @@ const getDecorationOwner = useCallback(
     newDecoration,
     getPlayerDecorations,
     getPlayerDecorationCount,
-    getDecorationOwner
+    getDecorationOwner,
   };
 };

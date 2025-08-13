@@ -1,9 +1,9 @@
-import { mockAquariums, mockEvents } from "@/data/mock-community";
+import { mockAquariums, mockEvents } from '@/data/mock-community';
 import {
   defaultEventFilters,
   defaultGalleryFilters,
   useCommunityStore,
-} from "@/store/community";
+} from '@/store/community';
 
 export const useCommunity = () => {
   const {
@@ -15,7 +15,7 @@ export const useCommunity = () => {
     setEventFilters,
   } = useCommunityStore();
 
-  const filteredAquariums = mockAquariums.filter((aquarium) => {
+  const filteredAquariums = mockAquariums.filter(aquarium => {
     if (
       filters.search &&
       !aquarium.name.toLowerCase().includes(filters.search.toLowerCase())
@@ -38,26 +38,31 @@ export const useCommunity = () => {
 
   const sortedAquariums = [...filteredAquariums].sort((a, b) => {
     switch (filters.sort) {
-      case "name":
+      case 'name': {
         return a.name.localeCompare(b.name);
-      case "owner":
+      }
+      case 'owner': {
         return a.owner.localeCompare(b.owner);
-      case "likes-high":
+      }
+      case 'likes-high': {
         return b.likes - a.likes;
-      case "likes-low":
+      }
+      case 'likes-low': {
         return a.likes - b.likes;
-      case "recent":
+      }
+      case 'recent': {
         if (!a.timeStamp) return 1;
         if (!b.timeStamp) return -1;
         const aDate = new Date(a.timeStamp);
         const bDate = new Date(b.timeStamp);
         return bDate.getTime() - aDate.getTime();
+      }
       default:
         return 0;
     }
   });
 
-  const filteredEvents = mockEvents.filter((event) => {
+  const filteredEvents = mockEvents.filter(event => {
     if (
       eventFilters.search &&
       !event.name.toLowerCase().includes(eventFilters.search.toLowerCase()) &&
@@ -74,23 +79,26 @@ export const useCommunity = () => {
       )
     )
       return false;
-    if (eventFilters.status !== "all" && event.status !== eventFilters.status)
+    if (eventFilters.status !== 'all' && event.status !== eventFilters.status)
       return false;
     return true;
   });
 
   const sortedEvents = [...filteredEvents].sort((a, b) => {
     switch (eventFilters.sort) {
-      case "name":
+      case 'name': {
         return a.name.localeCompare(b.name);
-      case "participants":
+      }
+      case 'participants': {
         return b.participants - a.participants;
-      case "recent":
+      }
+      case 'recent': {
         if (!a.endDate) return 1;
         if (!b.endDate) return -1;
         const aDate = new Date(a.endDate);
         const bDate = new Date(b.endDate);
         return bDate.getTime() - aDate.getTime();
+      }
       default:
         return 0;
     }

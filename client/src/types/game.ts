@@ -1,17 +1,22 @@
 export interface FishType {
-  id: number
-  name: string
-  image: string
+  id: number;
+  name: string;
+  image: string;
   position: {
-    x: number
-    y: number
+    x: number;
+    y: number;
   };
-  rarity: string
-  generation: number
+  rarity: string;
+  generation: number;
+  stats?: {
+    happiness: number;
+    hunger: number;
+    energy: number;
+  };
 }
 
 export interface AquariumData {
-  id: any
-  name: string
-  fishes: FishType[]
+  id: number;
+  name: string;
+  fishes: FishType[];
 }

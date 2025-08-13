@@ -1,4 +1,4 @@
-import StoreItem from "@/components/store/store-item"
+import StoreItem from '@/components/store/store-item';
 
 interface StoreItemData {
   id?: string;
@@ -16,21 +16,21 @@ interface StoreItemData {
 }
 
 interface StoreGridProps {
-  items: StoreItemData[]
+  items: StoreItemData[];
 }
 
 export function StoreGrid({ items }: StoreGridProps) {
   // Ensure all items have the required fields
-  const processedItems = items.map((item) => ({
+  const processedItems = items.map(item => ({
     ...item,
-    description: item.description || "",
+    description: item.description || '',
     rating: item.rating || 0,
-    id: item.id || `item-${item.name.toLowerCase().replace(/\s+/g, '-')}`
-  }))
+    id: item.id || `item-${item.name.toLowerCase().replace(/\s+/g, '-')}`,
+  }));
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-      {processedItems.map((item) => (
+    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6'>
+      {processedItems.map(item => (
         <StoreItem
           key={item.id}
           id={item.id}
@@ -47,5 +47,5 @@ export function StoreGrid({ items }: StoreGridProps) {
         />
       ))}
     </div>
-  )
+  );
 }

@@ -1,8 +1,8 @@
-import { StoreBundle } from "./store-bundle";
-import { CartItem, useCartStore } from "@/store/use-cart-store";
-import { Package } from "lucide-react";
-import { motion } from "framer-motion";
-import { SpecialBundle } from "@/data/mock-store";
+import { StoreBundle } from './store-bundle';
+import { CartItem, useCartStore } from '@/store/use-cart-store';
+import { Package } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { SpecialBundle } from '@/data/mock-store';
 
 interface SpecialBundlesProps {
   bundles: SpecialBundle[];
@@ -28,15 +28,15 @@ export function SpecialBundles({ bundles }: SpecialBundlesProps) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className="mb-8"
+      className='mb-8'
     >
-      <div className="flex items-center gap-2 mb-4">
-        <Package size={16} className="text-yellow-500" />
-        <h2 className="text-xl font-bold text-white">Special Bundles</h2>
+      <div className='flex items-center gap-2 mb-4'>
+        <Package size={16} className='text-yellow-500' />
+        <h2 className='text-xl font-bold text-white'>Special Bundles</h2>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        {bundles.map((bundle) => (
+      <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
+        {bundles.map(bundle => (
           <StoreBundle
             key={bundle.id}
             bundle={bundle}
