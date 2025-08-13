@@ -4,6 +4,7 @@ pub mod AquaStark {
     use dojo::world::IWorldDispatcherTrait;
     use aqua_stark::interfaces::IAquaStark::{IAquaStark};
     use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
+    use aqua_stark::systems::Auctions::IAquaAuction::{IAquaAuction, IAquaAuctionDispatcher};
     use aqua_stark::base::events::{
         PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
         FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
@@ -24,6 +25,7 @@ pub mod AquaStark {
     use aqua_stark::models::fish_model::{
         Fish, FishCounter, Species, FishTrait, FishOwner, FishParents, Listing,
     };
+    use aqua_stark::models::auctions_model::Auction;
 
     use aqua_stark::models::transaction_model::{
         TransactionLog, EventTypeDetails, EventCounter, TransactionCounter, event_id_target,
@@ -789,9 +791,48 @@ pub mod AquaStark {
         }
 
         fn is_fish_locked(self: @ContractState, fish_id: u256) -> bool {
-            let world = self.world_default();
-            let fish_lock: FishLock = world.read_model(fish_id);
-            FishLockTrait::is_locked(fish_lock)
+            let fish_owner: FishOwner = self.get_fish_owner_for_auction(fish_id);
+            fish_owner.locked
+        }
+
+        // Auction methods - delegate to AquaAuction system
+        fn start_auction(
+            ref self: ContractState, fish_id: u256, duration_secs: u64, reserve_price: u256,
+        ) -> Auction {
+            // Get the AquaAuction contract address
+            let (auction_contract_address, _) = self.world_default().dns(@"AquaAuction").unwrap();
+            let auction_system = IAquaAuctionDispatcher { contract_address: auction_contract_address };
+            
+            // Delegate to auction system
+            auction_system.start_auction(fish_id, duration_secs, reserve_price)
+        }
+
+        fn place_bid(ref self: ContractState, auction_id: u256, amount: u256) {
+            let (auction_contract_address, _) = self.world_default().dns(@"AquaAuction").unwrap();
+            let auction_system = IAquaAuctionDispatcher { contract_address: auction_contract_address };
+            
+            auction_system.place_bid(auction_id, amount)
+        }
+
+        fn end_auction(ref self: ContractState, auction_id: u256) {
+            let (auction_contract_address, _) = self.world_default().dns(@"AquaAuction").unwrap();
+            let auction_system = IAquaAuctionDispatcher { contract_address: auction_contract_address };
+            
+            auction_system.end_auction(auction_id)
+        }
+
+        fn get_active_auctions(self: @ContractState) -> Array<Auction> {
+            let (auction_contract_address, _) = self.world_default().dns(@"AquaAuction").unwrap();
+            let auction_system = IAquaAuctionDispatcher { contract_address: auction_contract_address };
+            
+            auction_system.get_active_auctions()
+        }
+
+        fn get_auction_by_id(self: @ContractState, auction_id: u256) -> Auction {
+            let (auction_contract_address, _) = self.world_default().dns(@"AquaAuction").unwrap();
+            let auction_system = IAquaAuctionDispatcher { contract_address: auction_contract_address };
+            
+            auction_system.get_auction_by_id(auction_id)
         }
     }
 
