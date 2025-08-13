@@ -5,6 +5,7 @@ use aqua_stark::models::player_model::Player;
 use aqua_stark::models::auctions_model::*;
 use aqua_stark::models::trade_model::{TradeOffer, FishLock, MatchCriteria};
 use starknet::ContractAddress;
+
 // define the interface
 #[starknet::interface]
 pub trait IAquaStark<T> {
@@ -65,4 +66,13 @@ pub trait IAquaStark<T> {
     fn get_active_trade_offers(self: @T, creator: ContractAddress) -> Array<TradeOffer>;
     fn get_fish_lock_status(self: @T, fish_id: u256) -> FishLock;
     fn is_fish_locked(self: @T, fish_id: u256) -> bool;
+    
+    // Auction methods
+    fn start_auction(
+        ref self: T, fish_id: u256, duration_secs: u64, reserve_price: u256,
+    ) -> Auction;
+    fn place_bid(ref self: T, auction_id: u256, amount: u256);
+    fn end_auction(ref self: T, auction_id: u256);
+    fn get_active_auctions(self: @T) -> Array<Auction>;
+    fn get_auction_by_id(self: @T, auction_id: u256) -> Auction;
 }
