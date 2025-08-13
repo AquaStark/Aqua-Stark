@@ -29,6 +29,7 @@ export interface BreedingResult {
   name: string;
   image: string;
   rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
+  generation?: number;
   traits: {
     color: string;
     pattern: string;

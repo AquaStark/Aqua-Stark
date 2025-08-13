@@ -89,11 +89,12 @@ export function FilterPanel({
       <div className='flex flex-row justify-between items-start mb-6'>
         {/* Price Range */}
         <div className='w-1/2 mb-6'>
-          <label className='block text-white font-medium mb-3'>
+          <label htmlFor='price-range' className='block text-white font-medium mb-3'>
             Price range:
           </label>
           <div className='flex flex-col'>
             <input
+              id='price-range'
               type='range'
               min={0}
               max={5000}
@@ -110,10 +111,10 @@ export function FilterPanel({
 
         {/* Categories */}
         <div className='mb-6 ml-10'>
-          <label className='block text-white font-medium mb-3'>
+          <label htmlFor='category-buttons' className='block text-white font-medium mb-3'>
             Categories:
           </label>
-          <div className='flex flex-wrap gap-2'>
+          <div id='category-buttons' className='flex flex-wrap gap-2'>
             {['all', 'common', 'rare', 'special', 'legendary', '% ON SALE'].map(
               category => (
                 <button

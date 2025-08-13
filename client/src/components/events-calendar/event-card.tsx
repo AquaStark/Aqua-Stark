@@ -47,14 +47,16 @@ function formatTimeLeft(dateString: string): string {
   }
 }
 
+import { CalendarEvent } from '@/types/events';
+
 interface EventCardProps {
-  event: any;
+  event: CalendarEvent;
   onClick: () => void;
   isPast?: boolean;
 }
 
 export function EventCard({ event, onClick, isPast = false }: EventCardProps) {
-  const getCategoryTag = (category: string) => {
+  const getCategoryTag = (category: CalendarEvent['category'] | string) => {
     switch (category) {
       case 'special':
         return {

@@ -34,6 +34,7 @@ export default function Error404Page() {
       <BubblesBackground bubbles={bubbles} />
       <img
         src='/background-decorations/wave-decoration.svg'
+        alt='Decorative wave pattern'
         className='fixed bottom-0 left-0 opacity-20 pointer-events-none'
       />
     </div>

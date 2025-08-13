@@ -8,10 +8,15 @@ export interface FishType {
   };
   rarity: string;
   generation: number;
+  stats?: {
+    happiness: number;
+    hunger: number;
+    energy: number;
+  };
 }
 
 export interface AquariumData {
-  id: any;
+  id: number;
   name: string;
   fishes: FishType[];
 }

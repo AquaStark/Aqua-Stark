@@ -38,20 +38,25 @@ export const useCommunity = () => {
 
   const sortedAquariums = [...filteredAquariums].sort((a, b) => {
     switch (filters.sort) {
-      case 'name':
+      case 'name': {
         return a.name.localeCompare(b.name);
-      case 'owner':
+      }
+      case 'owner': {
         return a.owner.localeCompare(b.owner);
-      case 'likes-high':
+      }
+      case 'likes-high': {
         return b.likes - a.likes;
-      case 'likes-low':
+      }
+      case 'likes-low': {
         return a.likes - b.likes;
-      case 'recent':
+      }
+      case 'recent': {
         if (!a.timeStamp) return 1;
         if (!b.timeStamp) return -1;
         const aDate = new Date(a.timeStamp);
         const bDate = new Date(b.timeStamp);
         return bDate.getTime() - aDate.getTime();
+      }
       default:
         return 0;
     }
@@ -81,16 +86,19 @@ export const useCommunity = () => {
 
   const sortedEvents = [...filteredEvents].sort((a, b) => {
     switch (eventFilters.sort) {
-      case 'name':
+      case 'name': {
         return a.name.localeCompare(b.name);
-      case 'participants':
+      }
+      case 'participants': {
         return b.participants - a.participants;
-      case 'recent':
+      }
+      case 'recent': {
         if (!a.endDate) return 1;
         if (!b.endDate) return -1;
         const aDate = new Date(a.endDate);
         const bDate = new Date(b.endDate);
         return bDate.getTime() - aDate.getTime();
+      }
       default:
         return 0;
     }

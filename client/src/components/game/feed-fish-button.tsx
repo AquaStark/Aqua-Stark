@@ -58,8 +58,8 @@ export function FeedFishButton({
             ? 'from-orange-500 to-red-600 shadow-lg shadow-orange-500/25'
             : 'from-green-400 to-blue-500 shadow-lg shadow-green-400/25'
         }
-        onClick={handleClick}
-        disabled={disabled}
+        onClick={disabled ? undefined : handleClick}
+        // GameButton doesn't support a disabled prop; handle class/interaction here
         className={`relative overflow-hidden transition-all duration-300 hover:scale-105 ${
           isFeeding ? 'animate-pulse' : ''
         }`}

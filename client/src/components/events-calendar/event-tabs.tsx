@@ -23,11 +23,16 @@ import { mockEvents } from '@/data/event-calendar-data';
 type TabType = 'all' | 'special' | 'seasons' | 'tournaments' | 'offers';
 type ViewType = 'list' | 'calendar';
 
+import { CalendarEvent } from '@/types/events';
+
 export default function EventTabs() {
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const [viewType, setViewType] = useState<ViewType>('list');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null
+  );
   const [mobileOpen, setMobileOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -57,12 +62,13 @@ export default function EventTabs() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const filteredEvents =
-    activeTab === 'all'
-      ? mockEvents
-      : mockEvents.filter(e => e.category === activeTab);
+  const filteredEvents: CalendarEvent[] = (activeTab === 'all'
+    ? mockEvents
+    : mockEvents.filter(
+        e => e.category === activeTab
+      )) as unknown as CalendarEvent[];
 
-  const handleEventClick = (event: any) => setSelectedEvent(event);
+  const handleEventClick = (event: CalendarEvent) => setSelectedEvent(event);
   const closeModal = () => setSelectedEvent(null);
 
   return (

@@ -55,7 +55,11 @@ export function DirtSpot({ spot, onRemove, className = '' }: DirtSpotProps) {
       tabIndex={0}
       onKeyDown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
-          handleClick(e as any);
+          e.preventDefault();
+          handleClick({
+            preventDefault() {},
+            stopPropagation() {},
+          } as unknown as React.MouseEvent);
         }
       }}
       aria-label='Click to clean dirt spot'

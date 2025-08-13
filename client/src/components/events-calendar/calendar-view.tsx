@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { CalendarEvent, EventClickHandler } from '@/types/events';
 
 interface CalendarViewProps {
-  events: any[];
-  onEventClick: (event: any) => void;
+  events: CalendarEvent[];
+  onEventClick: EventClickHandler;
 }
 
 export function CalendarView({ events = [], onEventClick }: CalendarViewProps) {
@@ -73,7 +74,7 @@ export function CalendarView({ events = [], onEventClick }: CalendarViewProps) {
   });
 
   // Group events by day
-  const eventsByDay: Record<number, any[]> = {};
+  const eventsByDay: Record<number, CalendarEvent[]> = {};
 
   monthEvents.forEach(event => {
     const eventStartDate = new Date(event.startDate);

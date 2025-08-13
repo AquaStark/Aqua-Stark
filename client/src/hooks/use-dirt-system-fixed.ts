@@ -74,7 +74,7 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     console.log('🧪 Force spawn triggered');
 
     setState((prev: DirtSystemState) => {
-      const { maxSpots, spawnChance } = finalConfig;
+      const { maxSpots } = finalConfig;
 
       if (prev.spots.length >= maxSpots) {
         console.log('❌ Cannot spawn: max spots reached');

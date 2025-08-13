@@ -60,9 +60,10 @@ export const useEncyclopedia = () => {
 
   const sortedFish = [...filteredFish].sort((a, b) => {
     switch (filters.sort) {
-      case 'name':
+      case 'name': {
         return a.name.localeCompare(b.name);
-      case 'rarity':
+      }
+      case 'rarity': {
         const rarityOrder = {
           Common: 1,
           Uncommon: 2,
@@ -71,7 +72,8 @@ export const useEncyclopedia = () => {
           Legendary: 5,
         };
         return rarityOrder[b.rarity] - rarityOrder[a.rarity];
-      case 'recent':
+      }
+      case 'recent': {
         if (!a.discovered) return 1;
         if (!b.discovered) return -1;
         if (!a.discoveryDate) return 1;
@@ -80,6 +82,7 @@ export const useEncyclopedia = () => {
           new Date(b.discoveryDate).getTime() -
           new Date(a.discoveryDate).getTime()
         );
+      }
       default:
         return 0;
     }

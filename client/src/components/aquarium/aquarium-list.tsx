@@ -1,6 +1,8 @@
 import { AquariumCard } from './aquarium-card';
 
-interface Aquarium {
+import type { Aquarium as AquariumCardType } from './aquarium-card';
+
+interface Aquarium extends Omit<AquariumCardType, 'fishes'> {
   id: number;
   name: string;
   image: string;
@@ -38,7 +40,7 @@ export function AquariumList({
           {aquariums.map(aquarium => (
             <AquariumCard
               key={aquarium.id}
-              aquarium={aquarium}
+              aquarium={{ ...aquarium, fishes: (aquarium as any).fishes ?? [] }}
               onSelect={() => onSelectAquarium?.(aquarium)}
             />
           ))}

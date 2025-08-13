@@ -9,7 +9,7 @@ import { Button } from './ui/button';
 import { Card } from './ui/card';
 
 const GeneticCombinationsPage: React.FC = () => {
-  const [selectedPair, _setSelectedPair] = useState<string | null>(null);
+  const [selectedPair] = useState<string | null>(null);
 
   return (
     <div className='text-white'>

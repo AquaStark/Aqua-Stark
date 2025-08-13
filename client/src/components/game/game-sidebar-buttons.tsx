@@ -1,4 +1,4 @@
-import React from 'react';
+// React import is not needed in React 18+ with jsx: 'react-jsx'
 import { Droplets, Leaf, Sparkles, Palette, Layers } from 'lucide-react';
 import { GameButton } from './game-button';
 

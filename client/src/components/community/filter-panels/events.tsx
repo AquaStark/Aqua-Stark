@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { CommunityEventFilters } from '@/types/community';
 import { useCommunity } from '@/hooks/use-community';
 import { Input } from '@/components/ui/input';
 
@@ -81,7 +82,7 @@ export function FilterPanel() {
                   onClick={() => {
                     setEventFilters({
                       ...eventFilters,
-                      status: option.value as any,
+                      status: option.value as CommunityEventFilters['status'],
                     });
                   }}
                 >
@@ -111,7 +112,7 @@ export function FilterPanel() {
                   onClick={() => {
                     setEventFilters({
                       ...eventFilters,
-                      sort: option.value as any,
+                      sort: option.value as CommunityEventFilters['sort'],
                     });
                   }}
                 >

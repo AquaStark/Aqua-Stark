@@ -316,7 +316,7 @@ export function Fish({
       >
         <div className='relative'>
           <motion.div
-            {...animationProps}
+            {...(animationProps as any)}
             style={{
               display: 'inline-block',
             }}
