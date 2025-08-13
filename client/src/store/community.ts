@@ -1,9 +1,9 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 export interface CommunityGalleryFilter {
   key: number;
   search: string;
-  sort: "name" | "owner" | "likes-high" | "likes-low" | "recent";
+  sort: 'name' | 'owner' | 'likes-high' | 'likes-low' | 'recent';
   minLikes: number;
   maxLikes: number;
   minComments: number;
@@ -13,18 +13,18 @@ export interface CommunityGalleryFilter {
 export interface CommunityEventsFilter {
   key: number;
   search: string;
-  sort: "name" | "participants" | "recent" | "";
+  sort: 'name' | 'participants' | 'recent' | '';
   minParticipants: number;
   maxParticipants: number;
   startDate?: string;
   endDate?: string;
-  status?: "active" | "upcoming" | "past" | "all";
+  status?: 'active' | 'upcoming' | 'past' | 'all';
 }
 
 export const defaultGalleryFilters: CommunityGalleryFilter = {
   key: 0,
-  search: "",
-  sort: "name",
+  search: '',
+  sort: 'name',
   minLikes: 0,
   maxLikes: 1000,
   minComments: 0,
@@ -33,11 +33,11 @@ export const defaultGalleryFilters: CommunityGalleryFilter = {
 
 export const defaultEventFilters: CommunityEventsFilter = {
   key: 0,
-  search: "",
-  sort: "",
+  search: '',
+  sort: '',
   minParticipants: 0,
   maxParticipants: 100,
-  status: "all",
+  status: 'all',
 };
 
 interface CommunityState {
@@ -52,7 +52,7 @@ interface CommunityState {
   resetFilters: () => void;
 }
 
-export const useCommunityStore = create<CommunityState>((set) => ({
+export const useCommunityStore = create<CommunityState>(set => ({
   selectedFish: null,
   show: false,
   showOfferModal: false,
@@ -63,15 +63,15 @@ export const useCommunityStore = create<CommunityState>((set) => ({
   showFilters: false,
 
   // Actions
-  setFilters: (filters) =>
-    set((state) => ({
+  setFilters: filters =>
+    set(state => ({
       filters: { ...state.filters, ...filters },
     })),
-  setEventFilters: (filters) =>
-    set((state) => ({
+  setEventFilters: filters =>
+    set(state => ({
       eventFilters: { ...state.eventFilters, ...filters },
     })),
-  setShowFilters: (show) => set({ showFilters: show }),
+  setShowFilters: show => set({ showFilters: show }),
   resetFilters: () =>
     set({ filters: defaultGalleryFilters, eventFilters: defaultEventFilters }),
 }));

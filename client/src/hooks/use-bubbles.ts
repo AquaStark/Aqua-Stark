@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 export interface Bubble {
   id: number;
@@ -44,7 +44,7 @@ export function useBubbles({
 
     const intervalId = setInterval(() => {
       const newBubble = createBubble();
-      setBubbles((prev) => {
+      setBubbles(prev => {
         const filtered =
           prev.length > maxBubbles ? prev.slice(-maxBubbles) : prev;
         return [...filtered, newBubble];

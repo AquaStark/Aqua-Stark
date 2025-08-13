@@ -1,20 +1,15 @@
-"use client"
+'use client';
 
-import {
-  CalendarDays,
-  Image,
-  MessageSquare,
-  Users,
-} from "lucide-react"
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import CommunityGallery from "./community-gallery"
-import CommunityFriends from "./community-friends"
-import CommunityForum from "./community-forum"
-import CommunityEvents from "./community-events"
+import { CalendarDays, Image, MessageSquare, Users } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import CommunityGallery from './community-gallery';
+import CommunityFriends from './community-friends';
+import CommunityForum from './community-forum';
+import CommunityEvents from './community-events';
 
 interface CommunityTabsProps {
-  activeTab: string
-  setActiveTab: (value: string) => void
+  activeTab: string;
+  setActiveTab: (value: string) => void;
 }
 
 export function CommunityTabs({ activeTab, setActiveTab }: CommunityTabsProps) {
@@ -22,52 +17,52 @@ export function CommunityTabs({ activeTab, setActiveTab }: CommunityTabsProps) {
     <Tabs
       value={activeTab}
       onValueChange={setActiveTab}
-      defaultValue="gallery"
-      className="w-full"
+      defaultValue='gallery'
+      className='w-full'
     >
-      <TabsList className="grid grid-cols-2 md:grid-cols-4 gap-2 p-1 bg-blue-700 rounded-lg mb-6">
+      <TabsList className='grid grid-cols-2 md:grid-cols-4 gap-2 p-1 bg-blue-700 rounded-lg mb-6'>
         <TabsTrigger
-          value="gallery"
-          className="flex items-center gap-1 text-xs md:text-sm"
+          value='gallery'
+          className='flex items-center gap-1 text-xs md:text-sm'
         >
-          <Image className="w-4 h-4" />
+          <Image className='w-4 h-4' />
           Gallery
         </TabsTrigger>
         <TabsTrigger
-          value="friends"
-          className="flex items-center gap-1 text-xs md:text-sm"
+          value='friends'
+          className='flex items-center gap-1 text-xs md:text-sm'
         >
-          <Users className="w-4 h-4" />
+          <Users className='w-4 h-4' />
           Friends
         </TabsTrigger>
         <TabsTrigger
-          value="forum"
-          className="flex items-center gap-1 text-xs md:text-sm"
+          value='forum'
+          className='flex items-center gap-1 text-xs md:text-sm'
         >
-          <MessageSquare className="w-4 h-4" />
+          <MessageSquare className='w-4 h-4' />
           Forum
         </TabsTrigger>
         <TabsTrigger
-          value="events"
-          className="flex items-center gap-1 text-xs md:text-sm"
+          value='events'
+          className='flex items-center gap-1 text-xs md:text-sm'
         >
-          <CalendarDays className="w-4 h-4" />
+          <CalendarDays className='w-4 h-4' />
           Events
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="gallery">
+      <TabsContent value='gallery'>
         <CommunityGallery />
       </TabsContent>
-      <TabsContent value="friends">
+      <TabsContent value='friends'>
         <CommunityFriends />
       </TabsContent>
-      <TabsContent value="forum">
+      <TabsContent value='forum'>
         <CommunityForum />
       </TabsContent>
-      <TabsContent value="events">
+      <TabsContent value='events'>
         <CommunityEvents />
       </TabsContent>
     </Tabs>
-  )
+  );
 }

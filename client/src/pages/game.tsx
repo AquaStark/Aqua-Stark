@@ -1,38 +1,40 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
-import { GameHeader } from "@/components/game/game-header";
-import { GameSidebarButtons } from "@/components/game/game-sidebar-buttons";
-import { AquariumTabs } from "@/components/game/aquarium-tabs";
-import { TipsPopup } from "@/components/game/tips-popup";
-import { INITIAL_GAME_STATE } from "@/data/game-data";
-import { useAquarium } from "@/hooks/use-aquarium";
-import { useFishStats } from "@/hooks/use-fish-stats";
-import { GameMenu } from "@/components/game/game-menu";
-import { useBubbles } from "@/hooks/use-bubbles";
-import { BubblesBackground } from "@/components/bubble-background";
-import { motion } from "framer-motion";
-import type { FishType } from "@/types/game";
-import { useActiveAquarium } from "../store/active-aquarium";
-import { initialAquariums } from "@/data/mock-aquarium";
-import { useDirtSystemFixed as useDirtSystem } from "@/hooks/use-dirt-system-fixed"
-import { DirtOverlay } from "@/components/game/dirt-overlay"
-import { DirtDebugControls } from "@/components/game/dirt-debug-controls"
-import { useFeedingSystem } from "@/systems/feeding-system";
-import { FeedFishButton } from "@/components/game/feed-fish-button";
-import { FeedingAquarium } from "@/components/game/feeding-aquarium";
+import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { GameHeader } from '@/components/game/game-header';
+import { GameSidebarButtons } from '@/components/game/game-sidebar-buttons';
+import { AquariumTabs } from '@/components/game/aquarium-tabs';
+import { TipsPopup } from '@/components/game/tips-popup';
+import { INITIAL_GAME_STATE } from '@/data/game-data';
+import { useAquarium } from '@/hooks/use-aquarium';
+import { useFishStats } from '@/hooks/use-fish-stats';
+import { GameMenu } from '@/components/game/game-menu';
+import { useBubbles } from '@/hooks/use-bubbles';
+import { BubblesBackground } from '@/components/bubble-background';
+import { motion } from 'framer-motion';
+import type { FishType } from '@/types/game';
+import { useActiveAquarium } from '../store/active-aquarium';
+import { initialAquariums } from '@/data/mock-aquarium';
+import { useDirtSystemFixed as useDirtSystem } from '@/hooks/use-dirt-system-fixed';
+import { DirtOverlay } from '@/components/game/dirt-overlay';
+import { DirtDebugControls } from '@/components/game/dirt-debug-controls';
+import { useFeedingSystem } from '@/systems/feeding-system';
+import { FeedFishButton } from '@/components/game/feed-fish-button';
+import { FeedingAquarium } from '@/components/game/feeding-aquarium';
 
 export default function GamePage() {
-  const activeAquariumId = useActiveAquarium((s) => s.activeAquariumId);
-  const aquarium = initialAquariums.find(a => a.id.toString() === activeAquariumId) || initialAquariums[0];
+  const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
+  const aquarium =
+    initialAquariums.find(a => a.id.toString() === activeAquariumId) ||
+    initialAquariums[0];
   const { happiness, food, energy } = useFishStats(INITIAL_GAME_STATE);
   const { selectedAquarium, handleAquariumChange, aquariums } = useAquarium();
   const [showMenu, setShowMenu] = useState(false);
   const [showTips, setShowTips] = useState(false);
   const location = useLocation();
 
-  const [showDirtDebug, setShowDirtDebug] = useState(false) // Debug controls visibility  // Initialize dirt system
+  const [showDirtDebug, setShowDirtDebug] = useState(false); // Debug controls visibility  // Initialize dirt system
   const dirtSystem = useDirtSystem({
     spawnInterval: 5000, // 5 seconds
     maxSpots: 5,
@@ -43,7 +45,7 @@ export default function GamePage() {
       height: 1000,
     },
     spawnChance: 0.7, // 70% chance
-  })
+  });
 
   const bubbles = useBubbles({
     initialCount: 10,
@@ -72,35 +74,35 @@ export default function GamePage() {
 
   // Parse fish species from URL param
   const searchParams = new URLSearchParams(location.search);
-  const fishesParam = searchParams.get("fishes");
+  const fishesParam = searchParams.get('fishes');
   const fishFromUrl = JSON.parse(
-    decodeURIComponent(fishesParam || "[]")
+    decodeURIComponent(fishesParam || '[]')
   ) as string[];
 
   // Match species to mock data
   const speciesToFishData = {
     AngelFish: {
-      image: "/fish/fish1.png",
-      name: "Blue Striped Fish",
-      rarity: "Rare",
+      image: '/fish/fish1.png',
+      name: 'Blue Striped Fish',
+      rarity: 'Rare',
       generation: 1,
     },
     GoldFish: {
-      image: "/fish/fish2.png",
-      name: "Tropical Coral Fish",
-      rarity: "Uncommon",
+      image: '/fish/fish2.png',
+      name: 'Tropical Coral Fish',
+      rarity: 'Uncommon',
       generation: 2,
     },
     Betta: {
-      image: "/fish/fish3.png",
-      name: "Orange Tropical Fish",
-      rarity: "Epic",
+      image: '/fish/fish3.png',
+      name: 'Orange Tropical Fish',
+      rarity: 'Epic',
       generation: 1,
     },
     NeonTetra: {
-      image: "/fish/fish4.png",
-      name: "Scarlet Fin",
-      rarity: "Legendary",
+      image: '/fish/fish4.png',
+      name: 'Scarlet Fin',
+      rarity: 'Legendary',
       generation: 1,
     },
   };
@@ -110,9 +112,9 @@ export default function GamePage() {
     const data = speciesToFishData[
       species as keyof typeof speciesToFishData
     ] || {
-      image: "/fish/fish1.png",
-      name: "Unknown Fish",
-      rarity: "Common",
+      image: '/fish/fish1.png',
+      name: 'Unknown Fish',
+      rarity: 'Common',
       generation: 1,
     };
 
@@ -128,29 +130,32 @@ export default function GamePage() {
 
   // Use fish from URL if available, otherwise use selected aquarium fish
   const displayFish =
-    fishObjects.length > 0 ? fishObjects : aquarium.fishes.map(fish => ({
-      ...fish,
-      position: { x: 0, y: 0 }, // Will be repositioned by FishDisplay
-    }));
+    fishObjects.length > 0
+      ? fishObjects
+      : aquarium.fishes.map(fish => ({
+          ...fish,
+          position: { x: 0, y: 0 }, // Will be repositioned by FishDisplay
+        }));
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-[#005C99]">
+    <div className='relative w-full h-screen overflow-hidden bg-[#005C99]'>
       {/* Background */}
       <img
-        src="/backgrounds/background2.png"
-        alt="Underwater Background"
-        className="absolute inset-0 w-full h-full object-cover z-0"
+        src='/backgrounds/background2.png'
+        alt='Underwater Background'
+        className='absolute inset-0 w-full h-full object-cover z-0'
+        role='presentation'
       />
 
       {/* Bubbles */}
       <BubblesBackground
         bubbles={bubbles}
-        className="absolute inset-0 z-10 pointer-events-none"
+        className='absolute inset-0 z-10 pointer-events-none'
       />
 
       {/* Effects */}
-      <div className="absolute inset-0 light-rays z-20"></div>
-      <div className="absolute inset-0 animate-water-movement z-20"></div>
+      <div className='absolute inset-0 light-rays z-20'></div>
+      <div className='absolute inset-0 animate-water-movement z-20'></div>
 
       {/* Fish */}
       <motion.div
@@ -159,15 +164,15 @@ export default function GamePage() {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 1 }}
-        className="relative z-20 w-full h-full"
+        className='relative z-20 w-full h-full'
       >
         <FeedingAquarium fish={displayFish} feedingSystem={feedingSystem} />
       </motion.div>
 
-      <DirtOverlay 
+      <DirtOverlay
         spots={dirtSystem.spots}
         onRemoveSpot={dirtSystem.removeDirtSpot}
-        className="absolute inset-0 z-50"
+        className='absolute inset-0 z-50'
       />
 
       {/* Header */}
@@ -181,12 +186,12 @@ export default function GamePage() {
       {showMenu && <GameMenu show={showMenu} />}
 
       <GameSidebarButtons />
-      
+
       {/* Click to Feed Instructions - Under Header */}
       {!feedingSystem.isFeeding && (
-        <div className="absolute top-[9rem] left-1/2 transform -translate-x-1/2 z-30">
-          <div className="bg-black/50 text-white text-sm px-4 py-2 rounded-lg border border-gray-500/20 backdrop-blur-sm">
-            <div className="flex items-center gap-2 text-gray-300">
+        <div className='absolute top-[9rem] left-1/2 transform -translate-x-1/2 z-30'>
+          <div className='bg-black/50 text-white text-sm px-4 py-2 rounded-lg border border-gray-500/20 backdrop-blur-sm'>
+            <div className='flex items-center gap-2 text-gray-300'>
               <span>🐠</span>
               <span>Click "Feed Fish" to start feeding your aquarium</span>
             </div>
@@ -195,7 +200,7 @@ export default function GamePage() {
       )}
 
       {/* Feed Fish Button - Bottom Center */}
-      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-30">
+      <div className='absolute bottom-20 left-1/2 transform -translate-x-1/2 z-30'>
         <FeedFishButton
           isFeeding={feedingSystem.isFeeding}
           timeRemaining={feedingSystem.getFeedingStatus().timeRemaining}
@@ -203,10 +208,10 @@ export default function GamePage() {
           onStopFeeding={feedingSystem.stopFeeding}
         />
       </div>
-      
+
       {/* Debug Controls */}
       {showDirtDebug && (
-        <div className="absolute top-4 right-4 z-40">
+        <div className='absolute top-4 right-4 z-40'>
           <DirtDebugControls
             isSpawnerActive={dirtSystem.isSpawnerActive}
             spotCount={dirtSystem.spots.length}
@@ -220,7 +225,8 @@ export default function GamePage() {
           />
           <button
             onClick={() => setShowDirtDebug(false)}
-            className="mt-2 w-full text-xs text-gray-400 hover:text-white transition-colors"
+            className='mt-2 w-full text-xs text-gray-400 hover:text-white transition-colors'
+            aria-label='Hide Debug Panel'
           >
             Hide Debug
           </button>
@@ -231,14 +237,18 @@ export default function GamePage() {
       {!showDirtDebug && (
         <button
           onClick={() => setShowDirtDebug(true)}
-          className="absolute top-4 right-4 z-40 bg-black/50 text-white px-3 py-1 rounded text-xs hover:bg-black/70 transition-colors"
+          className='absolute top-4 right-4 z-40 bg-black/50 text-white px-3 py-1 rounded text-xs hover:bg-black/70 transition-colors'
+          aria-label='Show Debug Panel'
         >
-          🧹 Debug
+          <span role='img' aria-label='Broom'>
+            🧹
+          </span>{' '}
+          Debug
         </button>
       )}
 
       {/* Tips */}
-      <div className="absolute bottom-0 right-4 mb-4 z-30">
+      <div className='absolute bottom-0 right-4 mb-4 z-30'>
         <TipsPopup
           show={showTips}
           onClose={() => setShowTips(false)}

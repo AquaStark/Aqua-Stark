@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import { Link } from 'react-router-dom';
+import { cn } from '@/lib/utils';
 
 interface FooterProps {
   className?: string;
@@ -9,30 +9,30 @@ export function Footer({ className }: FooterProps = {}) {
   return (
     <footer
       className={cn(
-        "relative z-10 bg-blue-800 py-6 border-t-2 border-blue-400/50",
+        'relative z-10 bg-blue-800 py-6 border-t-2 border-blue-400/50',
         className
       )}
     >
-      <div className="container mx-auto px-4 text-center">
-        <p className="text-white/80 mb-2">
+      <div className='container mx-auto px-4 text-center'>
+        <p className='text-white/80 mb-2'>
           © 2025 Aqua Stark - All rights reserved
         </p>
-        <div className="flex justify-center gap-4 mt-4">
+        <div className='flex justify-center gap-4 mt-4'>
           <Link
-            to="#"
-            className="text-white hover:text-blue-200 transition-colors"
+            to='#'
+            className='text-white hover:text-blue-200 transition-colors'
           >
             Polity and Privacy
           </Link>
           <Link
-            to="#"
-            className="text-white hover:text-blue-200 transition-colors"
+            to='#'
+            className='text-white hover:text-blue-200 transition-colors'
           >
             Terms of Service
           </Link>
           <Link
-            to="#"
-            className="text-white hover:text-blue-200 transition-colors"
+            to='#'
+            className='text-white hover:text-blue-200 transition-colors'
           >
             Contact
           </Link>

@@ -10,7 +10,7 @@ export interface Fish {
   id: number;
   name: string;
   image: string;
-  rarity: "Common" | "Uncommon" | "Rare" | "Epic" | "Legendary";
+  rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
   generation: number;
   level: number;
   traits: {
@@ -39,19 +39,41 @@ export interface Fish {
   listed: string;
 }
 
-export interface MarketFilter {
-  search: string;
-  rarity: string[];
-  minPrice: number;
-  maxPrice: number;
+export interface MarketFilters {
+  listingType: 'all' | 'buy' | 'sell' | 'auction' | 'exchange';
   traits: string[];
-  listingType: "all" | "sale" | "auction" | "exchange";
-  sort: "newest" | "price-low" | "price-high" | "rarity" | "level";
+  sort: 'newest' | 'price-low' | 'price-high' | 'rarity' | 'level';
+  priceRange: {
+    min: number;
+    max: number;
+  };
+  rarity: string[];
+  level: {
+    min: number;
+    max: number;
+  };
+  search?: string;
+}
+
+export interface MarketItem {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  currency: string;
+  rarity: string;
+  level: number;
+  traits: string[];
+  image: string;
+  seller: string;
+  listingType: 'buy' | 'sell' | 'auction' | 'exchange';
+  endTime?: string;
+  bids?: number;
 }
 
 export interface Transaction {
   id: number;
-  type: "purchase" | "sale" | "exchange" | "auction_win";
+  type: 'purchase' | 'sale' | 'exchange' | 'auction_win';
   fishName: string;
   image: string;
   price?: number;

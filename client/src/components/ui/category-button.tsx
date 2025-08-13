@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
-import type { ReactNode } from "react";
+import { cn } from '@/lib/utils';
+import type { ReactNode } from 'react';
 
 interface CategoryButtonProps {
   children: ReactNode;
@@ -16,13 +16,13 @@ export function CategoryButton({
     <button
       onClick={onClick}
       className={cn(
-        "px-4 py-2 rounded-full whitespace-nowrap text-sm font-semibold transition-all duration-200 flex items-center justify-center",
+        'px-4 py-2 rounded-full whitespace-nowrap text-sm font-semibold transition-all duration-200 flex items-center justify-center',
         active
-          ? "bg-orange-500 text-white"
-          : "bg-blue-700/60 hover:bg-blue-700 text-white"
+          ? 'bg-orange-500 text-white'
+          : 'bg-blue-700/60 hover:bg-blue-700 text-white'
       )}
     >
-      <span className="p-1">{children}</span>
+      <span className='p-1'>{children}</span>
     </button>
   );
 }

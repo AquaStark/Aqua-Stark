@@ -1,0 +1,10 @@
+# Generated files
+src/typescript/contracts.gen.ts
+src/typescript/models.gen.ts
+
+# Lock files
+pnpm-lock.yaml
+
+# Documentation
+ACCESSIBILITY.md
+README.md

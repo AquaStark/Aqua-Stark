@@ -1,12 +1,12 @@
-import { useCallback } from "react";
+import { useCallback } from 'react';
 import {
   Account,
   AccountInterface,
   BigNumberish,
   CairoCustomEnum,
-} from "starknet";
-import { setupWorld } from "../typescript/contracts.gen";
-import { Decoration, Fish, } from "../typescript/models.gen";
+} from 'starknet';
+import { setupWorld } from '../typescript/contracts.gen';
+import { Decoration, Fish } from '../typescript/models.gen';
 
 type ClientType = ReturnType<typeof setupWorld>;
 
@@ -49,8 +49,8 @@ export function useAquaStark({ client, account }: UseAquaStarkProps) {
   const createNewPlayerId = useCallback(() => {
     try {
       const res = client.AquaStark.createNewPlayerId(account);
-      console.log("res", res);
-      console.log("account", account);
+      console.log('res', res);
+      console.log('account', account);
       return res;
     } catch (error) {
       console.error(error);
@@ -94,8 +94,17 @@ export function useAquaStark({ client, account }: UseAquaStarkProps) {
   );
 
   const newAquarium = useCallback(
-    (owner: string, maxCapacity: BigNumberish, maxDecorations: BigNumberish) => {
-      return client.AquaStark.newAquarium(account, owner, maxCapacity, maxDecorations);
+    (
+      owner: string,
+      maxCapacity: BigNumberish,
+      maxDecorations: BigNumberish
+    ) => {
+      return client.AquaStark.newAquarium(
+        account,
+        owner,
+        maxCapacity,
+        maxDecorations
+      );
     },
     [client, account]
   );

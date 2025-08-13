@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useState, useMemo } from "react";
-import { type Rarity, type ItemType } from "@/data/mock-game";
-import { fishData } from "@/data/mock-game";
-import { decorationItems, miscItems } from "@/data/mock-store";
-import { foodData } from "@/data/market-data";
-import { useDebounce } from "./use-debounce";
+import { useState, useMemo } from 'react';
+import { type Rarity, type ItemType } from '@/data/mock-game';
+import { fishData } from '@/data/mock-game';
+import { decorationItems, miscItems } from '@/data/mock-store';
+import { foodData } from '@/data/market-data';
+import { useDebounce } from './use-debounce';
 // import { Category } from "@/types/help-types";
-import { FilterCategory } from "@/components/store/filter-panel";
+import { FilterCategory } from '@/components/store/filter-panel';
 
-export type SortOption = "price-asc" | "price-desc" | "name-asc" | "name-desc";
+export type SortOption = 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc';
 
 // Define the PriceRange type that's expected by FilterPanel
 type PriceRange = [number, number];
@@ -20,8 +20,8 @@ interface UseStoreFiltersProps {
 
 // Define types for sort state
 interface SortState {
-  field: "price" | "popularity" | "newest";
-  direction: "asc" | "desc";
+  field: 'price' | 'popularity' | 'newest';
+  direction: 'asc' | 'desc';
 }
 
 // Define types for filter state
@@ -39,48 +39,48 @@ export function useStoreFilters({ initialTab }: UseStoreFiltersProps) {
   });
 
   const [sort, setSort] = useState<SortState>({
-    field: "price",
-    direction: "asc",
+    field: 'price',
+    direction: 'asc',
   });
 
   const [selectedTab, setSelectedTab] = useState<ItemType>(
-    initialTab || "fish"
+    initialTab || 'fish'
   );
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const debouncedSearch = useDebounce(searchQuery, 300);
-  const [selectedRarity, setSelectedRarity] = useState<Rarity | "all">("all");
-  const [sortOption, setSortOption] = useState<SortOption>("price-asc");
+  const [selectedRarity, setSelectedRarity] = useState<Rarity | 'all'>('all');
+  const [sortOption, setSortOption] = useState<SortOption>('price-asc');
 
   const updatePriceRange = (range: PriceRange) => {
-    setFilters((prev) => ({ ...prev, priceRange: range }));
+    setFilters(prev => ({ ...prev, priceRange: range }));
   };
 
   const updateCategories = (categories: FilterCategory[]) => {
-    setFilters((prev) => ({ ...prev, categories }));
+    setFilters(prev => ({ ...prev, categories }));
   };
 
   const toggleOnSale = () => {
-    setFilters((prev) => ({ ...prev, onSale: !prev.onSale }));
+    setFilters(prev => ({ ...prev, onSale: !prev.onSale }));
   };
 
   const updateSort = (
-    field: SortState["field"],
-    direction: SortState["direction"]
+    field: SortState['field'],
+    direction: SortState['direction']
   ) => {
     setSort({ field, direction });
   };
 
   const selectedData = useMemo(() => {
     switch (selectedTab) {
-      case "fish":
+      case 'fish':
         return fishData;
-      case "food":
+      case 'food':
         // In a real implementation, these would come from their own data files
         return foodData;
         return [];
-      case "decorations":
+      case 'decorations':
         return decorationItems;
-      case "others":
+      case 'others':
         return miscItems;
       default:
         return fishData;
@@ -92,7 +92,7 @@ export function useStoreFilters({ initialTab }: UseStoreFiltersProps) {
     if (!searchQuery.trim()) return selectedData;
     const query = searchQuery.toLowerCase();
     return selectedData.filter(
-      (item) =>
+      item =>
         item.name.toLowerCase().includes(query) ||
         item.description.toLowerCase().includes(query)
     );
@@ -100,9 +100,9 @@ export function useStoreFilters({ initialTab }: UseStoreFiltersProps) {
 
   // Apply rarity filter
   const filteredItems = useMemo(() => {
-    if (selectedRarity === "all") return searchedItems;
+    if (selectedRarity === 'all') return searchedItems;
     return searchedItems.filter(
-      (item) => item.rarity.toLowerCase() === selectedRarity.toLowerCase()
+      item => item.rarity.toLowerCase() === selectedRarity.toLowerCase()
     );
   }, [searchedItems, selectedRarity]);
 
@@ -113,13 +113,13 @@ export function useStoreFilters({ initialTab }: UseStoreFiltersProps) {
       const priceB = b.price;
 
       switch (sortOption) {
-        case "price-asc":
+        case 'price-asc':
           return priceA - priceB;
-        case "price-desc":
+        case 'price-desc':
           return priceB - priceA;
-        case "name-asc":
+        case 'name-asc':
           return a.name.localeCompare(b.name);
-        case "name-desc":
+        case 'name-desc':
           return b.name.localeCompare(a.name);
         default:
           return 0;
