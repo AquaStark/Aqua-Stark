@@ -1,6 +1,7 @@
 pub mod systems {
     pub mod AquaStark;
     pub mod daily_challenge;
+    pub mod Auctions;
 }
 
 pub mod achievements {
@@ -31,8 +32,9 @@ pub mod models {
     pub mod daily_challange;
 }
 pub mod tests {
+    mod test_daily_challenge;
     mod test_world;
     mod test_trading;
-    mod test_daily_challenge;
+    mod test_auction;
 }
 

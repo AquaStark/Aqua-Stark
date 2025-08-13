@@ -17,7 +17,10 @@ export default function EncyclopediaHabitats() {
     }));
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent, section: keyof typeof expandedSections) => {
+  const handleKeyDown = (
+    event: React.KeyboardEvent,
+    section: keyof typeof expandedSections
+  ) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       toggleSection(section);
@@ -30,7 +33,7 @@ export default function EncyclopediaHabitats() {
         <div
           className='flex justify-between items-center cursor-pointer'
           onClick={() => toggleSection('habitats')}
-          onKeyDown={(e) => handleKeyDown(e, 'habitats')}
+          onKeyDown={e => handleKeyDown(e, 'habitats')}
           tabIndex={0}
           role='button'
           aria-expanded={expandedSections.habitats}
@@ -64,7 +67,7 @@ export default function EncyclopediaHabitats() {
         <div
           className='flex justify-between items-center cursor-pointer'
           onClick={() => toggleSection('compatibility')}
-          onKeyDown={(e) => handleKeyDown(e, 'compatibility')}
+          onKeyDown={e => handleKeyDown(e, 'compatibility')}
           tabIndex={0}
           role='button'
           aria-expanded={expandedSections.compatibility}
