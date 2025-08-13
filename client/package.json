@@ -88,7 +88,7 @@
   "packageManager": "pnpm@10.13.1",
   "pnpm": {
     "overrides": {
-      "starknet": "6.24.1"
+      "starknet": "6.23.1"
     }
   }
 }

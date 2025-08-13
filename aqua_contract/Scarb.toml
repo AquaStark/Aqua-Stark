@@ -8,7 +8,17 @@ edition = "2024_07"
 sierra-replace-ids = true
 
 [scripts]
-sepolia = "sozo --profile sepolia clean && sozo --profile sepolia build && sozo --profile sepolia migrate --account-address $DEPLOYER_ACCOUNT_ADDRESS --private-key $DEPLOYER_PRIVATE_KEY --fee strk"
+# Development deployment (local katana) via migrate.sh
+dev = "./migrate.sh --profile dev"
+
+# Sepolia testnet deployment via migrate.sh (loads .env.sepolia)
+sepolia = "./migrate.sh --profile sepolia"
+
+# Dry-run mode for sepolia via migrate.sh
+sepolia-dry = "./migrate.sh --profile sepolia --dry-run"
+
+# Build only for sepolia
+sepolia-build = "sozo --profile sepolia clean && sozo --profile sepolia build"
 
 [dependencies]
 dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.5.0" }

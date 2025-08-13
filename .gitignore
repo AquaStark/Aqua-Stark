@@ -2,3 +2,8 @@
 node_modules/
 
 .DS_Store
+
+# Environment files with sensitive credentials
+.env
+.env.*
+!.env.*.example
