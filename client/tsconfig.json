@@ -29,5 +29,6 @@
     /* Additional options */
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src", "dojoConfig.ts", "env.d.ts"]
+  "include": ["src", "dojoConfig.ts", "env.d.ts"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/test/**/*"]
 }
