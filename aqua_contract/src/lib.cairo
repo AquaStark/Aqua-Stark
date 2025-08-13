@@ -1,5 +1,6 @@
 pub mod systems {
     pub mod AquaStark;
+    pub mod daily_challenge;
     pub mod Auctions;
 }
 
@@ -28,10 +29,12 @@ pub mod models {
     pub mod transaction_model;
     pub mod auctions_model;
     pub mod trade_model;
+    pub mod daily_challange;
 }
 pub mod tests {
-    // mod test_world;
-    // mod test_trading;
+    mod test_daily_challenge;
+    mod test_world;
+    mod test_trading;
     mod test_auction;
 }
 
