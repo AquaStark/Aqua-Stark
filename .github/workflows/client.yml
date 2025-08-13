@@ -61,5 +61,20 @@ jobs:
       - name: Run linting
         run: pnpm lint
 
+      - name: Run tests
+        run: pnpm test
+
+      - name: Generate test coverage
+        run: pnpm test:coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./client/coverage/coverage-final.json
+          directory: ./client/coverage/
+          flags: frontend
+          name: frontend-coverage
+          fail_ci_if_error: false
+
       - name: Build project
         run: pnpm build

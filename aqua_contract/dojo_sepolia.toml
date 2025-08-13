@@ -16,10 +16,10 @@ telegram = "https://t.me/dojoengine"
 default = "aqua_stark"
 
 [env]
-# rpc_url = ""         # env: STARKNET_RPC_URL
-# account_address = "" # env: DOJO_ACCOUNT_ADDRESS
+rpc_url = "https://free-rpc.nethermind.io/sepolia-juno/v0_7"  # env: STARKNET_RPC_URL
+# account_address = "" # env: DOJO_ACCOUNT_ADDRESS  
 # private_key = ""     # env: DOJO_PRIVATE_KEY
-# world_address = ""
+# world_address = ""   # env: DOJO_WORLD_ADDRESS
 
 [writers]
 "aqua_stark" = ["aqua_stark-AquaStark"]

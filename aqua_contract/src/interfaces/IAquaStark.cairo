@@ -48,16 +48,6 @@ pub trait IAquaStark<T> {
     fn list_fish(self: @T, fish_id: u256, price: u256) -> Listing;
     fn get_listing(self: @T, listing_id: felt252) -> Listing;
     fn purchase_fish(self: @T, listing_id: felt252);
-    fn start_auction(
-        ref self: T, fish_id: u256, duration_secs: u64, reserve_price: u256,
-    ) -> Auction;
-
-    fn place_bid(ref self: T, auction_id: u256, amount: u256);
-
-    fn end_auction(ref self: T, auction_id: u256);
-
-    fn get_active_auctions(self: @T) -> Array<Auction>;
-    fn get_auction_by_id(self: @T, auction_id: u256) -> Auction;
     fn get_fish_owner_for_auction(self: @T, fish_id: u256) -> FishOwner;
     fn create_trade_offer(
         ref self: T,
