@@ -23,8 +23,14 @@ private_key = "0xc5b2fcab997346f3ea1c00b002ecf6f382c5f9c9659a3894eb783c5320f912"
 # world_address = "0x037a99da65fb03c5692317efddfeb0ed67dba643ce34e6ccd1179a1894dc5f83"
 world_block = 2 
 
+[init_call_args]
+"aqua_stark-ShopCatalog" = [
+  "0x0" # shop catalog owner
+]
+
+
 [writers]
-"aqua_stark" = ["aqua_stark-AquaStark"]
+"aqua_stark" = ["aqua_stark-AquaStark", "aqua_stark-ShopCatalog"]
 "aqua_stark-Aquarium" = ["aqua_stark-AquaStark"]
 "aqua_stark-AquariumCounter" = ["aqua_stark-AquaStark"]
 "aqua_stark-AquariumOwner" = ["aqua_stark-AquaStark"]
@@ -43,3 +49,5 @@ world_block = 2
 "aqua_stark-AddressToUsername" = ["aqua_stark-AquaStark"]
 "aqua_stark-Player" = ["aqua_stark-AquaStark"]
 "aqua_stark-Listing" = ["aqua_stark-AquaStark"]
+"aqua_stark-ShopItemModel" = ["aqua_stark-ShopCatalog"]
+"aqua_stark-ShopCatalogModel" = ["aqua_stark-ShopCatalog"]
