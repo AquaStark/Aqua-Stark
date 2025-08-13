@@ -989,13 +989,13 @@ mod tests {
             .purchase_fish(listing.id); // should fail because player already owns the fish
     }
 
+    // AUCTION TESTS - NOW WORKING WITH PROPER INTERFACE
     #[test]
     fn test_start_auction() {
         let caller = contract_address_const::<'seller'>();
         let ndef = namespace_def();
         let mut world = spawn_test_world([ndef].span());
         world.sync_perms_and_inits(contract_defs());
-        // world.grant_owner(0, seller);
 
         let (contract_address, _) = world.dns(@"AquaStark").unwrap();
         let actions_system = IAquaStarkDispatcher { contract_address };
@@ -1010,7 +1010,7 @@ mod tests {
         let reserve_price = 100;
         let auction = actions_system.start_auction(fish.id, duration, reserve_price);
 
-        //     // Verify auction details
+        // Verify auction details
         assert(auction.auction_id == 0, 'Auction ID mismatch');
         assert(auction.seller == caller, 'Seller mismatch');
         assert(auction.fish_id == fish.id, 'Fish ID mismatch');
@@ -1019,11 +1019,10 @@ mod tests {
         assert(auction.highest_bidder == Option::None(()), 'Initial bidder should be none');
         assert(auction.active, 'Auction should be active');
 
-        //     // Verify fish is locked
+        // Verify fish is locked
         let fish_owner: FishOwner = actions_system.get_fish_owner_for_auction(fish.id);
         assert(fish_owner.locked, 'Fish should be locked');
     }
-
 
     #[test]
     #[should_panic]
@@ -1046,7 +1045,6 @@ mod tests {
         actions_system.start_auction(fish.id, 3600, 100);
     }
 
-
     #[test]
     #[should_panic]
     fn test_start_auction_already_locked() {
@@ -1068,7 +1066,6 @@ mod tests {
         // Try to start another auction with same fish
         actions_system.start_auction(fish.id, 3600, 100);
     }
-
 
     #[test]
     fn test_place_bid() {
@@ -1098,7 +1095,6 @@ mod tests {
         assert(updated_auction.highest_bid == bid_amount, 'Bid amount not updated');
         assert(updated_auction.highest_bidder == Option::Some(bidder), 'Bidder not updated');
     }
-
 
     #[test]
     #[should_panic]
@@ -1151,7 +1147,6 @@ mod tests {
         actions_system.place_bid(auction.auction_id, 90);
     }
 
-
     #[test]
     fn test_end_auction_with_winner() {
         let seller = contract_address_const::<'seller'>();
@@ -1195,7 +1190,6 @@ mod tests {
         assert(!fish_owner_model.locked, 'Fish should be unlocked');
     }
 
-
     #[test]
     fn test_end_auction_no_winner() {
         let seller = contract_address_const::<'seller'>();
@@ -1230,7 +1224,6 @@ mod tests {
         let fish_owner_model: FishOwner = actions_system.get_fish_owner_for_auction(fish.id);
         assert(!fish_owner_model.locked, 'Fish should be unlocked');
     }
-
 
     #[test]
     fn test_get_active_auctions() {
