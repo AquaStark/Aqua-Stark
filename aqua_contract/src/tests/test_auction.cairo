@@ -16,7 +16,6 @@
 //     };
 //     use starknet::{get_caller_address, contract_address_const};
 
-
 //     fn namespace_def() -> NamespaceDef {
 //         NamespaceDef {
 //             namespace: "aqua_auction",
@@ -39,7 +38,6 @@
 //         ]
 //             .span()
 //     }
-
 
 //     #[test]
 //     fn test_start_auction() {
@@ -155,7 +153,6 @@
 //         assert!(!fish.locked, "Fish unlocked and returned");
 //     }
 
-
 //     #[test]
 //     #[should_panic]
 //     fn test_start_auction_with_wrong_owner_should_fail() {
@@ -174,7 +171,6 @@
 
 //         actions_system.start_auction(fish_id, duration_secs, reserve_price);
 //     }
-
 
 //     #[test]
 //     #[should_panic]
