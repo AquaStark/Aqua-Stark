@@ -1,6 +1,6 @@
-use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
 use core::poseidon::poseidon_hash_span;
-use core::array::ArrayTrait;
+use core::traits::Into;
+use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
 
 fn generate_listing_id() -> felt252 {
     let timestamp = get_block_timestamp();
@@ -51,6 +51,32 @@ pub enum Pattern {
     Plain,
     Spotted,
     Stripes,
+}
+
+// Trait-based conversions for Species
+pub impl IntoSpeciesU8 of Into<Species, u8> {
+    fn into(self: Species) -> u8 {
+        match self {
+            Species::AngelFish => 0,
+            Species::GoldFish => 1,
+            Species::Betta => 2,
+            Species::NeonTetra => 3,
+            Species::Corydoras => 4,
+            Species::Hybrid => 5,
+        }
+    }
+}
+
+pub fn species_from_u8_strict(value: u8) -> Option<Species> {
+    match value {
+        0 => Option::Some(Species::AngelFish),
+        1 => Option::Some(Species::GoldFish),
+        2 => Option::Some(Species::Betta),
+        3 => Option::Some(Species::NeonTetra),
+        4 => Option::Some(Species::Corydoras),
+        5 => Option::Some(Species::Hybrid),
+        _ => Option::None(()),
+    }
 }
 
 #[derive(Serde, Copy, Drop, Introspect)]
