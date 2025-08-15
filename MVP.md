@@ -1,6 +1,6 @@
 # 🐠 AquaStark MVP Documentation - End of Month Target
 
-<div align="center">
+<img width="800" height="300" alt="Diseño sin título" src="https://github.com/user-attachments/assets/b7562083-32c1-4e9e-9268-8b4ea3398ebd" />
 
 ![AquaStark](https://img.shields.io/badge/AquaStark-MVP%20Documentation-blue?style=for-the-badge&logo=ethereum)
 
