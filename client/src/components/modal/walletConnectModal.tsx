@@ -52,18 +52,20 @@ const WalletModal = ({ isOpen, onClose, onSelectWallet }: WalletModalProps) => {
     <div
       className='fixed inset-0 bg-black/50 flex items-center justify-center z-50'
       onClick={onClose}
-      onKeyDown={(e) => e.key === 'Escape' && onClose()}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="wallet-modal-title"
+      onKeyDown={e => e.key === 'Escape' && onClose()}
+      role='dialog'
+      aria-modal='true'
+      aria-labelledby='wallet-modal-title'
     >
       <div
         className='bg-[#1C1D1F] rounded-lg p-6 w-full max-w-md mx-4'
         onClick={e => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
+        onKeyDown={e => e.stopPropagation()}
       >
         <div className='flex justify-between items-center mb-4'>
-          <h2 id="wallet-modal-title" className='text-white text-xl font-bold'>Connect Wallet</h2>
+          <h2 id='wallet-modal-title' className='text-white text-xl font-bold'>
+            Connect Wallet
+          </h2>
           <button
             onClick={onClose}
             className='text-gray-400 hover:text-white'
