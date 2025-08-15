@@ -54,6 +54,10 @@ export function ComingSoonModal({
           closable ? 'bg-black/30 cursor-pointer' : 'bg-black/30'
         )}
         onClick={closable ? onClose : undefined}
+        onKeyDown={closable ? e => e.key === 'Escape' && onClose() : undefined}
+        role={closable ? 'button' : undefined}
+        tabIndex={closable ? 0 : undefined}
+        aria-label={closable ? 'Close modal' : undefined}
       />
 
       {/* Modal */}
