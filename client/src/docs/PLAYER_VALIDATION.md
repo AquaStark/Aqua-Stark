@@ -1,7 +1,5 @@
 # Player Validation Implementation
 
-## Overview
-
 This implementation solves the issue described in [#222](https://github.com/AquaStark/Aqua-Stark/issues/222) by adding user validation to the landing page. It checks if a user exists both on-chain and in the backend before determining the appropriate routing.
 
 ## Architecture
