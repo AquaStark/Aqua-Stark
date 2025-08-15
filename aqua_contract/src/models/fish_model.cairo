@@ -67,17 +67,15 @@ pub impl IntoSpeciesU8 of Into<Species, u8> {
     }
 }
 
-pub impl IntoU8Species of Into<u8, Species> {
-    fn into(self: u8) -> Species {
-        match self {
-            0 => Species::AngelFish,
-            1 => Species::GoldFish,
-            2 => Species::Betta,
-            3 => Species::NeonTetra,
-            4 => Species::Corydoras,
-            5 => Species::Hybrid,
-            _ => Species::AngelFish,
-        }
+pub fn species_from_u8_strict(value: u8) -> Option<Species> {
+    match value {
+        0 => Option::Some(Species::AngelFish),
+        1 => Option::Some(Species::GoldFish),
+        2 => Option::Some(Species::Betta),
+        3 => Option::Some(Species::NeonTetra),
+        4 => Option::Some(Species::Corydoras),
+        5 => Option::Some(Species::Hybrid),
+        _ => Option::None(()),
     }
 }
 
