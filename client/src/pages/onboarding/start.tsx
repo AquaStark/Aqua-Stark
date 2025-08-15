@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAccount } from '@starknet-react/core';
 import { usePlayer } from '@/hooks/dojo/usePlayer';
+import { usePlayerValidation } from '@/hooks/usePlayerValidation';
 import { PageHeader } from '@/components/layout/page-header';
 import { Footer } from '@/components/layout/footer';
 import { Input } from '@/components/ui/input';
@@ -15,9 +16,12 @@ import { useBubbles } from '@/hooks/use-bubbles';
 export default function Start() {
   const { account } = useAccount();
   const { registerPlayer } = usePlayer();
+  const { createBackendPlayer } = usePlayerValidation();
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
   const [txHash, setTxHash] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [usernameSuggestions, setUsernameSuggestions] = useState<string[]>([]);
   const navigate = useNavigate();
 
   // Use enhanced bubbles config
@@ -31,16 +35,104 @@ export default function Start() {
     if (input) input.focus();
   }, []);
 
+  // Validate username format
+  const validateUsername = (value: string) => {
+    setUsernameError('');
+    
+    if (!value.trim()) {
+      setUsernameError('Username is required');
+      return false;
+    }
+    
+    if (value.length < 3) {
+      setUsernameError('Username must be at least 3 characters long');
+      return false;
+    }
+    
+    if (value.length > 24) {
+      setUsernameError('Username must be less than 24 characters');
+      return false;
+    }
+    
+    // Check for valid characters (alphanumeric, underscore, hyphen)
+    if (!/^[a-zA-Z0-9_-]+$/.test(value)) {
+      setUsernameError('Username can only contain letters, numbers, underscores, and hyphens');
+      return false;
+    }
+    
+    return true;
+  };
+
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setUsername(value);
+    validateUsername(value);
+    setUsernameSuggestions([]); // Clear suggestions when user types
+  };
+
+  const generateUsernameSuggestions = (baseUsername: string) => {
+    const suggestions = [];
+    const suffixes = ['123', '2024', 'Aqua', 'Fish', 'Ocean', 'Blue', 'Star'];
+    
+    for (const suffix of suffixes) {
+      const suggestion = `${baseUsername}${suffix}`;
+      if (suggestion.length <= 24) {
+        suggestions.push(suggestion);
+      }
+    }
+    
+    // Add some random suggestions
+    const randomSuffixes = ['Cool', 'Pro', 'Gamer', 'Player', 'Master'];
+    for (const suffix of randomSuffixes) {
+      const suggestion = `${baseUsername}${suffix}`;
+      if (suggestion.length <= 24) {
+        suggestions.push(suggestion);
+      }
+    }
+    
+    return suggestions.slice(0, 5); // Return max 5 suggestions
+  };
+
   const handleRegister = async () => {
     if (!account) return toast.error('Connect your wallet first');
-    if (!username.trim()) return toast.error('Username is required');
+    if (!validateUsername(username)) return;
     try {
       setLoading(true);
+      
+      // Register player on-chain first
       const tx = await registerPlayer(account, username.trim());
-      toast.success('Player registered successfully!');
+      toast.success('Player registered on-chain successfully!');
       setTxHash(tx.transaction_hash);
-    } catch {
-      toast.error('Failed to register player');
+      
+      // Create player in backend
+      try {
+        const playerId = account.address; // Use wallet address as player ID
+        await createBackendPlayer(playerId, account.address, username.trim());
+        toast.success('Player synced to backend successfully!');
+      } catch (backendError) {
+        console.error('Backend sync error:', backendError);
+        toast.warning('Player registered on-chain but backend sync failed. You can continue.');
+      }
+      
+    } catch (error) {
+      console.error('Registration error:', error);
+      
+      // Check for specific error types
+      const errorMessage = error?.message || error?.toString() || '';
+      
+      if (errorMessage.includes('USERNAME ALREADY TAKEN') || 
+          errorMessage.includes('username') && errorMessage.includes('taken')) {
+        toast.error('Username is already taken. Please choose a different username.');
+        setUsernameError('Username is already taken');
+        setUsernameSuggestions(generateUsernameSuggestions(username));
+      } else if (errorMessage.includes('multicall-failed')) {
+        toast.error('Transaction failed. Please try again with a different username.');
+        setUsernameError('Transaction failed. Please try a different username.');
+        setUsernameSuggestions(generateUsernameSuggestions(username));
+      } else {
+        toast.error('Failed to register player. Please try again.');
+        setUsernameError('Registration failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -104,14 +196,41 @@ export default function Start() {
             <Input
               id='username-input'
               placeholder='Enter your username'
-              className='bg-blue-100/10 border-blue-300/30 text-white placeholder:text-blue-100/50 mb-4'
+              className={`bg-blue-100/10 border-blue-300/30 text-white placeholder:text-blue-100/50 mb-2 ${
+                usernameError ? 'border-red-400' : ''
+              }`}
               value={username}
-              onChange={e => setUsername(e.target.value)}
+              onChange={handleUsernameChange}
               autoComplete='off'
               maxLength={24}
               aria-label='Username'
               disabled={loading}
             />
+            {usernameError && (
+              <div className='text-red-400 text-sm mb-2 px-2'>
+                {usernameError}
+              </div>
+            )}
+            {usernameSuggestions.length > 0 && (
+              <div className='mb-4'>
+                <p className='text-blue-200 text-sm mb-2'>Try these suggestions:</p>
+                <div className='flex flex-wrap gap-2'>
+                  {usernameSuggestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        setUsername(suggestion);
+                        setUsernameError('');
+                        setUsernameSuggestions([]);
+                      }}
+                      className='px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition-colors'
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             <Button
               onClick={handleRegister}
               className='w-full bg-purple-600 hover:bg-purple-700 text-white font-bold shadow-lg shadow-purple-500/10'
