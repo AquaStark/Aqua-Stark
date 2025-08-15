@@ -76,8 +76,6 @@ describe('useFishMovement', () => {
       useFishMovement(mockFish, { aquariumBounds: mockAquariumBounds })
     );
 
-    const initialPosition = { ...result.current[0].position };
-
     // Simulate animation frame calls
     act(() => {
       // Call the mocked requestAnimationFrame callback directly
