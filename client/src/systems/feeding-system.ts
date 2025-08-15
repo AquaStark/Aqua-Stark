@@ -71,26 +71,29 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
   }, []);
 
   // Start feeding mode
-  const startFeeding = useCallback((duration: number = 30000) => {
-    setFeedingState(prev => ({
-      ...prev,
-      isFeeding: true,
-      feedingStartTime: Date.now(),
-      feedingDuration: duration,
-    }));
+  const startFeeding = useCallback(
+    (duration: number = 30000) => {
+      setFeedingState(prev => ({
+        ...prev,
+        isFeeding: true,
+        feedingStartTime: Date.now(),
+        feedingDuration: duration,
+      }));
 
-    // Clear any existing timeout
-    if (feedingTimeoutRef.current) {
-      clearTimeout(feedingTimeoutRef.current);
-    }
+      // Clear any existing timeout
+      if (feedingTimeoutRef.current) {
+        clearTimeout(feedingTimeoutRef.current);
+      }
 
-    // Auto-stop feeding after duration
-    feedingTimeoutRef.current = setTimeout(() => {
-      stopFeeding();
-    }, duration);
+      // Auto-stop feeding after duration
+      feedingTimeoutRef.current = setTimeout(() => {
+        stopFeeding();
+      }, duration);
 
-    console.log(`🍽️ Feeding mode started for ${duration / 1000} seconds`);
-  }, [stopFeeding]);
+      console.log(`🍽️ Feeding mode started for ${duration / 1000} seconds`);
+    },
+    [stopFeeding]
+  );
 
   // Handle food spawning
   const handleFeedClick = useCallback(
