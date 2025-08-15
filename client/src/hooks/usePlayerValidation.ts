@@ -35,7 +35,7 @@ export const usePlayerValidation = () => {
           walletAddress
         });
         const response = await ApiClient.get(url);
-        backendPlayer = response.data;
+        backendPlayer = (response as any).data;
       } catch (error) {
         console.log('Player not found in backend:', error);
       }
@@ -79,7 +79,7 @@ export const usePlayerValidation = () => {
       };
       
       const response = await ApiClient.post(url, data);
-      return response.data;
+      return (response as any).data;
     } catch (error) {
       console.error('Error creating backend player:', error);
       throw error;
