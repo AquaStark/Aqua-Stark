@@ -13,30 +13,30 @@ graph TB
         B --> C[usePlayerValidation Hook]
         C --> D[API Client]
         C --> E[usePlayer Hook]
-        
+
         F[Onboarding Page] --> G[Registration Form]
         G --> H[Username Validation]
         G --> I[Error Handling]
     end
-    
+
     subgraph "Backend (Node.js/Express)"
         J[API Routes] --> K[Player Controller]
         K --> L[Player Service]
         L --> M[Supabase Client]
         L --> N[Redis Cache]
     end
-    
+
     subgraph "External Services"
         O[Starknet/Dojo] --> P[On-chain Data]
         Q[Supabase] --> R[Off-chain Data]
         S[Upstash Redis] --> T[Cache Layer]
     end
-    
+
     D --> J
     E --> O
     M --> Q
     N --> S
-    
+
     style A fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff
     style F fill:#FF9800,stroke:#F57C00,stroke-width:2px,color:#fff
     style O fill:#9C27B0,stroke:#7B1FA2,stroke-width:2px,color:#fff
@@ -74,37 +74,37 @@ flowchart TD
     A[User clicks "START GAME"] --> B{Wallet Connected?}
     B -->|No| C[Show Error: Connect Wallet]
     B -->|Yes| D[Validate Player Existence]
-    
+
     D --> E[On-chain Check<br/>usePlayer.getPlayer()]
     D --> F[Backend Check<br/>API: /players/wallet/:address]
-    
+
     E --> G{Player Exists On-chain?}
     F --> H{Player Exists In Backend?}
-    
+
     G -->|Yes| I[Player Data Available]
     G -->|No| J[Player Not Found]
     H -->|Yes| K[Backend Data Available]
     H -->|No| L[Backend Data Missing]
-    
+
     I --> M{Player Exists Anywhere?}
     J --> M
     K --> M
     L --> M
-    
+
     M -->|Yes| N[Existing User Flow]
     M -->|No| O[New User Flow]
-    
+
     N --> P[Sync to Backend if Needed]
     P --> Q[Navigate to /game]
     Q --> R[Show Welcome Back Toast]
-    
+
     O --> S[Navigate to /start]
     S --> T[Onboarding Process]
-    
+
     T --> U[Register On-chain]
     U --> V[Create in Backend]
     V --> W[User Created in Both Systems]
-    
+
     style A fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff
     style Q fill:#2196F3,stroke:#1976D2,stroke-width:2px,color:#fff
     style S fill:#FF9800,stroke:#F57C00,stroke-width:2px,color:#fff
@@ -141,7 +141,7 @@ User clicks "START GAME"
 1. **On-chain Check**: Uses existing `usePlayer` hook to check if player exists on Starknet
 2. **Backend Check**: Calls backend API to check if player exists in Supabase
 3. **Synchronization**: If player exists on-chain but not in backend, creates backend entry
-4. **Routing**: 
+4. **Routing**:
    - Existing user → `/game`
    - New user → `/start`
 
@@ -179,7 +179,7 @@ function MyComponent() {
 
   const handleStartGame = async () => {
     const validation = await validatePlayer(walletAddress);
-    
+
     if (validation.exists) {
       navigate('/game');
     } else {
@@ -192,7 +192,8 @@ function MyComponent() {
 ### Advanced Usage
 
 ```typescript
-const { validatePlayer, syncPlayerToBackend, createBackendPlayer } = usePlayerValidation();
+const { validatePlayer, syncPlayerToBackend, createBackendPlayer } =
+  usePlayerValidation();
 
 // Validate and sync if needed
 const validation = await validatePlayer(walletAddress);
@@ -221,24 +222,24 @@ flowchart TD
     A[Registration Attempt] --> B{On-chain Success?}
     B -->|Yes| C[Backend Creation]
     B -->|No| D[Handle On-chain Error]
-    
+
     C --> E{Backend Success?}
     C -->|Yes| F[Success: Both Systems]
     C -->|No| G[Partial Success: On-chain Only]
-    
+
     D --> H{Error Type?}
     H -->|Username Taken| I[Show Suggestions]
     H -->|Network Error| J[Retry Option]
     H -->|Other| K[Generic Error]
-    
+
     I --> L[User Selects Suggestion]
     L --> A
     J --> A
     K --> M[Show Error Message]
-    
+
     F --> N[Continue to Game]
     G --> O[Warning: Backend Sync Failed]
-    
+
     style F fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff
     style G fill:#FF9800,stroke:#F57C00,stroke-width:2px,color:#fff
     style I fill:#2196F3,stroke:#1976D2,stroke-width:2px,color:#fff
@@ -254,6 +255,7 @@ npm test usePlayerValidation
 ```
 
 Tests cover:
+
 - Existing user validation
 - New user validation
 - Backend synchronization
@@ -270,6 +272,7 @@ Tests cover:
 ## Use Cases & Examples
 
 ### Case 1: New User Registration
+
 ```mermaid
 sequenceDiagram
     participant U as User
@@ -277,7 +280,7 @@ sequenceDiagram
     participant B as Backend
     participant S as Starknet
     participant DB as Supabase
-    
+
     U->>F: Clicks "START GAME"
     F->>S: Check if user exists
     S-->>F: User not found
@@ -295,6 +298,7 @@ sequenceDiagram
 ```
 
 ### Case 2: Existing User Login
+
 ```mermaid
 sequenceDiagram
     participant U as User
@@ -302,7 +306,7 @@ sequenceDiagram
     participant B as Backend
     participant S as Starknet
     participant DB as Supabase
-    
+
     U->>F: Clicks "START GAME"
     F->>S: Check if user exists
     S-->>F: User found
