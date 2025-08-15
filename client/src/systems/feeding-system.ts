@@ -74,7 +74,7 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
     }, duration);
 
     console.log(`🍽️ Feeding mode started for ${duration / 1000} seconds`);
-  }, []);
+  }, [stopFeeding]);
 
   // Stop feeding mode
   const stopFeeding = useCallback(() => {
