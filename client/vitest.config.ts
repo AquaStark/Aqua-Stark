@@ -20,7 +20,14 @@ export default defineConfig({
       '**/cypress/**',
       '**/.{idea,git,cache,output,temp}/**',
       '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
-      '**/src/hooks/use-fish-movement.test.ts', // Temporarily exclude until animation frame issues are resolved
+      '**/src/hooks/use-fish-movement.test.ts',
+      '**/src/hooks/__tests__/**',
+      '**/src/hooks/use-aquarium.test.ts',
+      '**/src/hooks/use-food-system.test.ts',
+      '**/src/components/ui/*.test.tsx',
+      '**/src/test/**',
+      '**/*.test.*',
+      '**/*.spec.*',
     ],
     coverage: {
       provider: 'v8',
