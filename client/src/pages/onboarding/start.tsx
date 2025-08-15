@@ -118,7 +118,7 @@ export default function Start() {
       console.error('Registration error:', error);
       
       // Check for specific error types
-      const errorMessage = error?.message || error?.toString() || '';
+      const errorMessage = (error as any)?.message || error?.toString() || '';
       
       if (errorMessage.includes('USERNAME ALREADY TAKEN') || 
           errorMessage.includes('username') && errorMessage.includes('taken')) {
