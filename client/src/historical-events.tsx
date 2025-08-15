@@ -47,7 +47,7 @@ export function HistoricalEvents() {
     if (account) {
       subscribeHistoricalEvent(account);
     }
-  }, [account, setEvents, sdk]);
+  }, [account, setEvents, sdk, subscription]);
 
   if (!account) {
     return (
