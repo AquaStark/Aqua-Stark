@@ -3,18 +3,55 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAccount } from '@starknet-react/core';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { usePlayerValidation } from '@/hooks/usePlayerValidation';
+import { useState } from 'react';
 
 export function HeroSection() {
   const { account } = useAccount();
   const navigate = useNavigate();
+  const { validatePlayer, syncPlayerToBackend, isValidating } = usePlayerValidation();
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const handleStartGame = () => {
+  const handleStartGame = async () => {
     if (!account) {
       toast.error('Connect your wallet before playing.');
       return;
     }
 
-    navigate('/start');
+    setIsProcessing(true);
+    
+    try {
+      // Validate if user exists (on-chain and backend)
+      const validation = await validatePlayer(account.address);
+      
+      if (validation.exists) {
+        // User exists - check if we need to sync to backend
+        if (validation.isOnChain && !validation.isInBackend) {
+          try {
+            await syncPlayerToBackend(validation.playerData, account.address);
+            toast.success('Welcome back! Your data has been synced.');
+          } catch (error) {
+            console.error('Error syncing player to backend:', error);
+            // Continue anyway, user can still play
+          }
+        } else {
+          toast.success('Welcome back!');
+        }
+        
+        // Navigate to game
+        navigate('/game');
+      } else {
+        // New user - go to registration
+        navigate('/start');
+      }
+    } catch (error) {
+      console.error('Error validating player:', error);
+      // On error, default to registration flow
+      toast.info('Starting registration process...');
+      navigate('/start');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -31,9 +68,10 @@ export function HeroSection() {
       <div className='flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4'>
         <Button
           onClick={handleStartGame}
-          className='text-base sm:text-lg md:text-xl font-bold py-3 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 bg-gradient-to-b from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white rounded-xl sm:rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-200 border-2 sm:border-3 md:border-4 border-green-300 border-b-4 sm:border-b-6 md:border-b-8 border-r-4 sm:border-r-6 md:border-r-8'
+          disabled={isProcessing || isValidating}
+          className='text-base sm:text-lg md:text-xl font-bold py-3 sm:py-4 md:py-5 px-6 sm:px-8 md:px-12 bg-gradient-to-b from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white rounded-xl sm:rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-200 border-2 sm:border-3 md:border-4 border-green-300 border-b-4 sm:border-b-6 md:border-b-8 border-r-4 sm:border-r-6 md:border-r-8 disabled:opacity-50 disabled:cursor-not-allowed'
         >
-          START GAME
+          {isProcessing || isValidating ? 'CHECKING...' : 'START GAME'}
         </Button>
 
         <Link to='/store'>
