@@ -9,7 +9,8 @@ import { useState } from 'react';
 export function HeroSection() {
   const { account } = useAccount();
   const navigate = useNavigate();
-  const { validatePlayer, syncPlayerToBackend, isValidating } = usePlayerValidation();
+  const { validatePlayer, syncPlayerToBackend, isValidating } =
+    usePlayerValidation();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleStartGame = async () => {
@@ -19,11 +20,11 @@ export function HeroSection() {
     }
 
     setIsProcessing(true);
-    
+
     try {
       // Validate if user exists (on-chain and backend)
       const validation = await validatePlayer(account.address);
-      
+
       if (validation.exists) {
         // User exists - check if we need to sync to backend
         if (validation.isOnChain && !validation.isInBackend) {
@@ -37,7 +38,7 @@ export function HeroSection() {
         } else {
           toast.success('Welcome back!');
         }
-        
+
         // Navigate to game
         navigate('/game');
       } else {
