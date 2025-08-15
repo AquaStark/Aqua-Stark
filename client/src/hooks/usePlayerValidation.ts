@@ -20,18 +20,15 @@ export const usePlayerValidation = () => {
     try {
       // Check on-chain first (using existing usePlayer hook)
       let onChainPlayer = null;
-      let onChainError = false;
       
       try {
         onChainPlayer = await getPlayer(walletAddress);
       } catch (error) {
         console.log('Player not found on-chain:', error);
-        onChainError = true;
       }
 
       // Check backend (using our API)
       let backendPlayer = null;
-      let backendError = false;
       
       try {
         const url = buildApiUrl(API_CONFIG.ENDPOINTS.PLAYERS.GET_BY_WALLET, {
@@ -41,7 +38,6 @@ export const usePlayerValidation = () => {
         backendPlayer = response.data;
       } catch (error) {
         console.log('Player not found in backend:', error);
-        backendError = true;
       }
 
       // Determine if player exists
