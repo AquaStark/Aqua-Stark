@@ -8,7 +8,7 @@ pub mod AquaStark {
         PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
         FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
         FishPurchased, TradeOfferCreated, TradeOfferAccepted, TradeOfferCancelled, FishLocked,
-        FishUnlocked,
+        FishUnlocked, AquariumCreated,
     };
     use starknet::{
         ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
@@ -59,6 +59,7 @@ pub mod AquaStark {
             max_capacity: u32,
             max_decorations: u32,
         ) -> Aquarium {
+            // Delegate to aquarium contract
             let mut world = self.world_default();
             let caller = get_caller_address();
             let aquarium_id = self.create_aquarium_id();
@@ -76,6 +77,17 @@ pub mod AquaStark {
 
             world.write_model(@aquarium_owner);
             world.write_model(@aquarium);
+
+            world
+                .emit_event(
+                    @AquariumCreated {
+                        aquarium_id,
+                        owner,
+                        max_capacity,
+                        max_decorations,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
 
             aquarium
         }

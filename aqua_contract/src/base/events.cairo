@@ -227,3 +227,74 @@ pub struct TradeOfferExpired {
     pub offered_fish_id: u256,
     pub timestamp: u64,
 }
+
+// Aquarium-specific events
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct AquariumCreated {
+    #[key]
+    pub aquarium_id: u256,
+    #[key]
+    pub owner: ContractAddress,
+    pub max_capacity: u32,
+    pub max_decorations: u32,
+    pub timestamp: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct AquariumUpdated {
+    #[key]
+    pub aquarium_id: u256,
+    #[key]
+    pub owner: ContractAddress,
+    pub old_max_capacity: u32,
+    pub new_max_capacity: u32,
+    pub old_max_decorations: u32,
+    pub new_max_decorations: u32,
+    pub timestamp: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct AquariumCleaned {
+    #[key]
+    pub aquarium_id: u256,
+    #[key]
+    pub owner: ContractAddress,
+    pub amount_cleaned: u32,
+    pub old_cleanliness: u32,
+    pub new_cleanliness: u32,
+    pub timestamp: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct AquariumCleanlinessDecayed {
+    #[key]
+    pub aquarium_id: u256,
+    pub hours_passed: u32,
+    pub old_cleanliness: u32,
+    pub new_cleanliness: u32,
+    pub timestamp: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct FishRemovedFromAquarium {
+    #[key]
+    pub aquarium_id: u256,
+    #[key]
+    pub fish_id: u256,
+    pub timestamp: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct DecorationRemovedFromAquarium {
+    #[key]
+    pub aquarium_id: u256,
+    #[key]
+    pub decoration_id: u256,
+    pub timestamp: u64,
+}
