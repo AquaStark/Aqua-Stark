@@ -5,6 +5,8 @@ pub mod systems {
     pub mod ShopCatalog;
 }
 
+pub mod aquarium;
+
 pub mod achievements {
     pub mod achievements;
 }
@@ -39,5 +41,6 @@ pub mod tests {
     mod test_world;
     mod test_trading;
     mod test_auction;
+    mod test_aquarium;
 }
 
