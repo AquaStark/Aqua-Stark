@@ -43,7 +43,6 @@ export function LoadingScreen({
   const [progress, setProgress] = useState(0);
   const [currentText, setCurrentText] = useState('Initializing AquaStark...');
   const [currentTip, setCurrentTip] = useState(LOADING_TIPS[0]);
-  const [isComplete, setIsComplete] = useState(false);
 
   // Enhanced bubbles for loading screen
   const bubbles = useBubbles({
@@ -61,8 +60,7 @@ export function LoadingScreen({
     const steps = customText
       ? [{ progress: 100, text: customText, duration }]
       : DEFAULT_LOADING_STEPS;
-    let currentStep = 0;
-    let startTime = Date.now();
+    const startTime = Date.now();
 
     const updateProgress = () => {
       const elapsed = Date.now() - startTime;
@@ -97,7 +95,6 @@ export function LoadingScreen({
       if (progressRatio < 1) {
         requestAnimationFrame(updateProgress);
       } else {
-        setIsComplete(true);
         setTimeout(() => {
           onComplete?.();
         }, 1000);
