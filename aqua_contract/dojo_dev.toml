@@ -30,7 +30,7 @@ world_block = 2
 
 
 [writers]
-"aqua_stark" = ["aqua_stark-AquaStark", "aqua_stark-ShopCatalog"]
+"aqua_stark" = ["aqua_stark-AquaStark", "aqua_stark-ShopCatalog", "aqua_stark-FishSystem"]
 "aqua_stark-Aquarium" = ["aqua_stark-AquaStark"]
 "aqua_stark-AquariumCounter" = ["aqua_stark-AquaStark"]
 "aqua_stark-AquariumOwner" = ["aqua_stark-AquaStark"]
