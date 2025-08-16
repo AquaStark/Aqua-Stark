@@ -18,7 +18,7 @@ export function useLoadingNavigation() {
     if (showLoading) {
       // Navigate to loading page first
       navigate('/loading');
-      
+
       // After loading completes, navigate to target route
       setTimeout(() => {
         navigate(targetRoute);
