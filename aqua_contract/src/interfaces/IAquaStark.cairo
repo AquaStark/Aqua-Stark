@@ -47,7 +47,7 @@ pub trait IAquaStark<T> {
     fn get_fish_ancestor(self: @T, fish_id: u256, generation: u32) -> FishParents;
     fn list_fish(self: @T, fish_id: u256, price: u256) -> Listing;
     fn get_listing(self: @T, listing_id: felt252) -> Listing;
-    fn purchase_fish(self: @T, listing_id: felt252);
+    fn purchase_fish(ref self: T, listing_id: felt252);
     fn get_fish_owner_for_auction(self: @T, fish_id: u256) -> FishOwner;
     fn create_trade_offer(
         ref self: T,
@@ -65,4 +65,5 @@ pub trait IAquaStark<T> {
     fn get_active_trade_offers(self: @T, creator: ContractAddress) -> Array<TradeOffer>;
     fn get_fish_lock_status(self: @T, fish_id: u256) -> FishLock;
     fn is_fish_locked(self: @T, fish_id: u256) -> bool;
+    fn initialize_experience_config(ref self: T);
 }

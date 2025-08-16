@@ -1,4 +1,4 @@
-use starknet::{ContractAddress, get_caller_address};
+use starknet::ContractAddress;
 
 #[derive(Drop, Serde, Debug, Clone)]
 #[dojo::model]
@@ -11,7 +11,7 @@ pub struct Experience {
     pub last_updated: u64,
 }
 
-#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
+#[derive(Serde, Copy, Drop, PartialEq)]
 #[dojo::model]
 pub struct ExperienceCounter {
     #[key]
@@ -19,7 +19,7 @@ pub struct ExperienceCounter {
     pub total_grants: u256,
 }
 
-#[derive(Drop, Serde, Debug, Clone)]
+#[derive(Drop, Serde, Debug, Copy)]
 #[dojo::model]
 pub struct ExperienceConfig {
     #[key]
@@ -99,8 +99,10 @@ impl ExperienceImpl of ExperienceTrait {
                 break threshold;
             }
 
-            // Calculate experience needed for this level using exponential progression
-            let level_factor = Self::calculate_level_factor(current_level - 1, config);
+            // For level 2, we need base_experience (100)
+            // For level 3, we need base_experience * multiplier / 100 (150)
+            // etc.
+            let level_factor = calculate_level_factor(current_level - 2, config);
             threshold += config.base_experience * level_factor / 100;
 
             current_level += 1;
@@ -134,25 +136,23 @@ impl ExperienceImpl of ExperienceTrait {
     }
 }
 
-impl ExperienceInternalImpl of ExperienceTrait {
-    fn calculate_level_factor(level: u32, config: ExperienceConfig) -> u64 {
-        // Calculate exponential factor for level progression
-        // Returns factor * 100 to maintain precision (divide by 100 when using)
-        if level == 0 {
-            return 100; // 1.0 * 100
+fn calculate_level_factor(level: u32, config: ExperienceConfig) -> u64 {
+    // Calculate exponential factor for level progression
+    // Returns factor * 100 to maintain precision (divide by 100 when using)
+    if level == 0 {
+        return 100; // 1.0 * 100
+    }
+
+    let mut factor = 100_u64; // Start with 1.0 * 100
+    let mut i = 0_u32;
+
+    loop {
+        if i >= level {
+            break factor;
         }
 
-        let mut factor = 100_u64; // Start with 1.0 * 100
-        let mut i = 0_u32;
-
-        loop {
-            if i >= level {
-                break factor;
-            }
-
-            factor = factor * config.experience_multiplier / 100;
-            i += 1;
-        }
+        factor = factor * config.experience_multiplier / 100;
+        i += 1;
     }
 }
 
@@ -169,7 +169,7 @@ mod tests {
         };
 
         let experience = Experience {
-            player: player,
+            player,
             total_experience: 0,
             current_level: 1,
             experience_in_current_level: 0,

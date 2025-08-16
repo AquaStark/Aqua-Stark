@@ -227,3 +227,44 @@ pub struct TradeOfferExpired {
     pub offered_fish_id: u256,
     pub timestamp: u64,
 }
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct ExperienceEarned {
+    #[key]
+    pub player: ContractAddress,
+    pub amount: u64,
+    pub total_experience: u64,
+    pub timestamp: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct LevelUp {
+    #[key]
+    pub player: ContractAddress,
+    pub old_level: u32,
+    pub new_level: u32,
+    pub total_experience: u64,
+    pub timestamp: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct RewardClaimed {
+    #[key]
+    pub player: ContractAddress,
+    pub level: u32,
+    pub reward_type: felt252,
+    pub timestamp: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct ExperienceConfigUpdated {
+    #[key]
+    pub base_experience: u64,
+    pub experience_multiplier: u64,
+    pub max_level: u32,
+    pub timestamp: u64,
+}
