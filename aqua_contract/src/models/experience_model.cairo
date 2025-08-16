@@ -143,17 +143,15 @@ fn calculate_level_factor(level: u32, config: ExperienceConfig) -> u64 {
         return 100; // 1.0 * 100
     }
 
-    let mut factor = 100_u64; // Start with 1.0 * 100
+    let mut factor = 100_u128; // Start with 1.0 * 100
     let mut i = 0_u32;
 
-    loop {
-        if i >= level {
-            break factor;
-        }
-
-        factor = factor * config.experience_multiplier / 100;
+    while i != level {
+        factor = factor * config.experience_multiplier.into() / 100;
         i += 1;
-    }
+    };
+
+    factor.try_into().unwrap()
 }
 
 #[cfg(test)]

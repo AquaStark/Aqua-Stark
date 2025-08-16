@@ -18,22 +18,23 @@ pub mod experience {
     impl ExperienceImpl of IExperience<ContractState> {
         fn grant_experience(ref self: ContractState, player: ContractAddress, amount: u64) {
             let mut world = self.world_default();
-
             // Get current experience and config
             let mut experience: Experience = world.read_model(player);
             let config: ExperienceConfig = world.read_model('default');
-
             // Store old level for event comparison
             let old_level = experience.current_level;
-
-            // Grant experience using the trait
+            // Grant experience
             experience = ExperienceTrait::grant_experience(experience, player, amount, config);
-
             // Update experience counter
             let mut counter: ExperienceCounter = world.read_model('total_grants');
-            counter.total_grants += amount.into();
 
-            // Write updated models
+            // Initialize counter if it doesn't exist (total_grants will be 0 by default)
+            if counter.id != 'total_grants' {
+                counter.id = 'total_grants';
+            }
+
+            counter.total_grants += amount.into();
+            // Updated models
             world.write_model(@experience);
             world.write_model(@counter);
 
@@ -80,6 +81,10 @@ pub mod experience {
             max_level: u32,
         ) {
             let mut world = self.world_default();
+            let caller = get_caller_address();
+
+            // Only allow owner to update configuration
+            assert(world.dispatcher.is_owner(0, caller), 'Only owner can update config');
 
             let mut config: ExperienceConfig = world.read_model('default');
             config.base_experience = base_experience;
@@ -101,6 +106,13 @@ pub mod experience {
 
         fn initialize_player_experience(ref self: ContractState, player: ContractAddress) {
             let mut world = self.world_default();
+
+            // Check if player already has experience initialized
+            let existing_experience: Experience = world.read_model(player);
+            assert(
+                existing_experience.player != player || existing_experience.total_experience == 0,
+                'Experience already initialized',
+            );
 
             let experience = Experience {
                 player,

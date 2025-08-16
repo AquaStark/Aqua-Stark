@@ -8,10 +8,8 @@ pub mod AquaStark {
         PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
         FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
         FishPurchased, TradeOfferCreated, TradeOfferAccepted, TradeOfferCancelled, FishLocked,
-        FishUnlocked, ExperienceEarned, LevelUp,
+        FishUnlocked,
     };
-    use aqua_stark::interfaces::IExperience::{IExperienceDispatcher, IExperienceDispatcherTrait};
-    use aqua_stark::models::experience_model::{Experience, ExperienceConfig, ExperienceTrait};
     use starknet::{
         ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
         contract_address_const,
@@ -187,9 +185,6 @@ pub mod AquaStark {
             world.write_model(@fish_owner);
             world.write_model(@fish);
 
-            // --- Grant Experience for Creating Fish ---
-            self.grant_experience_internal(caller, 25); // 25 XP for creating fish
-
             world
                 .emit_event(
                     @FishCreated {
@@ -294,9 +289,6 @@ pub mod AquaStark {
             world.write_model(@fish_owner);
             world.write_model(@new_fish);
 
-            // --- Grant Experience for Breeding ---
-            self.grant_experience_internal(caller, 50); // 50 XP for breeding
-
             world
                 .emit_event(
                     @FishBred {
@@ -364,16 +356,6 @@ pub mod AquaStark {
             aquarium.housed_fish.append(fish.id);
             aquarium.housed_decorations.append(decoration.id);
             aquarium.decoration_count += 1;
-
-            // --- Initialize Experience ---
-            let experience = Experience {
-                player,
-                total_experience: 0,
-                current_level: 1,
-                experience_in_current_level: 0,
-                last_updated: get_block_timestamp(),
-            };
-            world.write_model(@experience);
 
             // --- Persist to Storage ---
             world.write_model(@aquarium);
@@ -531,7 +513,7 @@ pub mod AquaStark {
             listing
         }
 
-        fn purchase_fish(ref self: ContractState, listing_id: felt252) {
+        fn purchase_fish(self: @ContractState, listing_id: felt252) {
             let mut world = self.world_default();
             let caller = get_caller_address();
             let mut listing: Listing = self.get_listing(listing_id);
@@ -552,9 +534,6 @@ pub mod AquaStark {
             world.write_model(@fish);
             world.write_model(@player);
             world.write_model(@listing);
-            // --- Grant Experience for Purchasing Fish ---
-            self.grant_experience_internal(caller, 15); // 15 XP for purchasing fish
-
             world
                 .emit_event(
                     @FishPurchased {
@@ -814,18 +793,8 @@ pub mod AquaStark {
             let fish_lock: FishLock = world.read_model(fish_id);
             FishLockTrait::is_locked(fish_lock)
         }
-
-        fn initialize_experience_config(ref self: ContractState) {
-            let mut world = self.world_default();
-
-            // Initialize default experience configuration
-            let config = ExperienceConfig {
-                id: 'default', base_experience: 100, experience_multiplier: 150, max_level: 100,
-            };
-
-            world.write_model(@config);
-        }
     }
+
 
     #[abi(embed_v0)]
     impl TransactionHistoryImpl of ITransactionHistory<ContractState> {
@@ -1084,50 +1053,6 @@ pub mod AquaStark {
             trade_counter.current_val = new_val;
             world.write_model(@trade_counter);
             new_val
-        }
-
-        fn grant_experience_internal(
-            ref self: ContractState, player: ContractAddress, amount: u64,
-        ) {
-            let mut world = self.world_default();
-
-            // Get current experience and config
-            let mut experience: Experience = world.read_model(player);
-            let config: ExperienceConfig = world.read_model('default');
-
-            // Store old level for event comparison
-            let old_level = experience.current_level;
-
-            // Grant experience using the trait
-            experience = ExperienceTrait::grant_experience(experience, player, amount, config);
-
-            // Write updated model
-            world.write_model(@experience);
-
-            // Emit experience earned event
-            world
-                .emit_event(
-                    @ExperienceEarned {
-                        player,
-                        amount,
-                        total_experience: experience.total_experience,
-                        timestamp: get_block_timestamp(),
-                    },
-                );
-
-            // Emit level up event if level changed
-            if experience.current_level > old_level {
-                world
-                    .emit_event(
-                        @LevelUp {
-                            player,
-                            old_level,
-                            new_level: experience.current_level,
-                            total_experience: experience.total_experience,
-                            timestamp: get_block_timestamp(),
-                        },
-                    );
-            }
         }
     }
 }
