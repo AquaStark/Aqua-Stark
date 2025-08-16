@@ -190,15 +190,14 @@ impl AquariumImpl of AquariumTrait {
         aquarium.housed_fish.len() >= aquarium.max_capacity
     }
 
-    fn update_settings(mut aquarium: Aquarium, max_capacity: u32, max_decorations: u32) -> Aquarium {
+    fn update_settings(
+        mut aquarium: Aquarium, max_capacity: u32, max_decorations: u32,
+    ) -> Aquarium {
         // Prevent setting limits below current usage
-        assert!(
-            max_capacity.into() >= aquarium.fish_count, 
-            "Capacity below current fish count"
-        );
+        assert!(max_capacity.into() >= aquarium.fish_count, "Capacity below current fish count");
         assert!(
             max_decorations.into() >= aquarium.decoration_count,
-            "Decoration cap below current count"
+            "Decoration cap below current count",
         );
 
         aquarium.max_capacity = max_capacity;
