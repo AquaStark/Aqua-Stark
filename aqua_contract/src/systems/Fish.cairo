@@ -11,6 +11,9 @@ pub mod Fish {
         FishCreated, FishBred, FishMoved, FishAddedToAquarium, FishPurchased, FishLocked,
     };
 
+    use dojo::model::{ModelStorage};
+    use dojo::event::EventStorage;
+
     #[abi(embed_v0)]
     impl FishImpl of IFish<ContractState> {
         fn get_fish_owner_for_auction(self: @ContractState, fish_id: u256) -> FishOwner {
@@ -229,6 +232,11 @@ pub mod Fish {
                         timestamp: get_block_timestamp(),
                     },
                 );
+        }
+        fn get_parents(self: @ContractState, fish_id: u256) -> (u256, u256) {
+            let mut world = self.world_default();
+            let fish: Fish = world.read_model(fish_id);
+            fish.parent_ids
         }
         fn get_fish_lock_status(self: @ContractState, fish_id: u256) -> FishLock {
             let world = self.world_default();
