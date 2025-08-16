@@ -3,6 +3,7 @@ pub mod systems {
     pub mod daily_challenge;
     pub mod Auctions;
     pub mod ShopCatalog;
+    pub mod Fish;
 }
 
 pub mod achievements {
@@ -20,6 +21,7 @@ pub mod interfaces {
     pub mod IAquaStark;
     pub mod IShopCatalog;
     pub mod ITransactionHistory;
+    pub mod IFish;
 }
 
 pub mod models {

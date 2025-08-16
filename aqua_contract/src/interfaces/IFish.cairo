@@ -17,7 +17,6 @@ pub trait IFish<T> {
     fn get_fish_family_tree(self: @T, fish_id: u256) -> Array<FishParents>;
     fn get_fish_ancestor(self: @T, fish_id: u256, generation: u32) -> FishParents;
     fn list_fish(self: @T, fish_id: u256, price: u256) -> Listing;
-    fn get_listing(self: @T, listing_id: felt252) -> Listing;
     fn purchase_fish(self: @T, listing_id: felt252);
     fn get_fish_owner_for_auction(self: @T, fish_id: u256) -> FishOwner;
     fn get_fish_lock_status(self: @T, fish_id: u256) -> FishLock;
