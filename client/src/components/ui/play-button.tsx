@@ -28,12 +28,16 @@ export function PlayButton({
     }
   };
 
-  const baseClasses = 'font-bold rounded-xl shadow-xl transform hover:scale-105 transition-all duration-200 border-2 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none';
+  const baseClasses =
+    'font-bold rounded-xl shadow-xl transform hover:scale-105 transition-all duration-200 border-2 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none';
 
   const variantClasses = {
-    primary: 'bg-gradient-to-b from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 border-blue-300 text-white',
-    secondary: 'bg-gradient-to-b from-purple-400 to-purple-600 hover:from-purple-500 hover:to-purple-700 border-purple-300 text-white',
-    outline: 'bg-transparent border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-white',
+    primary:
+      'bg-gradient-to-b from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 border-blue-300 text-white',
+    secondary:
+      'bg-gradient-to-b from-purple-400 to-purple-600 hover:from-purple-500 hover:to-purple-700 border-purple-300 text-white',
+    outline:
+      'bg-transparent border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-white',
   };
 
   const sizeClasses = {
