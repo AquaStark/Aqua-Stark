@@ -100,8 +100,7 @@ pub mod Aquarium {
             let old_max_capacity = aquarium.max_capacity;
             let old_max_decorations = aquarium.max_decorations;
 
-            aquarium.max_capacity = max_capacity;
-            aquarium.max_decorations = max_decorations;
+            aquarium = AquariumTrait::update_settings(aquarium, max_capacity, max_decorations);
 
             world.write_model(@aquarium);
 

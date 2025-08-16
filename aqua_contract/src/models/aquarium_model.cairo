@@ -50,6 +50,7 @@ pub trait AquariumTrait {
     fn remove_decoration(aquarium: Aquarium, decoration_id: u256) -> Aquarium;
     fn clean(aquarium: Aquarium, amount: u32) -> Aquarium;
     fn update_cleanliness(aquarium: Aquarium, hours_passed: u32) -> Aquarium;
+    fn update_settings(aquarium: Aquarium, max_capacity: u32, max_decorations: u32) -> Aquarium;
     fn get_cleanliness(aquarium: Aquarium) -> u32;
     fn get_capacity(aquarium: Aquarium) -> u32;
     fn get_fish_count(aquarium: Aquarium) -> u32;
@@ -187,6 +188,22 @@ impl AquariumImpl of AquariumTrait {
 
     fn is_full(aquarium: Aquarium) -> bool {
         aquarium.housed_fish.len() >= aquarium.max_capacity
+    }
+
+    fn update_settings(mut aquarium: Aquarium, max_capacity: u32, max_decorations: u32) -> Aquarium {
+        // Prevent setting limits below current usage
+        assert!(
+            max_capacity.into() >= aquarium.fish_count, 
+            "Capacity below current fish count"
+        );
+        assert!(
+            max_decorations.into() >= aquarium.decoration_count,
+            "Decoration cap below current count"
+        );
+
+        aquarium.max_capacity = max_capacity;
+        aquarium.max_decorations = max_decorations;
+        aquarium
     }
 }
 #[cfg(test)]

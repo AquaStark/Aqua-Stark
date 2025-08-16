@@ -101,6 +101,39 @@ mod tests {
     }
 
     #[test]
+    #[should_panic(expected: "Capacity below current fish count")]
+    fn test_update_settings_capacity_below_fish_count() {
+        let mut aquarium = AquariumTrait::create_aquarium(1, test_address(), 10, 5);
+        
+        // Add some fish
+        aquarium = AquariumTrait::add_fish(aquarium, 1);
+        aquarium = AquariumTrait::add_fish(aquarium, 2);
+        
+        // Try to set max_capacity below current fish count
+        let new_max_capacity = 1;  // Less than current 2 fish
+        let new_max_decorations = 5;  // Keep same
+        
+        AquariumTrait::update_settings(aquarium, new_max_capacity, new_max_decorations);
+    }
+
+    #[test]
+    #[should_panic(expected: "Decoration cap below current count")]
+    fn test_update_settings_decorations_below_count() {
+        let mut aquarium = AquariumTrait::create_aquarium(1, test_address(), 10, 5);
+        
+        // Add some decorations
+        aquarium = AquariumTrait::add_decoration(aquarium, 1);
+        aquarium = AquariumTrait::add_decoration(aquarium, 2);
+        aquarium = AquariumTrait::add_decoration(aquarium, 3);
+        
+        // Try to set max_decorations below current count
+        let new_max_capacity = 10;  // Keep same
+        let new_max_decorations = 2;  // Less than current 3 decorations
+        
+        AquariumTrait::update_settings(aquarium, new_max_capacity, new_max_decorations);
+    }
+
+    #[test]
     fn test_cleanliness_decay() {
         let mut aquarium = AquariumTrait::create_aquarium(1, test_address(), 10, 5);
         // Add some fish to cause decay
