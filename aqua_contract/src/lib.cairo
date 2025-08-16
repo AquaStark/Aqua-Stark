@@ -3,6 +3,7 @@ pub mod systems {
     pub mod daily_challenge;
     pub mod Auctions;
     pub mod ShopCatalog;
+    pub mod experience;
 }
 
 pub mod achievements {
@@ -20,6 +21,7 @@ pub mod interfaces {
     pub mod IAquaStark;
     pub mod IShopCatalog;
     pub mod ITransactionHistory;
+    pub mod IExperience;
 }
 
 pub mod models {
@@ -33,11 +35,13 @@ pub mod models {
     pub mod auctions_model;
     pub mod trade_model;
     pub mod daily_challange;
+    pub mod experience_model;
 }
 pub mod tests {
     mod test_daily_challenge;
     mod test_world;
     mod test_trading;
     mod test_auction;
+    mod test_experience;
 }
 

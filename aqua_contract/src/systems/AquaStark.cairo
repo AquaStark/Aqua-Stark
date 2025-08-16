@@ -2,6 +2,7 @@
 #[dojo::contract]
 pub mod AquaStark {
     use dojo::world::IWorldDispatcherTrait;
+    use dojo::world::WorldStorageTrait;
     use aqua_stark::interfaces::IAquaStark::{IAquaStark};
     use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
     use aqua_stark::base::events::{
@@ -10,6 +11,8 @@ pub mod AquaStark {
         FishPurchased, TradeOfferCreated, TradeOfferAccepted, TradeOfferCancelled, FishLocked,
         FishUnlocked,
     };
+    use aqua_stark::interfaces::IExperience::{IExperienceDispatcher, IExperienceDispatcherTrait};
+    use aqua_stark::models::experience_model::{Experience, ExperienceConfig};
     use starknet::{
         ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
         contract_address_const,
@@ -185,6 +188,12 @@ pub mod AquaStark {
             world.write_model(@fish_owner);
             world.write_model(@fish);
 
+            // --- Grant Experience for Creating Fish ---
+            let (contract_address, _) = world.dns(@"experience").unwrap();
+            let mut experience_system = IExperienceDispatcher { contract_address };
+            experience_system.grant_experience(player.wallet, 25); // 25 XP for creating fish
+            // self.grant_experience_internal(caller, 25); // 25 XP for creating fish
+
             world
                 .emit_event(
                     @FishCreated {
@@ -289,6 +298,11 @@ pub mod AquaStark {
             world.write_model(@fish_owner);
             world.write_model(@new_fish);
 
+            // --- Grant Experience for Breeding ---
+            let (contract_address, _) = world.dns(@"experience").unwrap();
+            let mut experience_system = IExperienceDispatcher { contract_address };
+            experience_system.grant_experience(caller, 50); // 50 XP for breeding
+
             world
                 .emit_event(
                     @FishBred {
@@ -356,6 +370,16 @@ pub mod AquaStark {
             aquarium.housed_fish.append(fish.id);
             aquarium.housed_decorations.append(decoration.id);
             aquarium.decoration_count += 1;
+
+            // --- Initialize Experience ---
+            let experience = Experience {
+                player,
+                total_experience: 0,
+                current_level: 1,
+                experience_in_current_level: 0,
+                last_updated: get_block_timestamp(),
+            };
+            world.write_model(@experience);
 
             // --- Persist to Storage ---
             world.write_model(@aquarium);
@@ -513,7 +537,7 @@ pub mod AquaStark {
             listing
         }
 
-        fn purchase_fish(self: @ContractState, listing_id: felt252) {
+        fn purchase_fish(ref self: ContractState, listing_id: felt252) {
             let mut world = self.world_default();
             let caller = get_caller_address();
             let mut listing: Listing = self.get_listing(listing_id);
@@ -534,6 +558,11 @@ pub mod AquaStark {
             world.write_model(@fish);
             world.write_model(@player);
             world.write_model(@listing);
+            // --- Grant Experience for Purchasing Fish ---
+            let (contract_address, _) = world.dns(@"experience").unwrap();
+            let mut experience_system = IExperienceDispatcher { contract_address };
+            experience_system.grant_experience(caller, 15); // 15 XP for purchasing fish
+
             world
                 .emit_event(
                     @FishPurchased {
@@ -793,8 +822,18 @@ pub mod AquaStark {
             let fish_lock: FishLock = world.read_model(fish_id);
             FishLockTrait::is_locked(fish_lock)
         }
-    }
 
+        fn initialize_experience_config(ref self: ContractState) {
+            let mut world = self.world_default();
+
+            // Initialize default experience configuration
+            let config = ExperienceConfig {
+                id: 'default', base_experience: 100, experience_multiplier: 150, max_level: 100,
+            };
+
+            world.write_model(@config);
+        }
+    }
 
     #[abi(embed_v0)]
     impl TransactionHistoryImpl of ITransactionHistory<ContractState> {
