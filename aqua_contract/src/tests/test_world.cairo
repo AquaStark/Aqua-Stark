@@ -80,6 +80,10 @@ mod tests {
                 TestResource::Event(events::e_AuctionStarted::TEST_CLASS_HASH),
                 TestResource::Event(events::e_BidPlaced::TEST_CLASS_HASH),
                 TestResource::Event(events::e_AuctionEnded::TEST_CLASS_HASH),
+                TestResource::Event(events::e_AquariumCreated::TEST_CLASS_HASH),
+                TestResource::Event(events::e_AquariumUpdated::TEST_CLASS_HASH),
+                TestResource::Event(events::e_AquariumCleaned::TEST_CLASS_HASH),
+                TestResource::Event(events::e_AquariumCleanlinessDecayed::TEST_CLASS_HASH),
                 TestResource::Contract(AquaStark::TEST_CLASS_HASH),
                 TestResource::Contract(ShopCatalog::TEST_CLASS_HASH),
             ]
