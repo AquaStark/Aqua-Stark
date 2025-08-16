@@ -8,8 +8,7 @@ pub mod Trade {
         TradeOfferExpired,
     };
     use starknet::{
-        ContractAddress, get_caller_address, get_block_timestamp,
-        contract_address_const,
+        ContractAddress, get_caller_address, get_block_timestamp, contract_address_const,
     };
 
     use aqua_stark::models::fish_model::{Fish, FishOwner, Species};
@@ -40,7 +39,7 @@ pub mod Trade {
             // Validate fish ownership through AquaStark contract
             let aqua_stark_address = self.get_aqua_stark_address();
             let aqua_stark = IAquaStarkDispatcher { contract_address: aqua_stark_address };
-            
+
             // Verify fish exists in AquaStark
             let _ = aqua_stark.get_fish(offered_fish_id);
 
@@ -117,7 +116,7 @@ pub mod Trade {
 
             let aqua_stark_address = self.get_aqua_stark_address();
             let aqua_stark = IAquaStarkDispatcher { contract_address: aqua_stark_address };
-            
+
             let _ = aqua_stark.get_fish(trade_offer.offered_fish_id);
             let _ = aqua_stark.get_fish(offered_fish_id);
 
@@ -404,7 +403,6 @@ pub mod Trade {
             world.write_model(@trade_counter);
             new_val
         }
-
 
 
         fn get_aqua_stark_address(self: @ContractState) -> ContractAddress {

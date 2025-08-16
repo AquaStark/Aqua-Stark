@@ -10,8 +10,8 @@ mod tests {
     use aqua_stark::interfaces::ITrade::{ITradeDispatcher, ITradeDispatcherTrait};
     use aqua_stark::interfaces::IAquaStark::{IAquaStarkDispatcher, IAquaStarkDispatcherTrait};
     use aqua_stark::models::trade_model::{
-        TradeOffer, TradeOfferStatus, MatchCriteria, TradeOfferTrait, FishLockTrait,
-        m_TradeOffer, m_TradeOfferCounter, m_FishLock, m_ActiveTradeOffers, TradeOfferCounter
+        TradeOffer, TradeOfferStatus, MatchCriteria, TradeOfferTrait, FishLockTrait, m_TradeOffer,
+        m_TradeOfferCounter, m_FishLock, m_ActiveTradeOffers, TradeOfferCounter,
     };
     use aqua_stark::models::fish_model::{Species, Fish, FishOwner};
 
@@ -28,7 +28,8 @@ mod tests {
                 TestResource::Model(m_TradeOfferCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_FishLock::TEST_CLASS_HASH),
                 TestResource::Model(m_ActiveTradeOffers::TEST_CLASS_HASH),
-            ].span(),
+            ]
+                .span(),
         };
         ndef
     }
@@ -39,7 +40,8 @@ mod tests {
                 .with_writer_of([dojo::utils::bytearray_hash(@"aqua_stark")].span()),
             ContractDefTrait::new(@"aqua_stark", @"Trade")
                 .with_writer_of([dojo::utils::bytearray_hash(@"aqua_stark")].span()),
-        ].span()
+        ]
+            .span()
     }
 
     fn setup_test_world() -> (ITradeDispatcher, IAquaStarkDispatcher) {
@@ -91,7 +93,7 @@ mod tests {
             Option::Some(42),
             Option::None,
             Option::None,
-            array![]
+            array![],
         );
 
         assert(
@@ -115,7 +117,7 @@ mod tests {
             Option::None,
             Option::Some(0),
             Option::None,
-            array![]
+            array![],
         );
 
         assert(
@@ -139,7 +141,7 @@ mod tests {
             Option::None,
             Option::Some(1),
             Option::Some(3),
-            array![]
+            array![],
         );
 
         assert(
@@ -163,7 +165,7 @@ mod tests {
             Option::None,
             Option::None,
             Option::None,
-            array![100, 200]
+            array![100, 200],
         );
 
         assert(
@@ -207,7 +209,7 @@ mod tests {
             Option::Some(0),
             Option::None,
             array![].span(),
-            24
+            24,
         );
 
         assert(TradeOfferTrait::is_active(@offer), 'Should be active');
@@ -255,7 +257,7 @@ mod tests {
             Option::None,
             Option::None,
             Option::None,
-            array![]
+            array![],
         );
 
         // Should match when no traits required
@@ -299,18 +301,28 @@ mod tests {
         );
 
         let locked_offer = TradeOfferTrait::lock_offer(offer);
-        assert!(!TradeOfferTrait::can_accept(@locked_offer), "Should not be acceptable when locked");
+        assert!(
+            !TradeOfferTrait::can_accept(@locked_offer), "Should not be acceptable when locked",
+        );
         assert(locked_offer.is_locked, 'Should track lock state');
 
         let completed_offer = TradeOfferTrait::complete_offer(locked_offer);
-        assert!(!TradeOfferTrait::is_active(@completed_offer), "Should not be active when completed");
+        assert!(
+            !TradeOfferTrait::is_active(@completed_offer), "Should not be active when completed",
+        );
         assert!(!completed_offer.is_locked, "Should be unlocked after completion");
-        assert!(completed_offer.status == TradeOfferStatus::Completed, "Should be marked completed");
+        assert!(
+            completed_offer.status == TradeOfferStatus::Completed, "Should be marked completed",
+        );
 
         let cancelled_offer = TradeOfferTrait::cancel_offer(cancel_offer);
-        assert!(!TradeOfferTrait::is_active(@cancelled_offer), "Should not be active when cancelled");
+        assert!(
+            !TradeOfferTrait::is_active(@cancelled_offer), "Should not be active when cancelled",
+        );
         assert!(!cancelled_offer.is_locked, "Should be unlocked after cancellation");
-        assert!(cancelled_offer.status == TradeOfferStatus::Cancelled, "Should be marked cancelled");
+        assert!(
+            cancelled_offer.status == TradeOfferStatus::Cancelled, "Should be marked cancelled",
+        );
     }
 
     #[test]
@@ -329,7 +341,7 @@ mod tests {
         );
 
         assert!(!TradeOfferTrait::is_expired(@offer), "Should not be expired initially");
-        
+
         testing::set_block_timestamp(2001);
         assert(TradeOfferTrait::is_expired(@offer), 'Should be expired');
         assert!(!TradeOfferTrait::is_active(@offer), "Should not be active when expired");
@@ -372,13 +384,9 @@ mod tests {
 
         assert(
             TradeOfferTrait::matches_criteria(
-                @offer,
-                u256_max(),
-                u8_max(),
-                u8_max(),
-                array![felt252_max()].span()
+                @offer, u256_max(), u8_max(), u8_max(), array![felt252_max()].span(),
             ),
-            'Should handle max values'
+            'Should handle max values',
         );
 
         let empty_offer = create_test_offer(
@@ -394,12 +402,18 @@ mod tests {
 
         assert(
             TradeOfferTrait::matches_criteria(@empty_offer, 0, 0, 0, array![].span()),
-            'Should handle empty values'
+            'Should handle empty values',
         );
     }
 
     // Helper functions for numeric limits
-    fn u256_max() -> u256 { 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff_u256 }
-    fn u8_max() -> u8 { 0xff_u8 }
-    fn felt252_max() -> felt252 { 0x800000000000011000000000000000000000000000000000000000000000000_felt252 }
+    fn u256_max() -> u256 {
+        0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff_u256
+    }
+    fn u8_max() -> u8 {
+        0xff_u8
+    }
+    fn felt252_max() -> felt252 {
+        0x800000000000011000000000000000000000000000000000000000000000000_felt252
+    }
 }
