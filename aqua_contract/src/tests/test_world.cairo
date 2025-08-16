@@ -27,7 +27,8 @@ mod tests {
     use aqua_stark::models::experience_model::{
         m_Experience, m_ExperienceConfig, m_ExperienceCounter,
     };
-
+    use aqua_stark::interfaces::IExperience::{IExperienceDispatcher, IExperienceDispatcherTrait};
+    use aqua_stark::systems::experience::experience;
     use aqua_stark::systems::AquaStark::AquaStark;
     use aqua_stark::systems::ShopCatalog::ShopCatalog;
     use aqua_stark::base::events;
@@ -91,6 +92,7 @@ mod tests {
                 TestResource::Event(events::e_ExperienceConfigUpdated::TEST_CLASS_HASH),
                 TestResource::Contract(AquaStark::TEST_CLASS_HASH),
                 TestResource::Contract(ShopCatalog::TEST_CLASS_HASH),
+                TestResource::Contract(experience::TEST_CLASS_HASH),
             ]
                 .span(),
         };
@@ -105,6 +107,8 @@ mod tests {
             ContractDefTrait::new(@"aqua_stark", @"ShopCatalog")
                 .with_writer_of([dojo::utils::bytearray_hash(@"aqua_stark")].span())
                 .with_init_calldata([OWNER().into()].span()),
+            ContractDefTrait::new(@"aqua_stark", @"experience")
+                .with_writer_of([dojo::utils::bytearray_hash(@"aqua_stark")].span()),
         ]
             .span()
     }
