@@ -3,7 +3,7 @@ use aqua_stark::models::decoration_model::Decoration;
 use aqua_stark::models::fish_model::{Fish, FishParents, FishOwner, Species, Listing};
 use aqua_stark::models::player_model::Player;
 use aqua_stark::models::auctions_model::*;
-use aqua_stark::models::trade_model::{TradeOffer, FishLock, MatchCriteria};
+
 use starknet::ContractAddress;
 // define the interface
 #[starknet::interface]

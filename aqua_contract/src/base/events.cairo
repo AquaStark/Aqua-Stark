@@ -235,6 +235,18 @@ pub struct ExperienceEarned {
     pub player: ContractAddress,
     pub amount: u64,
     pub total_experience: u64,
+}
+
+// Aquarium-specific events
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct AquariumCreated {
+    #[key]
+    pub aquarium_id: u256,
+    #[key]
+    pub owner: ContractAddress,
+    pub max_capacity: u32,
+    pub max_decorations: u32,
     pub timestamp: u64,
 }
 
@@ -246,6 +258,30 @@ pub struct LevelUp {
     pub old_level: u32,
     pub new_level: u32,
     pub total_experience: u64,
+}
+
+pub struct AquariumUpdated {
+    #[key]
+    pub aquarium_id: u256,
+    #[key]
+    pub owner: ContractAddress,
+    pub old_max_capacity: u32,
+    pub new_max_capacity: u32,
+    pub old_max_decorations: u32,
+    pub new_max_decorations: u32,
+    pub timestamp: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct AquariumCleaned {
+    #[key]
+    pub aquarium_id: u256,
+    #[key]
+    pub owner: ContractAddress,
+    pub amount_cleaned: u32,
+    pub old_cleanliness: u32,
+    pub new_cleanliness: u32,
     pub timestamp: u64,
 }
 
@@ -256,6 +292,14 @@ pub struct RewardClaimed {
     pub player: ContractAddress,
     pub level: u32,
     pub reward_type: felt252,
+}
+
+pub struct AquariumCleanlinessDecayed {
+    #[key]
+    pub aquarium_id: u256,
+    pub hours_passed: u32,
+    pub old_cleanliness: u32,
+    pub new_cleanliness: u32,
     pub timestamp: u64,
 }
 
@@ -266,5 +310,22 @@ pub struct ExperienceConfigUpdated {
     pub base_experience: u64,
     pub experience_multiplier: u64,
     pub max_level: u32,
+}
+
+pub struct FishRemovedFromAquarium {
+    #[key]
+    pub aquarium_id: u256,
+    #[key]
+    pub fish_id: u256,
+    pub timestamp: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct DecorationRemovedFromAquarium {
+    #[key]
+    pub aquarium_id: u256,
+    #[key]
+    pub decoration_id: u256,
     pub timestamp: u64,
 }

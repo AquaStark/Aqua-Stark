@@ -8,8 +8,7 @@ pub mod AquaStark {
     use aqua_stark::base::events::{
         PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
         FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
-        FishPurchased, TradeOfferCreated, TradeOfferAccepted, TradeOfferCancelled, FishLocked,
-        FishUnlocked,
+        FishPurchased, AquariumCreated,
     };
     use aqua_stark::interfaces::IExperience::{IExperienceDispatcher, IExperienceDispatcherTrait};
     use aqua_stark::models::experience_model::{Experience, ExperienceConfig};
@@ -20,26 +19,23 @@ pub mod AquaStark {
     use aqua_stark::models::player_model::{
         Player, PlayerTrait, PlayerCounter, UsernameToAddress, AddressToUsername,
     };
+    use aqua_stark::interfaces::IAquaStark::IAquaStark;
+    use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
     use aqua_stark::models::aquarium_model::{
-        Aquarium, AquariumTrait, AquariumCounter, AquariumOwner,
+        Aquarium, AquariumCounter, AquariumOwner, AquariumTrait,
     };
     use aqua_stark::models::decoration_model::{Decoration, DecorationCounter, DecorationTrait};
     use aqua_stark::models::fish_model::{
-        Fish, FishCounter, Species, FishTrait, FishOwner, FishParents, Listing,
+        Fish, FishCounter, FishOwner, FishParents, FishTrait, Listing, Species,
     };
-
     use aqua_stark::models::transaction_model::{
-        TransactionLog, EventTypeDetails, EventCounter, TransactionCounter, event_id_target,
-        transaction_id_target, EventDetailsTrait, TransactionLogTrait,
+        EventCounter, EventDetailsTrait, EventTypeDetails, TransactionCounter, TransactionLog,
+        TransactionLogTrait, event_id_target, transaction_id_target,
     };
-
-    use aqua_stark::models::trade_model::{
-        TradeOffer, TradeOfferStatus, MatchCriteria, FishLock, TradeOfferCounter, ActiveTradeOffers,
-        TradeOfferTrait, FishLockTrait, trade_offer_id_target,
-    };
-
-    use dojo::model::{ModelStorage};
+    use core::traits::Into;
     use dojo::event::EventStorage;
+    use dojo::model::ModelStorage;
+    use dojo::world::IWorldDispatcherTrait;
 
 
     #[abi(embed_v0)]
@@ -62,6 +58,7 @@ pub mod AquaStark {
             max_capacity: u32,
             max_decorations: u32,
         ) -> Aquarium {
+            // Delegate to aquarium contract
             let mut world = self.world_default();
             let caller = get_caller_address();
             let aquarium_id = self.create_aquarium_id();
@@ -79,6 +76,17 @@ pub mod AquaStark {
 
             world.write_model(@aquarium_owner);
             world.write_model(@aquarium);
+
+            world
+                .emit_event(
+                    @AquariumCreated {
+                        aquarium_id,
+                        owner,
+                        max_capacity,
+                        max_decorations,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
 
             aquarium
         }
@@ -1083,15 +1091,6 @@ pub mod AquaStark {
             txn_counter.current_val = new_id;
             world.write_model(@txn_counter);
             new_id
-        }
-
-        fn create_trade_offer_id(ref self: ContractState) -> u256 {
-            let mut world = self.world_default();
-            let mut trade_counter: TradeOfferCounter = world.read_model(trade_offer_id_target());
-            let new_val = trade_counter.current_val + 1;
-            trade_counter.current_val = new_val;
-            world.write_model(@trade_counter);
-            new_val
         }
     }
 }

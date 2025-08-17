@@ -54,28 +54,6 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
   const feedingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const animationIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Start feeding mode
-  const startFeeding = useCallback((duration: number = 30000) => {
-    setFeedingState(prev => ({
-      ...prev,
-      isFeeding: true,
-      feedingStartTime: Date.now(),
-      feedingDuration: duration,
-    }));
-
-    // Clear any existing timeout
-    if (feedingTimeoutRef.current) {
-      clearTimeout(feedingTimeoutRef.current);
-    }
-
-    // Auto-stop feeding after duration
-    feedingTimeoutRef.current = setTimeout(() => {
-      stopFeeding();
-    }, duration);
-
-    console.log(`🍽️ Feeding mode started for ${duration / 1000} seconds`);
-  }, []);
-
   // Stop feeding mode
   const stopFeeding = useCallback(() => {
     setFeedingState(prev => ({
@@ -91,6 +69,31 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
 
     console.log('🛑 Feeding mode stopped');
   }, []);
+
+  // Start feeding mode
+  const startFeeding = useCallback(
+    (duration: number = 30000) => {
+      setFeedingState(prev => ({
+        ...prev,
+        isFeeding: true,
+        feedingStartTime: Date.now(),
+        feedingDuration: duration,
+      }));
+
+      // Clear any existing timeout
+      if (feedingTimeoutRef.current) {
+        clearTimeout(feedingTimeoutRef.current);
+      }
+
+      // Auto-stop feeding after duration
+      feedingTimeoutRef.current = setTimeout(() => {
+        stopFeeding();
+      }, duration);
+
+      console.log(`🍽️ Feeding mode started for ${duration / 1000} seconds`);
+    },
+    [stopFeeding]
+  );
 
   // Handle food spawning
   const handleFeedClick = useCallback(
