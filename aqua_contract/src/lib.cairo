@@ -3,6 +3,7 @@ pub mod systems {
     pub mod Auctions;
     pub mod ShopCatalog;
     pub mod daily_challenge;
+    pub mod Trade;
 }
 
 pub mod aquarium;
@@ -22,6 +23,7 @@ pub mod interfaces {
     pub mod IAquaStark;
     pub mod IShopCatalog;
     pub mod ITransactionHistory;
+    pub mod ITrade;
 }
 
 pub mod models {
@@ -40,7 +42,6 @@ pub mod tests {
     mod test_auction;
     mod test_daily_challenge;
     mod test_trading;
-    mod test_auction;
     mod test_aquarium;
     mod test_world;
 }
