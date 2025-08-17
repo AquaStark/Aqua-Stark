@@ -7,7 +7,8 @@ use dojo_cairo_test::{
     ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
     spawn_test_world,
 };
-
+use dojo::world::WorldStorageTrait;
+use dojo::world::IWorldDispatcherTrait;
 
 #[test]
 fn test_create_fish() {
@@ -16,7 +17,7 @@ fn test_create_fish() {
     let ndef = namespace_def();
     let mut world = spawn_test_world([ndef].span());
     world.sync_perms_and_inits(contract_defs());
-    let (contract_address, _) = world.dns(@"Fish").unwrap();
+    let (contract_address, _) = world.dns(@"FishSystem").unwrap();
     let actions_system = IFishDispatcher { contract_address };
     let actions_system_aqua = IAquaStarkDispatcher { contract_address };
     testing::set_contract_address(caller);
@@ -51,7 +52,7 @@ fn test_create_fish_offspring() {
     let mut world = spawn_test_world([ndef].span());
     world.sync_perms_and_inits(contract_defs());
 
-    let (contract_address, _) = world.dns(@"Fish").unwrap();
+    let (contract_address, _) = world.dns(@"FishSystem").unwrap();
     let actions_system = IFishDispatcher { contract_address };
     let actions_system_aqua = IAquaStarkDispatcher { contract_address };
 
@@ -126,7 +127,7 @@ fn test_get_player_fishes() {
     let ndef = namespace_def();
     let mut world = spawn_test_world([ndef].span());
     world.sync_perms_and_inits(contract_defs());
-    let (contract_address, _) = world.dns(@"Fish").unwrap();
+    let (contract_address, _) = world.dns(@"FishSystem").unwrap();
     let actions_system = IFishDispatcher { contract_address };
     let actions_system_aqua = IAquaStarkDispatcher { contract_address };
     testing::set_contract_address(caller);
@@ -146,7 +147,7 @@ fn test_get_fish_family_tree() {
     let ndef = namespace_def();
     let mut world = spawn_test_world([ndef].span());
     world.sync_perms_and_inits(contract_defs());
-    let (contract_address, _) = world.dns(@"Fish").unwrap();
+    let (contract_address, _) = world.dns(@"FishSystem").unwrap();
     let actions_system = IFishDispatcher { contract_address };
     let actions_system_aqua = IAquaStarkDispatcher { contract_address };
     testing::set_contract_address(caller);
@@ -167,7 +168,7 @@ fn test_get_fish_ancestor_three_generations() {
     let mut world = spawn_test_world([ndef].span());
     world.sync_perms_and_inits(contract_defs());
 
-    let (contract_address, _) = world.dns(@"Fish").unwrap();
+    let (contract_address, _) = world.dns(@"FishSystem").unwrap();
     let actions_system = IFishDispatcher { contract_address };
     let actions_system_aqua = IAquaStarkDispatcher { contract_address };
     testing::set_contract_address(caller);
@@ -207,7 +208,7 @@ fn test_get_fish_ancestor_out_of_bounds() {
     let mut world = spawn_test_world([ndef].span());
     world.sync_perms_and_inits(contract_defs());
 
-    let (contract_address, _) = world.dns(@"Fish").unwrap();
+    let (contract_address, _) = world.dns(@"FishSystem").unwrap();
     let actions_system = IFishDispatcher { contract_address };
     let actions_system_aqua = IAquaStarkDispatcher { contract_address };
     testing::set_contract_address(caller);
@@ -237,10 +238,10 @@ fn test_list_fish() {
     let actions_system = IFishDispatcher { contract_address };
     let actions_system_aqua = IAquaStarkDispatcher { contract_address };
     testing::set_contract_address(OWNER());
-    actions_system.register('owner');
+    actions_system_aqua.register('owner');
 
     testing::set_contract_address(player);
-    actions_system.register('player');
+    actions_system_aqua.register('player');
 
     let aquarium = actions_system_aqua.new_aquarium(player, 10, 10);
     let fish = actions_system.new_fish(aquarium.id, Species::GoldFish);
@@ -259,14 +260,14 @@ fn test_list_fish_not_owner() {
     world.sync_perms_and_inits(contract_defs());
     world.dispatcher.grant_owner(0, OWNER());
 
-    let (contract_address, _) = world.dns(@"Fish").unwrap();
+    let (contract_address, _) = world.dns(@"FishSystem").unwrap();
     let actions_system = IFishDispatcher { contract_address };
     let actions_system_aqua = IAquaStarkDispatcher { contract_address };
     testing::set_contract_address(OWNER());
-    actions_system.register('owner');
+    actions_system_aqua.register('owner');
 
     testing::set_contract_address(player);
-    actions_system.register('player');
+    actions_system_aqua.register('player');
 
     let aquarium = actions_system_aqua.new_aquarium(player, 10, 10);
     let fish = actions_system.new_fish(aquarium.id, Species::GoldFish);
@@ -286,7 +287,7 @@ fn test_purchase_fish() {
     world.sync_perms_and_inits(contract_defs());
     world.dispatcher.grant_owner(0, OWNER());
 
-    let (contract_address, _) = world.dns(@"Fish").unwrap();
+    let (contract_address, _) = world.dns(@"FishSystem").unwrap();
     let actions_system = IFishDispatcher { contract_address };
     let actions_system_aqua = IAquaStarkDispatcher { contract_address };
     testing::set_contract_address(OWNER());
@@ -326,7 +327,7 @@ fn test_purchase_fish_fail_already_own_fish() {
     world.sync_perms_and_inits(contract_defs());
     world.dispatcher.grant_owner(0, OWNER());
 
-    let (contract_address, _) = world.dns(@"Fish").unwrap();
+    let (contract_address, _) = world.dns(@"FishSystem").unwrap();
     let actions_system = IFishDispatcher { contract_address };
     let actions_system_aqua = IAquaStarkDispatcher { contract_address };
     testing::set_contract_address(player);

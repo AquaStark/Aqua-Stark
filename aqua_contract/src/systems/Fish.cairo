@@ -1,21 +1,26 @@
 // dojo decorator
 #[dojo::contract]
-pub mod Fish {
-    use starknet::ContractAddress;
+pub mod FishSystem {
+    use core::array::ArrayTrait;
+    use starknet::{ContractAddress, get_caller_address, get_block_timestamp, get_contract_address};
     use aqua_stark::interfaces::IFish::IFish;
-    use aqua_stark::models::fish_model::{Fish, FishParents, Species, Listing, FishOwner, FishTrait};
+    use aqua_stark::models::fish_model::{
+        Fish, FishParents, Species, Listing, FishOwner, FishTrait, FishCounter,
+    };
     use aqua_stark::models::trade_model::FishLock;
     use aqua_stark::models::aquarium_model::{Aquarium, AquariumTrait};
-    use aqua_stark::models::player_model::{Player, PlayerTrait};
+    use aqua_stark::models::player_model::{Player};
     use aqua_stark::base::events::{
-        FishCreated, FishBred, FishMoved, FishAddedToAquarium, FishPurchased, FishLocked,
+        FishCreated, FishBred, FishMoved, FishAddedToAquarium, FishPurchased,
     };
+    use aqua_stark::models::trade_model::FishLockTrait;
+    use aqua_stark::interfaces::IAquaStark::{IAquaStarkDispatcher, IAquaStarkDispatcherTrait};
 
     use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
 
     #[abi(embed_v0)]
-    impl FishImpl of IFish<ContractState> {
+    impl FishSystemImpl of IFish<ContractState> {
         fn get_fish_owner_for_auction(self: @ContractState, fish_id: u256) -> FishOwner {
             self.world_default().read_model(fish_id)
         }
@@ -38,7 +43,7 @@ pub mod Fish {
         fn new_fish(ref self: ContractState, aquarium_id: u256, species: Species) -> Fish {
             let mut world = self.world_default();
             let caller = get_caller_address();
-            let mut aquarium: Aquarium = world.read_model(id);
+            let mut aquarium: Aquarium = world.read_model(aquarium_id);
             assert(aquarium.owner == get_caller_address(), 'You do not own this aquarium');
             let fish_id = self.create_fish_id();
             let mut fish: Fish = world.read_model(fish_id);
@@ -93,7 +98,10 @@ pub mod Fish {
             let caller = get_caller_address();
             let mut parent1: Fish = world.read_model(parent1_id);
             let mut parent2: Fish = world.read_model(parent2_id);
-            let mut aquarium = self.get_aquarium(parent1.aquarium_id);
+            let mut aquarium: Aquarium = IAquaStarkDispatcher {
+                contract_address: get_contract_address(),
+            }
+                .get_aquarium(parent1.aquarium_id);
             assert(aquarium.housed_fish.len() < aquarium.max_capacity, 'Aquarium full');
             assert(parent1.aquarium_id == parent2.aquarium_id, 'Fishes must have same aquarium');
             assert(parent1.owner == parent2.owner, 'Fishes must have same player');
@@ -204,8 +212,11 @@ pub mod Fish {
         fn purchase_fish(self: @ContractState, listing_id: felt252) {
             let mut world = self.world_default();
             let caller = get_caller_address();
-            let mut listing: Listing = self.get_listing(listing_id);
-            let mut player: Player = self.get_player(caller);
+            let aqua_stark_system = IAquaStarkDispatcher {
+                contract_address: get_contract_address(),
+            };
+            let mut listing: Listing = aqua_stark_system.get_listing(listing_id);
+            let mut player: Player = aqua_stark_system.get_player(caller);
             let mut fish: Fish = world.read_model(listing.fish_id);
             assert(fish.owner != caller, 'You already own this fish');
             assert(listing.is_active, 'Listing is not active');

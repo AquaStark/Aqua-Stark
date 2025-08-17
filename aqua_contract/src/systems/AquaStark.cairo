@@ -7,7 +7,7 @@ pub mod AquaStark {
     use aqua_stark::base::events::{
         PlayerCreated, DecorationCreated, DecorationMoved, DecorationAddedToAquarium,
         EventTypeRegistered, PlayerEventLogged, TradeOfferCreated, TradeOfferAccepted,
-        TradeOfferCancelled,
+        TradeOfferCancelled, FishUnlocked, FishLocked,
     };
     use starknet::{
         ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
@@ -20,9 +20,8 @@ pub mod AquaStark {
         Aquarium, AquariumTrait, AquariumCounter, AquariumOwner,
     };
     use aqua_stark::models::decoration_model::{Decoration, DecorationCounter, DecorationTrait};
-    use aqua_stark::models::fish_model::{
-        Fish, FishCounter, Species, FishTrait, FishOwner, FishParents, Listing,
-    };
+    use aqua_stark::models::fish_model::{Fish, FishCounter, Species, FishOwner, Listing};
+    use aqua_stark::interfaces::IFish::{IFishDispatcher, IFishDispatcherTrait};
 
     use aqua_stark::models::transaction_model::{
         TransactionLog, EventTypeDetails, EventCounter, TransactionCounter, event_id_target,
@@ -204,7 +203,8 @@ pub mod AquaStark {
             let aquarium_id = aquarium.id;
             new_player.player_aquariums.append(aquarium.id);
 
-            let fish = self.new_fish(aquarium.id, Species::GoldFish);
+            let fish_system = IFishDispatcher { contract_address: get_contract_address() };
+            let fish = fish_system.new_fish(aquarium.id, Species::GoldFish);
             new_player.fish_count += 1;
             new_player.player_fishes.append(fish.id);
             let fish_id = fish.id;

@@ -1,9 +1,9 @@
 use aqua_stark::models::aquarium_model::Aquarium;
 use aqua_stark::models::decoration_model::Decoration;
-use aqua_stark::models::fish_model::{Fish, FishParents, FishOwner, Species, Listing};
+use aqua_stark::models::fish_model::{Listing};
 use aqua_stark::models::player_model::Player;
-use aqua_stark::models::auctions_model::*;
-use aqua_stark::models::trade_model::{TradeOffer, FishLock, MatchCriteria};
+
+use aqua_stark::models::trade_model::{TradeOffer, MatchCriteria};
 use starknet::ContractAddress;
 // define the interface
 #[starknet::interface]
@@ -33,7 +33,6 @@ pub trait IAquaStark<T> {
     fn get_player_aquarium_count(self: @T, player: ContractAddress) -> u32;
     fn get_player_decoration_count(self: @T, player: ContractAddress) -> u32;
     fn is_verified(self: @T, player: ContractAddress) -> bool;
-    fn get_parents(self: @T, fish_id: u256) -> (u256, u256);
     fn get_listing(self: @T, listing_id: felt252) -> Listing;
     fn create_trade_offer(
         ref self: T,

@@ -39,11 +39,11 @@ pub mod models {
 
 #[cfg(test)]
 pub mod tests {
-    mod test_daily_challenge;
-    mod utils;
-    mod test_world;
-    mod test_trading;
-    mod test_auction;
-    mod test_fish;
+    pub mod test_daily_challenge;
+    pub mod utils;
+    pub mod test_world;
+    pub mod test_trading;
+    pub mod test_auction;
+    pub mod test_fish;
 }
 

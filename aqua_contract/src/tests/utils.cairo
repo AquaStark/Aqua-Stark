@@ -1,5 +1,3 @@
-use dojo::world::IWorldDispatcherTrait;
-use dojo::model::ModelStorage;
 use aqua_stark::models::aquarium_model::{m_Aquarium, m_AquariumCounter, m_AquariumOwner};
 use aqua_stark::models::decoration_model::{m_Decoration, m_DecorationCounter};
 use aqua_stark::models::fish_model::{m_Listing, m_Fish, m_FishCounter, m_FishOwner};
@@ -15,20 +13,16 @@ use aqua_stark::models::auctions_model::{m_Auction, m_AuctionCounter};
 
 use aqua_stark::systems::AquaStark::AquaStark;
 use aqua_stark::systems::ShopCatalog::ShopCatalog;
-use aqua_stark::systems::Fish::Fish;
+use aqua_stark::systems::Fish::FishSystem;
 use aqua_stark::base::events;
-use dojo::world::WorldStorageTrait;
-use dojo_cairo_test::{
-    ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
-    spawn_test_world,
-};
-use starknet::{contract_address_const, testing, get_block_timestamp, ContractAddress};
+use dojo_cairo_test::{ContractDef, ContractDefTrait, NamespaceDef, TestResource};
+use starknet::{contract_address_const, ContractAddress};
 
 
-fn OWNER() -> ContractAddress {
+pub fn OWNER() -> ContractAddress {
     contract_address_const::<'owner'>()
 }
-fn namespace_def() -> NamespaceDef {
+pub fn namespace_def() -> NamespaceDef {
     let ndef = NamespaceDef {
         namespace: "aqua_stark",
         resources: [
@@ -69,7 +63,7 @@ fn namespace_def() -> NamespaceDef {
             TestResource::Event(events::e_AuctionEnded::TEST_CLASS_HASH),
             TestResource::Contract(AquaStark::TEST_CLASS_HASH),
             TestResource::Contract(ShopCatalog::TEST_CLASS_HASH),
-            TestResource::Contract(Fish::TEST_CLASS_HASH),
+            TestResource::Contract(FishSystem::TEST_CLASS_HASH),
         ]
             .span(),
     };
@@ -77,11 +71,11 @@ fn namespace_def() -> NamespaceDef {
     ndef
 }
 
-fn contract_defs() -> Span<ContractDef> {
+pub fn contract_defs() -> Span<ContractDef> {
     [
         ContractDefTrait::new(@"aqua_stark", @"AquaStark")
             .with_writer_of([dojo::utils::bytearray_hash(@"aqua_stark")].span()),
-        ContractDefTrait::new(@"aqua_stark", @"Fish")
+        ContractDefTrait::new(@"aqua_stark", @"FishSystem")
             .with_writer_of([dojo::utils::bytearray_hash(@"aqua_stark")].span()),
         ContractDefTrait::new(@"aqua_stark", @"ShopCatalog")
             .with_writer_of([dojo::utils::bytearray_hash(@"aqua_stark")].span())
