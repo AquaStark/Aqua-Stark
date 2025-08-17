@@ -1,42 +1,40 @@
 // dojo decorator
 #[dojo::contract]
 pub mod AquaStark {
-    use dojo::world::IWorldDispatcherTrait;
-    use aqua_stark::interfaces::IAquaStark::{IAquaStark};
-    use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
     use aqua_stark::base::events::{
-        PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
-        FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
-        FishPurchased, TradeOfferCreated, TradeOfferAccepted, TradeOfferCancelled, FishLocked,
-        FishUnlocked,
+        DecorationAddedToAquarium, DecorationCreated, DecorationMoved, EventTypeRegistered,
+        FishAddedToAquarium, FishBred, FishCreated, FishLocked, FishMoved, FishPurchased,
+        FishUnlocked, PlayerCreated, PlayerEventLogged, TradeOfferAccepted, TradeOfferCancelled,
+        TradeOfferCreated,
     };
-    use starknet::{
-        ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
-        contract_address_const,
-    };
-    use aqua_stark::models::player_model::{
-        Player, PlayerTrait, PlayerCounter, UsernameToAddress, AddressToUsername,
-    };
+    use aqua_stark::interfaces::IAquaStark::IAquaStark;
+    use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
     use aqua_stark::models::aquarium_model::{
-        Aquarium, AquariumTrait, AquariumCounter, AquariumOwner,
+        Aquarium, AquariumCounter, AquariumOwner, AquariumTrait,
     };
     use aqua_stark::models::decoration_model::{Decoration, DecorationCounter, DecorationTrait};
     use aqua_stark::models::fish_model::{
-        Fish, FishCounter, Species, FishTrait, FishOwner, FishParents, Listing,
+        Fish, FishCounter, FishOwner, FishParents, FishTrait, Listing, Species,
     };
-
-    use aqua_stark::models::transaction_model::{
-        TransactionLog, EventTypeDetails, EventCounter, TransactionCounter, event_id_target,
-        transaction_id_target, EventDetailsTrait, TransactionLogTrait,
+    use aqua_stark::models::player_model::{
+        AddressToUsername, Player, PlayerCounter, PlayerTrait, UsernameToAddress,
     };
-
     use aqua_stark::models::trade_model::{
-        TradeOffer, TradeOfferStatus, MatchCriteria, FishLock, TradeOfferCounter, ActiveTradeOffers,
-        TradeOfferTrait, FishLockTrait, trade_offer_id_target,
+        ActiveTradeOffers, FishLock, FishLockTrait, MatchCriteria, TradeOffer, TradeOfferCounter,
+        TradeOfferStatus, TradeOfferTrait, trade_offer_id_target,
     };
-
-    use dojo::model::{ModelStorage};
+    use aqua_stark::models::transaction_model::{
+        EventCounter, EventDetailsTrait, EventTypeDetails, TransactionCounter, TransactionLog,
+        TransactionLogTrait, event_id_target, transaction_id_target,
+    };
+    use core::traits::Into;
     use dojo::event::EventStorage;
+    use dojo::model::ModelStorage;
+    use dojo::world::IWorldDispatcherTrait;
+    use starknet::{
+        ContractAddress, contract_address_const, get_block_timestamp, get_caller_address,
+        get_contract_address,
+    };
 
 
     #[abi(embed_v0)]
@@ -637,14 +635,7 @@ pub mod AquaStark {
             let creator_fish: Fish = world.read_model(trade_offer.offered_fish_id);
             let acceptor_fish: Fish = world.read_model(offered_fish_id);
 
-            let fish_species = match acceptor_fish.species {
-                Species::AngelFish => 0_u8,
-                Species::GoldFish => 1_u8,
-                Species::Betta => 2_u8,
-                Species::NeonTetra => 3_u8,
-                Species::Corydoras => 4_u8,
-                Species::Hybrid => 5_u8,
-            };
+            let fish_species: u8 = acceptor_fish.species.into();
 
             let fish_traits = array![acceptor_fish.color].span();
 
