@@ -5,6 +5,8 @@ pub mod systems {
     pub mod daily_challenge;
 }
 
+pub mod aquarium;
+
 pub mod achievements {
     pub mod achievements;
 }
@@ -38,6 +40,8 @@ pub mod tests {
     mod test_auction;
     mod test_daily_challenge;
     mod test_trading;
+    mod test_auction;
+    mod test_aquarium;
     mod test_world;
 }
 

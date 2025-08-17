@@ -2,10 +2,22 @@
 #[dojo::contract]
 pub mod AquaStark {
     use aqua_stark::base::events::{
+        PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
+        FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
+        FishPurchased, TradeOfferCreated, TradeOfferAccepted, TradeOfferCancelled, FishLocked,
+        FishUnlocked, AquariumCreated,
+    };
+    use starknet::{
+        ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
+        contract_address_const,
+    };
+    use aqua_stark::models::player_model::{
+        Player, PlayerTrait, PlayerCounter, UsernameToAddress, AddressToUsername,
         DecorationAddedToAquarium, DecorationCreated, DecorationMoved, EventTypeRegistered,
         FishAddedToAquarium, FishBred, FishCreated, FishLocked, FishMoved, FishPurchased,
         FishUnlocked, PlayerCreated, PlayerEventLogged, TradeOfferAccepted, TradeOfferCancelled,
         TradeOfferCreated,
+
     };
     use aqua_stark::interfaces::IAquaStark::IAquaStark;
     use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
@@ -57,6 +69,7 @@ pub mod AquaStark {
             max_capacity: u32,
             max_decorations: u32,
         ) -> Aquarium {
+            // Delegate to aquarium contract
             let mut world = self.world_default();
             let caller = get_caller_address();
             let aquarium_id = self.create_aquarium_id();
@@ -74,6 +87,17 @@ pub mod AquaStark {
 
             world.write_model(@aquarium_owner);
             world.write_model(@aquarium);
+
+            world
+                .emit_event(
+                    @AquariumCreated {
+                        aquarium_id,
+                        owner,
+                        max_capacity,
+                        max_decorations,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
 
             aquarium
         }
