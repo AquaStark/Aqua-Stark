@@ -6,8 +6,8 @@ import { Footer } from '@/components/landing/footer';
 import { HeroSection } from '@/components/landing/hero-section';
 import { Navbar } from '@/components/landing/navbar';
 import { useBubbles } from '@/hooks/use-bubbles';
+import { useLoadingNavigation } from '@/hooks/use-loading-navigation';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 export default function LandingPage() {
@@ -21,14 +21,14 @@ export default function LandingPage() {
     interval: 800,
   });
 
-  const navigate = useNavigate();
+  const { startGameWithLoading } = useLoadingNavigation();
   const [activeButton, setActiveButton] = useState<string | null>(null);
 
   const handleSidebarClick = (action: string) => {
     setActiveButton(action);
     switch (action) {
       case 'start':
-        navigate('/start');
+        startGameWithLoading();
         break;
       case 'tutorial':
         toast.info('Tutorial coming soon!');
@@ -37,7 +37,8 @@ export default function LandingPage() {
         toast.info('Settings coming soon!');
         break;
       case 'credits':
-        navigate('/credits');
+        // Direct navigation for credits
+        window.location.href = '/credits';
         break;
       default:
         break;

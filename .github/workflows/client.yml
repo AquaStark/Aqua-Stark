@@ -6,6 +6,7 @@ on:
       - 'client/**'
       - '.github/workflows/client.yml'
       - 'package.json'
+      - 'pnpm-workspace.yaml'
       - '.prettierrc'
       - '.prettierignore'
   pull_request:
@@ -14,15 +15,13 @@ on:
       - 'client/**'
       - '.github/workflows/client.yml'
       - 'package.json'
+      - 'pnpm-workspace.yaml'
       - '.prettierrc'
       - '.prettierignore'
 
 jobs:
   frontend:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./client
 
     steps:
       - name: Checkout code
@@ -60,6 +59,9 @@ jobs:
 
       - name: Run linting
         run: pnpm lint
+
+      - name: Run typecheck
+        run: pnpm typecheck
 
       - name: Run tests
         run: pnpm test

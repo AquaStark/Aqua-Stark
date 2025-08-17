@@ -1,8 +1,8 @@
 pub mod systems {
     pub mod AquaStark;
-    pub mod daily_challenge;
     pub mod Auctions;
     pub mod ShopCatalog;
+    pub mod daily_challenge;
 }
 
 pub mod aquarium;
@@ -26,21 +26,25 @@ pub mod interfaces {
 
 pub mod models {
     pub mod aquarium_model;
+    pub mod auctions_model;
+    pub mod daily_challange;
     pub mod decoration_model;
     pub mod fish_model;
     pub mod game_model;
     pub mod player_model;
     pub mod shop_model;
-    pub mod transaction_model;
-    pub mod auctions_model;
     pub mod trade_model;
-    pub mod daily_challange;
+    pub mod transaction_model;
 }
 pub mod tests {
+    mod test_auction;
     mod test_daily_challenge;
-    mod test_world;
     mod test_trading;
     mod test_auction;
     mod test_aquarium;
+    mod test_world;
 }
+
+
+pub mod utils;
 
