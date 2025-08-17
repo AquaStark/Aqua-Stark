@@ -36,10 +36,14 @@ pub mod models {
     pub mod trade_model;
     pub mod daily_challange;
 }
+
+#[cfg(test)]
 pub mod tests {
     mod test_daily_challenge;
+    mod utils;
     mod test_world;
     mod test_trading;
     mod test_auction;
+    mod test_fish;
 }
 

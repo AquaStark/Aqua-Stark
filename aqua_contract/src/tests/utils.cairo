@@ -17,13 +17,13 @@ use aqua_stark::systems::AquaStark::AquaStark;
 use aqua_stark::systems::ShopCatalog::ShopCatalog;
 use aqua_stark::systems::Fish::Fish;
 use aqua_stark::base::events;
-// use dojo::model::{ModelStorageTest};
 use dojo::world::WorldStorageTrait;
 use dojo_cairo_test::{
     ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
     spawn_test_world,
 };
 use starknet::{contract_address_const, testing, get_block_timestamp, ContractAddress};
+
 
 fn OWNER() -> ContractAddress {
     contract_address_const::<'owner'>()
