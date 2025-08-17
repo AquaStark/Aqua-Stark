@@ -42,7 +42,6 @@ pub mod tests {
     mod test_auction;
     mod test_daily_challenge;
     mod test_trading;
-    mod test_auction;
     mod test_aquarium;
     mod test_world;
 }
