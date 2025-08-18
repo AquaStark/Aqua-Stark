@@ -3,7 +3,11 @@
  */
 
 import React from 'react';
-import { DevConsoleForm, DevConsoleInput, DevConsoleButton } from './dev-console-form';
+import {
+  DevConsoleForm,
+  DevConsoleInput,
+  DevConsoleButton,
+} from './dev-console-form';
 import { InlineResponse, ResponsePanelState } from './response-panel';
 
 interface MovementSectionProps {
@@ -16,10 +20,10 @@ interface MovementSectionProps {
   setFromAquariumId: (value: string) => void;
   toAquariumId: string;
   setToAquariumId: (value: string) => void;
-  
+
   // Response state
   responseState: ResponsePanelState;
-  
+
   // Handlers
   onMoveFish: () => void;
   onMoveDecoration: () => void;
@@ -36,75 +40,75 @@ export const MovementSection: React.FC<MovementSectionProps> = ({
   setToAquariumId,
   responseState,
   onMoveFish,
-  onMoveDecoration
+  onMoveDecoration,
 }) => {
   return (
     <>
       {/* Move Fish */}
-      <DevConsoleForm title="Move Fish" borderColor="border-blue-500">
+      <DevConsoleForm title='Move Fish' borderColor='border-blue-500'>
         <DevConsoleInput
-          placeholder="Fish ID"
+          placeholder='Fish ID'
           value={fishId}
           onChange={setFishId}
-          type="number"
+          type='number'
         />
         <DevConsoleInput
-          placeholder="From Aquarium ID"
+          placeholder='From Aquarium ID'
           value={fromAquariumId}
           onChange={setFromAquariumId}
-          type="number"
-          className="mt-2"
+          type='number'
+          className='mt-2'
         />
         <DevConsoleInput
-          placeholder="To Aquarium ID"
+          placeholder='To Aquarium ID'
           value={toAquariumId}
           onChange={setToAquariumId}
-          type="number"
-          className="mt-2"
+          type='number'
+          className='mt-2'
         />
         <DevConsoleButton
           onClick={onMoveFish}
           disabled={responseState.loading}
-          variant="blue"
-          className="mt-2"
+          variant='blue'
+          className='mt-2'
         >
           Move Fish
         </DevConsoleButton>
-        
+
         <InlineResponse state={responseState} />
       </DevConsoleForm>
 
       {/* Move Decoration */}
-      <DevConsoleForm title="Move Decoration" borderColor="border-yellow-500">
+      <DevConsoleForm title='Move Decoration' borderColor='border-yellow-500'>
         <DevConsoleInput
-          placeholder="Decoration ID"
+          placeholder='Decoration ID'
           value={decorationId}
           onChange={setDecorationId}
-          type="number"
+          type='number'
         />
         <DevConsoleInput
-          placeholder="From Aquarium ID"
+          placeholder='From Aquarium ID'
           value={fromAquariumId}
           onChange={setFromAquariumId}
-          type="number"
-          className="mt-2"
+          type='number'
+          className='mt-2'
         />
         <DevConsoleInput
-          placeholder="To Aquarium ID"
+          placeholder='To Aquarium ID'
           value={toAquariumId}
           onChange={setToAquariumId}
-          type="number"
-          className="mt-2"
+          type='number'
+          className='mt-2'
         />
         <DevConsoleButton
           onClick={onMoveDecoration}
           disabled={responseState.loading}
-          variant="yellow"
-          className="mt-2"
+          variant='yellow'
+          className='mt-2'
         >
           Move Decoration
         </DevConsoleButton>
-        
+
         <InlineResponse state={responseState} />
       </DevConsoleForm>
     </>

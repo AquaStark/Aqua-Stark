@@ -3,7 +3,11 @@
  */
 
 import React from 'react';
-import { DevConsoleForm, DevConsoleInput, DevConsoleButton } from './dev-console-form';
+import {
+  DevConsoleForm,
+  DevConsoleInput,
+  DevConsoleButton,
+} from './dev-console-form';
 import { InlineResponse, ResponsePanelState } from './response-panel';
 
 interface DecorationSectionProps {
@@ -22,10 +26,10 @@ interface DecorationSectionProps {
   setDecorationRarity: (value: string) => void;
   decorationOwnerId: string;
   setDecorationOwnerId: (value: string) => void;
-  
+
   // Response state
   responseState: ResponsePanelState;
-  
+
   // Handlers
   onNewDecoration: () => void;
   onGetDecoration: () => void;
@@ -50,89 +54,92 @@ export const DecorationSection: React.FC<DecorationSectionProps> = ({
   responseState,
   onNewDecoration,
   onGetDecoration,
-  onGetDecorationOwner
+  onGetDecorationOwner,
 }) => {
   return (
     <>
       {/* Decoration Creation/Get */}
-      <DevConsoleForm title="Decoration">
+      <DevConsoleForm title='Decoration'>
         <DevConsoleInput
-          placeholder="Aquarium ID"
+          placeholder='Aquarium ID'
           value={aquariumId}
           onChange={setAquariumId}
-          type="number"
+          type='number'
         />
         <DevConsoleInput
-          placeholder="Name"
+          placeholder='Name'
           value={decorationName}
           onChange={setDecorationName}
-          className="mt-2"
+          className='mt-2'
         />
         <DevConsoleInput
-          placeholder="Description"
+          placeholder='Description'
           value={decorationDesc}
           onChange={setDecorationDesc}
-          className="mt-2"
+          className='mt-2'
         />
         <DevConsoleInput
-          placeholder="Price"
+          placeholder='Price'
           value={decorationPrice}
           onChange={setDecorationPrice}
-          type="number"
-          className="mt-2"
+          type='number'
+          className='mt-2'
         />
         <DevConsoleInput
-          placeholder="Rarity"
+          placeholder='Rarity'
           value={decorationRarity}
           onChange={setDecorationRarity}
-          type="number"
-          className="mt-2"
+          type='number'
+          className='mt-2'
         />
         <DevConsoleButton
           onClick={onNewDecoration}
           disabled={responseState.loading}
-          variant="yellow"
-          className="mt-2"
+          variant='yellow'
+          className='mt-2'
         >
           New Decoration
         </DevConsoleButton>
 
         <DevConsoleInput
-          placeholder="Decoration ID"
+          placeholder='Decoration ID'
           value={decorationId}
           onChange={setDecorationId}
-          type="number"
-          className="mt-2"
+          type='number'
+          className='mt-2'
         />
         <DevConsoleButton
           onClick={onGetDecoration}
           disabled={responseState.loading}
-          variant="yellow"
-          className="mt-2"
+          variant='yellow'
+          className='mt-2'
         >
           Get Decoration
         </DevConsoleButton>
-        
+
         <InlineResponse state={responseState} />
       </DevConsoleForm>
 
       {/* Decoration Ownership */}
-      <DevConsoleForm title="Decoration Ownership" borderColor="border-purple-500">
+      <DevConsoleForm
+        title='Decoration Ownership'
+        borderColor='border-purple-500'
+      >
         <DevConsoleInput
-          placeholder="Decoration ID"
+          placeholder='Decoration ID'
           value={decorationOwnerId}
           onChange={setDecorationOwnerId}
-          type="number"
+          type='number'
         />
         <DevConsoleButton
           onClick={onGetDecorationOwner}
           disabled={responseState.loading}
-          variant="purple"
-          className="mt-2"
+          variant='purple'
+          className='mt-2'
         >
           Get Decoration Owner
         </DevConsoleButton>
-        
+
         <InlineResponse state={responseState} />
       </DevConsoleForm>
     </>

@@ -3,7 +3,11 @@
  */
 
 import React from 'react';
-import { DevConsoleForm, DevConsoleInput, DevConsoleButton } from './dev-console-form';
+import {
+  DevConsoleForm,
+  DevConsoleInput,
+  DevConsoleButton,
+} from './dev-console-form';
 import { InlineResponse, ResponsePanelState } from './response-panel';
 
 interface PlayerSectionProps {
@@ -12,10 +16,10 @@ interface PlayerSectionProps {
   setUsername: (value: string) => void;
   playerAddress: string;
   setPlayerAddress: (value: string) => void;
-  
+
   // Response state
   responseState: ResponsePanelState;
-  
+
   // Handlers
   onRegisterPlayer: () => void;
   onGetPlayer: () => void;
@@ -30,60 +34,60 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({
   responseState,
   onRegisterPlayer,
   onGetPlayer,
-  onCheckVerification
+  onCheckVerification,
 }) => {
   return (
     <>
       {/* Player Registration/Get */}
-      <DevConsoleForm title="Player">
+      <DevConsoleForm title='Player'>
         <DevConsoleInput
-          placeholder="Username"
+          placeholder='Username'
           value={username}
           onChange={setUsername}
         />
         <DevConsoleButton
           onClick={onRegisterPlayer}
           disabled={responseState.loading}
-          variant="blue"
-          className="mt-2"
+          variant='blue'
+          className='mt-2'
         >
           Register Player
         </DevConsoleButton>
 
         <DevConsoleInput
-          placeholder="Player Address (defaults to connected)"
+          placeholder='Player Address (defaults to connected)'
           value={playerAddress}
           onChange={setPlayerAddress}
-          className="mt-2"
+          className='mt-2'
         />
         <DevConsoleButton
           onClick={onGetPlayer}
           disabled={responseState.loading}
-          variant="blue"
-          className="mt-2"
+          variant='blue'
+          className='mt-2'
         >
           Get Player
         </DevConsoleButton>
-        
+
         <InlineResponse state={responseState} />
       </DevConsoleForm>
 
       {/* Verification */}
-      <DevConsoleForm title="Verification">
+      <DevConsoleForm title='Verification'>
         <DevConsoleInput
-          placeholder="Player Address"
+          placeholder='Player Address'
           value={playerAddress}
           onChange={setPlayerAddress}
         />
         <DevConsoleButton
           onClick={onCheckVerification}
           disabled={responseState.loading}
-          variant="purple"
-          className="mt-2"
+          variant='purple'
+          className='mt-2'
         >
           Check If Verified
         </DevConsoleButton>
-        
+
         <InlineResponse state={responseState} />
       </DevConsoleForm>
     </>

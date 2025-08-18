@@ -3,7 +3,11 @@
  */
 
 import React from 'react';
-import { DevConsoleForm, DevConsoleInput, DevConsoleButton } from './dev-console-form';
+import {
+  DevConsoleForm,
+  DevConsoleInput,
+  DevConsoleButton,
+} from './dev-console-form';
 import { InlineResponse, ResponsePanelState } from './response-panel';
 
 interface AquariumSectionProps {
@@ -16,10 +20,10 @@ interface AquariumSectionProps {
   setMaxDecorations: (value: string) => void;
   aquariumOwnerId: string;
   setAquariumOwnerId: (value: string) => void;
-  
+
   // Response state
   responseState: ResponsePanelState;
-  
+
   // Handlers
   onNewAquarium: () => void;
   onGetAquarium: () => void;
@@ -38,70 +42,73 @@ export const AquariumSection: React.FC<AquariumSectionProps> = ({
   responseState,
   onNewAquarium,
   onGetAquarium,
-  onGetAquariumOwner
+  onGetAquariumOwner,
 }) => {
   return (
     <>
       {/* Aquarium Creation/Get */}
-      <DevConsoleForm title="Aquarium">
+      <DevConsoleForm title='Aquarium'>
         <DevConsoleInput
-          placeholder="Max Capacity"
+          placeholder='Max Capacity'
           value={maxCapacity}
           onChange={setMaxCapacity}
-          type="number"
+          type='number'
         />
         <DevConsoleInput
-          placeholder="Max Decorations"
+          placeholder='Max Decorations'
           value={maxDecorations}
           onChange={setMaxDecorations}
-          type="number"
-          className="mt-2"
+          type='number'
+          className='mt-2'
         />
         <DevConsoleButton
           onClick={onNewAquarium}
           disabled={responseState.loading}
-          variant="green"
-          className="mt-2"
+          variant='green'
+          className='mt-2'
         >
           New Aquarium
         </DevConsoleButton>
 
         <DevConsoleInput
-          placeholder="Aquarium ID"
+          placeholder='Aquarium ID'
           value={aquariumId}
           onChange={setAquariumId}
-          type="number"
-          className="mt-2"
+          type='number'
+          className='mt-2'
         />
         <DevConsoleButton
           onClick={onGetAquarium}
           disabled={responseState.loading}
-          variant="green"
-          className="mt-2"
+          variant='green'
+          className='mt-2'
         >
           Get Aquarium
         </DevConsoleButton>
-        
+
         <InlineResponse state={responseState} />
       </DevConsoleForm>
 
       {/* Aquarium Ownership */}
-      <DevConsoleForm title="Aquarium Ownership" borderColor="border-purple-500">
+      <DevConsoleForm
+        title='Aquarium Ownership'
+        borderColor='border-purple-500'
+      >
         <DevConsoleInput
-          placeholder="Aquarium ID"
+          placeholder='Aquarium ID'
           value={aquariumOwnerId}
           onChange={setAquariumOwnerId}
-          type="number"
+          type='number'
         />
         <DevConsoleButton
           onClick={onGetAquariumOwner}
           disabled={responseState.loading}
-          variant="purple"
-          className="mt-2"
+          variant='purple'
+          className='mt-2'
         >
           Get Aquarium Owner
         </DevConsoleButton>
-        
+
         <InlineResponse state={responseState} />
       </DevConsoleForm>
     </>

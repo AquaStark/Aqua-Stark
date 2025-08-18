@@ -11,13 +11,13 @@ import { stringToFelt } from '@/utils/starknet';
  */
 export const FISH_SPECIES = [
   'GoldFish',
-  'AngelFish', 
+  'AngelFish',
   'Betta',
   'NeonTetra',
-  'Corydoras'
+  'Corydoras',
 ] as const;
 
-export type FishSpecies = typeof FISH_SPECIES[number];
+export type FishSpecies = (typeof FISH_SPECIES)[number];
 
 /**
  * Result type for string to felt conversion
@@ -31,37 +31,40 @@ export interface FeltConversionResult {
 /**
  * Safely convert string to felt with error handling
  */
-export function safeStringToFelt(value: string, fieldName: string): FeltConversionResult {
+export function safeStringToFelt(
+  value: string,
+  fieldName: string
+): FeltConversionResult {
   if (!value || value.trim() === '') {
     return {
       success: false,
       value: null,
-      error: `${fieldName} is required`
+      error: `${fieldName} is required`,
     };
   }
 
   try {
     const feltValue = stringToFelt(value);
-    
+
     // Check if result is an array (indicates string too long)
     if (Array.isArray(feltValue)) {
       return {
         success: false,
         value: null,
-        error: `${fieldName} is too long for felt conversion`
+        error: `${fieldName} is too long for felt conversion`,
       };
     }
 
     return {
       success: true,
       value: feltValue,
-      error: null
+      error: null,
     };
   } catch (error) {
     return {
       success: false,
       value: null,
-      error: `Failed to convert ${fieldName} to felt: ${error instanceof Error ? error.message : 'Unknown error'}`
+      error: `Failed to convert ${fieldName} to felt: ${error instanceof Error ? error.message : 'Unknown error'}`,
     };
   }
 }
@@ -71,7 +74,9 @@ export function safeStringToFelt(value: string, fieldName: string): FeltConversi
  */
 export function createFishSpeciesEnum(species: string): CairoCustomEnum {
   if (!FISH_SPECIES.includes(species as FishSpecies)) {
-    throw new Error(`Invalid fish species: ${species}. Valid options: ${FISH_SPECIES.join(', ')}`);
+    throw new Error(
+      `Invalid fish species: ${species}. Valid options: ${FISH_SPECIES.join(', ')}`
+    );
   }
 
   return new CairoCustomEnum({ [species]: {} });
@@ -80,7 +85,11 @@ export function createFishSpeciesEnum(species: string): CairoCustomEnum {
 /**
  * Safely parse integer with validation
  */
-export function safeParseInt(value: string, fieldName: string, minValue: number = 0): {
+export function safeParseInt(
+  value: string,
+  fieldName: string,
+  minValue: number = 0
+): {
   success: boolean;
   value: number | null;
   error: string | null;
@@ -89,17 +98,17 @@ export function safeParseInt(value: string, fieldName: string, minValue: number 
     return {
       success: false,
       value: null,
-      error: `${fieldName} is required`
+      error: `${fieldName} is required`,
     };
   }
 
   const parsed = parseInt(value, 10);
-  
+
   if (isNaN(parsed)) {
     return {
       success: false,
       value: null,
-      error: `${fieldName} must be a valid number`
+      error: `${fieldName} must be a valid number`,
     };
   }
 
@@ -107,14 +116,14 @@ export function safeParseInt(value: string, fieldName: string, minValue: number 
     return {
       success: false,
       value: null,
-      error: `${fieldName} must be at least ${minValue}`
+      error: `${fieldName} must be at least ${minValue}`,
     };
   }
 
   return {
     success: true,
     value: parsed,
-    error: null
+    error: null,
   };
 }
 
@@ -136,7 +145,10 @@ export class GameDataTransformer {
       return { success: false, error: nameResult.error };
     }
 
-    const descResult = safeStringToFelt(data.description, 'Decoration description');
+    const descResult = safeStringToFelt(
+      data.description,
+      'Decoration description'
+    );
     if (!descResult.success) {
       return { success: false, error: descResult.error };
     }
@@ -157,18 +169,15 @@ export class GameDataTransformer {
         name: nameResult.value as string,
         description: descResult.value as string,
         price: priceResult.value as number,
-        rarity: rarityResult.value as number
-      }
+        rarity: rarityResult.value as number,
+      },
     };
   }
 
   /**
    * Transform fish data for contract creation
    */
-  static transformFishData(data: {
-    aquariumId: string;
-    species: string;
-  }) {
+  static transformFishData(data: { aquariumId: string; species: string }) {
     const aquariumResult = safeParseInt(data.aquariumId, 'Aquarium ID', 1);
     if (!aquariumResult.success) {
       return { success: false, error: aquariumResult.error };
@@ -176,18 +185,18 @@ export class GameDataTransformer {
 
     try {
       const speciesEnum = createFishSpeciesEnum(data.species);
-      
+
       return {
         success: true,
         data: {
           aquariumId: aquariumResult.value as number,
-          species: speciesEnum
-        }
+          species: speciesEnum,
+        },
       };
     } catch (error) {
-      return { 
-        success: false, 
-        error: error instanceof Error ? error.message : 'Invalid fish species' 
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Invalid fish species',
       };
     }
   }
@@ -204,7 +213,11 @@ export class GameDataTransformer {
       return { success: false, error: capacityResult.error };
     }
 
-    const decorationsResult = safeParseInt(data.maxDecorations, 'Max decorations', 1);
+    const decorationsResult = safeParseInt(
+      data.maxDecorations,
+      'Max decorations',
+      1
+    );
     if (!decorationsResult.success) {
       return { success: false, error: decorationsResult.error };
     }
@@ -213,8 +226,8 @@ export class GameDataTransformer {
       success: true,
       data: {
         maxCapacity: capacityResult.value as number,
-        maxDecorations: decorationsResult.value as number
-      }
+        maxDecorations: decorationsResult.value as number,
+      },
     };
   }
 
@@ -246,18 +259,15 @@ export class GameDataTransformer {
       data: {
         itemId: itemResult.value as number,
         fromAquariumId: fromResult.value as number,
-        toAquariumId: toResult.value as number
-      }
+        toAquariumId: toResult.value as number,
+      },
     };
   }
 
   /**
    * Transform breeding data for fish reproduction
    */
-  static transformBreedingData(data: {
-    parent1Id: string;
-    parent2Id: string;
-  }) {
+  static transformBreedingData(data: { parent1Id: string; parent2Id: string }) {
     const parent1Result = safeParseInt(data.parent1Id, 'Parent 1 ID', 1);
     if (!parent1Result.success) {
       return { success: false, error: parent1Result.error };
@@ -272,8 +282,8 @@ export class GameDataTransformer {
       success: true,
       data: {
         parent1Id: parent1Result.value as number,
-        parent2Id: parent2Result.value as number
-      }
+        parent2Id: parent2Result.value as number,
+      },
     };
   }
 }
@@ -293,7 +303,7 @@ export class ResponseFormatter {
     try {
       return JSON.stringify(
         response,
-        (_key, value) => typeof value === 'bigint' ? value.toString() : value,
+        (_key, value) => (typeof value === 'bigint' ? value.toString() : value),
         2
       );
     } catch (error) {

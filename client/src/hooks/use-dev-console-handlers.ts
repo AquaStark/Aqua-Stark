@@ -9,7 +9,11 @@ import { useDecoration } from '@/hooks/dojo/useDecoration';
 import { useFish } from '@/hooks/dojo/useFish';
 import { usePlayer } from '@/hooks/dojo/usePlayer';
 import { handleContractRequest } from '@/systems/contract-request-system';
-import { GameDataTransformer, createFishSpeciesEnum, safeParseInt } from '@/systems/data-transformation-system';
+import {
+  GameDataTransformer,
+  createFishSpeciesEnum,
+  safeParseInt,
+} from '@/systems/data-transformation-system';
 import { useDevConsoleStore } from '@/store/dev-console-store';
 
 export const useDevConsoleHandlers = () => {
@@ -38,11 +42,12 @@ export const useDevConsoleHandlers = () => {
   const { setError, setResponse, updateResponseState } = state;
 
   const handleRequest = useCallback(
-    async <T,>(request: () => Promise<T>, name: string) => {
+    async <T>(request: () => Promise<T>, name: string) => {
       await handleContractRequest(request, name, {
-        onStart: () => updateResponseState({ loading: true, error: null, response: null }),
-        onSuccess: (result) => setResponse(result as object),
-        onError: (error) => setError(error),
+        onStart: () =>
+          updateResponseState({ loading: true, error: null, response: null }),
+        onSuccess: result => setResponse(result as object),
+        onError: error => setError(error),
       });
     },
     [updateResponseState, setResponse, setError]
@@ -51,7 +56,10 @@ export const useDevConsoleHandlers = () => {
   // Player handlers
   const handleRegisterPlayer = useCallback(() => {
     if (!account) return;
-    handleRequest(() => registerPlayer(account, state.username), 'registerPlayer');
+    handleRequest(
+      () => registerPlayer(account, state.username),
+      'registerPlayer'
+    );
   }, [account, handleRequest, registerPlayer, state.username]);
 
   const handleGetPlayer = useCallback(() => {
@@ -75,19 +83,32 @@ export const useDevConsoleHandlers = () => {
     if (!account) return;
     const result = GameDataTransformer.transformAquariumData({
       maxCapacity: state.maxCapacity,
-      maxDecorations: state.maxDecorations
+      maxDecorations: state.maxDecorations,
     });
-    
+
     if (!result.success) {
       setError(result.error || 'Invalid aquarium data');
       return;
     }
-    
+
     handleRequest(
-      () => newAquarium(account, account.address, result.data!.maxCapacity, result.data!.maxDecorations),
+      () =>
+        newAquarium(
+          account,
+          account.address,
+          result.data!.maxCapacity,
+          result.data!.maxDecorations
+        ),
       'newAquarium'
     );
-  }, [account, handleRequest, newAquarium, state.maxCapacity, state.maxDecorations, setError]);
+  }, [
+    account,
+    handleRequest,
+    newAquarium,
+    state.maxCapacity,
+    state.maxDecorations,
+    setError,
+  ]);
 
   const handleGetAquarium = useCallback(() => {
     const result = safeParseInt(state.aquariumId, 'Aquarium ID', 1);
@@ -139,23 +160,24 @@ export const useDevConsoleHandlers = () => {
       name: state.decorationName,
       description: state.decorationDesc,
       price: state.decorationPrice,
-      rarity: state.decorationRarity
+      rarity: state.decorationRarity,
     });
-    
+
     if (!result.success) {
       setError(result.error || 'Invalid decoration data');
       return;
     }
-    
+
     handleRequest(
-      () => newDecoration(
-        account,
-        parseInt(state.aquariumId),
-        result.data!.name as string,
-        result.data!.description as string,
-        result.data!.price,
-        result.data!.rarity
-      ),
+      () =>
+        newDecoration(
+          account,
+          parseInt(state.aquariumId),
+          result.data!.name as string,
+          result.data!.description as string,
+          result.data!.price,
+          result.data!.rarity
+        ),
       'newDecoration'
     );
   }, [account, handleRequest, newDecoration, state, setError]);
@@ -175,7 +197,10 @@ export const useDevConsoleHandlers = () => {
       setError(result.error || 'Invalid decoration ID');
       return;
     }
-    handleRequest(() => getDecorationOwner(result.value!), 'getDecorationOwner');
+    handleRequest(
+      () => getDecorationOwner(result.value!),
+      'getDecorationOwner'
+    );
   }, [handleRequest, getDecorationOwner, state.decorationOwnerId, setError]);
 
   // Breeding handlers
@@ -183,19 +208,27 @@ export const useDevConsoleHandlers = () => {
     if (!account) return;
     const result = GameDataTransformer.transformBreedingData({
       parent1Id: state.parent1Id,
-      parent2Id: state.parent2Id
+      parent2Id: state.parent2Id,
     });
-    
+
     if (!result.success) {
       setError(result.error || 'Invalid breeding data');
       return;
     }
-    
+
     handleRequest(
-      () => breedFishes(account, result.data!.parent1Id, result.data!.parent2Id),
+      () =>
+        breedFishes(account, result.data!.parent1Id, result.data!.parent2Id),
       'breedFishes'
     );
-  }, [account, handleRequest, breedFishes, state.parent1Id, state.parent2Id, setError]);
+  }, [
+    account,
+    handleRequest,
+    breedFishes,
+    state.parent1Id,
+    state.parent2Id,
+    setError,
+  ]);
 
   // Movement handlers
   const handleMoveFish = useCallback(() => {
@@ -203,21 +236,22 @@ export const useDevConsoleHandlers = () => {
     const result = GameDataTransformer.transformMovementData({
       itemId: state.fishId,
       fromAquariumId: state.fromAquariumId,
-      toAquariumId: state.toAquariumId
+      toAquariumId: state.toAquariumId,
     });
-    
+
     if (!result.success) {
       setError(result.error || 'Invalid movement data');
       return;
     }
-    
+
     handleRequest(
-      () => moveFishToAquarium(
-        account,
-        result.data!.itemId,
-        result.data!.fromAquariumId,
-        result.data!.toAquariumId
-      ),
+      () =>
+        moveFishToAquarium(
+          account,
+          result.data!.itemId,
+          result.data!.fromAquariumId,
+          result.data!.toAquariumId
+        ),
       'moveFishToAquarium'
     );
   }, [account, handleRequest, moveFishToAquarium, state, setError]);
@@ -227,21 +261,22 @@ export const useDevConsoleHandlers = () => {
     const result = GameDataTransformer.transformMovementData({
       itemId: state.decorationId,
       fromAquariumId: state.fromAquariumId,
-      toAquariumId: state.toAquariumId
+      toAquariumId: state.toAquariumId,
     });
-    
+
     if (!result.success) {
       setError(result.error || 'Invalid movement data');
       return;
     }
-    
+
     handleRequest(
-      () => moveDecorationToAquarium(
-        account,
-        result.data!.itemId,
-        result.data!.fromAquariumId,
-        result.data!.toAquariumId
-      ),
+      () =>
+        moveDecorationToAquarium(
+          account,
+          result.data!.itemId,
+          result.data!.fromAquariumId,
+          result.data!.toAquariumId
+        ),
       'moveDecorationToAquarium'
     );
   }, [account, handleRequest, moveDecorationToAquarium, state, setError]);
@@ -277,7 +312,7 @@ export const useDevConsoleHandlers = () => {
   const handleFishAncestor = useCallback(() => {
     const fishResult = safeParseInt(state.fishId, 'Fish ID', 1);
     const genResult = safeParseInt(state.generation, 'Generation', 0);
-    
+
     if (!fishResult.success) {
       setError(fishResult.error || 'Invalid fish ID');
       return;
@@ -286,12 +321,18 @@ export const useDevConsoleHandlers = () => {
       setError(genResult.error || 'Invalid generation');
       return;
     }
-    
+
     handleRequest(
       () => getFishAncestor(fishResult.value!, genResult.value!),
       'getFishAncestor'
     );
-  }, [handleRequest, getFishAncestor, state.fishId, state.generation, setError]);
+  }, [
+    handleRequest,
+    getFishAncestor,
+    state.fishId,
+    state.generation,
+    setError,
+  ]);
 
   return {
     state,
@@ -321,7 +362,7 @@ export const useDevConsoleHandlers = () => {
       handleGetParents,
       handleGetOffspring,
       handleFamilyTree,
-      handleFishAncestor
-    }
+      handleFishAncestor,
+    },
   };
 };

@@ -9,19 +9,19 @@ interface FormInputState {
   // Player inputs
   username: string;
   playerAddress: string;
-  
+
   // Aquarium inputs
   aquariumId: string;
   maxCapacity: string;
   maxDecorations: string;
   aquariumOwnerId: string;
-  
+
   // Fish inputs
   fishId: string;
   fishSpecies: string;
   ownerId: string;
   offspringFishId: string;
-  
+
   // Decoration inputs
   decorationId: string;
   decorationName: string;
@@ -29,15 +29,15 @@ interface FormInputState {
   decorationPrice: string;
   decorationRarity: string;
   decorationOwnerId: string;
-  
+
   // Breeding inputs
   parent1Id: string;
   parent2Id: string;
-  
+
   // Movement inputs
   fromAquariumId: string;
   toAquariumId: string;
-  
+
   // Genealogy inputs
   generation: string;
 }
@@ -45,16 +45,19 @@ interface FormInputState {
 interface DevConsoleState extends FormInputState {
   // Response state
   responseState: ResponsePanelState;
-  
+
   // Actions for updating form inputs
-  setFormInput: <K extends keyof FormInputState>(field: K, value: FormInputState[K]) => void;
-  
+  setFormInput: <K extends keyof FormInputState>(
+    field: K,
+    value: FormInputState[K]
+  ) => void;
+
   // Actions for response state
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   setResponse: (response: object | null) => void;
   resetResponseState: () => void;
-  
+
   // Batch update actions
   updateResponseState: (state: Partial<ResponsePanelState>) => void;
   resetFormInputs: () => void;
@@ -82,60 +85,67 @@ const defaultFormInputs: FormInputState = {
   parent2Id: '',
   fromAquariumId: '',
   toAquariumId: '',
-  generation: ''
+  generation: '',
 };
 
 // Default response state
 const defaultResponseState: ResponsePanelState = {
   loading: false,
   error: null,
-  response: null
+  response: null,
 };
 
-export const useDevConsoleStore = create<DevConsoleState>((set) => ({
+export const useDevConsoleStore = create<DevConsoleState>(set => ({
   // Initialize with default values
   ...defaultFormInputs,
   responseState: defaultResponseState,
-  
+
   // Form input actions
-  setFormInput: (field, value) => set(() => ({
-    [field]: value
-  })),
-  
+  setFormInput: (field, value) =>
+    set(() => ({
+      [field]: value,
+    })),
+
   // Response state actions
-  setLoading: (loading) => set((state) => ({
-    responseState: { ...state.responseState, loading }
-  })),
-  
-  setError: (error) => set((state) => ({
-    responseState: {
-      ...state.responseState,
-      error,
-      loading: false,
-      response: null
-    }
-  })),
-  
-  setResponse: (response) => set((state) => ({
-    responseState: {
-      ...state.responseState,
-      response,
-      loading: false,
-      error: null
-    }
-  })),
-  
-  resetResponseState: () => set(() => ({
-    responseState: defaultResponseState
-  })),
-  
-  updateResponseState: (newState) => set((state) => ({
-    responseState: { ...state.responseState, ...newState }
-  })),
-  
-  resetFormInputs: () => set(() => ({
-    ...defaultFormInputs
-  }))
+  setLoading: loading =>
+    set(state => ({
+      responseState: { ...state.responseState, loading },
+    })),
+
+  setError: error =>
+    set(state => ({
+      responseState: {
+        ...state.responseState,
+        error,
+        loading: false,
+        response: null,
+      },
+    })),
+
+  setResponse: response =>
+    set(state => ({
+      responseState: {
+        ...state.responseState,
+        response,
+        loading: false,
+        error: null,
+      },
+    })),
+
+  resetResponseState: () =>
+    set(() => ({
+      responseState: defaultResponseState,
+    })),
+
+  updateResponseState: newState =>
+    set(state => ({
+      responseState: { ...state.responseState, ...newState },
+    })),
+
+  resetFormInputs: () =>
+    set(() => ({
+      ...defaultFormInputs,
+    })),
 }));
 
 /**
@@ -148,7 +158,8 @@ export const usePlayerFormInputs = () => {
     username: store.username,
     setUsername: (value: string) => store.setFormInput('username', value),
     playerAddress: store.playerAddress,
-    setPlayerAddress: (value: string) => store.setFormInput('playerAddress', value)
+    setPlayerAddress: (value: string) =>
+      store.setFormInput('playerAddress', value),
   };
 };
 
@@ -160,9 +171,11 @@ export const useAquariumFormInputs = () => {
     maxCapacity: store.maxCapacity,
     setMaxCapacity: (value: string) => store.setFormInput('maxCapacity', value),
     maxDecorations: store.maxDecorations,
-    setMaxDecorations: (value: string) => store.setFormInput('maxDecorations', value),
+    setMaxDecorations: (value: string) =>
+      store.setFormInput('maxDecorations', value),
     aquariumOwnerId: store.aquariumOwnerId,
-    setAquariumOwnerId: (value: string) => store.setFormInput('aquariumOwnerId', value)
+    setAquariumOwnerId: (value: string) =>
+      store.setFormInput('aquariumOwnerId', value),
   };
 };
 
@@ -176,7 +189,7 @@ export const useFishFormInputs = () => {
     ownerId: store.ownerId,
     setOwnerId: (value: string) => store.setFormInput('ownerId', value),
     aquariumId: store.aquariumId,
-    setAquariumId: (value: string) => store.setFormInput('aquariumId', value)
+    setAquariumId: (value: string) => store.setFormInput('aquariumId', value),
   };
 };
 
@@ -184,19 +197,25 @@ export const useDecorationFormInputs = () => {
   const store = useDevConsoleStore();
   return {
     decorationId: store.decorationId,
-    setDecorationId: (value: string) => store.setFormInput('decorationId', value),
+    setDecorationId: (value: string) =>
+      store.setFormInput('decorationId', value),
     decorationName: store.decorationName,
-    setDecorationName: (value: string) => store.setFormInput('decorationName', value),
+    setDecorationName: (value: string) =>
+      store.setFormInput('decorationName', value),
     decorationDesc: store.decorationDesc,
-    setDecorationDesc: (value: string) => store.setFormInput('decorationDesc', value),
+    setDecorationDesc: (value: string) =>
+      store.setFormInput('decorationDesc', value),
     decorationPrice: store.decorationPrice,
-    setDecorationPrice: (value: string) => store.setFormInput('decorationPrice', value),
+    setDecorationPrice: (value: string) =>
+      store.setFormInput('decorationPrice', value),
     decorationRarity: store.decorationRarity,
-    setDecorationRarity: (value: string) => store.setFormInput('decorationRarity', value),
+    setDecorationRarity: (value: string) =>
+      store.setFormInput('decorationRarity', value),
     decorationOwnerId: store.decorationOwnerId,
-    setDecorationOwnerId: (value: string) => store.setFormInput('decorationOwnerId', value),
+    setDecorationOwnerId: (value: string) =>
+      store.setFormInput('decorationOwnerId', value),
     aquariumId: store.aquariumId,
-    setAquariumId: (value: string) => store.setFormInput('aquariumId', value)
+    setAquariumId: (value: string) => store.setFormInput('aquariumId', value),
   };
 };
 
@@ -206,7 +225,7 @@ export const useBreedingFormInputs = () => {
     parent1Id: store.parent1Id,
     setParent1Id: (value: string) => store.setFormInput('parent1Id', value),
     parent2Id: store.parent2Id,
-    setParent2Id: (value: string) => store.setFormInput('parent2Id', value)
+    setParent2Id: (value: string) => store.setFormInput('parent2Id', value),
   };
 };
 
@@ -216,11 +235,14 @@ export const useMovementFormInputs = () => {
     fishId: store.fishId,
     setFishId: (value: string) => store.setFormInput('fishId', value),
     decorationId: store.decorationId,
-    setDecorationId: (value: string) => store.setFormInput('decorationId', value),
+    setDecorationId: (value: string) =>
+      store.setFormInput('decorationId', value),
     fromAquariumId: store.fromAquariumId,
-    setFromAquariumId: (value: string) => store.setFormInput('fromAquariumId', value),
+    setFromAquariumId: (value: string) =>
+      store.setFormInput('fromAquariumId', value),
     toAquariumId: store.toAquariumId,
-    setToAquariumId: (value: string) => store.setFormInput('toAquariumId', value)
+    setToAquariumId: (value: string) =>
+      store.setFormInput('toAquariumId', value),
   };
 };
 
@@ -230,9 +252,10 @@ export const useGenealogyFormInputs = () => {
     fishId: store.fishId,
     setFishId: (value: string) => store.setFormInput('fishId', value),
     offspringFishId: store.offspringFishId,
-    setOffspringFishId: (value: string) => store.setFormInput('offspringFishId', value),
+    setOffspringFishId: (value: string) =>
+      store.setFormInput('offspringFishId', value),
     generation: store.generation,
-    setGeneration: (value: string) => store.setFormInput('generation', value)
+    setGeneration: (value: string) => store.setFormInput('generation', value),
   };
 };
 
@@ -244,6 +267,6 @@ export const useResponseState = () => {
     setError: store.setError,
     setResponse: store.setResponse,
     resetResponseState: store.resetResponseState,
-    updateResponseState: store.updateResponseState
+    updateResponseState: store.updateResponseState,
   };
 };

@@ -13,13 +13,13 @@ interface DevConsoleFormProps {
 export const DevConsoleForm: React.FC<DevConsoleFormProps> = ({
   title,
   borderColor,
-  children
+  children,
 }) => {
   const borderClass = borderColor ? `border-l-4 ${borderColor}` : '';
-  
+
   return (
     <div className={`bg-gray-800 p-4 rounded-lg ${borderClass}`}>
-      <h2 className="text-xl font-bold mb-4 text-blue-300">{title}</h2>
+      <h2 className='text-xl font-bold mb-4 text-blue-300'>{title}</h2>
       {children}
     </div>
   );
@@ -38,14 +38,14 @@ export const DevConsoleInput: React.FC<DevConsoleInputProps> = ({
   value,
   onChange,
   type = 'text',
-  className = ''
+  className = '',
 }) => {
   return (
     <input
       className={`bg-gray-700 p-2 rounded-md placeholder-gray-500 w-full ${className}`}
       placeholder={placeholder}
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={e => onChange(e.target.value)}
       type={type}
     />
   );
@@ -62,13 +62,13 @@ export const DevConsoleSelect: React.FC<DevConsoleSelectProps> = ({
   value,
   onChange,
   options,
-  className = ''
+  className = '',
 }) => {
   return (
     <select
       className={`bg-gray-700 p-2 rounded-md w-full ${className}`}
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={e => onChange(e.target.value)}
     >
       {options.map(option => (
         <option key={option} value={option}>
@@ -92,7 +92,7 @@ export const DevConsoleButton: React.FC<DevConsoleButtonProps> = ({
   disabled = false,
   variant = 'blue',
   children,
-  className = ''
+  className = '',
 }) => {
   const getVariantClasses = (variant: string) => {
     const variants = {
@@ -101,7 +101,7 @@ export const DevConsoleButton: React.FC<DevConsoleButtonProps> = ({
       red: 'bg-red-600 hover:bg-red-700',
       yellow: 'bg-yellow-600 hover:bg-yellow-700',
       purple: 'bg-purple-600 hover:bg-purple-700',
-      pink: 'bg-pink-600 hover:bg-pink-700'
+      pink: 'bg-pink-600 hover:bg-pink-700',
     };
     return variants[variant as keyof typeof variants] || variants.blue;
   };

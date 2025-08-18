@@ -28,23 +28,23 @@ export async function handleContractRequest<T>(
 
   try {
     onStart?.();
-    
+
     console.log(`🔄 Starting ${operationName}`);
     const result = await request();
     console.log(`✅ ${operationName} result`, result);
-    
+
     onSuccess?.(result);
-    
+
     return { success: true, result, error: null };
   } catch (err: unknown) {
     console.error(`❌ ${operationName} error`, err);
-    
+
     // Extract readable error message from Cairo/StarkNet errors
     const errorMessage = extractErrorMessage(err);
     console.error(`💥 ${operationName} failed:`, errorMessage);
-    
+
     onError?.(errorMessage);
-    
+
     return { success: false, result: null, error: errorMessage };
   } finally {
     onFinally?.();
@@ -63,11 +63,11 @@ function extractErrorMessage(err: unknown): string {
     // Try to extract Cairo/StarkNet revert messages
     const feltError = /revert with "([^"]+)"/;
     const match = err.message.match(feltError);
-    
+
     if (match) {
       return match[1];
     }
-    
+
     return err.message || 'An unknown error occurred.';
   }
 
@@ -81,7 +81,7 @@ export class RequestStateManager<T = unknown> {
   private state: RequestState<T> = {
     loading: false,
     error: null,
-    response: null
+    response: null,
   };
 
   private listeners: Set<(state: RequestState<T>) => void> = new Set();
@@ -118,26 +118,26 @@ export class RequestStateManager<T = unknown> {
         this.setState({
           loading: true,
           error: null,
-          response: null
+          response: null,
         });
       },
       onSuccess: (result: T) => {
         this.setState({
           loading: false,
           response: result,
-          error: null
+          error: null,
         });
       },
       onError: (error: string) => {
         this.setState({
           loading: false,
           error,
-          response: null
+          response: null,
         });
       },
       onFinally: () => {
         // Loading state is handled in onSuccess/onError
-      }
+      },
     });
   }
 }

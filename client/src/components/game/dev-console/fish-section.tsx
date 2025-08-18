@@ -3,7 +3,12 @@
  */
 
 import React from 'react';
-import { DevConsoleForm, DevConsoleInput, DevConsoleButton, DevConsoleSelect } from './dev-console-form';
+import {
+  DevConsoleForm,
+  DevConsoleInput,
+  DevConsoleButton,
+  DevConsoleSelect,
+} from './dev-console-form';
 import { InlineResponse, ResponsePanelState } from './response-panel';
 import { FISH_SPECIES } from '@/systems/data-transformation-system';
 
@@ -17,10 +22,10 @@ interface FishSectionProps {
   setFishSpecies: (value: string) => void;
   ownerId: string;
   setOwnerId: (value: string) => void;
-  
+
   // Response state
   responseState: ResponsePanelState;
-  
+
   // Handlers
   onNewFish: () => void;
   onGetFish: () => void;
@@ -39,69 +44,69 @@ export const FishSection: React.FC<FishSectionProps> = ({
   responseState,
   onNewFish,
   onGetFish,
-  onGetFishOwner
+  onGetFishOwner,
 }) => {
   return (
     <>
       {/* Fish Creation/Get */}
-      <DevConsoleForm title="Fish">
+      <DevConsoleForm title='Fish'>
         <DevConsoleInput
-          placeholder="Aquarium ID"
+          placeholder='Aquarium ID'
           value={aquariumId}
           onChange={setAquariumId}
-          type="number"
+          type='number'
         />
         <DevConsoleSelect
           value={fishSpecies}
           onChange={setFishSpecies}
           options={[...FISH_SPECIES]}
-          className="mt-2"
+          className='mt-2'
         />
         <DevConsoleButton
           onClick={onNewFish}
           disabled={responseState.loading}
-          variant="red"
-          className="mt-2"
+          variant='red'
+          className='mt-2'
         >
           New Fish
         </DevConsoleButton>
 
         <DevConsoleInput
-          placeholder="Fish ID"
+          placeholder='Fish ID'
           value={fishId}
           onChange={setFishId}
-          type="number"
-          className="mt-2"
+          type='number'
+          className='mt-2'
         />
         <DevConsoleButton
           onClick={onGetFish}
           disabled={responseState.loading}
-          variant="red"
-          className="mt-2"
+          variant='red'
+          className='mt-2'
         >
           Get Fish
         </DevConsoleButton>
-        
+
         <InlineResponse state={responseState} />
       </DevConsoleForm>
 
       {/* Fish Ownership */}
-      <DevConsoleForm title="Fish Ownership" borderColor="border-purple-500">
+      <DevConsoleForm title='Fish Ownership' borderColor='border-purple-500'>
         <DevConsoleInput
-          placeholder="Fish ID"
+          placeholder='Fish ID'
           value={ownerId}
           onChange={setOwnerId}
-          type="number"
+          type='number'
         />
         <DevConsoleButton
           onClick={onGetFishOwner}
           disabled={responseState.loading}
-          variant="purple"
-          className="mt-2"
+          variant='purple'
+          className='mt-2'
         >
           Get Fish Owner
         </DevConsoleButton>
-        
+
         <InlineResponse state={responseState} />
       </DevConsoleForm>
     </>
