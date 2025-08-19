@@ -18,31 +18,31 @@ export function FishCardComponent({
   };
 
   return (
-    <div className='bg-blue-900/80 backdrop-blur-sm rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl border border-blue-400 transform hover:scale-[1.02] transition-all duration-300 hover:shadow-3xl h-full flex flex-col'>
-      <div className='p-4 sm:p-6 flex flex-col items-center justify-between h-full text-center'>
-        <h3 className='text-lg sm:text-xl md:text-2xl font-bold text-white mb-2 drop-shadow-md'>
+    <div className='bg-blue-900/80 backdrop-blur-sm rounded-lg sm:rounded-xl md:rounded-2xl overflow-hidden shadow-lg sm:shadow-xl border border-blue-400 transform hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl h-full flex flex-col relative z-10'>
+      <div className='p-2 sm:p-3 md:p-4 flex flex-col items-center justify-between h-full text-center'>
+        <h3 className='text-sm sm:text-base md:text-lg lg:text-xl font-bold text-white mb-1 sm:mb-2 drop-shadow-md'>
           {name}
         </h3>
 
-        <div className='relative w-full aspect-square bg-gradient-to-b from-blue-600/30 to-blue-900/80 rounded-xl sm:rounded-2xl flex items-center justify-center overflow-hidden mb-4'>
-          <div className='absolute inset-0 border border-blue-300/50 rounded-xl sm:rounded-2xl' />
+        <div className='relative w-full aspect-square bg-gradient-to-b from-blue-600/30 to-blue-900/80 rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center overflow-hidden mb-2 sm:mb-3'>
+          <div className='absolute inset-0 border border-blue-300/50 rounded-lg sm:rounded-xl md:rounded-2xl' />
           <FishTank>
             <img
               src={image || '/placeholder.svg'}
               alt={name}
-              className='object-contain w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 transition-transform duration-500 hover:scale-110'
+              className='object-contain w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 transition-transform duration-500 hover:scale-110'
             />
           </FishTank>
         </div>
 
-        <p className='text-xs sm:text-sm text-white/80 mb-4 px-2 sm:px-4'>
+        <p className='text-xs text-white/80 mb-2 sm:mb-3 px-1 sm:px-2'>
           A curious aquatic specimen with unique traits and vibrant colors.
           Perfect for your aquarium.
         </p>
       </div>
 
       <div
-        className={`w-full p-3 sm:p-5 text-center text-xs sm:text-sm font-bold ${rarityColors[rarity]} bg-blue-200/10 rounded-b-xl sm:rounded-b-2xl`}
+        className={`w-full p-1.5 sm:p-2 md:p-3 text-center text-xs font-bold ${rarityColors[rarity]} bg-blue-200/10 rounded-b-lg sm:rounded-b-xl md:rounded-b-2xl`}
       >
         <span className='capitalize'>{rarity}</span>
       </div>

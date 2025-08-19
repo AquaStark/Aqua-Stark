@@ -10,8 +10,8 @@ pub mod AquaStark {
         FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
         FishPurchased, AquariumCreated,
     };
-    use aqua_stark::interfaces::IExperience::{IExperienceDispatcher, IExperienceDispatcherTrait};
-    use aqua_stark::models::experience_model::{Experience, ExperienceConfig};
+    // use aqua_stark::interfaces::IExperience::{IExperienceDispatcher, IExperienceDispatcherTrait};
+    // use aqua_stark::models::experience_model::{Experience, ExperienceConfig};
     use starknet::{
         ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
         contract_address_const,
@@ -19,8 +19,6 @@ pub mod AquaStark {
     use aqua_stark::models::player_model::{
         Player, PlayerTrait, PlayerCounter, UsernameToAddress, AddressToUsername,
     };
-    use aqua_stark::interfaces::IAquaStark::IAquaStark;
-    use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
     use aqua_stark::models::aquarium_model::{
         Aquarium, AquariumCounter, AquariumOwner, AquariumTrait,
     };
@@ -35,7 +33,6 @@ pub mod AquaStark {
     use core::traits::Into;
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
-    use dojo::world::IWorldDispatcherTrait;
 
 
     #[abi(embed_v0)]
@@ -197,9 +194,9 @@ pub mod AquaStark {
             world.write_model(@fish);
 
             // --- Grant Experience for Creating Fish ---
-            let (contract_address, _) = world.dns(@"experience").unwrap();
-            let mut experience_system = IExperienceDispatcher { contract_address };
-            experience_system.grant_experience(player.wallet, 25); // 25 XP for creating fish
+            // let (contract_address, _) = world.dns(@"experience").unwrap();
+            // let mut experience_system = IExperienceDispatcher { contract_address };
+            // experience_system.grant_experience(player.wallet, 25); // 25 XP for creating fish
             // self.grant_experience_internal(caller, 25); // 25 XP for creating fish
 
             world
@@ -307,9 +304,9 @@ pub mod AquaStark {
             world.write_model(@new_fish);
 
             // --- Grant Experience for Breeding ---
-            let (contract_address, _) = world.dns(@"experience").unwrap();
-            let mut experience_system = IExperienceDispatcher { contract_address };
-            experience_system.grant_experience(caller, 50); // 50 XP for breeding
+            // let (contract_address, _) = world.dns(@"experience").unwrap();
+            // let mut experience_system = IExperienceDispatcher { contract_address };
+            // experience_system.grant_experience(caller, 50); // 50 XP for breeding
 
             world
                 .emit_event(
@@ -380,14 +377,14 @@ pub mod AquaStark {
             aquarium.decoration_count += 1;
 
             // --- Initialize Experience ---
-            let experience = Experience {
-                player,
-                total_experience: 0,
-                current_level: 1,
-                experience_in_current_level: 0,
-                last_updated: get_block_timestamp(),
-            };
-            world.write_model(@experience);
+            // let experience = Experience {
+            //     player,
+            //     total_experience: 0,
+            //     current_level: 1,
+            //     experience_in_current_level: 0,
+            //     last_updated: get_block_timestamp(),
+            // };
+            // world.write_model(@experience);
 
             // --- Persist to Storage ---
             world.write_model(@aquarium);
@@ -567,9 +564,9 @@ pub mod AquaStark {
             world.write_model(@player);
             world.write_model(@listing);
             // --- Grant Experience for Purchasing Fish ---
-            let (contract_address, _) = world.dns(@"experience").unwrap();
-            let mut experience_system = IExperienceDispatcher { contract_address };
-            experience_system.grant_experience(caller, 15); // 15 XP for purchasing fish
+            // let (contract_address, _) = world.dns(@"experience").unwrap();
+            // let mut experience_system = IExperienceDispatcher { contract_address };
+            // experience_system.grant_experience(caller, 15); // 15 XP for purchasing fish
 
             world
                 .emit_event(
@@ -582,265 +579,265 @@ pub mod AquaStark {
                     },
                 );
         }
+        // fn create_trade_offer(
+    //     ref self: ContractState,
+    //     offered_fish_id: u256,
+    //     criteria: MatchCriteria,
+    //     requested_fish_id: Option<u256>,
+    //     requested_species: Option<u8>,
+    //     requested_generation: Option<u8>,
+    //     requested_traits: Span<felt252>,
+    //     duration_hours: u64,
+    // ) -> u256 {
+    //     let mut world = self.world_default();
+    //     let caller = get_caller_address();
 
-        fn create_trade_offer(
-            ref self: ContractState,
-            offered_fish_id: u256,
-            criteria: MatchCriteria,
-            requested_fish_id: Option<u256>,
-            requested_species: Option<u8>,
-            requested_generation: Option<u8>,
-            requested_traits: Span<felt252>,
-            duration_hours: u64,
-        ) -> u256 {
-            let mut world = self.world_default();
-            let caller = get_caller_address();
+        //     let fish_owner: FishOwner = world.read_model(offered_fish_id);
+    //     assert(fish_owner.owner == caller, 'You do not own this fish');
 
-            let fish_owner: FishOwner = world.read_model(offered_fish_id);
-            assert(fish_owner.owner == caller, 'You do not own this fish');
+        //     let fish_lock: FishLock = world.read_model(offered_fish_id);
+    //     assert(!FishLockTrait::is_locked(fish_lock), 'Fish is already locked');
 
-            let fish_lock: FishLock = world.read_model(offered_fish_id);
-            assert(!FishLockTrait::is_locked(fish_lock), 'Fish is already locked');
+        //     let offer_id = self.create_trade_offer_id();
 
-            let offer_id = self.create_trade_offer_id();
+        //     let trade_offer = TradeOfferTrait::create_offer(
+    //         offer_id,
+    //         caller,
+    //         offered_fish_id,
+    //         criteria,
+    //         requested_fish_id,
+    //         requested_species,
+    //         requested_generation,
+    //         requested_traits,
+    //         duration_hours,
+    //     );
 
-            let trade_offer = TradeOfferTrait::create_offer(
-                offer_id,
-                caller,
-                offered_fish_id,
-                criteria,
-                requested_fish_id,
-                requested_species,
-                requested_generation,
-                requested_traits,
-                duration_hours,
-            );
+        //     let fish_lock = FishLockTrait::lock_fish(offered_fish_id, offer_id);
 
-            let fish_lock = FishLockTrait::lock_fish(offered_fish_id, offer_id);
+        //     let mut active_offers: ActiveTradeOffers = world.read_model(caller);
+    //     active_offers.offers.append(offer_id);
 
-            let mut active_offers: ActiveTradeOffers = world.read_model(caller);
-            active_offers.offers.append(offer_id);
+        //     world.write_model(@trade_offer);
+    //     world.write_model(@fish_lock);
+    //     world.write_model(@active_offers);
 
-            world.write_model(@trade_offer);
-            world.write_model(@fish_lock);
-            world.write_model(@active_offers);
+        //     world
+    //         .emit_event(
+    //             @TradeOfferCreated {
+    //                 offer_id,
+    //                 creator: caller,
+    //                 offered_fish_id,
+    //                 criteria,
+    //                 requested_fish_id,
+    //                 requested_species,
+    //                 requested_generation,
+    //                 expires_at: trade_offer.expires_at,
+    //             },
+    //         );
 
-            world
-                .emit_event(
-                    @TradeOfferCreated {
-                        offer_id,
-                        creator: caller,
-                        offered_fish_id,
-                        criteria,
-                        requested_fish_id,
-                        requested_species,
-                        requested_generation,
-                        expires_at: trade_offer.expires_at,
-                    },
-                );
+        //     world
+    //         .emit_event(
+    //             @FishLocked {
+    //                 fish_id: offered_fish_id,
+    //                 owner: caller,
+    //                 locked_by_offer: offer_id,
+    //                 timestamp: get_block_timestamp(),
+    //             },
+    //         );
 
-            world
-                .emit_event(
-                    @FishLocked {
-                        fish_id: offered_fish_id,
-                        owner: caller,
-                        locked_by_offer: offer_id,
-                        timestamp: get_block_timestamp(),
-                    },
-                );
+        //     offer_id
+    // }
 
-            offer_id
-        }
+        // fn accept_trade_offer(
+    //     ref self: ContractState, offer_id: u256, offered_fish_id: u256,
+    // ) -> bool {
+    //     let mut world = self.world_default();
+    //     let caller = get_caller_address();
 
-        fn accept_trade_offer(
-            ref self: ContractState, offer_id: u256, offered_fish_id: u256,
-        ) -> bool {
-            let mut world = self.world_default();
-            let caller = get_caller_address();
+        //     let mut trade_offer: TradeOffer = world.read_model(offer_id);
+    //     assert(TradeOfferTrait::is_active(@trade_offer), 'Offer not active');
+    //     assert(trade_offer.creator != caller, 'Cannot accept own offer');
 
-            let mut trade_offer: TradeOffer = world.read_model(offer_id);
-            assert(TradeOfferTrait::is_active(@trade_offer), 'Offer not active');
-            assert(trade_offer.creator != caller, 'Cannot accept own offer');
+        //     trade_offer = TradeOfferTrait::lock_offer(trade_offer);
+    //     world.write_model(@trade_offer);
 
-            trade_offer = TradeOfferTrait::lock_offer(trade_offer);
-            world.write_model(@trade_offer);
+        //     let acceptor_fish_owner: FishOwner = world.read_model(offered_fish_id);
+    //     assert(acceptor_fish_owner.owner == caller, 'You do not own this fish');
 
-            let acceptor_fish_owner: FishOwner = world.read_model(offered_fish_id);
-            assert(acceptor_fish_owner.owner == caller, 'You do not own this fish');
+        //     let acceptor_fish_lock: FishLock = world.read_model(offered_fish_id);
+    //     assert(!FishLockTrait::is_locked(acceptor_fish_lock), 'Your fish is locked');
 
-            let acceptor_fish_lock: FishLock = world.read_model(offered_fish_id);
-            assert(!FishLockTrait::is_locked(acceptor_fish_lock), 'Your fish is locked');
+        //     let creator_fish: Fish = world.read_model(trade_offer.offered_fish_id);
+    //     let acceptor_fish: Fish = world.read_model(offered_fish_id);
 
-            let creator_fish: Fish = world.read_model(trade_offer.offered_fish_id);
-            let acceptor_fish: Fish = world.read_model(offered_fish_id);
+        //     let fish_species = match acceptor_fish.species {
+    //         Species::AngelFish => 0_u8,
+    //         Species::GoldFish => 1_u8,
+    //         Species::Betta => 2_u8,
+    //         Species::NeonTetra => 3_u8,
+    //         Species::Corydoras => 4_u8,
+    //         Species::Hybrid => 5_u8,
+    //     };
 
-            let fish_species = match acceptor_fish.species {
-                Species::AngelFish => 0_u8,
-                Species::GoldFish => 1_u8,
-                Species::Betta => 2_u8,
-                Species::NeonTetra => 3_u8,
-                Species::Corydoras => 4_u8,
-                Species::Hybrid => 5_u8,
-            };
+        //     let fish_traits = array![acceptor_fish.color].span();
 
-            let fish_traits = array![acceptor_fish.color].span();
+        //     assert(
+    //         TradeOfferTrait::matches_criteria(
+    //             @trade_offer,
+    //             offered_fish_id,
+    //             fish_species,
+    //             acceptor_fish.generation,
+    //             fish_traits,
+    //         ),
+    //         'Fish does not match criteria',
+    //     );
 
-            assert(
-                TradeOfferTrait::matches_criteria(
-                    @trade_offer,
-                    offered_fish_id,
-                    fish_species,
-                    acceptor_fish.generation,
-                    fish_traits,
-                ),
-                'Fish does not match criteria',
-            );
+        //     // Perform the trade - swap ownership
+    //     let mut creator_fish_owner: FishOwner =
+    //     world.read_model(trade_offer.offered_fish_id);
+    //     let mut acceptor_fish_owner: FishOwner = world.read_model(offered_fish_id);
 
-            // Perform the trade - swap ownership
-            let mut creator_fish_owner: FishOwner = world.read_model(trade_offer.offered_fish_id);
-            let mut acceptor_fish_owner: FishOwner = world.read_model(offered_fish_id);
+        //     // Swap owners
+    //     let temp_owner = creator_fish_owner.owner;
+    //     creator_fish_owner.owner = acceptor_fish_owner.owner;
+    //     acceptor_fish_owner.owner = temp_owner;
 
-            // Swap owners
-            let temp_owner = creator_fish_owner.owner;
-            creator_fish_owner.owner = acceptor_fish_owner.owner;
-            acceptor_fish_owner.owner = temp_owner;
+        //     // Update fish ownership in the fish models
+    //     let mut creator_fish_updated = creator_fish;
+    //     let mut acceptor_fish_updated = acceptor_fish;
+    //     creator_fish_updated.owner = caller;
+    //     acceptor_fish_updated.owner = trade_offer.creator;
 
-            // Update fish ownership in the fish models
-            let mut creator_fish_updated = creator_fish;
-            let mut acceptor_fish_updated = acceptor_fish;
-            creator_fish_updated.owner = caller;
-            acceptor_fish_updated.owner = trade_offer.creator;
+        //     let creator_fish_unlock = FishLockTrait::unlock_fish(trade_offer.offered_fish_id);
+    //     let acceptor_fish_unlock = FishLockTrait::unlock_fish(offered_fish_id);
 
-            let creator_fish_unlock = FishLockTrait::unlock_fish(trade_offer.offered_fish_id);
-            let acceptor_fish_unlock = FishLockTrait::unlock_fish(offered_fish_id);
+        //     trade_offer = TradeOfferTrait::complete_offer(trade_offer);
 
-            trade_offer = TradeOfferTrait::complete_offer(trade_offer);
+        //     world.write_model(@creator_fish_owner);
+    //     world.write_model(@acceptor_fish_owner);
+    //     world.write_model(@creator_fish_updated);
+    //     world.write_model(@acceptor_fish_updated);
+    //     world.write_model(@creator_fish_unlock);
+    //     world.write_model(@acceptor_fish_unlock);
+    //     world.write_model(@trade_offer);
 
-            world.write_model(@creator_fish_owner);
-            world.write_model(@acceptor_fish_owner);
-            world.write_model(@creator_fish_updated);
-            world.write_model(@acceptor_fish_updated);
-            world.write_model(@creator_fish_unlock);
-            world.write_model(@acceptor_fish_unlock);
-            world.write_model(@trade_offer);
+        //     world
+    //         .emit_event(
+    //             @TradeOfferAccepted {
+    //                 offer_id,
+    //                 acceptor: caller,
+    //                 creator: trade_offer.creator,
+    //                 creator_fish_id: trade_offer.offered_fish_id,
+    //                 acceptor_fish_id: offered_fish_id,
+    //                 timestamp: get_block_timestamp(),
+    //             },
+    //         );
 
-            world
-                .emit_event(
-                    @TradeOfferAccepted {
-                        offer_id,
-                        acceptor: caller,
-                        creator: trade_offer.creator,
-                        creator_fish_id: trade_offer.offered_fish_id,
-                        acceptor_fish_id: offered_fish_id,
-                        timestamp: get_block_timestamp(),
-                    },
-                );
+        //     world
+    //         .emit_event(
+    //             @FishUnlocked {
+    //                 fish_id: trade_offer.offered_fish_id,
+    //                 owner: caller,
+    //                 timestamp: get_block_timestamp(),
+    //             },
+    //         );
 
-            world
-                .emit_event(
-                    @FishUnlocked {
-                        fish_id: trade_offer.offered_fish_id,
-                        owner: caller,
-                        timestamp: get_block_timestamp(),
-                    },
-                );
+        //     world
+    //         .emit_event(
+    //             @FishUnlocked {
+    //                 fish_id: offered_fish_id,
+    //                 owner: trade_offer.creator,
+    //                 timestamp: get_block_timestamp(),
+    //             },
+    //         );
 
-            world
-                .emit_event(
-                    @FishUnlocked {
-                        fish_id: offered_fish_id,
-                        owner: trade_offer.creator,
-                        timestamp: get_block_timestamp(),
-                    },
-                );
+        //     true
+    // }
 
-            true
-        }
+        // fn cancel_trade_offer(ref self: ContractState, offer_id: u256) -> bool {
+    //     let mut world = self.world_default();
+    //     let caller = get_caller_address();
 
-        fn cancel_trade_offer(ref self: ContractState, offer_id: u256) -> bool {
-            let mut world = self.world_default();
-            let caller = get_caller_address();
+        //     let mut trade_offer: TradeOffer = world.read_model(offer_id);
+    //     assert(trade_offer.creator == caller, 'Not offer creator');
+    //     assert(trade_offer.status == TradeOfferStatus::Active, 'Offer not active');
 
-            let mut trade_offer: TradeOffer = world.read_model(offer_id);
-            assert(trade_offer.creator == caller, 'Not offer creator');
-            assert(trade_offer.status == TradeOfferStatus::Active, 'Offer not active');
+        //     trade_offer = TradeOfferTrait::cancel_offer(trade_offer);
 
-            trade_offer = TradeOfferTrait::cancel_offer(trade_offer);
+        //     let fish_unlock = FishLockTrait::unlock_fish(trade_offer.offered_fish_id);
 
-            let fish_unlock = FishLockTrait::unlock_fish(trade_offer.offered_fish_id);
+        //     world.write_model(@trade_offer);
+    //     world.write_model(@fish_unlock);
 
-            world.write_model(@trade_offer);
-            world.write_model(@fish_unlock);
+        //     world
+    //         .emit_event(
+    //             @TradeOfferCancelled {
+    //                 offer_id,
+    //                 creator: caller,
+    //                 offered_fish_id: trade_offer.offered_fish_id,
+    //                 timestamp: get_block_timestamp(),
+    //             },
+    //         );
 
-            world
-                .emit_event(
-                    @TradeOfferCancelled {
-                        offer_id,
-                        creator: caller,
-                        offered_fish_id: trade_offer.offered_fish_id,
-                        timestamp: get_block_timestamp(),
-                    },
-                );
+        //     world
+    //         .emit_event(
+    //             @FishUnlocked {
+    //                 fish_id: trade_offer.offered_fish_id,
+    //                 owner: caller,
+    //                 timestamp: get_block_timestamp(),
+    //             },
+    //         );
 
-            world
-                .emit_event(
-                    @FishUnlocked {
-                        fish_id: trade_offer.offered_fish_id,
-                        owner: caller,
-                        timestamp: get_block_timestamp(),
-                    },
-                );
+        //     true
+    // }
 
-            true
-        }
+        // fn get_trade_offer(self: @ContractState, offer_id: u256) -> TradeOffer {
+    //     let world = self.world_default();
+    //     world.read_model(offer_id)
+    // }
 
-        fn get_trade_offer(self: @ContractState, offer_id: u256) -> TradeOffer {
-            let world = self.world_default();
-            world.read_model(offer_id)
-        }
+        // fn get_active_trade_offers(
+    //     self: @ContractState, creator: ContractAddress,
+    // ) -> Array<TradeOffer> {
+    //     let world = self.world_default();
+    //     let active_offers: ActiveTradeOffers = world.read_model(creator);
+    //     let mut offers = array![];
+    //     let mut i = 0;
+    //     loop {
+    //         if i >= active_offers.offers.len() {
+    //             break;
+    //         }
+    //         let offer_id = *active_offers.offers.at(i);
+    //         let offer: TradeOffer = world.read_model(offer_id);
+    //         if offer.status == TradeOfferStatus::Active {
+    //             offers.append(offer);
+    //         }
+    //         i += 1;
+    //     };
+    //     offers
+    // }
 
-        fn get_active_trade_offers(
-            self: @ContractState, creator: ContractAddress,
-        ) -> Array<TradeOffer> {
-            let world = self.world_default();
-            let active_offers: ActiveTradeOffers = world.read_model(creator);
-            let mut offers = array![];
-            let mut i = 0;
-            loop {
-                if i >= active_offers.offers.len() {
-                    break;
-                }
-                let offer_id = *active_offers.offers.at(i);
-                let offer: TradeOffer = world.read_model(offer_id);
-                if offer.status == TradeOfferStatus::Active {
-                    offers.append(offer);
-                }
-                i += 1;
-            };
-            offers
-        }
+        // fn get_fish_lock_status(self: @ContractState, fish_id: u256) -> FishLock {
+    //     let world = self.world_default();
+    //     world.read_model(fish_id)
+    // }
 
-        fn get_fish_lock_status(self: @ContractState, fish_id: u256) -> FishLock {
-            let world = self.world_default();
-            world.read_model(fish_id)
-        }
+        // fn is_fish_locked(self: @ContractState, fish_id: u256) -> bool {
+    //     let world = self.world_default();
+    //     let fish_lock: FishLock = world.read_model(fish_id);
+    //     FishLockTrait::is_locked(fish_lock)
+    // }
 
-        fn is_fish_locked(self: @ContractState, fish_id: u256) -> bool {
-            let world = self.world_default();
-            let fish_lock: FishLock = world.read_model(fish_id);
-            FishLockTrait::is_locked(fish_lock)
-        }
+        // fn initialize_experience_config(ref self: ContractState) {
+    //     let mut world = self.world_default();
 
-        fn initialize_experience_config(ref self: ContractState) {
-            let mut world = self.world_default();
+        //     // Initialize default experience configuration
+    //     let config = ExperienceConfig {
+    //         id: 'default', base_experience: 100, experience_multiplier: 150, max_level: 100,
+    //     };
 
-            // Initialize default experience configuration
-            let config = ExperienceConfig {
-                id: 'default', base_experience: 100, experience_multiplier: 150, max_level: 100,
-            };
-
-            world.write_model(@config);
-        }
+        //     world.write_model(@config);
+    // }
     }
 
     #[abi(embed_v0)]

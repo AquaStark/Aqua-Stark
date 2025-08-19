@@ -1,15 +1,5 @@
-import { ControllerConnector } from '@cartridge/connector';
-import { mainnet, sepolia } from '@starknet-react/chains';
-import {
-  argent,
-  braavos,
-  publicProvider,
-  StarknetConfig,
-  useInjectedConnectors,
-  voyager,
-} from '@starknet-react/core';
 import { Route, Routes } from 'react-router-dom';
-import { constants } from 'starknet';
+import { StarknetProvider } from './providers/StarknetProvider';
 
 // Landing & Onboarding Pages
 import LandingPage from './pages/landing';
@@ -46,29 +36,9 @@ import Error404Page from './pages/404';
 // Extra Game Test
 import { Game } from './Game';
 
-const cartridgeConnector = new ControllerConnector({
-  chains: [
-    { rpcUrl: 'https://api.cartridge.gg/x/starknet/sepolia' },
-    { rpcUrl: 'https://api.cartridge.gg/x/starknet/mainnet' },
-  ],
-  defaultChainId: constants.StarknetChainId.SN_SEPOLIA,
-});
-
 function App() {
-  const { connectors } = useInjectedConnectors({
-    recommended: [argent(), braavos(), cartridgeConnector],
-    includeRecommended: 'onlyIfNoConnectors',
-    order: 'random',
-  });
-
   return (
-    <StarknetConfig
-      chains={[mainnet, sepolia]}
-      provider={publicProvider()}
-      connectors={connectors}
-      explorer={voyager}
-      autoConnect={true}
-    >
+    <StarknetProvider>
       <Routes>
         {/* Landing & Onboarding Routes */}
         <Route path='/' element={<LandingPage />} />
@@ -109,7 +79,7 @@ function App() {
         <Route path='/test-game' element={<Game />} />
         <Route path='*' element={<Error404Page />} />
       </Routes>
-    </StarknetConfig>
+    </StarknetProvider>
   );
 }
 

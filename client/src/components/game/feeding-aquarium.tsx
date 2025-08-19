@@ -61,7 +61,7 @@ export function FeedingAquarium({
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [feedingSystem]);
+  }, [feedingSystem.updateAquariumBounds]);
 
   // Handle container clicks for feeding
   const handleContainerClick = useCallback(
