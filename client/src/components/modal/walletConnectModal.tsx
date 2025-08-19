@@ -40,10 +40,10 @@ const WalletModal = ({ isOpen, onClose, onSelectWallet }: WalletModalProps) => {
   }, [onClose]);
 
   React.useEffect(() => {
-    console.log(
-      'Available connectors:',
-      connectors.map(c => ({ id: c.id, name: c.name }))
-    );
+    // console.log(
+    //   'Available connectors:',
+    //   connectors.map(c => ({ id: c.id, name: c.name }))
+    // );
   }, [connectors]);
 
   if (!isOpen) return null;
