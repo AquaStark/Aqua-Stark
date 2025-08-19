@@ -1,55 +1,18 @@
 'use client';
 
-import {
-  Connector,
-  useAccount,
-  useConnect,
-  useDisconnect,
-} from '@starknet-react/core';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import WalletModal from '../modal/walletConnectModal';
-import ControllerConnector from '@cartridge/connector/controller';
 import { Wallet } from 'lucide-react';
+import { useAccount, useDisconnect } from '@starknet-react/core';
 
 export function Navbar() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [username, setUsername] = useState<string | null>(null);
-  const { connect, connectors } = useConnect();
-  const { disconnect } = useDisconnect();
   const { address, isConnected } = useAccount();
-
-  const controller = connectors.find(
-    c => c.id === 'controller'
-  ) as ControllerConnector;
-
-  useEffect(() => {
-    if (isConnected && address && controller) {
-      controller.username()?.then(name => setUsername(name));
-    } else {
-      setUsername(null);
-    }
-  }, [isConnected, address, controller]);
-
-  const handleConnectWallet = async (connector: Connector) => {
-    try {
-      await connect({ connector });
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error('Error connecting wallet:', error);
-      if (error instanceof Error) {
-        if (error.message.includes('User rejected the request')) {
-          alert('Connection was cancelled by user');
-        } else {
-          alert('Failed to connect: ' + error.message);
-        }
-      }
-    }
-  };
+  const { disconnect } = useDisconnect();
 
   const handleDisconnectWallet = async () => {
     try {
       await disconnect();
-      setUsername(null);
     } catch (error) {
       console.error('Error disconnecting:', error);
     }
@@ -70,9 +33,9 @@ export function Navbar() {
           <div className='flex items-center gap-2 sm:gap-3'>
             <div className='bg-blue-600/40 backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1 sm:py-2 border border-blue-400/50'>
               <span className='text-white text-xs sm:text-sm font-bold tracking-wide'>
-                {username
-                  ? `${username}`
-                  : `${address?.slice(0, 4)}...${address?.slice(-3)}`}
+                {address
+                  ? `${address.slice(0, 6)}...${address.slice(-4)}`
+                  : 'Connected'}
               </span>
             </div>
             <button
@@ -95,7 +58,6 @@ export function Navbar() {
         <WalletModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onSelectWallet={handleConnectWallet}
         />
       </div>
     </nav>
