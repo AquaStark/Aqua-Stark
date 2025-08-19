@@ -1,4 +1,4 @@
-import { useAccount, useConnect, useDisconnect } from "@starknet-react/core";
+import { useAccount, useConnect, useDisconnect } from '@starknet-react/core';
 
 export function WalletConnection() {
   const { address, isConnected } = useAccount();
@@ -11,7 +11,7 @@ export function WalletConnection() {
       const sessionData = {
         startTime: Date.now(),
         permissions: ['game_actions', 'asset_transfer'],
-        expiresAt: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+        expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
       };
       localStorage.setItem('aqua-stark-session', JSON.stringify(sessionData));
     } catch (error) {
@@ -21,16 +21,18 @@ export function WalletConnection() {
 
   if (isConnected) {
     return (
-      <div className="wallet-connected">
-        <p>Connected: {address?.slice(0, 6)}...{address?.slice(-4)}</p>
+      <div className='wallet-connected'>
+        <p>
+          Connected: {address?.slice(0, 6)}...{address?.slice(-4)}
+        </p>
         <button onClick={() => disconnect()}>Disconnect</button>
       </div>
     );
   }
 
   return (
-    <div className="wallet-selection">
-      {connectors.map((connector) => (
+    <div className='wallet-selection'>
+      {connectors.map(connector => (
         <button
           key={connector.id}
           onClick={() => handleConnect(connector)}
