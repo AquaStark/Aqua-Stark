@@ -3,7 +3,6 @@
 import React from 'react';
 import { useConnect } from '@starknet-react/core';
 
-
 interface WalletModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -74,15 +73,13 @@ const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
                 disabled={!isAvailable}
                 className={`flex items-center gap-4 p-4 rounded-md w-full text-left transition-all duration-300 ${
                   isAvailable
-                    ? isCartridge 
+                    ? isCartridge
                       ? 'bg-gradient-to-r from-green-600/80 to-blue-600/80 hover:scale-105 border-2 border-green-400/50'
                       : 'bg-purple-700/60 hover:scale-105'
                     : 'bg-gray-700 opacity-50 cursor-not-allowed'
                 }`}
               >
-                <div className='flex-shrink-0'>
-                  {isCartridge ? '🎮' : '🦊'}
-                </div>
+                <div className='flex-shrink-0'>{isCartridge ? '🎮' : '🦊'}</div>
                 <div>
                   <h3 className='text-white font-semibold flex items-center gap-2'>
                     {connector.name}
@@ -93,12 +90,11 @@ const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
                     )}
                   </h3>
                   <p className='text-gray-400 text-sm'>
-                    {isAvailable 
-                      ? isCartridge 
+                    {isAvailable
+                      ? isCartridge
                         ? 'Session keys, gasless transactions, passkey auth'
                         : 'Available'
-                      : 'Wallet not detected'
-                    }
+                      : 'Wallet not detected'}
                   </p>
                 </div>
               </button>
