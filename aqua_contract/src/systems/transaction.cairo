@@ -413,7 +413,7 @@ pub mod Transaction {
             result_data: Array<felt252>,
         );
         fn fail_transaction(
-            ref self: ContractState,
+            ref self: TContractState,
             transaction_id: u256,
             transaction_type: felt252,
             error_code: felt252,
