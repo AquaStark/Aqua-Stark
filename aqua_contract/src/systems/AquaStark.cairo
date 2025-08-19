@@ -4,7 +4,7 @@ pub mod AquaStark {
     use dojo::world::IWorldDispatcherTrait;
     use dojo::world::WorldStorageTrait;
     use aqua_stark::interfaces::IAquaStark::{IAquaStark};
-    use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
+    use aqua_stark::interfaces::ITransactionHistory::{ITransactionHistoryDispatcher, ITransactionHistoryDispatcherTrait};
     use aqua_stark::base::events::{
         PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
         FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
@@ -19,8 +19,6 @@ pub mod AquaStark {
     use aqua_stark::models::player_model::{
         Player, PlayerTrait, PlayerCounter, UsernameToAddress, AddressToUsername,
     };
-    use aqua_stark::interfaces::IAquaStark::IAquaStark;
-    use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
     use aqua_stark::models::aquarium_model::{
         Aquarium, AquariumCounter, AquariumOwner, AquariumTrait,
     };
@@ -843,194 +841,6 @@ pub mod AquaStark {
         }
     }
 
-    #[abi(embed_v0)]
-    impl TransactionHistoryImpl of ITransactionHistory<ContractState> {
-        fn register_event_type(ref self: ContractState, event_name: ByteArray) -> u256 {
-            let mut world = self.world_default();
-            let caller = get_caller_address();
-
-            assert(world.dispatcher.is_owner(0, caller), 'Only owner');
-
-            assert(event_name.len() != 0, 'Event name cannot be empty');
-
-            // assert that caller is dojo creator
-            let event_type_id = self.create_event_id();
-            let mut event_details: EventTypeDetails = world.read_model(event_type_id);
-            event_details = EventDetailsTrait::create_event(event_type_id, event_name);
-            world.write_model(@event_details);
-
-            // --- Emit Event ---
-            world
-                .emit_event(
-                    @EventTypeRegistered {
-                        event_type_id: event_type_id.clone(), timestamp: get_block_timestamp(),
-                    },
-                );
-
-            event_type_id
-        }
-
-        fn log_event(
-            ref self: ContractState,
-            event_type_id: u256,
-            player: ContractAddress,
-            payload: Array<felt252>,
-        ) -> TransactionLog {
-            let mut world = self.world_default();
-            let txn_id = self.create_transaction_id();
-
-            let caller = get_caller_address();
-
-            let is_owner = world.dispatcher.is_owner(0, caller);
-            let is_contract = get_contract_address() == caller;
-
-            assert(is_owner || is_contract, 'Only owner or contract');
-
-            let mut event_details: EventTypeDetails = world.read_model(event_type_id);
-
-            event_details.total_logged += 1;
-            event_details.transaction_history.append(txn_id);
-
-            let mut transaction_event: TransactionLog = world.read_model(txn_id);
-            transaction_event =
-                TransactionLogTrait::log_transaction(txn_id, event_type_id, player, payload);
-
-            let mut player_details: Player = world.read_model(player);
-            player_details.transaction_count += 1;
-            player_details.transaction_history.append(txn_id);
-
-            world.write_model(@event_details);
-            world.write_model(@transaction_event);
-            world.write_model(@player_details);
-
-            world
-                .emit_event(
-                    @PlayerEventLogged {
-                        id: txn_id, event_type_id, player, timestamp: get_block_timestamp(),
-                    },
-                );
-
-            transaction_event
-        }
-
-        fn get_event_types_count(self: @ContractState) -> u256 {
-            let world = self.world_default();
-            let event_counter: EventCounter = world.read_model(event_id_target());
-            event_counter.current_val
-        }
-
-        fn get_event_type_details(self: @ContractState, event_type_id: u256) -> EventTypeDetails {
-            let world = self.world_default();
-            world.read_model(event_type_id)
-        }
-
-        fn get_all_event_types(self: @ContractState) -> Span<EventTypeDetails> {
-            let world = self.world_default();
-            let event_counter: EventCounter = world.read_model(event_id_target());
-            let event_count = event_counter.current_val;
-            let mut all_events: Array<EventTypeDetails> = array![];
-
-            for i in 0..event_count {
-                let event_details: EventTypeDetails = world.read_model(i);
-                all_events.append(event_details);
-            };
-
-            all_events.span()
-        }
-
-        fn get_transaction_count(self: @ContractState) -> u256 {
-            let world = self.world_default();
-            let txn_counter: TransactionCounter = world.read_model(transaction_id_target());
-            txn_counter.current_val
-        }
-
-        fn get_transaction_history(
-            self: @ContractState,
-            player: Option<ContractAddress>,
-            event_type_id: Option<u256>,
-            start: Option<u32>,
-            limit: Option<u32>,
-            start_timestamp: Option<u64>,
-            end_timestamp: Option<u64>,
-        ) -> Span<TransactionLog> {
-            let world = self.world_default();
-            let start_index = start.unwrap_or_default();
-            let lim = limit.unwrap_or(50);
-            let s_timestamp = start_timestamp.unwrap_or_default();
-            let e_timestamp = end_timestamp.unwrap_or(get_block_timestamp());
-
-            if let Option::Some(player_addr) = player {
-                let player_data: Player = world.read_model(player_addr);
-
-                let mut i = start_index;
-                let mut count = 0;
-                let mut player_history: Array<TransactionLog> = array![];
-
-                while i < player_data.transaction_count && count < lim {
-                    let txn_event_id = player_data.transaction_history.at(i);
-
-                    if let Option::Some(event_id) = event_type_id {
-                        if @event_id != txn_event_id {
-                            i += 1;
-                            continue;
-                        }
-                    }
-
-                    let txn_log: TransactionLog = world.read_model(*txn_event_id);
-
-                    if txn_log.timestamp >= s_timestamp && txn_log.timestamp <= e_timestamp {
-                        player_history.append(txn_log);
-                    }
-                    count += 1;
-                    i += 1;
-                };
-
-                return player_history.span();
-            }
-
-            if let Option::Some(event_id) = event_type_id {
-                let event_details: EventTypeDetails = world.read_model(event_id);
-
-                let mut i = start_index;
-                let mut count = 0;
-                let mut event_history: Array<TransactionLog> = array![];
-
-                while i < event_details.total_logged && count < lim {
-                    let txn_event_id = event_details.transaction_history.at(i);
-
-                    let txn_log: TransactionLog = world.read_model(*txn_event_id);
-
-                    if txn_log.timestamp >= s_timestamp && txn_log.timestamp <= e_timestamp {
-                        event_history.append(txn_log);
-                    }
-                    count += 1;
-                    i += 1;
-                };
-
-                return event_history.span();
-            }
-
-            let total_transactions = self.get_transaction_count();
-
-            let mut i: u256 = start_index.into() + 1;
-            let mut count = 0;
-
-            let mut transaction_history: Array<TransactionLog> = array![];
-
-            while i <= total_transactions && count < lim {
-                let txn_log: TransactionLog = world.read_model(i);
-
-                if txn_log.timestamp >= s_timestamp && txn_log.timestamp <= e_timestamp {
-                    transaction_history.append(txn_log);
-                }
-                count += 1;
-                i += 1;
-            };
-
-            transaction_history.span()
-        }
-    }
-
     #[generate_trait]
     impl InternalImpl of InternalTrait {
         /// Use the default namespace "aqua_stark". This function is handy since the ByteArray
@@ -1075,22 +885,10 @@ pub mod AquaStark {
             new_val
         }
 
-        fn create_event_id(self: @ContractState) -> u256 {
+        fn get_transaction_system(self: @ContractState) -> ContractAddress {
             let mut world = self.world_default();
-            let mut event_counter: EventCounter = world.read_model(event_id_target());
-            let new_id = event_counter.current_val + 1;
-            event_counter.current_val = new_id;
-            world.write_model(@event_counter);
-            new_id
-        }
-
-        fn create_transaction_id(self: @ContractState) -> u256 {
-            let mut world = self.world_default();
-            let mut txn_counter: TransactionCounter = world.read_model(transaction_id_target());
-            let new_id = txn_counter.current_val + 1;
-            txn_counter.current_val = new_id;
-            world.write_model(@txn_counter);
-            new_id
+            let (contract_address, _) = world.dns(@"transaction").unwrap();
+            contract_address
         }
     }
 }

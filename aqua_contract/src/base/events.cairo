@@ -329,3 +329,60 @@ pub struct DecorationRemovedFromAquarium {
     pub decoration_id: u256,
     pub timestamp: u64,
 }
+
+// Transaction-specific events
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct TransactionInitiated {
+    #[key]
+    pub transaction_id: u256,
+    #[key]
+    pub transaction_type: felt252,
+    pub initiator: ContractAddress,
+    pub timestamp: u64,
+}
+
+#[derive(Drop, Serde)]
+#[dojo::event]
+pub struct TransactionProcessed {
+    #[key]
+    pub transaction_id: u256,
+    #[key]
+    pub transaction_type: felt252,
+    pub processing_data: Array<felt252>,
+    pub timestamp: u64,
+}
+
+#[derive(Drop, Serde)]
+#[dojo::event]
+pub struct TransactionConfirmed {
+    #[key]
+    pub transaction_id: u256,
+    #[key]
+    pub transaction_type: felt252,
+    pub result_data: Array<felt252>,
+    pub timestamp: u64,
+}
+
+#[derive(Drop, Serde)]
+#[dojo::event]
+pub struct TransactionFailed {
+    #[key]
+    pub transaction_id: u256,
+    #[key]
+    pub transaction_type: felt252,
+    pub error_code: felt252,
+    pub error_message: ByteArray,
+    pub timestamp: u64,
+}
+
+#[derive(Drop, Serde)]
+#[dojo::event]
+pub struct TransactionReverted {
+    #[key]
+    pub transaction_id: u256,
+    #[key]
+    pub transaction_type: felt252,
+    pub reason: ByteArray,
+    pub timestamp: u64,
+}
