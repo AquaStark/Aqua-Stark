@@ -33,7 +33,9 @@ export function Navbar() {
           <div className='flex items-center gap-2 sm:gap-3'>
             <div className='bg-blue-600/40 backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1 sm:py-2 border border-blue-400/50'>
               <span className='text-white text-xs sm:text-sm font-bold tracking-wide'>
-                {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Connected'}
+                {address
+                  ? `${address.slice(0, 6)}...${address.slice(-4)}`
+                  : 'Connected'}
               </span>
             </div>
             <button
