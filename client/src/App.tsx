@@ -1,11 +1,6 @@
 import { mainnet, sepolia } from '@starknet-react/chains';
-import {
-  publicProvider,
-  StarknetConfig,
-  voyager,
-} from '@starknet-react/core';
+import { publicProvider, StarknetConfig, voyager } from '@starknet-react/core';
 import { Route, Routes } from 'react-router-dom';
-
 
 // Landing & Onboarding Pages
 import LandingPage from './pages/landing';
@@ -43,7 +38,6 @@ import Error404Page from './pages/404';
 import { Game } from './Game';
 
 function App() {
-
   return (
     <StarknetConfig
       chains={[mainnet, sepolia]}
