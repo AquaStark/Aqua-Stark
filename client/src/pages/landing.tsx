@@ -47,7 +47,10 @@ export default function LandingPage() {
   };
 
   return (
-    <div className='relative min-h-screen w-full overflow-x-hidden landing-page' style={{ height: '100vh' }}>
+    <div
+      className='relative min-h-screen w-full overflow-x-hidden landing-page'
+      style={{ height: '100vh' }}
+    >
       {/* Background image */}
       <div
         className='fixed inset-0 bg-cover bg-center bg-no-repeat'
