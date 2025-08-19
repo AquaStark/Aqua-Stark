@@ -4,22 +4,60 @@ import { simpleAuth, validateOwnership } from '../middleware/auth.js';
 
 const router = express.Router();
 
-
-
 // Player profile routes (require authentication)
-router.get('/profile/:playerId', simpleAuth, validateOwnership('player'), PlayerController.getPlayerProfile);
+router.get(
+  '/profile/:playerId',
+  simpleAuth,
+  validateOwnership('player'),
+  PlayerController.getPlayerProfile
+);
 router.get('/wallet/:walletAddress', PlayerController.getPlayerByWallet);
 router.post('/create', PlayerController.createPlayer);
-router.put('/:playerId/experience', simpleAuth, validateOwnership('player'), PlayerController.updatePlayerExperience);
-router.put('/:playerId/currency', simpleAuth, validateOwnership('player'), PlayerController.updatePlayerCurrency);
-router.put('/:playerId/stats', simpleAuth, validateOwnership('player'), PlayerController.updatePlayerStats);
-router.put('/:playerId/login', simpleAuth, validateOwnership('player'), PlayerController.updateLastLogin);
+router.put(
+  '/:playerId/experience',
+  simpleAuth,
+  validateOwnership('player'),
+  PlayerController.updatePlayerExperience
+);
+router.put(
+  '/:playerId/currency',
+  simpleAuth,
+  validateOwnership('player'),
+  PlayerController.updatePlayerCurrency
+);
+router.put(
+  '/:playerId/stats',
+  simpleAuth,
+  validateOwnership('player'),
+  PlayerController.updatePlayerStats
+);
+router.put(
+  '/:playerId/login',
+  simpleAuth,
+  validateOwnership('player'),
+  PlayerController.updateLastLogin
+);
 
 // Player preferences routes (require authentication)
-router.get('/:playerId/preferences', simpleAuth, validateOwnership('player'), PlayerController.getPlayerPreferences);
-router.put('/:playerId/preferences', simpleAuth, validateOwnership('player'), PlayerController.updatePlayerPreferences);
+router.get(
+  '/:playerId/preferences',
+  simpleAuth,
+  validateOwnership('player'),
+  PlayerController.getPlayerPreferences
+);
+router.put(
+  '/:playerId/preferences',
+  simpleAuth,
+  validateOwnership('player'),
+  PlayerController.updatePlayerPreferences
+);
 
 // Player dashboard route (require authentication)
-router.get('/:playerId/dashboard', simpleAuth, validateOwnership('player'), PlayerController.getPlayerDashboard);
+router.get(
+  '/:playerId/dashboard',
+  simpleAuth,
+  validateOwnership('player'),
+  PlayerController.getPlayerDashboard
+);
 
 export default router;

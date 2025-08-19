@@ -329,3 +329,29 @@ pub struct DecorationRemovedFromAquarium {
     pub decoration_id: u256,
     pub timestamp: u64,
 }
+
+// Inventory Events
+
+#[derive(Drop, Serde)]
+pub struct ItemAddedToInventory {
+    pub player_id: u64,
+    pub item_id: u64,
+    pub item_type: u8, // 0 = Fish, 1 = Decoration
+}
+
+#[derive(Drop, Serde)]
+pub struct ItemRemovedFromInventory {
+    pub player_id: u64,
+    pub item_id: u64,
+    pub item_type: u8,
+}
+
+#[derive(Drop, Serde)]
+pub struct ItemMovedBetweenAquariums {
+    pub player_id: u64,
+    pub item_id: u64,
+    pub from: u64,
+    pub to: u64,
+    pub item_type: u8,
+}
+

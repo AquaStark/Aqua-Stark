@@ -45,9 +45,9 @@ async function createTables() {
             created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
             last_updated TIMESTAMP WITH TIME ZONE DEFAULT NOW()
           );
-        `
+        `,
       });
-      
+
       if (error) {
         console.log('   ⚠️  Warning:', error.message);
       } else {
@@ -73,9 +73,9 @@ async function createTables() {
             created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
             last_updated TIMESTAMP WITH TIME ZONE DEFAULT NOW()
           );
-        `
+        `,
       });
-      
+
       if (error) {
         console.log('   ⚠️  Warning:', error.message);
       } else {
@@ -102,9 +102,9 @@ async function createTables() {
             created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
             last_updated TIMESTAMP WITH TIME ZONE DEFAULT NOW()
           );
-        `
+        `,
       });
-      
+
       if (error) {
         console.log('   ⚠️  Warning:', error.message);
       } else {
@@ -129,9 +129,9 @@ async function createTables() {
             synced_to_chain BOOLEAN DEFAULT false,
             created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
           );
-        `
+        `,
       });
-      
+
       if (error) {
         console.log('   ⚠️  Warning:', error.message);
       } else {
@@ -156,9 +156,9 @@ async function createTables() {
             created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
             UNIQUE(player_wallet, fish_id, metric_name, date)
           );
-        `
+        `,
       });
-      
+
       if (error) {
         console.log('   ⚠️  Warning:', error.message);
       } else {
@@ -170,13 +170,16 @@ async function createTables() {
 
     console.log('\n🎉 Database setup completed!');
     console.log('\n📋 Next steps:');
-    console.log('1. Check your Supabase dashboard to verify tables were created');
+    console.log(
+      '1. Check your Supabase dashboard to verify tables were created'
+    );
     console.log('2. Run the backend server: pnpm dev');
     console.log('3. Test the API endpoints');
-
   } catch (error) {
     console.error('❌ Setup failed:', error);
-    console.log('\n💡 Alternative: Copy the SQL from migrations/001_initial_schema.sql');
+    console.log(
+      '\n💡 Alternative: Copy the SQL from migrations/001_initial_schema.sql'
+    );
     console.log('   and paste it directly in your Supabase SQL Editor');
   }
 }
