@@ -71,20 +71,16 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
 
   // Force spawn function for debugging
   const forceSpawnSpot = useCallback(() => {
-    console.log('🧪 Force spawn triggered');
-
     setState((prev: DirtSystemState) => {
       const { maxSpots } = finalConfig;
 
       if (prev.spots.length >= maxSpots) {
-        console.log('❌ Cannot spawn: max spots reached');
         return prev;
       }
 
       // Try to find a valid position (max 10 attempts)
       for (let attempts = 0; attempts < 10; attempts++) {
         const position = generateRandomPosition();
-        console.log(`🎲 Attempt ${attempts + 1}: trying position`, position);
 
         if (isValidPosition(position, prev.spots)) {
           const newSpot: DirtSpot = {
@@ -96,8 +92,6 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
             createdAt: Date.now(),
           };
 
-          console.log('✅ Successfully created dirt spot:', newSpot);
-
           return {
             ...prev,
             spots: [...prev.spots, newSpot],
@@ -107,12 +101,9 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
               prev.cleanlinessScore - 100 / maxSpots
             ),
           };
-        } else {
-          console.log(`❌ Position invalid due to distance constraints`);
         }
       }
 
-      console.log('❌ Could not find valid position after 10 attempts');
       return prev;
     });
 
@@ -162,11 +153,6 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
 
   // Setup spawn interval - SIMPLIFIED without problematic dependencies
   useEffect(() => {
-    console.log('🔄 Dirt system useEffect triggered:', {
-      isSpawnerActive: state.isSpawnerActive,
-      spawnInterval: finalConfig.spawnInterval,
-    });
-
     // Clear any existing interval first
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
@@ -174,38 +160,22 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     }
 
     if (state.isSpawnerActive) {
-      console.log('✅ Setting up dirt spawn interval');
-
       intervalRef.current = setInterval(() => {
-        console.log('⏰ Dirt spawn interval triggered');
-
         // Create dirt spot directly in the interval callback
         setState((prev: DirtSystemState) => {
           const { maxSpots, spawnChance } = finalConfig;
 
-          console.log('🎯 Attempting to create dirt spot:', {
-            currentSpotCount: prev.spots.length,
-            maxSpots,
-            spawnChance,
-          });
-
           if (prev.spots.length >= maxSpots) {
-            console.log('❌ Cannot spawn: max spots reached');
             return prev;
           }
 
           if (Math.random() > spawnChance) {
-            console.log('❌ Cannot spawn: spawn chance failed');
             return prev;
           }
 
           // Try to find a valid position
           for (let attempts = 0; attempts < 10; attempts++) {
             const position = generateRandomPosition();
-            console.log(
-              `🎲 Attempt ${attempts + 1}: trying position`,
-              position
-            );
 
             if (isValidPosition(position, prev.spots)) {
               const newSpot: DirtSpot = {
@@ -216,11 +186,6 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
                 opacity: Math.random() * 0.3 + 0.6,
                 createdAt: Date.now(),
               };
-
-              console.log(
-                '✅ Successfully created dirt spot in interval:',
-                newSpot
-              );
 
               return {
                 ...prev,
@@ -234,17 +199,13 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
             }
           }
 
-          console.log('❌ Could not find valid position after 10 attempts');
           return prev;
         });
       }, finalConfig.spawnInterval);
-    } else {
-      console.log('❌ Dirt spawner is inactive');
     }
 
     return () => {
       if (intervalRef.current) {
-        console.log('🧹 Cleaning up dirt spawn interval');
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
