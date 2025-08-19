@@ -57,7 +57,7 @@ export function Fish({
       hunger: fish.stats?.hunger ?? 50,
       energy: fish.stats?.energy ?? 50,
     });
-  }, [fish]);
+  }, [fish.stats?.happiness, fish.stats?.hunger, fish.stats?.energy]);
 
   // Apply flip animation when direction changes
   useEffect(() => {
