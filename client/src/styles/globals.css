@@ -12,6 +12,61 @@
 html,
 body {
   font-family: 'Poppins-ExtraBold', sans-serif;
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Prevent content shift when scrollbar appears/disappears */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Landing page specific styles to prevent scroll issues */
+.landing-page {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  height: 100vh;
+  position: relative;
+}
+
+.landing-page::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ensure smooth scrolling */
+.landing-page {
+  scroll-behavior: smooth;
+}
+
+/* Force stable layout */
+.landing-page * {
+  box-sizing: border-box;
+}
+
+/* Prevent any content from causing layout shifts */
+.landing-page {
+  contain: layout style paint;
+}
+
+/* Additional scroll stability */
+.landing-page {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+}
+
+/* Ensure no dynamic content changes affect layout */
+.landing-page * {
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* Animation classes */
