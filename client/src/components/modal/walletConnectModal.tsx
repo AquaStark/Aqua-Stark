@@ -1,32 +1,15 @@
 'use client';
 
 import React from 'react';
-import { useConnect, Connector } from '@starknet-react/core';
-const wallets = [
-  {
-    id: 'argentX',
-    name: 'Argent X',
-    description: 'Browser wallet',
-    icon: '🦊',
-    bgColor: 'bg-purple-700/60',
-  },
-  {
-    id: 'braavos',
-    name: 'Braavos',
-    description: 'Browser wallet',
-    icon: '🦁',
-    bgColor: 'bg-blue-700/60',
-  },
-];
+import { useConnect } from '@starknet-react/core';
 
 interface WalletModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelectWallet: (connector: Connector) => void;
 }
 
-const WalletModal = ({ isOpen, onClose, onSelectWallet }: WalletModalProps) => {
-  const { connectors } = useConnect();
+const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
+  const { connect, connectors } = useConnect();
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -39,12 +22,15 @@ const WalletModal = ({ isOpen, onClose, onSelectWallet }: WalletModalProps) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
 
-  React.useEffect(() => {
-    // console.log(
-    //   'Available connectors:',
-    //   connectors.map(c => ({ id: c.id, name: c.name }))
-    // );
-  }, [connectors]);
+  const handleWalletSelect = async (connector: any) => {
+    try {
+      await connect({ connector });
+      onClose();
+    } catch (error) {
+      console.error('Error connecting wallet:', error);
+      // You can add toast notification here
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -76,28 +62,39 @@ const WalletModal = ({ isOpen, onClose, onSelectWallet }: WalletModalProps) => {
         </div>
 
         <div className='space-y-3'>
-          {wallets.map(wallet => {
-            const connector = connectors.find(c => c.id === wallet.id);
-            const isAvailable = !!connector;
+          {connectors.map(connector => {
+            const isAvailable = connector.available();
+            const isCartridge = connector.id === 'cartridge';
 
             return (
               <button
-                key={wallet.id}
-                onClick={() =>
-                  isAvailable && connector && onSelectWallet(connector)
-                }
+                key={connector.id}
+                onClick={() => handleWalletSelect(connector)}
                 disabled={!isAvailable}
                 className={`flex items-center gap-4 p-4 rounded-md w-full text-left transition-all duration-300 ${
                   isAvailable
-                    ? `${wallet.bgColor} hover:scale-105`
+                    ? isCartridge
+                      ? 'bg-gradient-to-r from-green-600/80 to-blue-600/80 hover:scale-105 border-2 border-green-400/50'
+                      : 'bg-purple-700/60 hover:scale-105'
                     : 'bg-gray-700 opacity-50 cursor-not-allowed'
                 }`}
               >
-                <div className='flex-shrink-0'>{wallet.icon}</div>
+                <div className='flex-shrink-0'>{isCartridge ? '🎮' : '🦊'}</div>
                 <div>
-                  <h3 className='text-white font-semibold'>{wallet.name}</h3>
+                  <h3 className='text-white font-semibold flex items-center gap-2'>
+                    {connector.name}
+                    {isCartridge && (
+                      <span className='text-xs bg-green-500 text-white px-2 py-1 rounded-full'>
+                        Gaming Optimized
+                      </span>
+                    )}
+                  </h3>
                   <p className='text-gray-400 text-sm'>
-                    {isAvailable ? wallet.description : 'Wallet not detected'}
+                    {isAvailable
+                      ? isCartridge
+                        ? 'Session keys, gasless transactions, passkey auth'
+                        : 'Available'
+                      : 'Wallet not detected'}
                   </p>
                 </div>
               </button>
