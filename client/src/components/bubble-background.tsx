@@ -17,10 +17,10 @@ export function BubblesBackground({
   return (
     <div
       className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}
-      style={{ 
+      style={{
         ...customStyles,
         willChange: 'transform',
-        transform: 'translateZ(0)'
+        transform: 'translateZ(0)',
       }}
     >
       {bubbles.map(bubble => (
