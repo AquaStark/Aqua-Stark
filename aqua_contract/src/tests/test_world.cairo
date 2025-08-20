@@ -24,6 +24,7 @@ mod tests {
         m_TransactionLog, m_EventTypeDetails, m_EventCounter, m_TransactionCounter,
     };
     use aqua_stark::models::auctions_model::{m_Auction, m_AuctionCounter};
+    use aqua_stark::models::session::{m_SessionKey, m_SessionAnalytics, m_SessionOperation};
     // use aqua_stark::models::experience_model::{
     //     m_Experience, m_ExperienceConfig, m_ExperienceCounter,
     // };
@@ -69,6 +70,9 @@ mod tests {
                 TestResource::Model(m_EventCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_TransactionCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_Listing::TEST_CLASS_HASH),
+                TestResource::Model(m_SessionKey::TEST_CLASS_HASH),
+                TestResource::Model(m_SessionAnalytics::TEST_CLASS_HASH),
+                TestResource::Model(m_SessionOperation::TEST_CLASS_HASH),
                 // TestResource::Model(m_Experience::TEST_CLASS_HASH),
                 // TestResource::Model(m_ExperienceConfig::TEST_CLASS_HASH),
                 // TestResource::Model(m_ExperienceCounter::TEST_CLASS_HASH),
@@ -798,14 +802,33 @@ mod tests {
         let shop_catalog_system = IShopCatalogDispatcher { contract_address };
         testing::set_contract_address(OWNER());
 
-        // Add new item to shop catalog
-        shop_catalog_system.add_new_item(100, 100, 'test');
+        // Wait for initialization to complete
+        // The ShopCatalog should be initialized with OWNER as the owner
 
-        // Get shop item from shop catalog
-        let shop_item: ShopItemModel = world.read_model(1_u256);
+        // Add new item to shop catalog
+        let item_id = shop_catalog_system.add_new_item(100, 100, 'test');
+
+        // Get shop item from shop catalog using the contract interface
+        let shop_item = shop_catalog_system.get_item(item_id);
         assert(shop_item.price == 100, 'price mismatch');
         assert(shop_item.stock == 100, 'stock mismatch');
         assert(shop_item.description == 'test', 'description mismatch');
+    }
+
+    #[test]
+    fn test_shop_catalog_simple() {
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, OWNER());
+
+        let (contract_address, _) = world.dns(@"ShopCatalog").unwrap();
+        let shop_catalog_system = IShopCatalogDispatcher { contract_address };
+        testing::set_contract_address(OWNER());
+
+        // Test that we can call the contract without errors
+        let item_id = shop_catalog_system.add_new_item(50, 25, 'simple_test');
+        assert(item_id == 1, 'Item ID should be 1');
     }
 
     #[test]
@@ -820,13 +843,13 @@ mod tests {
         testing::set_contract_address(OWNER());
 
         // Add new item to shop catalog
-        shop_catalog_system.add_new_item(100, 100, 'test');
+        let item_id = shop_catalog_system.add_new_item(100, 100, 'test');
 
         // Update item in shop catalog
-        shop_catalog_system.update_item(1_u256, 200, 200, 'test2');
+        shop_catalog_system.update_item(item_id, 200, 200, 'test2');
 
-        // Get shop item from shop catalog
-        let shop_item: ShopItemModel = world.read_model(1_u256);
+        // Get shop item from shop catalog using the contract interface
+        let shop_item = shop_catalog_system.get_item(item_id);
         assert(shop_item.price == 200, 'price mismatch');
         assert(shop_item.stock == 200, 'stock mismatch');
         assert(shop_item.description == 'test2', 'description mismatch');
@@ -844,10 +867,10 @@ mod tests {
         testing::set_contract_address(OWNER());
 
         // Add new item to shop catalog
-        shop_catalog_system.add_new_item(100, 100, 'test');
+        let item_id = shop_catalog_system.add_new_item(100, 100, 'test');
 
         // Get item from shop catalog
-        let item_retrieved = shop_catalog_system.get_item(1);
+        let item_retrieved = shop_catalog_system.get_item(item_id);
         assert(item_retrieved.price == 100, 'price mismatch');
         assert(item_retrieved.stock == 100, 'stock mismatch');
         assert(item_retrieved.description == 'test', 'description mismatch');
