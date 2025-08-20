@@ -61,7 +61,7 @@ pub impl UnifiedSessionMiddlewareImpl of UnifiedSessionMiddlewareTrait {
         world.write_model(@session);
 
         // Update analytics
-        let mut analytics: SessionAnalytics = world.read_model((session_id, caller));
+        let mut analytics: SessionAnalytics = world.read_model(session_id);
         analytics.total_transactions += 1;
         analytics.successful_transactions += 1;
         analytics.last_activity = current_time;
@@ -179,7 +179,7 @@ pub impl UnifiedSessionMiddlewareImpl of UnifiedSessionMiddlewareTrait {
         world.write_model(@operation);
 
         // Update analytics
-        let mut analytics: SessionAnalytics = world.read_model((session_id, caller));
+        let mut analytics: SessionAnalytics = world.read_model(session_id);
         analytics.total_transactions += 1;
         if success {
             analytics.successful_transactions += 1;
@@ -219,7 +219,7 @@ pub impl UnifiedSessionMiddlewareImpl of UnifiedSessionMiddlewareTrait {
     fn get_session_analytics(
         world: IWorldDispatcher, session_id: felt252, player: ContractAddress,
     ) -> SessionAnalytics {
-        world.read_model((session_id, player))
+        world.read_model(session_id)
     }
 
     // Renew session

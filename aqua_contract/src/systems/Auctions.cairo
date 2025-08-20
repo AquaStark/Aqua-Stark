@@ -339,7 +339,7 @@ pub mod AquaAuction {
             world.write_model(@session);
 
             // Update analytics
-            let mut analytics: SessionAnalytics = world.read_model((session_id, caller));
+            let mut analytics: SessionAnalytics = world.read_model(session_id);
             analytics.total_transactions += 1;
             analytics.successful_transactions += 1;
             analytics.last_activity = current_time;
