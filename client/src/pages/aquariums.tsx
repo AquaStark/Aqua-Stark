@@ -49,12 +49,14 @@ export default function AquariumsPage() {
       const aquariumData = await getAquarium(BigInt(aquariumId));
       if (!aquariumData) return null;
 
-      const fishPromises = aquariumData.housed_fish.map((fishId: any) => getFish(fishId));
+      const fishPromises = aquariumData.housed_fish.map((fishId: any) =>
+        getFish(fishId)
+      );
       const fishData = await Promise.all(fishPromises);
 
       return {
         aquariumData,
-        fishData: fishData.filter(fish => fish !== null)
+        fishData: fishData.filter(fish => fish !== null),
       };
     } catch (error) {
       console.error('Error loading aquarium with fishes:', error);
@@ -63,7 +65,10 @@ export default function AquariumsPage() {
   };
 
   // Function to transform contract aquarium data to UI format
-  const transformAquariumData = (contractAquarium: models.Aquarium, fishes: any[] = []): Aquarium => {
+  const transformAquariumData = (
+    contractAquarium: models.Aquarium,
+    fishes: any[] = []
+  ): Aquarium => {
     return {
       id: Number(contractAquarium.id),
       name: `Aquarium ${contractAquarium.id}`,
@@ -73,7 +78,10 @@ export default function AquariumsPage() {
       health: Number(contractAquarium.cleanliness),
       lastVisited: 'Recently',
       fishCount: `${contractAquarium.fish_count}/${contractAquarium.max_capacity}`,
-      rating: Math.min(5, Math.floor(Number(contractAquarium.cleanliness) / 20) + 1),
+      rating: Math.min(
+        5,
+        Math.floor(Number(contractAquarium.cleanliness) / 20) + 1
+      ),
       isPremium: Number(contractAquarium.max_capacity) > 10,
       fishes: fishes.map(fish => ({
         id: Number(fish.id),
@@ -88,7 +96,7 @@ export default function AquariumsPage() {
           fins: 'long',
           size: 'medium',
         },
-      }))
+      })),
     };
   };
 
@@ -102,9 +110,9 @@ export default function AquariumsPage() {
     try {
       setLoading(true);
       setError(null);
-      
+
       const playerAquariums = await getPlayerAquariums(account.address);
-      
+
       if (!playerAquariums || playerAquariums.length === 0) {
         setAquariums([]);
         setLoading(false);
@@ -120,7 +128,9 @@ export default function AquariumsPage() {
         return null;
       });
 
-      const loadedAquariums = (await Promise.all(aquariumPromises)).filter(Boolean) as Aquarium[];
+      const loadedAquariums = (await Promise.all(aquariumPromises)).filter(
+        Boolean
+      ) as Aquarium[];
       setAquariums(loadedAquariums);
     } catch (error) {
       console.error('Error loading player aquariums:', error);
@@ -141,10 +151,13 @@ export default function AquariumsPage() {
       const completeAquarium = await loadAquariumWithFishes(aquarium.id);
       if (completeAquarium) {
         setActiveAquariumId(aquarium.id.toString());
-        navigate('/game', { 
-          state: { 
-            aquarium: transformAquariumData(completeAquarium.aquariumData, completeAquarium.fishData) 
-          } 
+        navigate('/game', {
+          state: {
+            aquarium: transformAquariumData(
+              completeAquarium.aquariumData,
+              completeAquarium.fishData
+            ),
+          },
         });
       }
     } catch (error) {
@@ -165,12 +178,12 @@ export default function AquariumsPage() {
       // Create new aquarium in contract
       const maxCapacity = 15;
       const maxDecorations = 5;
-      
+
       await newAquarium(account, account.address, maxCapacity, maxDecorations);
-      
+
       // Reload aquarium list after creation
       await loadPlayerAquariums();
-      
+
       setCoinBalance(prev => prev - 3535);
     } catch (error) {
       console.error('Error creating new aquarium:', error);
@@ -252,19 +265,30 @@ export default function AquariumsPage() {
             <>
               <AquariumStats
                 totalAquariums={aquariums.length}
-                totalFish={aquariums.reduce((acc, curr) => acc + curr.fishes.length, 0)}
+                totalFish={aquariums.reduce(
+                  (acc, curr) => acc + curr.fishes.length,
+                  0
+                )}
                 premiumAquariums={aquariums.filter(a => a.isPremium).length}
-                averageHealth={aquariums.length > 0 ? Math.round(
-                  aquariums.reduce((acc, curr) => acc + curr.health, 0) /
-                    aquariums.length
-                ) : 0}
+                averageHealth={
+                  aquariums.length > 0
+                    ? Math.round(
+                        aquariums.reduce((acc, curr) => acc + curr.health, 0) /
+                          aquariums.length
+                      )
+                    : 0
+                }
               />
 
               {aquariums.length === 0 ? (
                 <div className='text-center py-12'>
-                  <div className='text-white text-xl mb-4'>No aquariums found</div>
+                  <div className='text-white text-xl mb-4'>
+                    No aquariums found
+                  </div>
                   <div className='text-blue-200 mb-6'>
-                    {account?.address ? 'Create your first aquarium to get started!' : 'Connect your wallet to view your aquariums'}
+                    {account?.address
+                      ? 'Create your first aquarium to get started!'
+                      : 'Connect your wallet to view your aquariums'}
                   </div>
                 </div>
               ) : (
