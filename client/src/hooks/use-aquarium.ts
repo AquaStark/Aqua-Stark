@@ -6,7 +6,7 @@ import { Account, AccountInterface } from 'starknet';
 
 export function useAquarium() {
   const { client } = useDojoSDK();
-  console.log('client', client);
+  // console.log('client', client);
   const [selectedAquarium, setSelectedAquarium] = useState(MOCK_AQUARIUMS[0]);
   const mergedAquariums: AquariumData = {
     id: 0,
