@@ -1,6 +1,5 @@
 'use client';
 
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Card } from '@/components/ui/card'; 
 import { Switch } from '@/components/ui/switch';
@@ -53,7 +52,6 @@ const SettingsItem: React.FC<SettingsItemProps> = ({ icon, title, description, c
 );
 
 const SettingsPage = () => {
-  const navigate = useNavigate();
   const { settings, updateSetting, isLoading } = useSettings();
   const [localSettings, setLocalSettings] = useState<SettingsState>(settings);
 
