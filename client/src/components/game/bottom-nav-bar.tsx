@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { GameButton } from './game-button';
 
+// Interface defining the props for the BottomNavBar component
 interface BottomNavBarProps {
   isFeeding: boolean;
   timeRemaining: number;
@@ -12,6 +13,7 @@ interface BottomNavBarProps {
   onStopFeeding: () => void;
 }
 
+// Array of navigation items with their properties
 const OTHER_NAV_ITEMS = [
   {
     id: 'clean',
@@ -45,17 +47,27 @@ const OTHER_NAV_ITEMS = [
   },
 ];
 
+/**
+ * Bottom Navigation Bar component for the aquarium game
+ * Provides access to feeding functionality and other game actions
+ */
 export function BottomNavBar({
   isFeeding,
   timeRemaining,
   onStartFeeding,
   onStopFeeding,
 }: BottomNavBarProps) {
+  // State to track which navigation item is currently active
   const [activeItem, setActiveItem] = useState<string | null>(null);
 
+  /**
+   * Handles click events on navigation items
+   * @param itemId - The ID of the clicked navigation item
+   */
   const handleItemClick = (itemId: string) => {
     setActiveItem(itemId);
 
+    // Execute different actions based on the clicked item
     switch (itemId) {
       case 'clean':
         console.log('Clean tank action triggered');
@@ -75,6 +87,7 @@ export function BottomNavBar({
     }
   };
 
+  // Calculate progress percentage for the feeding timer (30 seconds total)
   const progress =
     isFeeding && timeRemaining > 0
       ? ((30000 - timeRemaining) / 30000) * 100
@@ -82,22 +95,28 @@ export function BottomNavBar({
 
   return (
     <motion.div
+      // Animation properties for initial and animated states
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
+      // Styling and positioning
       className='fixed bottom-16 left-0 right-0 flex justify-center z-40'
     >
+      {/* Container with backdrop blur and gradient overlay */}
       <div className='relative bg-black/20 backdrop-blur-xl border border-white/10 rounded-2xl px-6 py-4 shadow-2xl'>
         <div className='absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-teal-500/10 rounded-2xl' />
 
         <div className='relative flex items-center justify-center gap-6'>
+          {/* Feed button section with special handling for feeding state */}
           <motion.div
             className='flex flex-col items-center gap-1 relative'
+            // Hover and tap animations
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             transition={{ duration: 0.2 }}
           >
             <div className='relative overflow-hidden rounded-xl'>
+              {/* Feed button with dynamic properties based on feeding state */}
               <GameButton
                 icon={isFeeding ? '⏱️' : '🍽️'}
                 color={
@@ -112,6 +131,7 @@ export function BottomNavBar({
                 }`}
               />
 
+              {/* Progress bar shown during feeding */}
               {isFeeding && (
                 <div className='absolute inset-0 pointer-events-none'>
                   <div
@@ -121,6 +141,7 @@ export function BottomNavBar({
                 </div>
               )}
 
+              {/* Animated particles shown during feeding */}
               {isFeeding && (
                 <div className='absolute inset-0 pointer-events-none overflow-hidden rounded-xl'>
                   {[...Array(4)].map((_, i) => (
@@ -139,7 +160,10 @@ export function BottomNavBar({
               )}
             </div>
 
+            {/* Feed button label */}
             <span className='text-xs text-white/80 font-medium'>Feed</span>
+
+            {/* Timer display during feeding */}
             {isFeeding && timeRemaining > 0 && (
               <div className='text-xs text-orange-300 font-mono'>
                 {Math.ceil(timeRemaining / 1000)}s
@@ -147,10 +171,12 @@ export function BottomNavBar({
             )}
           </motion.div>
 
+          {/* Render other navigation items */}
           {OTHER_NAV_ITEMS.map(item => (
             <motion.div
               key={item.id}
               className='flex flex-col items-center gap-1'
+              // Hover and tap animations
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ duration: 0.2 }}
@@ -163,9 +189,11 @@ export function BottomNavBar({
                 className={cn(
                   'w-12 h-12 transition-all duration-200 ease-out',
                   'hover:shadow-lg active:scale-95',
+                  // Highlight active item with ring
                   activeItem === item.id ? 'ring-2 ring-white/30 scale-105' : ''
                 )}
               />
+              {/* Item label */}
               <span className='text-xs text-white/80 font-medium'>
                 {item.label}
               </span>
