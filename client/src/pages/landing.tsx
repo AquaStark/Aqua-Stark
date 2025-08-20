@@ -10,6 +10,7 @@ import { useLoadingNavigation } from '@/hooks/use-loading-navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+
 export default function LandingPage() {
   // Bubbles configuration for background effect
   const bubbles = useBubbles({
@@ -35,7 +36,7 @@ export default function LandingPage() {
         toast.info('Tutorial coming soon!');
         break;
       case 'settings':
-        toast.info('Settings coming soon!');
+        window.location.href = '/settings';
         break;
       case 'credits':
         // Direct navigation for credits
