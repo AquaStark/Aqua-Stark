@@ -6,6 +6,7 @@ pub mod systems {
     pub mod daily_challenge;
     pub mod Trade;
     pub mod transaction;
+    pub mod session;
 }
 
 // pub mod aquarium;
@@ -43,6 +44,7 @@ pub mod models {
     pub mod trade_model;
     // pub mod experience_model;
     pub mod transaction_model;
+    pub mod session;
 }
 
 pub mod tests {
@@ -53,6 +55,11 @@ pub mod tests {
     mod test_aquarium;
     mod test_world;
     mod test_transaction;
+    // mod simple_session_test;
 }
 
 pub mod utils;
+
+pub mod helpers {
+    pub mod session_validation;
+}

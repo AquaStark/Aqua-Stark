@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { GameHeader } from '@/components/game/game-header';
-import { GameSidebarButtons } from '@/components/game/game-sidebar-buttons';
 import { AquariumTabs } from '@/components/game/aquarium-tabs';
 import { TipsPopup } from '@/components/game/tips-popup';
 import { INITIAL_GAME_STATE } from '@/data/game-data';
@@ -20,8 +19,8 @@ import { useDirtSystemFixed as useDirtSystem } from '@/hooks/use-dirt-system-fix
 import { DirtOverlay } from '@/components/game/dirt-overlay';
 import { DirtDebugControls } from '@/components/game/dirt-debug-controls';
 import { useFeedingSystem } from '@/systems/feeding-system';
-import { FeedFishButton } from '@/components/game/feed-fish-button';
 import { FeedingAquarium } from '@/components/game/feeding-aquarium';
+import { BottomNavBar } from '@/components/game/bottom-nav-bar';
 
 export default function GamePage() {
   const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
@@ -185,29 +184,28 @@ export default function GamePage() {
 
       {showMenu && <GameMenu show={showMenu} />}
 
-      <GameSidebarButtons />
-
       {/* Click to Feed Instructions - Under Header */}
       {!feedingSystem.isFeeding && (
         <div className='absolute top-[9rem] left-1/2 transform -translate-x-1/2 z-30'>
           <div className='bg-black/50 text-white text-sm px-4 py-2 rounded-lg border border-gray-500/20 backdrop-blur-sm'>
             <div className='flex items-center gap-2 text-gray-300'>
               <span>🐠</span>
-              <span>Click "Feed Fish" to start feeding your aquarium</span>
+              <span>
+                Use the bottom navigation to feed your fish and manage your
+                aquarium
+              </span>
             </div>
           </div>
         </div>
       )}
 
-      {/* Feed Fish Button - Bottom Center */}
-      <div className='absolute bottom-20 left-1/2 transform -translate-x-1/2 z-30'>
-        <FeedFishButton
-          isFeeding={feedingSystem.isFeeding}
-          timeRemaining={feedingSystem.getFeedingStatus().timeRemaining}
-          onStartFeeding={() => feedingSystem.startFeeding(30000)} // 30 seconds
-          onStopFeeding={feedingSystem.stopFeeding}
-        />
-      </div>
+      {/* Bottom Navigation */}
+      <BottomNavBar
+        isFeeding={feedingSystem.isFeeding}
+        timeRemaining={feedingSystem.getFeedingStatus().timeRemaining}
+        onStartFeeding={() => feedingSystem.startFeeding(30000)} // 30 seconds
+        onStopFeeding={feedingSystem.stopFeeding}
+      />
 
       {/* Debug Controls */}
       {showDirtDebug && (

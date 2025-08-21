@@ -35,7 +35,7 @@ export default function LandingPage() {
         toast.info('Tutorial coming soon!');
         break;
       case 'settings':
-        toast.info('Settings coming soon!');
+        window.location.href = '/settings';
         break;
       case 'credits':
         // Direct navigation for credits
