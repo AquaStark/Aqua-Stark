@@ -350,17 +350,17 @@ pub mod AquaStark {
             listing
         }
         // fn create_trade_offer(
-        //     ref self: ContractState,
-        //     offered_fish_id: u256,
-        //     criteria: MatchCriteria,
-        //     requested_fish_id: Option<u256>,
-        //     requested_species: Option<u8>,
-        //     requested_generation: Option<u8>,
-        //     requested_traits: Span<felt252>,
-        //     duration_hours: u64,
-        // ) -> u256 {
-        //     let mut world = self.world_default();
-        //     let caller = get_caller_address();
+    //     ref self: ContractState,
+    //     offered_fish_id: u256,
+    //     criteria: MatchCriteria,
+    //     requested_fish_id: Option<u256>,
+    //     requested_species: Option<u8>,
+    //     requested_generation: Option<u8>,
+    //     requested_traits: Span<felt252>,
+    //     duration_hours: u64,
+    // ) -> u256 {
+    //     let mut world = self.world_default();
+    //     let caller = get_caller_address();
 
         //     let fish_lock: FishLock = world.read_model(offered_fish_id);
     //     assert(!FishLockTrait::is_locked(fish_lock), 'Fish is already locked');
