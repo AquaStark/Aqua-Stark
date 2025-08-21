@@ -13,6 +13,7 @@
 
 ## 🛠️Technologies  
 - **Front**: React.js + Vite + TailwindCSS  
+- **Backend**: Node.js + Express + Supabase
 - **Blockchain**: Dojo Engine
 - **Monorepo Management**: pnpm workspaces  
 
@@ -28,15 +29,86 @@
 │   ├── README.md          # Frontend documentation
 │   ├── package.json       # Dependencies and scripts
 │   ├── vite.config.ts     # Vite configuration
+│── /backend               # Backend API server
+│   ├── /src               # Backend source code
+│   ├── /tests             # Backend tests
+│   ├── package.json       # Backend dependencies
 │── /contract              # Smart contracts and game logic
 │   ├── /src               # Smart contract source code
 │   ├── .gitignore
 │   ├── README.md          # Backend documentation
 │   ├── LICENSE            # Project license
 │   ├── Scarb.toml         # Scarb configuration
-│── pnpm-lock.yaml         # Monorepo configuration
+│── pnpm-workspace.yaml    # Workspace configuration
+│── pnpm-lock.yaml         # Lock file
+│── package.json           # Root scripts and dev dependencies
 │── README.md              # This file 🚀
 ```
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 20+
+- pnpm 10.13.1+
+
+### Installation
+```bash
+# Clone the repository
+git clone https://github.com/AquaStark/Aqua-Stark.git
+cd Aqua-Stark
+
+# Install all dependencies
+pnpm install
+```
+
+### Development Commands
+
+From the repository root, you can run these commands:
+
+```bash
+# Install dependencies for all packages
+pnpm install
+
+# Run development server for frontend
+pnpm dev
+
+# Run linting for all packages
+pnpm lint
+
+# Run type checking for all packages
+pnpm typecheck
+
+# Build all packages
+pnpm build
+
+# Run tests for all packages
+pnpm test
+
+# Run tests with coverage
+pnpm test:coverage
+
+# Format code
+pnpm format
+
+# Check code formatting
+pnpm format:check
+```
+
+### Package-Specific Commands
+
+You can also run commands for specific packages:
+
+```bash
+# Frontend only
+pnpm --filter client dev
+pnpm --filter client build
+pnpm --filter client lint
+
+# Backend only
+pnpm --filter backend dev
+pnpm --filter backend test
+```
+
 ## 📖 Documentation  
 
 🔹 Frontend README: [Frontend Documentation](https://github.com/AquaStark/Aqua-Stark-V.2/blob/main/client/README.md)  
@@ -58,22 +130,27 @@ git clone https://github.com/YOUR_USERNAME/Aqua-Stark.git
 cd Aqua-Stark  
 ```
 
-3️⃣ **Create a new branch**
+3️⃣ **Install dependencies**
+```sh
+pnpm install
+```
+
+4️⃣ **Create a new branch**
 ```sh
 git checkout -b feature-new  
 ```
 
-4️⃣ **Make your changes and commit them**
+5️⃣ **Make your changes and commit them**
 ```sh
 git commit -m "feat: Add new feature"  
 ```
 
-5️⃣ **Push the changes to your fork**
+6️⃣ **Push the changes to your fork**
 ```sh
 git push origin feature-new  
 ```
 
-6️⃣ **Open a Pull Request 🚀**  
+7️⃣ **Open a Pull Request 🚀**  
 
 ### 🔀 Branch Naming Conventions
 
@@ -89,4 +166,39 @@ git push origin feature-new
 - `chore: refactor contract logic`  
 - `docs: update README with latest changes`  
 
-🌊🐠 **Dive into Aqua Stark and build your dream aquarium!** 🎮🚀  
+## 🔧 Troubleshooting
+
+### pnpm Store Issues
+If you encounter issues with pnpm store:
+```bash
+# Clear pnpm store
+pnpm store prune
+
+# Reinstall dependencies
+pnpm install --force
+```
+
+### Lockfile Conflicts
+If you see lockfile conflicts:
+```bash
+# Remove lockfile and node_modules
+rm pnpm-lock.yaml
+rm -rf node_modules
+rm -rf client/node_modules
+rm -rf backend/node_modules
+
+# Reinstall
+pnpm install
+```
+
+### Build Issues
+If builds fail, ensure you're running from the repository root:
+```bash
+# Always run from root
+pnpm build
+
+# Not from individual packages
+cd client && pnpm build  # ❌ Avoid this
+```
+
+🌊🐠 **Dive into Aqua Stark and build your dream aquarium!** 🎮🚀

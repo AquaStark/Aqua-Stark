@@ -25,8 +25,12 @@ mod tests {
         m_TransactionLog, m_EventTypeDetails, m_EventCounter, m_TransactionCounter,
     };
     use aqua_stark::models::auctions_model::{m_Auction, m_AuctionCounter};
-
-
+    use aqua_stark::models::session::{m_SessionKey, m_SessionAnalytics, m_SessionOperation};
+    // use aqua_stark::models::experience_model::{
+    //     m_Experience, m_ExperienceConfig, m_ExperienceCounter,
+    // };
+    // use aqua_stark::interfaces::IExperience::{IExperienceDispatcher, IExperienceDispatcherTrait};
+    // use aqua_stark::systems::experience::experience;
     use aqua_stark::systems::AquaStark::AquaStark;
     use aqua_stark::systems::ShopCatalog::ShopCatalog;
     use aqua_stark::base::events;
@@ -38,7 +42,85 @@ mod tests {
     };
     use starknet::{contract_address_const, testing, get_block_timestamp, ContractAddress};
 
-    use aqua_stark::tests::utils::{namespace_def, contract_defs, OWNER};
+    fn OWNER() -> ContractAddress {
+        contract_address_const::<'owner'>()
+    }
+
+    fn namespace_def() -> NamespaceDef {
+        let ndef = NamespaceDef {
+            namespace: "aqua_stark",
+            resources: [
+                TestResource::Model(m_Auction::TEST_CLASS_HASH),
+                TestResource::Model(m_AuctionCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_Player::TEST_CLASS_HASH),
+                TestResource::Model(m_PlayerCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_ShopItemModel::TEST_CLASS_HASH),
+                TestResource::Model(m_ShopCatalogModel::TEST_CLASS_HASH),
+                TestResource::Model(m_UsernameToAddress::TEST_CLASS_HASH),
+                TestResource::Model(m_AddressToUsername::TEST_CLASS_HASH),
+                TestResource::Model(m_Aquarium::TEST_CLASS_HASH),
+                TestResource::Model(m_AquariumCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_AquariumOwner::TEST_CLASS_HASH),
+                TestResource::Model(m_Fish::TEST_CLASS_HASH),
+                TestResource::Model(m_FishCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_FishOwner::TEST_CLASS_HASH),
+                TestResource::Model(m_Decoration::TEST_CLASS_HASH),
+                TestResource::Model(m_DecorationCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_TransactionLog::TEST_CLASS_HASH),
+                TestResource::Model(m_EventTypeDetails::TEST_CLASS_HASH),
+                TestResource::Model(m_EventCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_TransactionCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_Listing::TEST_CLASS_HASH),
+                TestResource::Model(m_SessionKey::TEST_CLASS_HASH),
+                TestResource::Model(m_SessionAnalytics::TEST_CLASS_HASH),
+                TestResource::Model(m_SessionOperation::TEST_CLASS_HASH),
+                // TestResource::Model(m_Experience::TEST_CLASS_HASH),
+                // TestResource::Model(m_ExperienceConfig::TEST_CLASS_HASH),
+                // TestResource::Model(m_ExperienceCounter::TEST_CLASS_HASH),
+                TestResource::Event(events::e_PlayerEventLogged::TEST_CLASS_HASH),
+                TestResource::Event(events::e_EventTypeRegistered::TEST_CLASS_HASH),
+                TestResource::Event(events::e_PlayerCreated::TEST_CLASS_HASH),
+                TestResource::Event(events::e_DecorationCreated::TEST_CLASS_HASH),
+                TestResource::Event(events::e_FishCreated::TEST_CLASS_HASH),
+                TestResource::Event(events::e_FishBred::TEST_CLASS_HASH),
+                TestResource::Event(events::e_FishMoved::TEST_CLASS_HASH),
+                TestResource::Event(events::e_DecorationMoved::TEST_CLASS_HASH),
+                TestResource::Event(events::e_FishAddedToAquarium::TEST_CLASS_HASH),
+                TestResource::Event(events::e_DecorationAddedToAquarium::TEST_CLASS_HASH),
+                TestResource::Event(events::e_FishPurchased::TEST_CLASS_HASH),
+                TestResource::Event(events::e_AuctionStarted::TEST_CLASS_HASH),
+                TestResource::Event(events::e_BidPlaced::TEST_CLASS_HASH),
+                TestResource::Event(events::e_AuctionEnded::TEST_CLASS_HASH),
+                // TestResource::Event(events::e_ExperienceEarned::TEST_CLASS_HASH),
+                TestResource::Event(events::e_LevelUp::TEST_CLASS_HASH),
+                TestResource::Event(events::e_RewardClaimed::TEST_CLASS_HASH),
+                // TestResource::Event(events::e_ExperienceConfigUpdated::TEST_CLASS_HASH),
+                TestResource::Event(events::e_AquariumCreated::TEST_CLASS_HASH),
+                // TestResource::Event(events::e_AquariumUpdated::TEST_CLASS_HASH),
+                TestResource::Event(events::e_AquariumCleaned::TEST_CLASS_HASH),
+                // TestResource::Event(events::e_AquariumCleanlinessDecayed::TEST_CLASS_HASH),
+                TestResource::Contract(AquaStark::TEST_CLASS_HASH),
+                TestResource::Contract(ShopCatalog::TEST_CLASS_HASH),
+                // TestResource::Contract(experience::TEST_CLASS_HASH),
+            ]
+                .span(),
+        };
+
+        ndef
+    }
+
+    fn contract_defs() -> Span<ContractDef> {
+        [
+            ContractDefTrait::new(@"aqua_stark", @"AquaStark")
+                .with_writer_of([dojo::utils::bytearray_hash(@"aqua_stark")].span()),
+            ContractDefTrait::new(@"aqua_stark", @"ShopCatalog")
+                .with_writer_of([dojo::utils::bytearray_hash(@"aqua_stark")].span())
+                .with_init_calldata([OWNER().into()].span()),
+            // ContractDefTrait::new(@"aqua_stark", @"experience")
+        //     .with_writer_of([dojo::utils::bytearray_hash(@"aqua_stark")].span()),
+        ]
+            .span()
+    }
 
 
     #[test]
@@ -519,14 +601,33 @@ mod tests {
         let shop_catalog_system = IShopCatalogDispatcher { contract_address };
         testing::set_contract_address(OWNER());
 
-        // Add new item to shop catalog
-        shop_catalog_system.add_new_item(100, 100, 'test');
+        // Wait for initialization to complete
+        // The ShopCatalog should be initialized with OWNER as the owner
 
-        // Get shop item from shop catalog
-        let shop_item: ShopItemModel = world.read_model(1_u256);
+        // Add new item to shop catalog
+        let item_id = shop_catalog_system.add_new_item(100, 100, 'test');
+
+        // Get shop item from shop catalog using the contract interface
+        let shop_item = shop_catalog_system.get_item(item_id);
         assert(shop_item.price == 100, 'price mismatch');
         assert(shop_item.stock == 100, 'stock mismatch');
         assert(shop_item.description == 'test', 'description mismatch');
+    }
+
+    #[test]
+    fn test_shop_catalog_simple() {
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, OWNER());
+
+        let (contract_address, _) = world.dns(@"ShopCatalog").unwrap();
+        let shop_catalog_system = IShopCatalogDispatcher { contract_address };
+        testing::set_contract_address(OWNER());
+
+        // Test that we can call the contract without errors
+        let item_id = shop_catalog_system.add_new_item(50, 25, 'simple_test');
+        assert(item_id == 1, 'Item ID should be 1');
     }
 
     #[test]
@@ -541,13 +642,13 @@ mod tests {
         testing::set_contract_address(OWNER());
 
         // Add new item to shop catalog
-        shop_catalog_system.add_new_item(100, 100, 'test');
+        let item_id = shop_catalog_system.add_new_item(100, 100, 'test');
 
         // Update item in shop catalog
-        shop_catalog_system.update_item(1_u256, 200, 200, 'test2');
+        shop_catalog_system.update_item(item_id, 200, 200, 'test2');
 
-        // Get shop item from shop catalog
-        let shop_item: ShopItemModel = world.read_model(1_u256);
+        // Get shop item from shop catalog using the contract interface
+        let shop_item = shop_catalog_system.get_item(item_id);
         assert(shop_item.price == 200, 'price mismatch');
         assert(shop_item.stock == 200, 'stock mismatch');
         assert(shop_item.description == 'test2', 'description mismatch');
@@ -565,10 +666,10 @@ mod tests {
         testing::set_contract_address(OWNER());
 
         // Add new item to shop catalog
-        shop_catalog_system.add_new_item(100, 100, 'test');
+        let item_id = shop_catalog_system.add_new_item(100, 100, 'test');
 
         // Get item from shop catalog
-        let item_retrieved = shop_catalog_system.get_item(1);
+        let item_retrieved = shop_catalog_system.get_item(item_id);
         assert(item_retrieved.price == 100, 'price mismatch');
         assert(item_retrieved.stock == 100, 'stock mismatch');
         assert(item_retrieved.description == 'test', 'description mismatch');

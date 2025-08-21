@@ -6,38 +6,40 @@ import { Footer } from '@/components/landing/footer';
 import { HeroSection } from '@/components/landing/hero-section';
 import { Navbar } from '@/components/landing/navbar';
 import { useBubbles } from '@/hooks/use-bubbles';
+import { useLoadingNavigation } from '@/hooks/use-loading-navigation';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 export default function LandingPage() {
+  // Bubbles configuration for background effect
   const bubbles = useBubbles({
-    initialCount: 12,
-    maxBubbles: 20,
-    minSize: 4,
-    maxSize: 20,
-    minDuration: 8,
-    maxDuration: 25,
-    interval: 800,
+    initialCount: 8,
+    maxBubbles: 15,
+    minSize: 3,
+    maxSize: 12,
+    minDuration: 10,
+    maxDuration: 20,
+    interval: 1200,
   });
 
-  const navigate = useNavigate();
+  const { startGameWithLoading } = useLoadingNavigation();
   const [activeButton, setActiveButton] = useState<string | null>(null);
 
   const handleSidebarClick = (action: string) => {
     setActiveButton(action);
     switch (action) {
       case 'start':
-        navigate('/start');
+        startGameWithLoading();
         break;
       case 'tutorial':
         toast.info('Tutorial coming soon!');
         break;
       case 'settings':
-        toast.info('Settings coming soon!');
+        window.location.href = '/settings';
         break;
       case 'credits':
-        navigate('/credits');
+        // Direct navigation for credits
+        window.location.href = '/credits';
         break;
       default:
         break;
@@ -45,10 +47,13 @@ export default function LandingPage() {
   };
 
   return (
-    <div className='relative h-screen w-screen overflow-hidden'>
+    <div
+      className='relative min-h-screen w-full overflow-x-hidden landing-page'
+      style={{ height: '100vh' }}
+    >
       {/* Background image */}
       <div
-        className='absolute inset-0 bg-cover bg-center bg-no-repeat'
+        className='fixed inset-0 bg-cover bg-center bg-no-repeat'
         style={{
           backgroundImage: 'url("/backgrounds/initaial-background.webp")',
           filter: 'brightness(0.8)',
@@ -56,20 +61,22 @@ export default function LandingPage() {
       />
 
       {/* Water movement effect */}
-      <div className='water-movement'></div>
+      <div className='fixed inset-0 water-movement'></div>
 
-      {/* Bubbles */}
-      <BubblesBackground bubbles={bubbles} />
+      {/* Bubbles background effect */}
+      <div className='fixed inset-0 pointer-events-none'>
+        <BubblesBackground bubbles={bubbles} />
+      </div>
 
       {/* Top navbar/HUD - Compact */}
-      <div className='relative z-30 h-18 sm:h-22 md:h-24 lg:h-28'>
+      <div className='relative z-30 h-16 sm:h-20 md:h-24 lg:h-28'>
         <Navbar />
       </div>
 
-      {/* Main layout - Using CSS Grid for perfect control */}
-      <div className='relative z-20 h-[calc(100vh-4.5rem)] sm:h-[calc(100vh-5.5rem)] md:h-[calc(100vh-6rem)] lg:h-[calc(100vh-7rem)] grid grid-cols-[auto_1fr] gap-2 sm:gap-4 p-2 sm:p-4'>
-        {/* Sidebar - Vertical Stack */}
-        <aside className='flex flex-col justify-center gap-3 sm:gap-4'>
+      {/* Main layout - Responsive and scrollable */}
+      <div className='relative z-20 flex flex-col lg:grid lg:grid-cols-[auto_1fr] gap-2 sm:gap-4 p-2 sm:p-4'>
+        {/* Sidebar - Vertical Stack - Hidden on mobile, visible on desktop */}
+        <aside className='hidden lg:flex flex-col justify-center gap-3 sm:gap-4'>
           <button
             onClick={() => handleSidebarClick('start')}
             className={`px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 rounded-xl bg-gradient-to-b from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 shadow-xl transform hover:scale-105 transition-all duration-200 border-2 sm:border-3 border-blue-300 flex items-center justify-center ${
@@ -129,20 +136,22 @@ export default function LandingPage() {
           </button>
         </aside>
 
-        {/* Main content - Also using grid for precise control */}
-        <main className='grid grid-rows-[auto_1fr_auto] gap-2 sm:gap-4 min-h-0'>
-          {/* Hero section - Fixed height */}
-          <div className='flex items-center justify-center'>
+        {/* Main content - Responsive layout */}
+        <main className='flex flex-col gap-4 sm:gap-6 md:gap-8 flex-1'>
+          {/* Hero section */}
+          <div className='flex items-center justify-center py-4 sm:py-6 md:py-8'>
             <HeroSection />
           </div>
 
-          {/* Featured fish section - Takes remaining space */}
-          <div className='flex items-center justify-center '>
+          {/* Featured fish section */}
+          <div className='flex items-center justify-center py-4 sm:py-6 md:py-8'>
             <FeaturedFish />
           </div>
 
-          {/* Footer - Fixed height */}
-          <Footer />
+          {/* Footer */}
+          <div className='py-4 sm:py-6'>
+            <Footer />
+          </div>
         </main>
       </div>
     </div>
