@@ -12,7 +12,6 @@ export interface SettingsState {
 
 const SETTINGS_STORAGE_KEY = 'aqua-stark-settings';
 
-
 const useSettings = () => {
   const [settings, setSettings] = useState<SettingsState>({
     sound_enabled: true,
@@ -27,44 +26,40 @@ const useSettings = () => {
 
   useEffect(() => {
     try {
-     
       const timeout = setTimeout(() => {
         const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
         if (storedSettings) {
-         
           const parsedSettings: SettingsState = JSON.parse(storedSettings);
           setSettings(parsedSettings);
         }
-        setIsLoading(false); 
+        setIsLoading(false);
       }, 500);
 
-      return () => clearTimeout(timeout); 
+      return () => clearTimeout(timeout);
     } catch (error) {
       console.error('Failed to load settings from localStorage:', error);
       setIsLoading(false);
     }
-  }, []); 
+  }, []);
 
   /**
-   * 
    *
-   * @param {keyof SettingsState} key 
+   *
+   * @param {keyof SettingsState} key
    * @param {any} value
    */
   const updateSetting = (key: keyof SettingsState, value: any) => {
     setIsLoading(true);
     try {
-      
       const newSettings = { ...settings, [key]: value };
-      
-     
+
       const timeout = setTimeout(() => {
         setSettings(newSettings);
-        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(newSettings)); 
+        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(newSettings));
         setIsLoading(false);
       }, 300);
 
-      return () => clearTimeout(timeout); 
+      return () => clearTimeout(timeout);
     } catch (error) {
       console.error('Failed to save settings to localStorage:', error);
       setIsLoading(false);

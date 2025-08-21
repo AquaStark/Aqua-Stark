@@ -10,7 +10,6 @@ import { useLoadingNavigation } from '@/hooks/use-loading-navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-
 export default function LandingPage() {
   // Bubbles configuration for background effect
   const bubbles = useBubbles({

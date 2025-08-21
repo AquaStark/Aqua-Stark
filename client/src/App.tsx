@@ -16,7 +16,6 @@ import TradingMarketPage from './pages/trading-market';
 import BreedingLaboratoryPage from './pages/breeding-laboratory';
 import SettingsPage from './pages/settings';
 
-
 // Community & Social Pages
 import CommunityPage from './pages/community';
 import MyProfilePage from './pages/my-profile';
