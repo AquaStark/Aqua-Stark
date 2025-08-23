@@ -8,6 +8,7 @@ pub mod systems {
 }
 
 pub mod aquarium;
+pub mod inventory;
 
 pub mod achievements {
     pub mod achievements;
@@ -41,15 +42,16 @@ pub mod models {
     pub mod daily_challange;
     pub mod experience_model;
     pub mod transaction_model;
+    pub mod inventory_model;
 }
 pub mod tests {
-    mod test_auction;
     mod test_daily_challenge;
     mod test_trading;
     mod test_auction;
     mod test_experience;
     mod test_aquarium;
     mod test_world;
+    mod test_inventory;
 }
 
 

@@ -16,11 +16,10 @@ pub mod AquaStark {
         ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
         contract_address_const,
     };
+    use aqua_stark::models::trade_model::MatchCriteria;
     use aqua_stark::models::player_model::{
         Player, PlayerTrait, PlayerCounter, UsernameToAddress, AddressToUsername,
     };
-    use aqua_stark::interfaces::IAquaStark::IAquaStark;
-    use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
     use aqua_stark::models::aquarium_model::{
         Aquarium, AquariumCounter, AquariumOwner, AquariumTrait,
     };
@@ -35,7 +34,6 @@ pub mod AquaStark {
     use core::traits::Into;
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
-    use dojo::world::IWorldDispatcherTrait;
 
 
     #[abi(embed_v0)]

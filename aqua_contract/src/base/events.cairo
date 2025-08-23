@@ -333,6 +333,7 @@ pub struct DecorationRemovedFromAquarium {
 // Inventory Events
 
 #[derive(Drop, Serde)]
+#[derive(starknet::Event)]
 pub struct ItemAddedToInventory {
     pub player_id: u64,
     pub item_id: u64,
@@ -340,6 +341,7 @@ pub struct ItemAddedToInventory {
 }
 
 #[derive(Drop, Serde)]
+#[derive(starknet::Event)]
 pub struct ItemRemovedFromInventory {
     pub player_id: u64,
     pub item_id: u64,
@@ -347,11 +349,12 @@ pub struct ItemRemovedFromInventory {
 }
 
 #[derive(Drop, Serde)]
+#[derive(starknet::Event)]
 pub struct ItemMovedBetweenAquariums {
     pub player_id: u64,
     pub item_id: u64,
-    pub from: u64,
-    pub to: u64,
+    pub from_aquarium: u64,
+    pub to_aquarium: u64,
     pub item_type: u8,
 }
 
