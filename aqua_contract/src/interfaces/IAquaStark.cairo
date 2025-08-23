@@ -35,9 +35,9 @@ pub trait IAquaStark<T> {
     fn get_player_decoration_count(self: @T, player: ContractAddress) -> u32;
     fn is_verified(self: @T, player: ContractAddress) -> bool;
     fn get_listing(self: @T, listing_id: felt252) -> Listing;
-    fn purchase_fish(ref self: T, listing_id: felt252);
-    fn get_fish_owner_for_auction(self: @T, fish_id: u256) -> FishOwner;
-    // fn create_trade_offer(
+    // fn purchase_fish(ref self: T, listing_id: felt252);
+// fn get_fish_owner_for_auction(self: @T, fish_id: u256) -> FishOwner;
+// fn create_trade_offer(
 //     ref self: T,
 //     offered_fish_id: u256,
 //     criteria: MatchCriteria,

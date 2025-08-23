@@ -13,7 +13,7 @@ use aqua_stark::models::auctions_model::{m_Auction, m_AuctionCounter};
 
 use aqua_stark::systems::AquaStark::AquaStark;
 use aqua_stark::systems::ShopCatalog::ShopCatalog;
-use aqua_stark::systems::Fish::FishSystem;
+use aqua_stark::systems::FishSystem::FishSystem;
 use aqua_stark::base::events;
 use dojo_cairo_test::{ContractDef, ContractDefTrait, NamespaceDef, TestResource};
 use starknet::{contract_address_const, ContractAddress};

@@ -2,7 +2,7 @@ pub mod systems {
     pub mod AquaStark;
     pub mod Auctions;
     pub mod ShopCatalog;
-    pub mod Fish;
+    pub mod FishSystem;
     // pub mod experience;
     pub mod daily_challenge;
     pub mod Trade;
