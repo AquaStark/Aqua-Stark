@@ -19,6 +19,8 @@ interface FishDisplayProps {
     image: string;
     rarity: string;
     generation: number;
+    lastFedTimestamp?: Date | string | number | null;
+    lastUpdated?: Date | string | number | null;
   }>;
   cleanlinessScore?: number;
 }
@@ -36,6 +38,8 @@ export function FishDisplay({ fish, cleanlinessScore }: FishDisplayProps) {
             rarity: fishState.rarity,
             generation: fishState.generation,
             position: fishState.position,
+            lastFedTimestamp: fishState.lastFedTimestamp,
+            lastUpdated: fishState.lastUpdated,
           }}
           position={fishState.position}
           facingLeft={fishState.facingLeft}

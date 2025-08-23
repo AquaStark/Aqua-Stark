@@ -55,7 +55,17 @@ export function Fish({
       energy: fish.stats?.energy ?? 50,
       happiness: fish.stats?.happiness ?? 50,
     },
+    lastFedTimestamp: fish.lastFedTimestamp ?? null,
+    lastUpdated: fish.lastUpdated ?? null,
     cleanliness: typeof cleanlinessScore === 'number' ? cleanlinessScore : 100,
+    onChange: state => {
+      // Emit an event so higher-level logic can persist/sync later
+      window.dispatchEvent(
+        new CustomEvent('fish-indicators-changed', {
+          detail: { fishId: fish.id, state },
+        })
+      );
+    },
   });
 
   // Keep cleanliness in sync from aquarium dirt system

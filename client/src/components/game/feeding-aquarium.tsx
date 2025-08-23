@@ -47,6 +47,17 @@ export function FeedingAquarium({
     height: containerHeight,
   });
 
+  // Destructure frequent fields to avoid object dependency pitfalls and satisfy lint
+  const {
+    updateAquariumBounds,
+    isFeeding,
+    foods,
+    handleFoodConsumed,
+    particleEffects,
+    handleParticleComplete,
+    handleFeedClick,
+  } = feedingSystem;
+
   // Handle container resizing
   useEffect(() => {
     const handleResize = () => {
@@ -56,25 +67,40 @@ export function FeedingAquarium({
           height: containerRef.current.clientHeight,
         };
         setDimensions(newDimensions);
-        feedingSystem.updateAquariumBounds(newDimensions);
+        updateAquariumBounds(newDimensions);
       }
     };
 
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [feedingSystem.updateAquariumBounds]);
+  }, [updateAquariumBounds]);
 
   // Handle container clicks for feeding
   const handleContainerClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
-      feedingSystem.handleFeedClick(
+      handleFeedClick(
         event.clientX,
         event.clientY,
         containerRef.current?.getBoundingClientRect()
       );
     },
-    [feedingSystem]
+    [handleFeedClick]
+  );
+
+  // Keyboard accessibility: drop food at container center on Enter/Space
+  const handleContainerKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!isFeeding) return;
+      if (event.key === 'Enter' || event.key === ' ') {
+        const rect = containerRef.current?.getBoundingClientRect();
+        const cx = rect ? rect.left + rect.width / 2 : 0;
+        const cy = rect ? rect.top + rect.height / 2 : 0;
+        handleFeedClick(cx, cy, rect);
+        event.preventDefault();
+      }
+    },
+    [isFeeding, handleFeedClick]
   );
 
   // Create a lookup map for fish metadata
@@ -88,6 +114,8 @@ export function FeedingAquarium({
             image: f.image,
             rarity: f.rarity,
             generation: f.generation,
+            lastFedTimestamp: f.lastFedTimestamp,
+            lastUpdated: f.lastUpdated,
           },
         ])
       ),
@@ -97,8 +125,8 @@ export function FeedingAquarium({
   // Calculate fish positions with movement and preserve metadata
   const fishWithMovement = useFishMovement(fish, {
     aquariumBounds: dimensions,
-    foods: feedingSystem.foods,
-    onFoodConsumed: feedingSystem.handleFoodConsumed,
+    foods,
+    onFoodConsumed: handleFoodConsumed,
   }).map(state => ({
     ...state,
     ...fishMetadataMap[state.id],
@@ -109,21 +137,24 @@ export function FeedingAquarium({
       ref={containerRef}
       className='relative w-full h-full fish-container overflow-hidden'
       onClick={handleContainerClick}
+      onKeyDown={handleContainerKeyDown}
+      role='button'
+      tabIndex={0}
       style={{
-        cursor: feedingSystem.isFeeding ? 'pointer' : 'default',
+        cursor: isFeeding ? 'pointer' : 'default',
         userSelect: 'none',
       }}
     >
       <FishDisplay fish={fishWithMovement} cleanlinessScore={cleanlinessScore} />
-      {feedingSystem.foods.map((food: FoodItem) => (
+      {foods.map((food: FoodItem) => (
         <Food key={food.id} food={food} aquariumBounds={dimensions} />
       ))}
-      {feedingSystem.particleEffects.map(effect => (
+      {particleEffects.map(effect => (
         <FoodParticles
           key={effect.id}
           position={effect.position}
           trigger={effect.trigger}
-          onComplete={() => feedingSystem.handleParticleComplete(effect.id)}
+          onComplete={() => handleParticleComplete(effect.id)}
         />
       ))}
     </div>

@@ -69,21 +69,26 @@ export function computeNextIndicators(
   options: FishIndicatorOptions
 ): FishIndicatorState {
   const lastUpdated = prev.lastUpdatedAt ?? prev.lastFedAt ?? now;
-  const hours = hoursBetween(lastUpdated, now);
+  // Time since last update drives general decay (e.g., energy)
+  const hoursSinceUpdate = hoursBetween(lastUpdated, now);
+  // Hunger decays based explicitly on time since the last feeding event when available
+  const hoursSinceFed = prev.lastFedAt
+    ? hoursBetween(prev.lastFedAt, now)
+    : hoursSinceUpdate;
 
   const hunger = applyDecay(
     prev.hunger,
-    hours,
+    hoursSinceFed,
     options.hungerDecayPerHour,
     cleanliness,
-    options.maxCleanlinessPenalty,
+    0, // spec: dirtiness should not accelerate hunger decay
     options.clampMin,
     options.clampMax
   );
 
   const energy = applyDecay(
     prev.energy,
-    hours,
+    hoursSinceUpdate,
     options.energyDecayPerHour,
     cleanliness,
     options.maxCleanlinessPenalty,
