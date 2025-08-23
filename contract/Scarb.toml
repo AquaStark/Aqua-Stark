@@ -13,6 +13,7 @@ spawn = "sozo execute aqua_stark-actions spawn --wait"    # scarb run spawn
 move = "sozo execute aqua_stark-actions move -c 1 --wait" # scarb run move
 
 [dependencies]
+starknet = "2.9.4"
 dojo = { git = "https://github.com/dojoengine/dojo.git", tag = "v1.4.0" }
 openzeppelin_token = { git = "https://github.com/openzeppelin/cairo-contracts", tag = "v1.0.0" }
 origami_map = { git = "https://github.com/dojoengine/origami" }
