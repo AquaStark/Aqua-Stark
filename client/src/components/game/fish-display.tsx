@@ -20,9 +20,10 @@ interface FishDisplayProps {
     rarity: string;
     generation: number;
   }>;
+  cleanlinessScore?: number;
 }
 
-export function FishDisplay({ fish }: FishDisplayProps) {
+export function FishDisplay({ fish, cleanlinessScore }: FishDisplayProps) {
   return (
     <div className='relative w-full h-full'>
       {fish.map(fishState => (
@@ -39,6 +40,7 @@ export function FishDisplay({ fish }: FishDisplayProps) {
           position={fishState.position}
           facingLeft={fishState.facingLeft}
           behaviorState={fishState.behaviorState}
+          cleanlinessScore={cleanlinessScore}
           style={{
             filter:
               fishState.behaviorState === 'feeding'

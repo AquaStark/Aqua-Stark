@@ -31,6 +31,7 @@ interface FeedingAquariumProps {
   feedingSystem: FeedingSystemProps;
   containerWidth?: number;
   containerHeight?: number;
+  cleanlinessScore?: number;
 }
 
 export function FeedingAquarium({
@@ -38,6 +39,7 @@ export function FeedingAquarium({
   feedingSystem,
   containerWidth = 1000,
   containerHeight = 600,
+  cleanlinessScore,
 }: FeedingAquariumProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({
@@ -112,7 +114,7 @@ export function FeedingAquarium({
         userSelect: 'none',
       }}
     >
-      <FishDisplay fish={fishWithMovement} />
+      <FishDisplay fish={fishWithMovement} cleanlinessScore={cleanlinessScore} />
       {feedingSystem.foods.map((food: FoodItem) => (
         <Food key={food.id} food={food} aquariumBounds={dimensions} />
       ))}
