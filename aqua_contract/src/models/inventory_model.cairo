@@ -24,7 +24,7 @@ pub enum LocationType {
 #[dojo::model]
 pub struct InventoryItem {
     #[key]
-    pub id: u64,            // Unique identifier for the inventory entry
+    pub id: u256,            // Unique identifier for the inventory entry
     pub player_id: u64,     // Owner of the item
     pub item_type: ItemType,// Type of the item
     pub item_id: u64,       // Unique identifier of the specific item

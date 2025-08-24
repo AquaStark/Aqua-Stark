@@ -38,11 +38,10 @@ pub trait IInventory<TContractState> {
 }
 
 #[dojo::contract]
-pub mod AquaInventory {  
-    use dojo::world::IWorldDispatcherTrait;
-    use dojo::world::WorldStorageTrait;
-    use dojo::model::ModelStorage;
+pub mod AquaInventory {
     use dojo::event::EventStorage;
+    use dojo::model::ModelStorage;
+    
 
     use super::{
         Player,
@@ -57,18 +56,19 @@ pub mod AquaInventory {
             0 => ItemType::Fish,
             1 => ItemType::Decoration,
             2 => ItemType::Aquarium,
-            _ => panic('INVALID_ITEM_TYPE'),
+            _ => panic!("INVALID_ITEM_TYPE"),
         }
     }
-
-    fn iid(player_wallet: ContractAddress, item_id: u64, item_type: ItemType) -> u64 {
-        let t: u64 = match item_type {
-            ItemType::Fish => 0_u64,
-            ItemType::Decoration => 1_u64,
-            ItemType::Aquarium => 2_u64,
+    fn iid(player_wallet: ContractAddress, item_id: u64, item_type: ItemType) -> u256 {
+        let addr_felt: felt252 = player_wallet.try_into().unwrap();
+        let t: u256 = match item_type {
+            ItemType::Fish => 0_u256,
+            ItemType::Decoration => 1_u256,
+            ItemType::Aquarium => 2_u256,
         };
-        (player_wallet.to_u256().low ^ item_id ^ t)
+        addr_felt.into() ^ item_id.into() ^ t
     }
+
 
     #[abi(embed_v0)]
     pub impl AquaInventoryImpl of super::IInventory<ContractState> {
@@ -95,9 +95,18 @@ pub mod AquaInventory {
 
             // Increment counters
             match it {
-                ItemType::Fish => { player.fish_count += 1; },
-                ItemType::Decoration => { player.decoration_count += 1; },
-                ItemType::Aquarium => { player.aquarium_count += 1; },
+                ItemType::Fish => { 
+                    player.fish_count += 1;
+                    player.player_fishes.append(key);
+                },
+                ItemType::Decoration => { 
+                    player.decoration_count += 1;
+                    player.player_decorations.append(key); 
+                },
+                ItemType::Aquarium => { 
+                    player.aquarium_count += 1; 
+                    player.player_aquariums.append(key);
+                },
             }
             world.write_model(@player);
             let player_id = player.id.try_into().unwrap_or(0_u64);
@@ -127,13 +136,28 @@ pub mod AquaInventory {
             let existing: InventoryItem = world.read_model(key);
             assert(existing.player_id == player.id.try_into().unwrap_or(0_u64), 'NOT_OWNER');
 
-            world.erase_model(@key);
+            world.erase_model(@existing);
 
             // Decrement counters
             match it {
-                ItemType::Fish => { if player.fish_count > 0 { player.fish_count -= 1; } },
-                ItemType::Decoration => { if player.decoration_count > 0 { player.decoration_count -= 1; } },
-                ItemType::Aquarium => { if player.aquarium_count > 0 { player.aquarium_count -= 1; } },
+                ItemType::Fish => { 
+                    if player.fish_count > 0 { 
+                        player.fish_count -= 1;
+                        player.player_fishes = self.remove_id_from_array(player.player_fishes, key);
+                    } 
+                },
+                ItemType::Decoration => { 
+                    if player.decoration_count > 0 { 
+                        player.decoration_count -= 1;
+                        player.player_decorations = self.remove_id_from_array(player.player_decorations, key);
+                    } 
+                },
+                ItemType::Aquarium => { 
+                    if player.aquarium_count > 0 { 
+                        player.aquarium_count -= 1; 
+                        player.player_aquariums = self.remove_id_from_array(player.player_aquariums, key);
+                    } 
+                },
             }
             world.write_model(@player);
             let player_id = player.id.try_into().unwrap_or(0_u64);
@@ -153,8 +177,9 @@ pub mod AquaInventory {
             let player: Player = world.read_model(player_wallet);
 
             let it = as_item_type(item_type);
-            assert(!(matches!(it, ItemType::Aquarium)), 'CANNOT_MOVE_AQUARIUM');
-
+            if let ItemType::Aquarium = it {
+                panic!("CANNOT_MOVE_AQUARIUM");
+            }
             let key = iid(player_wallet, item_id, it);
             let mut item: InventoryItem = world.read_model(key);
             assert(item.player_id == player.id.try_into().unwrap_or(0_u64), 'NOT_OWNER');
@@ -181,6 +206,27 @@ pub mod AquaInventory {
         fn get_player(self: @ContractState, player_wallet: ContractAddress) -> Player {
             let world = self.world_default();
             world.read_model(player_wallet)
+        }
+    }
+    #[generate_trait]
+    impl InternalImpl of InternalTrait {
+        fn world_default(self: @ContractState) -> dojo::world::WorldStorage {
+            self.world(@"aqua_stark")
+        }
+
+        fn remove_id_from_array(self: @ContractState, arr: Array<u256>, id: u256) -> Array<u256> {
+            let mut new_arr = ArrayTrait::new();
+            let mut i = 0;
+            let len = arr.len();
+
+            while i < len {
+                let current = arr.at(i);
+                if *current != id {
+                    new_arr.append(*current);
+                }
+                i += 1;
+            };
+            new_arr
         }
     }
 }
