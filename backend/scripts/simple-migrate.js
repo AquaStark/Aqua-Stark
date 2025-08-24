@@ -6,7 +6,11 @@ import { supabaseAdmin } from '../src/config/supabase.js';
  * Simple migration runner that executes SQL directly
  */
 
-const MIGRATION_FILE = join(process.cwd(), 'migrations', '001_initial_schema.sql');
+const MIGRATION_FILE = join(
+  process.cwd(),
+  'migrations',
+  '001_initial_schema.sql'
+);
 
 async function runSimpleMigration() {
   console.log('🚀 Starting simple database migration...\n');
@@ -31,11 +35,13 @@ async function runSimpleMigration() {
       if (statement.trim()) {
         console.log(`🔄 Executing statement ${i + 1}/${statements.length}`);
         console.log(`   ${statement.substring(0, 50)}...`);
-        
+
         try {
           // Use raw SQL execution
-          const { error } = await supabaseAdmin.rpc('exec_sql', { sql: statement + ';' });
-          
+          const { error } = await supabaseAdmin.rpc('exec_sql', {
+            sql: statement + ';',
+          });
+
           if (error) {
             console.log(`   ⚠️  Warning: ${error.message}`);
           } else {
@@ -49,13 +55,16 @@ async function runSimpleMigration() {
 
     console.log('\n✅ Migration completed!');
     console.log('\n📋 Next steps:');
-    console.log('1. Check your Supabase dashboard to verify tables were created');
+    console.log(
+      '1. Check your Supabase dashboard to verify tables were created'
+    );
     console.log('2. Run the backend server: pnpm dev');
     console.log('3. Test the API endpoints');
-
   } catch (error) {
     console.error('❌ Migration failed:', error);
-    console.log('\n💡 Alternative: Copy the SQL from migrations/001_initial_schema.sql');
+    console.log(
+      '\n💡 Alternative: Copy the SQL from migrations/001_initial_schema.sql'
+    );
     console.log('   and paste it directly in your Supabase SQL Editor');
   }
 }
