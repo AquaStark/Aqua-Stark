@@ -14,6 +14,7 @@ import AquariumsPage from './pages/aquariums';
 import StoragePage from './pages/storage';
 import TradingMarketPage from './pages/trading-market';
 import BreedingLaboratoryPage from './pages/breeding-laboratory';
+import SettingsPage from './pages/settings';
 
 // Community & Social Pages
 import CommunityPage from './pages/community';
@@ -56,6 +57,9 @@ function App() {
           path='/breeding-laboratory'
           element={<BreedingLaboratoryPage />}
         />
+
+        {/* Settings Route */}
+        <Route path='/settings' element={<SettingsPage />} />
 
         {/* Community & Social Routes */}
         <Route path='/community' element={<CommunityPage />} />
