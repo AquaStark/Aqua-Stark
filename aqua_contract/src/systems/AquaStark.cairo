@@ -82,6 +82,13 @@ pub mod AquaStark {
             let mut player: Player = world.read_model(caller);
             player.aquarium_count += 1;
             player.player_aquariums.append(aquarium.id);
+
+            self.check_and_reset_daily_limits(caller);
+            assert(player.daily_aquarium_creations < 2, 'Daily aquarium limit reached');
+
+            player.daily_aquarium_creations += 1;
+            player.experience_points += 5; // 5 XP for aquarium creation
+
             world.write_model(@player);
 
             world.write_model(@aquarium_owner);
@@ -169,6 +176,19 @@ pub mod AquaStark {
             player.player_decorations.append(decoration.id);
             aquarium = AquariumTrait::add_decoration(aquarium.clone(), decoration.id);
 
+            self.check_and_reset_daily_limits(get_caller_address());
+
+            if player.daily_decoration_creations < 5 {
+                let experience = match rarity {
+                    0 => 3, // Common
+                    1 => 5, // Rare
+                    2 => 10, // Legendary
+                    _ => 3 // Default to common
+                };
+                player.experience_points += experience;
+                player.daily_decoration_creations += 1;
+            }
+
             world.write_model(@aquarium);
             world.write_model(@player);
             world.write_model(@decoration);
@@ -210,16 +230,25 @@ pub mod AquaStark {
             player.fish_count += 1;
             player.player_fishes.append(fish_id);
 
+            self.check_and_reset_daily_limits(caller);
+
+            if player.daily_fish_creations < 5 {
+                let experience = match species {
+                    Species::GoldFish => 3,
+                    Species::AngelFish => 5,
+                    Species::Betta => 7,
+                    Species::NeonTetra => 7,
+                    Species::Corydoras => 7,
+                    Species::Hybrid => 10,
+                };
+                player.experience_points += experience;
+                player.daily_fish_creations += 1;
+            }
+
             world.write_model(@aquarium);
             world.write_model(@player);
             world.write_model(@fish_owner);
             world.write_model(@fish);
-
-            // --- Grant Experience for Creating Fish ---
-            // let (contract_address, _) = world.dns(@"experience").unwrap();
-            // let mut experience_system = IExperienceDispatcher { contract_address };
-            // experience_system.grant_experience(player.wallet, 25); // 25 XP for creating fish
-            // self.grant_experience_internal(caller, 25); // 25 XP for creating fish
 
             world
                 .emit_event(
@@ -248,6 +277,10 @@ pub mod AquaStark {
 
             aquarium_from = AquariumTrait::remove_fish(aquarium_from.clone(), fish_id);
             aquarium_to = AquariumTrait::add_fish(aquarium_to.clone(), fish_id);
+
+            let mut player: Player = world.read_model(caller);
+            player.experience_points += 3; // 3 XP for moving fish
+            world.write_model(@player);
 
             fish.aquarium_id = to;
             world.write_model(@fish);
@@ -323,17 +356,22 @@ pub mod AquaStark {
             aquarium.fish_count += 1;
             aquarium.housed_fish.append(new_fish.id);
 
+            let experience = match new_fish.species {
+                Species::GoldFish => 15,
+                Species::AngelFish => 15,
+                Species::Betta => 20,
+                Species::NeonTetra => 20,
+                Species::Corydoras => 20,
+                Species::Hybrid => 25,
+            };
+            player.experience_points += experience;
+
             world.write_model(@aquarium);
             world.write_model(@parent1);
             world.write_model(@parent2);
             world.write_model(@player);
             world.write_model(@fish_owner);
             world.write_model(@new_fish);
-
-            // --- Grant Experience for Breeding ---
-            // let (contract_address, _) = world.dns(@"experience").unwrap();
-            // let mut experience_system = IExperienceDispatcher { contract_address };
-            // experience_system.grant_experience(caller, 50); // 50 XP for breeding
 
             world
                 .emit_event(
@@ -407,15 +445,7 @@ pub mod AquaStark {
             aquarium.housed_decorations.append(decoration.id);
             aquarium.decoration_count += 1;
 
-            // --- Initialize Experience ---
-            // let experience = Experience {
-            //     player,
-            //     total_experience: 0,
-            //     current_level: 1,
-            //     experience_in_current_level: 0,
-            //     last_updated: get_block_timestamp(),
-            // };
-            // world.write_model(@experience);
+            new_player.experience_points += 5; // 5 XP for registration
 
             // --- Persist to Storage ---
             world.write_model(@aquarium);
@@ -563,6 +593,9 @@ pub mod AquaStark {
             let mut world = self.world_default();
             let fish: Fish = world.read_model(fish_id);
             let listing: Listing = FishTrait::list(fish, price);
+            let mut player: Player = world.read_model(get_caller_address());
+            player.experience_points += 5; // 5 XP for listing fish
+            world.write_model(@player);
             world.write_model(@listing);
             listing
         }
@@ -595,13 +628,16 @@ pub mod AquaStark {
             player.player_fishes.append(fish.id);
             listing.is_active = false;
 
+            let experience = if listing.price >= 1000 {
+                15
+            } else {
+                10
+            }; // Scale based on price
+            player.experience_points += experience;
+
             world.write_model(@fish);
             world.write_model(@player);
             world.write_model(@listing);
-            // --- Grant Experience for Purchasing Fish ---
-            // let (contract_address, _) = world.dns(@"experience").unwrap();
-            // let mut experience_system = IExperienceDispatcher { contract_address };
-            // experience_system.grant_experience(caller, 15); // 15 XP for purchasing fish
 
             world
                 .emit_event(
@@ -1278,6 +1314,22 @@ pub mod AquaStark {
                     break true;
                 }
                 i += 1;
+            }
+        }
+
+
+        fn check_and_reset_daily_limits(ref self: ContractState, player_addr: ContractAddress) {
+            let mut world = self.world_default();
+            let mut player: Player = world.read_model(player_addr);
+            let current_timestamp = get_block_timestamp();
+            let seconds_per_day: u64 = 86400;
+
+            if current_timestamp >= player.last_action_reset + seconds_per_day {
+                player.last_action_reset = current_timestamp;
+                player.daily_fish_creations = 0;
+                player.daily_decoration_creations = 0;
+                player.daily_aquarium_creations = 0;
+                world.write_model(@player);
             }
         }
     }
