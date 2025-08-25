@@ -37,6 +37,7 @@ pub struct Player {
     pub is_verified: bool,
     pub aquarium_count: u32,
     pub fish_count: u32,
+    pub experience_points: u256,
     pub decoration_count: u32,
     pub transaction_count: u32,
     pub registered_at: u64,
@@ -44,6 +45,10 @@ pub struct Player {
     pub player_aquariums: Array<u256>,
     pub player_decorations: Array<u256>,
     pub transaction_history: Array<u256>,
+    pub last_action_reset: u64, // Timestamp of last reset (seconds since epoch)
+    pub daily_fish_creations: u32, // Fish creations granting XP today
+    pub daily_decoration_creations: u32, // Decoration creations granting XP today
+    pub daily_aquarium_creations: u32,
 }
 
 pub trait PlayerTrait {
@@ -77,10 +82,15 @@ impl PlayerImpl of PlayerTrait {
             decoration_count: 0,
             fish_count: 0,
             transaction_count: 0,
+            experience_points: 0,
             player_fishes: array![],
             player_aquariums: array![],
             player_decorations: array![],
             transaction_history: array![],
+            last_action_reset: 0,
+            daily_fish_creations: 0,
+            daily_decoration_creations: 0,
+            daily_aquarium_creations: 0,
         };
         player
     }
@@ -132,10 +142,15 @@ mod tests {
             fish_count: 0,
             decoration_count: 0,
             transaction_count: 0,
+            experience_points: 0,
             player_fishes: array![],
             player_aquariums: array![],
             player_decorations: array![],
             transaction_history: array![],
+            last_action_reset: 0,
+            daily_fish_creations: 0,
+            daily_decoration_creations: 0,
+            daily_aquarium_creations: 0,
         };
         assert(player.id == 1, 'Player ID should match');
     }

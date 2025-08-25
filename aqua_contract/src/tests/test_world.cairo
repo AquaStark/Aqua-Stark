@@ -1028,6 +1028,119 @@ mod tests {
         actions_system
             .purchase_fish(listing.id); // should fail because player already owns the fish
     }
+
+    #[test]
+    fn test_all_transactions_with_experience_points() {
+        // Initialize test environment
+        let player1 = contract_address_const::<'player1'>();
+        let player2 = contract_address_const::<'player2'>();
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+        world.dispatcher.grant_owner(0, OWNER());
+
+        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let actions_system = IAquaStarkDispatcher { contract_address };
+
+        // --- 1. Register player1 (5 XP) ---
+        testing::set_contract_address(player1);
+        actions_system.register('player1');
+        let player1_data = actions_system.get_player(player1);
+        assert!(player1_data.experience_points == 5, "Register XP mismatch"); // 5 XP
+        assert!(player1_data.aquarium_count == 1, "Register aquarium count mismatch");
+        assert!(player1_data.fish_count == 1, "Register fish count mismatch");
+        assert!(player1_data.decoration_count == 1, "Register decoration count mismatch");
+
+        // --- 2. Create new aquarium (5 XP, total 10) ---
+        let aquarium2 = actions_system.new_aquarium(player1, 10, 10);
+        let player1_data = actions_system.get_player(player1);
+        assert!(player1_data.experience_points == 10, "New aquarium XP mismatch"); // 5 + 5 = 10
+        assert!(player1_data.aquarium_count == 2, "Aquarium count mismatch");
+        assert!(player1_data.daily_aquarium_creations == 1, "Daily aquarium creations mismatch");
+        assert!(*player1_data.player_aquariums[1] == aquarium2.id, "Aquarium ID mismatch");
+
+        // --- 3. Create new fish (7 XP for Betta, total 17) ---
+        let fish2 = actions_system.new_fish(aquarium2.id, Species::Betta);
+        let player1_data = actions_system.get_player(player1);
+        assert!(player1_data.experience_points == 17, "New fish XP mismatch"); // 10 + 7 = 17
+        assert!(player1_data.fish_count == 2, "Fish count mismatch");
+        assert!(player1_data.daily_fish_creations == 1, "Daily fish creations mismatch");
+        assert!(*player1_data.player_fishes[1] == fish2.id, "Fish ID mismatch");
+
+        // --- 4. Create new decoration (5 XP for Rare, total 22) ---
+        let decoration2 = actions_system
+            .new_decoration(aquarium2.id, 'Coral', 'Colorful coral', 50, 1);
+        let player1_data = actions_system.get_player(player1);
+        assert!(player1_data.experience_points == 22, "New decoration XP mismatch"); // 17 + 5 = 22
+        assert!(player1_data.decoration_count == 2, "Decoration count mismatch");
+        assert!(
+            player1_data.daily_decoration_creations == 1, "Daily decoration creations mismatch",
+        );
+        assert!(*player1_data.player_decorations[1] == decoration2.id, "Decoration ID mismatch");
+
+        // --- 5. Move fish to aquarium (3 XP, total 25) ---
+        let move_fish_result = actions_system
+            .move_fish_to_aquarium(fish2.id, aquarium2.id, 1); // Move to initial aquarium
+        let player1_data = actions_system.get_player(player1);
+        assert!(move_fish_result, "Fish move failed");
+        assert!(player1_data.experience_points == 25, "Move fish XP mismatch"); // 22 + 3 = 25
+        let updated_fish2 = actions_system.get_fish(fish2.id);
+        assert!(updated_fish2.aquarium_id == 1, "Fish aquarium ID mismatch");
+
+        // --- 6. Move decoration to aquarium (3 XP, total 28) ---
+        let move_decoration_result = actions_system
+            .move_decoration_to_aquarium(decoration2.id, aquarium2.id, 1);
+        let player1_data = actions_system.get_player(player1);
+        assert!(move_decoration_result, "Decoration move failed");
+        assert!(player1_data.experience_points == 28, "Move decoration XP mismatch"); // 25 + 3 = 28
+        let updated_decoration2 = actions_system.get_decoration(decoration2.id);
+        assert!(updated_decoration2.aquarium_id == 1, "Decoration aquarium ID mismatch");
+
+        // --- 7. Breed fishes (25 XP for Hybrid, total 53) ---
+        let offspring_id = actions_system
+            .breed_fishes(1, fish2.id); // Breed initial fish (GoldFish) with fish2 (Betta)
+        let player1_data = actions_system.get_player(player1);
+        assert!(player1_data.experience_points == 53, "Breed fishes XP mismatch"); // 28 + 25 = 53
+        assert!(player1_data.fish_count == 3, "Breed fish count mismatch");
+        let offspring_fish = actions_system.get_fish(offspring_id);
+        assert!(offspring_fish.species == Species::Hybrid, "Offspring species mismatch");
+        assert!(*player1_data.player_fishes[2] == offspring_id, "Offspring ID mismatch");
+
+        // --- 8. List fish (5 XP, total 58) ---
+        let listing = actions_system.list_fish(fish2.id, 1000);
+        let player1_data = actions_system.get_player(player1);
+        assert!(player1_data.experience_points == 58, "List fish XP mismatch"); // 53 + 5 = 58
+        assert!(listing.is_active, "Listing not active");
+        assert!(listing.fish_id == fish2.id, "Listing fish ID mismatch");
+        assert!(listing.price == 1000, "Listing price mismatch");
+
+        // --- 9. Register player2 and purchase fish ---
+        testing::set_contract_address(player2);
+        actions_system.register('player2');
+        let player2_data = actions_system.get_player(player2);
+        assert!(player2_data.experience_points == 5, "Register player2 XP mismatch"); // 5 XP
+
+        // Create an aquarium for player2 (5 XP, total 10)
+        let player2_aquarium = actions_system.new_aquarium(player2, 10, 10);
+        let player2_data = actions_system.get_player(player2);
+        assert!(
+            player2_data.experience_points == 10, "Player2 new aquarium XP mismatch",
+        ); // 5 + 5 = 10
+
+        // Purchase fish (15 XP, total 25)
+        actions_system.purchase_fish(listing.id);
+        let player2_data = actions_system.get_player(player2);
+        assert!(player2_data.experience_points == 25, "Purchase fish XP mismatch"); // 10 + 15 = 25
+        assert!(player2_data.fish_count == 2, "Player2 fish count mismatch");
+        let purchased_fish = actions_system.get_fish(fish2.id);
+        assert!(purchased_fish.owner == player2, "Fish owner mismatch");
+        let updated_listing = actions_system.get_listing(listing.id);
+        assert!(!updated_listing.is_active, "Listing still active");
+
+        // Verify player1's state after purchase
+        let player1_data = actions_system.get_player(player1);
+        assert!(player1_data.fish_count == 2, "Player1 fish count mismatch after purchase");
+    }
     // #[test]
 // fn test_start_auction() {
 //     let caller = contract_address_const::<'seller'>();
