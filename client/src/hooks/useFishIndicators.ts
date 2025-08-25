@@ -13,9 +13,7 @@ import {
   feedIndicators,
 } from '@/utils/fishIndicators';
 
-function coerceDate(
-  input: Date | string | number | null | undefined
-): Date | null {
+function coerceDate(input: Date | string | number | null | undefined): Date | null {
   if (!input && input !== 0) return null;
   const d = input instanceof Date ? input : new Date(input);
   return isNaN(d.getTime()) ? null : d;
@@ -101,19 +99,19 @@ export function useFishIndicators(
     onChangeRef.current?.(indicators);
   }, [indicators]);
 
-  const feed = useCallback<UseFishIndicatorsReturn['feed']>((boost, fedAt) => {
-    setIndicators(prev => {
-      const next = feedIndicators(
-        prev,
-        boost ?? optionsRef.current.feedingBoost,
-        optionsRef.current
-      );
-      return {
-        ...next,
-        lastFedAt: fedAt ? coerceDate(fedAt) : new Date(),
-      } as FishIndicatorState;
-    });
-  }, []);
+  const feed = useCallback<UseFishIndicatorsReturn['feed']>(
+    (boost, fedAt) => {
+      setIndicators(prev => {
+        const next = feedIndicators(
+          prev,
+          boost ?? optionsRef.current.feedingBoost,
+          optionsRef.current
+        );
+        return { ...next, lastFedAt: fedAt ? coerceDate(fedAt) : new Date() } as FishIndicatorState;
+      });
+    },
+    []
+  );
 
   const setCleanliness = useCallback<UseFishIndicatorsReturn['setCleanliness']>(
     value => {
@@ -122,35 +120,32 @@ export function useFishIndicators(
     []
   );
 
-  const reset = useCallback<UseFishIndicatorsReturn['reset']>(
-    state => {
-      setIndicators(prev => {
-        const merged: FishIndicatorState = {
-          ...DEFAULT_STATE,
-          ...prev,
-          ...(state || {}),
-        } as FishIndicatorState;
+  const reset = useCallback<UseFishIndicatorsReturn['reset']>(state => {
+    setIndicators(prev => {
+      const merged: FishIndicatorState = {
+        ...DEFAULT_STATE,
+        ...prev,
+        ...(state || {}),
+      } as FishIndicatorState;
 
-        const fedAt = coerceDate(merged.lastFedAt);
-        const updatedAt = coerceDate(merged.lastUpdatedAt);
+      const fedAt = coerceDate(merged.lastFedAt);
+      const updatedAt = coerceDate(merged.lastUpdatedAt);
 
-        merged.lastFedAt = fedAt;
-        merged.lastUpdatedAt = updatedAt;
+      merged.lastFedAt = fedAt;
+      merged.lastUpdatedAt = updatedAt;
 
-        merged.happiness = computeHappiness(
-          merged.hunger,
-          merged.energy,
-          cleanliness,
-          optionsRef.current.happinessWeights,
-          optionsRef.current.clampMin,
-          optionsRef.current.clampMax
-        );
+      merged.happiness = computeHappiness(
+        merged.hunger,
+        merged.energy,
+        cleanliness,
+        optionsRef.current.happinessWeights,
+        optionsRef.current.clampMin,
+        optionsRef.current.clampMax
+      );
 
-        return merged;
-      });
-    },
-    [cleanliness]
-  );
+      return merged;
+    });
+  }, [cleanliness]);
 
   return {
     indicators,

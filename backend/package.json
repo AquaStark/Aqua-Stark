@@ -44,11 +44,7 @@
       "!src/websocket/**"
     ],
     "coverageDirectory": "coverage",
-    "coverageReporters": [
-      "text",
-      "lcov",
-      "html"
-    ]
+    "coverageReporters": ["text", "lcov", "html"]
   },
   "keywords": [
     "aqua-stark",

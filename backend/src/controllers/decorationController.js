@@ -2,6 +2,7 @@ import { DecorationService } from '../services/decorationService.js';
 
 // Decoration controller for handling HTTP requests related to decoration operations
 export class DecorationController {
+  
   // Get decoration state
   static async getDecorationState(req, res) {
     try {
@@ -25,16 +26,12 @@ export class DecorationController {
         return res.status(400).json({ error: 'Decoration ID is required' });
       }
 
-      const newDecoration = await DecorationService.createDecorationState(
-        decorationId,
-        playerId,
-        aquariumId
-      );
-
-      res.status(201).json({
-        success: true,
+      const newDecoration = await DecorationService.createDecorationState(decorationId, playerId, aquariumId);
+      
+      res.status(201).json({ 
+        success: true, 
         data: newDecoration,
-        message: 'Decoration state created successfully',
+        message: 'Decoration state created successfully'
       });
     } catch (error) {
       console.error('Error in createDecorationState:', error);
@@ -53,9 +50,8 @@ export class DecorationController {
         return res.status(403).json({ error: 'Access denied' });
       }
 
-      const decorations =
-        await DecorationService.getPlayerDecorations(playerId);
-
+      const decorations = await DecorationService.getPlayerDecorations(playerId);
+      
       res.json({ success: true, data: decorations });
     } catch (error) {
       console.error('Error in getPlayerDecorations:', error);
@@ -72,9 +68,8 @@ export class DecorationController {
         return res.status(400).json({ error: 'Aquarium ID is required' });
       }
 
-      const decorations =
-        await DecorationService.getAquariumDecorations(aquariumId);
-
+      const decorations = await DecorationService.getAquariumDecorations(aquariumId);
+      
       res.json({ success: true, data: decorations });
     } catch (error) {
       console.error('Error in getAquariumDecorations:', error);
@@ -86,31 +81,24 @@ export class DecorationController {
   static async placeDecoration(req, res) {
     try {
       const { decorationId } = req.params;
-      const {
-        aquariumId,
-        positionX,
-        positionY,
-        rotationDegrees = 0,
-      } = req.body;
+      const { aquariumId, positionX, positionY, rotationDegrees = 0 } = req.body;
 
       if (!aquariumId || positionX === undefined || positionY === undefined) {
-        return res
-          .status(400)
-          .json({ error: 'Aquarium ID and position are required' });
+        return res.status(400).json({ error: 'Aquarium ID and position are required' });
       }
 
       const placedDecoration = await DecorationService.placeDecoration(
-        decorationId,
-        aquariumId,
-        positionX,
-        positionY,
+        decorationId, 
+        aquariumId, 
+        positionX, 
+        positionY, 
         rotationDegrees
       );
-
-      res.json({
-        success: true,
+      
+      res.json({ 
+        success: true, 
         data: placedDecoration,
-        message: 'Decoration placed successfully',
+        message: 'Decoration placed successfully'
       });
     } catch (error) {
       console.error('Error in placeDecoration:', error);
@@ -123,13 +111,12 @@ export class DecorationController {
     try {
       const { decorationId } = req.params;
 
-      const removedDecoration =
-        await DecorationService.removeDecoration(decorationId);
-
-      res.json({
-        success: true,
+      const removedDecoration = await DecorationService.removeDecoration(decorationId);
+      
+      res.json({ 
+        success: true, 
         data: removedDecoration,
-        message: 'Decoration removed successfully',
+        message: 'Decoration removed successfully'
       });
     } catch (error) {
       console.error('Error in removeDecoration:', error);
@@ -144,23 +131,20 @@ export class DecorationController {
       const { positionX, positionY, rotationDegrees = 0 } = req.body;
 
       if (positionX === undefined || positionY === undefined) {
-        return res
-          .status(400)
-          .json({ error: 'Position coordinates are required' });
+        return res.status(400).json({ error: 'Position coordinates are required' });
       }
 
-      const updatedDecoration =
-        await DecorationService.updateDecorationPosition(
-          decorationId,
-          positionX,
-          positionY,
-          rotationDegrees
-        );
-
-      res.json({
-        success: true,
+      const updatedDecoration = await DecorationService.updateDecorationPosition(
+        decorationId, 
+        positionX, 
+        positionY, 
+        rotationDegrees
+      );
+      
+      res.json({ 
+        success: true, 
         data: updatedDecoration,
-        message: 'Decoration position updated successfully',
+        message: 'Decoration position updated successfully'
       });
     } catch (error) {
       console.error('Error in updateDecorationPosition:', error);
@@ -173,13 +157,12 @@ export class DecorationController {
     try {
       const { decorationId } = req.params;
 
-      const updatedDecoration =
-        await DecorationService.toggleDecorationVisibility(decorationId);
-
-      res.json({
-        success: true,
+      const updatedDecoration = await DecorationService.toggleDecorationVisibility(decorationId);
+      
+      res.json({ 
+        success: true, 
         data: updatedDecoration,
-        message: `Decoration visibility ${updatedDecoration.is_visible ? 'enabled' : 'disabled'}`,
+        message: `Decoration visibility ${updatedDecoration.is_visible ? 'enabled' : 'disabled'}`
       });
     } catch (error) {
       console.error('Error in toggleDecorationVisibility:', error);
@@ -194,21 +177,15 @@ export class DecorationController {
       const { fromAquariumId, toAquariumId } = req.body;
 
       if (!fromAquariumId || !toAquariumId) {
-        return res
-          .status(400)
-          .json({ error: 'From aquarium ID and to aquarium ID are required' });
+        return res.status(400).json({ error: 'From aquarium ID and to aquarium ID are required' });
       }
 
-      const movedDecoration = await DecorationService.moveDecoration(
-        decorationId,
-        fromAquariumId,
-        toAquariumId
-      );
-
-      res.json({
-        success: true,
+      const movedDecoration = await DecorationService.moveDecoration(decorationId, fromAquariumId, toAquariumId);
+      
+      res.json({ 
+        success: true, 
         data: movedDecoration,
-        message: 'Decoration moved successfully',
+        message: 'Decoration moved successfully'
       });
     } catch (error) {
       console.error('Error in moveDecoration:', error);
@@ -228,7 +205,7 @@ export class DecorationController {
       }
 
       const stats = await DecorationService.getPlayerDecorationStats(playerId);
-
+      
       res.json({ success: true, data: stats });
     } catch (error) {
       console.error('Error in getPlayerDecorationStats:', error);
@@ -248,18 +225,16 @@ export class DecorationController {
 
       // Validate that all decorations belong to the authenticated player
       for (const decoration of decorations) {
-        const decorationState = await DecorationService.getDecorationState(
-          decoration.decorationId
-        );
+        const decorationState = await DecorationService.getDecorationState(decoration.decorationId);
         if (!decorationState || decorationState.player_id !== playerId) {
-          return res.status(403).json({
+          return res.status(403).json({ 
             error: 'Access denied',
-            message: `Decoration ${decoration.decorationId} does not belong to you`,
+            message: `Decoration ${decoration.decorationId} does not belong to you`
           });
         }
       }
 
-      const updatePromises = decorations.map(decoration =>
+      const updatePromises = decorations.map(decoration => 
         DecorationService.updateDecorationPosition(
           decoration.decorationId,
           decoration.positionX,
@@ -269,11 +244,11 @@ export class DecorationController {
       );
 
       const updatedDecorations = await Promise.all(updatePromises);
-
-      res.json({
-        success: true,
+      
+      res.json({ 
+        success: true, 
         data: updatedDecorations,
-        message: `${updatedDecorations.length} decorations updated successfully`,
+        message: `${updatedDecorations.length} decorations updated successfully`
       });
     } catch (error) {
       console.error('Error in bulkUpdatePositions:', error);

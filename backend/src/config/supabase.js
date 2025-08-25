@@ -23,7 +23,7 @@ export const TABLES = {
   DECORATION_STATES: 'decoration_states',
   PLAYER_PREFERENCES: 'player_preferences',
   MINIGAME_SESSIONS: 'minigame_sessions',
-  GAME_ANALYTICS: 'game_analytics',
+  GAME_ANALYTICS: 'game_analytics'
 };
 
 // Real-time subscription channels
@@ -32,5 +32,5 @@ export const CHANNELS = {
   FISH_UPDATES: 'fish_updates',
   AQUARIUM_UPDATES: 'aquarium_updates',
   DECORATION_UPDATES: 'decoration_updates',
-  GAME_EVENTS: 'game_events',
+  GAME_EVENTS: 'game_events'
 };

@@ -3,13 +3,12 @@ import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 
 // Aquarium service for managing aquarium states and operations
 export class AquariumService {
+  
   // Get aquarium state from cache or database
   static async getAquariumState(aquariumId) {
     try {
       // Try to get from cache first
-      const cachedState = await redisClient.get(
-        CACHE_KEYS.AQUARIUM_STATE(aquariumId)
-      );
+      const cachedState = await redisClient.get(CACHE_KEYS.AQUARIUM_STATE(aquariumId));
       if (cachedState) {
         return JSON.parse(cachedState);
       }
@@ -47,7 +46,7 @@ export class AquariumService {
         .upsert({
           aquarium_id: aquariumId,
           water_temperature: temperature,
-          last_updated: new Date().toISOString(),
+          last_updated: new Date().toISOString()
         })
         .select()
         .single();
@@ -76,7 +75,7 @@ export class AquariumService {
         .upsert({
           aquarium_id: aquariumId,
           lighting_level: lightingLevel,
-          last_updated: new Date().toISOString(),
+          last_updated: new Date().toISOString()
         })
         .select()
         .single();
@@ -102,17 +101,17 @@ export class AquariumService {
     try {
       const currentState = await this.getAquariumState(aquariumId);
       const currentPollution = currentState?.pollution_level || 0;
-
+      
       // Reduce pollution by cleaning
       const newPollution = Math.max(0, currentPollution - 50);
-
+      
       const { data, error } = await supabaseAdmin
         .from(TABLES.AQUARIUM_STATES)
         .upsert({
           aquarium_id: aquariumId,
           pollution_level: newPollution,
           last_cleaned: new Date().toISOString(),
-          last_updated: new Date().toISOString(),
+          last_updated: new Date().toISOString()
         })
         .select()
         .single();
@@ -138,12 +137,10 @@ export class AquariumService {
     try {
       const { data, error } = await supabase
         .from(TABLES.AQUARIUM_NFTS)
-        .select(
-          `
+        .select(`
           *,
           aquarium_states (*)
-        `
-        )
+        `)
         .eq('owner_address', walletAddress);
 
       if (error) throw error;
@@ -172,7 +169,7 @@ export class AquariumService {
         .upsert({
           aquarium_id: aquariumId,
           fish_count: currentFishCount + 1,
-          last_updated: new Date().toISOString(),
+          last_updated: new Date().toISOString()
         })
         .select()
         .single();
@@ -198,7 +195,7 @@ export class AquariumService {
     try {
       const aquarium = await this.getAquariumState(aquariumId);
       const currentFishCount = aquarium?.fish_count || 0;
-
+      
       if (currentFishCount <= 0) {
         throw new Error('No fish in aquarium to remove');
       }
@@ -209,7 +206,7 @@ export class AquariumService {
         .upsert({
           aquarium_id: aquariumId,
           fish_count: currentFishCount - 1,
-          last_updated: new Date().toISOString(),
+          last_updated: new Date().toISOString()
         })
         .select()
         .single();

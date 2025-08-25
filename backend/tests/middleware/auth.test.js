@@ -9,48 +9,42 @@ describe('Authentication Middleware', () => {
     mockReq = {
       headers: {},
       params: {},
-      user: null,
+      user: null
     };
     mockRes = {
-      status: function () {
-        return this;
-      },
-      json: function () {
-        return this;
-      },
+      status: function() { return this; },
+      json: function() { return this; }
     };
-    mockNext = function () {};
+    mockNext = function() {};
   });
 
   describe('simpleAuth', () => {
     it('should pass with valid player ID in header', () => {
       mockReq.headers['x-player-id'] = 'player_123';
       let nextCalled = false;
-      mockNext = () => {
-        nextCalled = true;
-      };
+      mockNext = () => { nextCalled = true; };
 
       simpleAuth(mockReq, mockRes, mockNext);
 
       expect(nextCalled).toBe(true);
       expect(mockReq.user).toEqual({
         playerId: 'player_123',
-        authenticated: true,
+        authenticated: true
       });
     });
 
     it('should return 401 when no player ID provided', () => {
       let statusCalled = false;
       let jsonCalled = false;
-      mockRes.status = code => {
-        statusCalled = true;
+      mockRes.status = (code) => { 
+        statusCalled = true; 
         expect(code).toBe(401);
-        return mockRes;
+        return mockRes; 
       };
-      mockRes.json = data => {
-        jsonCalled = true;
+      mockRes.json = (data) => { 
+        jsonCalled = true; 
         expect(data.error).toBe('Authentication required');
-        return mockRes;
+        return mockRes; 
       };
 
       simpleAuth(mockReq, mockRes, mockNext);
@@ -64,31 +58,29 @@ describe('Authentication Middleware', () => {
     it('should set authenticated user when player ID provided', () => {
       mockReq.headers['x-player-id'] = 'player_123';
       let nextCalled = false;
-      mockNext = () => {
-        nextCalled = true;
-      };
+      mockNext = () => { nextCalled = true; };
 
       optionalAuth(mockReq, mockRes, mockNext);
 
       expect(nextCalled).toBe(true);
       expect(mockReq.user).toEqual({
         playerId: 'player_123',
-        authenticated: true,
+        authenticated: true
       });
     });
 
     it('should set unauthenticated user when no player ID provided', () => {
       let nextCalled = false;
-      mockNext = () => {
-        nextCalled = true;
-      };
+      mockNext = () => { nextCalled = true; };
 
       optionalAuth(mockReq, mockRes, mockNext);
 
       expect(nextCalled).toBe(true);
       expect(mockReq.user).toEqual({
-        authenticated: false,
+        authenticated: false
       });
     });
   });
+
+
 });

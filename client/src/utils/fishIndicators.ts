@@ -57,9 +57,7 @@ export function computeHappiness(
 ): number {
   const normClean = clamp(cleanliness, 0, 100);
   const raw =
-    hunger * weights.hunger +
-    energy * weights.energy +
-    normClean * weights.cleanliness;
+    hunger * weights.hunger + energy * weights.energy + normClean * weights.cleanliness;
   const weightSum = weights.hunger + weights.energy + weights.cleanliness;
   return clamp(raw / Math.max(1e-6, weightSum), clampMin, clampMax);
 }
@@ -121,11 +119,7 @@ export function feedIndicators(
   boost: number,
   options: FishIndicatorOptions
 ): FishIndicatorState {
-  const hunger = clamp(
-    state.hunger + boost,
-    options.clampMin,
-    options.clampMax
-  );
+  const hunger = clamp(state.hunger + boost, options.clampMin, options.clampMax);
   return {
     ...state,
     hunger,

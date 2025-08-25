@@ -3,11 +3,12 @@ import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 
 // Minigame service for managing game sessions and XP rewards
 export class MinigameService {
+  
   // Create a new minigame session
   static async createGameSession(playerWallet, gameType) {
     try {
       const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
+      
       const { data, error } = await supabaseAdmin
         .from(TABLES.MINIGAME_SESSIONS)
         .insert({
@@ -17,7 +18,7 @@ export class MinigameService {
           score: 0,
           xp_earned: 0,
           synced_to_chain: false,
-          created_at: new Date().toISOString(),
+          created_at: new Date().toISOString()
         })
         .select()
         .single();
@@ -39,7 +40,7 @@ export class MinigameService {
           score: finalScore,
           xp_earned: xpEarned,
           ended_at: new Date().toISOString(),
-          synced_to_chain: false,
+          synced_to_chain: false
         })
         .eq('session_id', sessionId)
         .select()
@@ -56,11 +57,11 @@ export class MinigameService {
   // Calculate XP based on game type and score
   static calculateXP(gameType, score) {
     const baseXP = {
-      flappy_fish: 10,
-      angry_fish: 15,
-      fish_racing: 20,
-      bubble_pop: 8,
-      fish_memory: 12,
+      'flappy_fish': 10,
+      'angry_fish': 15,
+      'fish_racing': 20,
+      'bubble_pop': 8,
+      'fish_memory': 12
     };
 
     const base = baseXP[gameType] || 10;
@@ -81,17 +82,10 @@ export class MinigameService {
       // Calculate statistics
       const stats = {
         totalGames: data.length,
-        totalXP: data.reduce(
-          (sum, session) => sum + (session.xp_earned || 0),
-          0
-        ),
-        averageScore:
-          data.length > 0
-            ? data.reduce((sum, session) => sum + (session.score || 0), 0) /
-              data.length
-            : 0,
+        totalXP: data.reduce((sum, session) => sum + (session.xp_earned || 0), 0),
+        averageScore: data.length > 0 ? data.reduce((sum, session) => sum + (session.score || 0), 0) / data.length : 0,
         gamesByType: {},
-        bestScores: {},
+        bestScores: {}
       };
 
       // Group by game type
@@ -172,7 +166,7 @@ export class MinigameService {
         .from(TABLES.MINIGAME_SESSIONS)
         .update({
           synced_to_chain: true,
-          synced_at: new Date().toISOString(),
+          synced_at: new Date().toISOString()
         })
         .eq('session_id', sessionId)
         .select()
@@ -207,7 +201,7 @@ export class MinigameService {
   static async awardBonusXP(playerWallet, achievement, bonusXP) {
     try {
       const sessionId = `bonus_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-
+      
       const { data, error } = await supabaseAdmin
         .from(TABLES.MINIGAME_SESSIONS)
         .insert({
@@ -219,7 +213,7 @@ export class MinigameService {
           achievement_type: achievement,
           synced_to_chain: false,
           created_at: new Date().toISOString(),
-          ended_at: new Date().toISOString(),
+          ended_at: new Date().toISOString()
         })
         .select()
         .single();

@@ -46,7 +46,7 @@ global.testUtils = {
     aquariums_created: 0,
     last_login: new Date().toISOString(),
     created_at: new Date().toISOString(),
-    last_updated: new Date().toISOString(),
+    last_updated: new Date().toISOString()
   },
 
   // Mock fish data
@@ -60,7 +60,7 @@ global.testUtils = {
     last_fed_timestamp: new Date().toISOString(),
     last_interaction_timestamp: new Date().toISOString(),
     created_at: new Date().toISOString(),
-    last_updated: new Date().toISOString(),
+    last_updated: new Date().toISOString()
   },
 
   // Mock decoration data
@@ -73,7 +73,7 @@ global.testUtils = {
     rotation_degrees: 0,
     is_visible: true,
     created_at: new Date().toISOString(),
-    last_updated: new Date().toISOString(),
+    last_updated: new Date().toISOString()
   },
 
   // Mock aquarium data
@@ -85,13 +85,13 @@ global.testUtils = {
     pollution_level: 10,
     last_cleaned_timestamp: new Date().toISOString(),
     created_at: new Date().toISOString(),
-    last_updated: new Date().toISOString(),
+    last_updated: new Date().toISOString()
   },
 
   // Helper to create request headers
-  createAuthHeaders: playerId => ({
+  createAuthHeaders: (playerId) => ({
     'Content-Type': 'application/json',
-    'x-player-id': playerId,
+    'x-player-id': playerId
   }),
 
   // Helper to create mock request
@@ -99,7 +99,7 @@ global.testUtils = {
     params,
     body,
     headers,
-    user: null,
+    user: null
   }),
 
   // Helper to create mock response
@@ -109,7 +109,7 @@ global.testUtils = {
     res.json = jest.fn().mockReturnValue(res);
     res.send = jest.fn().mockReturnValue(res);
     return res;
-  },
+  }
 };
 
 // Clean up after each test

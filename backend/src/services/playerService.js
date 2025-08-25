@@ -3,13 +3,12 @@ import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 
 // Player service for managing player data and profile operations
 export class PlayerService {
+  
   // Get player profile from cache or database
   static async getPlayerProfile(playerId) {
     try {
       // Try to get from cache first
-      const cachedProfile = await redisClient.get(
-        CACHE_KEYS.PLAYER_SESSION(playerId)
-      );
+      const cachedProfile = await redisClient.get(CACHE_KEYS.PLAYER_SESSION(playerId));
       if (cachedProfile) {
         return JSON.parse(cachedProfile);
       }
@@ -79,7 +78,7 @@ export class PlayerService {
           decorations_placed: 0,
           fish_bred_count: 0,
           aquariums_created: 0,
-          last_login: new Date().toISOString(),
+          last_login: new Date().toISOString()
         })
         .select()
         .single();
@@ -108,11 +107,9 @@ export class PlayerService {
         throw new Error('Player not found');
       }
 
-      const newExperienceCurrent =
-        currentProfile.experience_current + experienceGained;
-      const newExperienceTotal =
-        currentProfile.experience_total + experienceGained;
-
+      const newExperienceCurrent = currentProfile.experience_current + experienceGained;
+      const newExperienceTotal = currentProfile.experience_total + experienceGained;
+      
       // Calculate new level (simple formula: level = floor(experience_total / 1000) + 1)
       const newLevel = Math.floor(newExperienceTotal / 1000) + 1;
 
@@ -122,7 +119,7 @@ export class PlayerService {
           experience_current: newExperienceCurrent,
           experience_total: newExperienceTotal,
           level: newLevel,
-          last_updated: new Date().toISOString(),
+          last_updated: new Date().toISOString()
         })
         .eq('player_id', playerId)
         .select()
@@ -158,7 +155,7 @@ export class PlayerService {
         .from(TABLES.PLAYERS)
         .update({
           currency: newCurrency,
-          last_updated: new Date().toISOString(),
+          last_updated: new Date().toISOString()
         })
         .eq('player_id', playerId)
         .select()
@@ -187,7 +184,7 @@ export class PlayerService {
         .from(TABLES.PLAYERS)
         .update({
           ...statsUpdate,
-          last_updated: new Date().toISOString(),
+          last_updated: new Date().toISOString()
         })
         .eq('player_id', playerId)
         .select()
@@ -215,7 +212,7 @@ export class PlayerService {
       const { data, error } = await supabaseAdmin
         .from(TABLES.PLAYERS)
         .update({
-          last_login: new Date().toISOString(),
+          last_login: new Date().toISOString()
         })
         .eq('player_id', playerId)
         .select()
@@ -262,7 +259,7 @@ export class PlayerService {
         .upsert({
           player_id: playerId,
           ...preferences,
-          last_updated: new Date().toISOString(),
+          last_updated: new Date().toISOString()
         })
         .select()
         .single();

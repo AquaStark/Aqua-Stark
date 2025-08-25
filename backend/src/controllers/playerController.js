@@ -2,12 +2,13 @@ import { PlayerService } from '../services/playerService.js';
 
 // Player controller for handling HTTP requests related to player operations
 export class PlayerController {
+  
   // Get player profile
   static async getPlayerProfile(req, res) {
     try {
       // Resource is already validated by ownership middleware
       const playerProfile = req.resource;
-
+      
       res.json({ success: true, data: playerProfile });
     } catch (error) {
       console.error('Error in getPlayerProfile:', error);
@@ -25,7 +26,7 @@ export class PlayerController {
       }
 
       const player = await PlayerService.getPlayerByWallet(walletAddress);
-
+      
       if (!player) {
         return res.status(404).json({ error: 'Player not found' });
       }
@@ -43,21 +44,15 @@ export class PlayerController {
       const { playerId, walletAddress, username } = req.body;
 
       if (!playerId || !walletAddress) {
-        return res
-          .status(400)
-          .json({ error: 'Player ID and wallet address are required' });
+        return res.status(400).json({ error: 'Player ID and wallet address are required' });
       }
 
-      const newPlayer = await PlayerService.createPlayer(
-        playerId,
-        walletAddress,
-        username
-      );
-
-      res.status(201).json({
-        success: true,
+      const newPlayer = await PlayerService.createPlayer(playerId, walletAddress, username);
+      
+      res.status(201).json({ 
+        success: true, 
         data: newPlayer,
-        message: 'Player created successfully',
+        message: 'Player created successfully'
       });
     } catch (error) {
       console.error('Error in createPlayer:', error);
@@ -82,20 +77,15 @@ export class PlayerController {
       }
 
       if (experienceGained < 0) {
-        return res
-          .status(400)
-          .json({ error: 'Experience gained must be positive' });
+        return res.status(400).json({ error: 'Experience gained must be positive' });
       }
 
-      const updatedPlayer = await PlayerService.updatePlayerExperience(
-        playerId,
-        experienceGained
-      );
-
-      res.json({
-        success: true,
+      const updatedPlayer = await PlayerService.updatePlayerExperience(playerId, experienceGained);
+      
+      res.json({ 
+        success: true, 
         data: updatedPlayer,
-        message: `Experience updated: +${experienceGained} XP`,
+        message: `Experience updated: +${experienceGained} XP`
       });
     } catch (error) {
       console.error('Error in updatePlayerExperience:', error);
@@ -119,15 +109,12 @@ export class PlayerController {
         return res.status(400).json({ error: 'Currency change is required' });
       }
 
-      const updatedPlayer = await PlayerService.updatePlayerCurrency(
-        playerId,
-        currencyChange
-      );
-
-      res.json({
-        success: true,
+      const updatedPlayer = await PlayerService.updatePlayerCurrency(playerId, currencyChange);
+      
+      res.json({ 
+        success: true, 
         data: updatedPlayer,
-        message: `Currency updated: ${currencyChange > 0 ? '+' : ''}${currencyChange}`,
+        message: `Currency updated: ${currencyChange > 0 ? '+' : ''}${currencyChange}`
       });
     } catch (error) {
       console.error('Error in updatePlayerCurrency:', error);
@@ -151,15 +138,12 @@ export class PlayerController {
         return res.status(400).json({ error: 'Stats update is required' });
       }
 
-      const updatedPlayer = await PlayerService.updatePlayerStats(
-        playerId,
-        statsUpdate
-      );
-
-      res.json({
-        success: true,
+      const updatedPlayer = await PlayerService.updatePlayerStats(playerId, statsUpdate);
+      
+      res.json({ 
+        success: true, 
         data: updatedPlayer,
-        message: 'Player statistics updated successfully',
+        message: 'Player statistics updated successfully'
       });
     } catch (error) {
       console.error('Error in updatePlayerStats:', error);
@@ -179,11 +163,11 @@ export class PlayerController {
       }
 
       const updatedPlayer = await PlayerService.updateLastLogin(playerId);
-
-      res.json({
-        success: true,
+      
+      res.json({ 
+        success: true, 
         data: updatedPlayer,
-        message: 'Last login updated successfully',
+        message: 'Last login updated successfully'
       });
     } catch (error) {
       console.error('Error in updateLastLogin:', error);
@@ -203,7 +187,7 @@ export class PlayerController {
       }
 
       const preferences = await PlayerService.getPlayerPreferences(playerId);
-
+      
       if (!preferences) {
         return res.status(404).json({ error: 'Player preferences not found' });
       }
@@ -231,15 +215,12 @@ export class PlayerController {
         return res.status(400).json({ error: 'Preferences are required' });
       }
 
-      const updatedPreferences = await PlayerService.updatePlayerPreferences(
-        playerId,
-        preferences
-      );
-
-      res.json({
-        success: true,
+      const updatedPreferences = await PlayerService.updatePlayerPreferences(playerId, preferences);
+      
+      res.json({ 
+        success: true, 
         data: updatedPreferences,
-        message: 'Player preferences updated successfully',
+        message: 'Player preferences updated successfully'
       });
     } catch (error) {
       console.error('Error in updatePlayerPreferences:', error);
@@ -260,7 +241,7 @@ export class PlayerController {
 
       const [profile, preferences] = await Promise.all([
         PlayerService.getPlayerProfile(playerId),
-        PlayerService.getPlayerPreferences(playerId),
+        PlayerService.getPlayerPreferences(playerId)
       ]);
 
       if (!profile) {
@@ -270,7 +251,7 @@ export class PlayerController {
       const dashboardData = {
         profile,
         preferences: preferences || {},
-        lastUpdated: new Date().toISOString(),
+        lastUpdated: new Date().toISOString()
       };
 
       res.json({ success: true, data: dashboardData });

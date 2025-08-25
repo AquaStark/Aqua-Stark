@@ -145,10 +145,7 @@ export function FeedingAquarium({
         userSelect: 'none',
       }}
     >
-      <FishDisplay
-        fish={fishWithMovement}
-        cleanlinessScore={cleanlinessScore}
-      />
+      <FishDisplay fish={fishWithMovement} cleanlinessScore={cleanlinessScore} />
       {foods.map((food: FoodItem) => (
         <Food key={food.id} food={food} aquariumBounds={dimensions} />
       ))}

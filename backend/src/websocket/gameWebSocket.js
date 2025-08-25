@@ -18,10 +18,10 @@ export class GameWebSocket {
       console.log('New WebSocket connection established');
 
       // Handle authentication
-      ws.on('message', async message => {
+      ws.on('message', async (message) => {
         try {
           const data = JSON.parse(message);
-
+          
           if (data.type === 'authenticate') {
             await this.handleAuthentication(ws, data.token);
           } else if (data.type === 'subscribe') {
@@ -31,12 +31,10 @@ export class GameWebSocket {
           }
         } catch (error) {
           console.error('WebSocket message error:', error);
-          ws.send(
-            JSON.stringify({
-              type: 'error',
-              message: 'Invalid message format',
-            })
-          );
+          ws.send(JSON.stringify({ 
+            type: 'error', 
+            message: 'Invalid message format' 
+          }));
         }
       });
 
@@ -46,18 +44,16 @@ export class GameWebSocket {
       });
 
       // Handle errors
-      ws.on('error', error => {
+      ws.on('error', (error) => {
         console.error('WebSocket error:', error);
         this.handleDisconnect(ws);
       });
 
       // Send welcome message
-      ws.send(
-        JSON.stringify({
-          type: 'connected',
-          message: 'Connected to Aqua Stark WebSocket server',
-        })
-      );
+      ws.send(JSON.stringify({
+        type: 'connected',
+        message: 'Connected to Aqua Stark WebSocket server'
+      }));
     });
   }
 
@@ -65,12 +61,10 @@ export class GameWebSocket {
   async handleAuthentication(ws, token) {
     try {
       if (!token) {
-        ws.send(
-          JSON.stringify({
-            type: 'auth_error',
-            message: 'Authentication token required',
-          })
-        );
+        ws.send(JSON.stringify({
+          type: 'auth_error',
+          message: 'Authentication token required'
+        }));
         return;
       }
 
@@ -79,12 +73,10 @@ export class GameWebSocket {
       const walletAddress = decoded.walletAddress;
 
       if (!walletAddress) {
-        ws.send(
-          JSON.stringify({
-            type: 'auth_error',
-            message: 'Invalid token payload',
-          })
-        );
+        ws.send(JSON.stringify({
+          type: 'auth_error',
+          message: 'Invalid token payload'
+        }));
         return;
       }
 
@@ -95,46 +87,38 @@ export class GameWebSocket {
       // Update active players in Redis
       await this.updateActivePlayers(walletAddress, true);
 
-      ws.send(
-        JSON.stringify({
-          type: 'authenticated',
-          walletAddress: walletAddress,
-        })
-      );
+      ws.send(JSON.stringify({
+        type: 'authenticated',
+        walletAddress: walletAddress
+      }));
 
       console.log(`Client authenticated: ${walletAddress}`);
     } catch (error) {
       console.error('Authentication error:', error);
-      ws.send(
-        JSON.stringify({
-          type: 'auth_error',
-          message: 'Authentication failed',
-        })
-      );
+      ws.send(JSON.stringify({
+        type: 'auth_error',
+        message: 'Authentication failed'
+      }));
     }
   }
 
   // Handle subscription to game events
   async handleSubscription(ws, data) {
     if (!ws.walletAddress) {
-      ws.send(
-        JSON.stringify({
-          type: 'error',
-          message: 'Authentication required for subscription',
-        })
-      );
+      ws.send(JSON.stringify({
+        type: 'error',
+        message: 'Authentication required for subscription'
+      }));
       return;
     }
 
     const { channel, resourceId } = data;
 
     if (!channel) {
-      ws.send(
-        JSON.stringify({
-          type: 'error',
-          message: 'Channel required for subscription',
-        })
-      );
+      ws.send(JSON.stringify({
+        type: 'error',
+        message: 'Channel required for subscription'
+      }));
       return;
     }
 
@@ -144,13 +128,11 @@ export class GameWebSocket {
     }
     ws.subscriptions.add(`${channel}:${resourceId || 'all'}`);
 
-    ws.send(
-      JSON.stringify({
-        type: 'subscribed',
-        channel: channel,
-        resourceId: resourceId,
-      })
-    );
+    ws.send(JSON.stringify({
+      type: 'subscribed',
+      channel: channel,
+      resourceId: resourceId
+    }));
   }
 
   // Handle unsubscription from game events
@@ -161,23 +143,21 @@ export class GameWebSocket {
       ws.subscriptions.delete(`${channel}:${resourceId || 'all'}`);
     }
 
-    ws.send(
-      JSON.stringify({
-        type: 'unsubscribed',
-        channel: channel,
-        resourceId: resourceId,
-      })
-    );
+    ws.send(JSON.stringify({
+      type: 'unsubscribed',
+      channel: channel,
+      resourceId: resourceId
+    }));
   }
 
   // Handle client disconnect
   async handleDisconnect(ws) {
     if (ws.walletAddress) {
       this.clients.delete(ws.walletAddress);
-
+      
       // Update active players in Redis
       await this.updateActivePlayers(ws.walletAddress, false);
-
+      
       console.log(`Client disconnected: ${ws.walletAddress}`);
     }
   }
@@ -187,82 +167,59 @@ export class GameWebSocket {
     // Subscribe to fish updates
     supabase
       .channel(CHANNELS.FISH_UPDATES)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'fish_states',
-        },
-        payload => {
-          this.broadcastToSubscribers('fish_updates', payload.new.fish_id, {
-            type: 'fish_update',
-            fishId: payload.new.fish_id,
-            data: payload.new,
-            event: payload.eventType,
-          });
-        }
-      )
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'fish_states'
+      }, (payload) => {
+        this.broadcastToSubscribers('fish_updates', payload.new.fish_id, {
+          type: 'fish_update',
+          fishId: payload.new.fish_id,
+          data: payload.new,
+          event: payload.eventType
+        });
+      })
       .subscribe();
 
     // Subscribe to aquarium updates
     supabase
       .channel(CHANNELS.AQUARIUM_UPDATES)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'aquarium_states',
-        },
-        payload => {
-          this.broadcastToSubscribers(
-            'aquarium_updates',
-            payload.new.aquarium_id,
-            {
-              type: 'aquarium_update',
-              aquariumId: payload.new.aquarium_id,
-              data: payload.new,
-              event: payload.eventType,
-            }
-          );
-        }
-      )
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'aquarium_states'
+      }, (payload) => {
+        this.broadcastToSubscribers('aquarium_updates', payload.new.aquarium_id, {
+          type: 'aquarium_update',
+          aquariumId: payload.new.aquarium_id,
+          data: payload.new,
+          event: payload.eventType
+        });
+      })
       .subscribe();
 
     // Subscribe to game events
     supabase
       .channel(CHANNELS.GAME_EVENTS)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'minigame_sessions',
-        },
-        payload => {
-          this.broadcastToSubscribers(
-            'game_events',
-            payload.new.player_wallet,
-            {
-              type: 'game_event',
-              playerWallet: payload.new.player_wallet,
-              data: payload.new,
-              event: payload.eventType,
-            }
-          );
-        }
-      )
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'minigame_sessions'
+      }, (payload) => {
+        this.broadcastToSubscribers('game_events', payload.new.player_wallet, {
+          type: 'game_event',
+          playerWallet: payload.new.player_wallet,
+          data: payload.new,
+          event: payload.eventType
+        });
+      })
       .subscribe();
   }
 
   // Broadcast message to subscribers
   broadcastToSubscribers(channel, resourceId, message) {
     this.clients.forEach((ws, walletAddress) => {
-      if (
-        ws.subscriptions &&
-        ws.subscriptions.has(`${channel}:${resourceId}`)
-      ) {
+      if (ws.subscriptions && ws.subscriptions.has(`${channel}:${resourceId}`)) {
         ws.send(JSON.stringify(message));
       } else if (ws.subscriptions && ws.subscriptions.has(`${channel}:all`)) {
         ws.send(JSON.stringify(message));
@@ -273,17 +230,15 @@ export class GameWebSocket {
   // Send message to specific client
   sendToClient(walletAddress, message) {
     const ws = this.clients.get(walletAddress);
-    if (ws && ws.readyState === 1) {
-      // WebSocket.OPEN
+    if (ws && ws.readyState === 1) { // WebSocket.OPEN
       ws.send(JSON.stringify(message));
     }
   }
 
   // Broadcast to all connected clients
   broadcast(message) {
-    this.clients.forEach(ws => {
-      if (ws.readyState === 1) {
-        // WebSocket.OPEN
+    this.clients.forEach((ws) => {
+      if (ws.readyState === 1) { // WebSocket.OPEN
         ws.send(JSON.stringify(message));
       }
     });
@@ -318,7 +273,7 @@ export class GameWebSocket {
       type: 'fish_happiness_update',
       fishId: fishId,
       happinessLevel: happinessLevel,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 
@@ -328,7 +283,7 @@ export class GameWebSocket {
       type: 'aquarium_state_update',
       aquariumId: aquariumId,
       state: state,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 
@@ -338,7 +293,7 @@ export class GameWebSocket {
       type: 'game_event',
       eventType: eventType,
       data: data,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     });
   }
 }
