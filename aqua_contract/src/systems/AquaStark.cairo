@@ -16,6 +16,7 @@ pub mod AquaStark {
         ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
         contract_address_const,
     };
+    use aqua_stark::models::trade_model::MatchCriteria;
     use aqua_stark::models::player_model::{
         Player, PlayerTrait, PlayerCounter, UsernameToAddress, AddressToUsername,
     };
@@ -33,15 +34,7 @@ pub mod AquaStark {
     use core::traits::Into;
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
-    use aqua_stark::models::session::{
-        SessionKey, SessionAnalytics, SESSION_STATUS_ACTIVE, SESSION_STATUS_EXPIRED,
-        SESSION_STATUS_REVOKED, SESSION_TYPE_BASIC, SESSION_TYPE_PREMIUM, SESSION_TYPE_ADMIN,
-        PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, PERMISSION_ADMIN,
-    };
-    use aqua_stark::helpers::session_validation::{
-        SessionValidationTrait, SessionValidationImpl, MIN_SESSION_DURATION, MAX_SESSION_DURATION,
-        AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION,
-    };
+
 
 
     #[abi(embed_v0)]

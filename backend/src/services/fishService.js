@@ -3,12 +3,13 @@ import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 
 // Fish service for managing fish states and operations
 export class FishService {
-  
   // Get fish state from cache or database
   static async getFishState(fishId) {
     try {
       // Try to get from cache first
-      const cachedState = await redisClient.get(CACHE_KEYS.FISH_HAPPINESS(fishId));
+      const cachedState = await redisClient.get(
+        CACHE_KEYS.FISH_HAPPINESS(fishId)
+      );
       if (cachedState) {
         return JSON.parse(cachedState);
       }
@@ -46,7 +47,7 @@ export class FishService {
         .upsert({
           fish_id: fishId,
           happiness_level: happinessLevel,
-          last_updated: new Date().toISOString()
+          last_updated: new Date().toISOString(),
         })
         .select()
         .single();
@@ -72,20 +73,23 @@ export class FishService {
     try {
       const currentState = await this.getFishState(fishId);
       const currentHunger = currentState?.hunger_level || 100;
-      
+
       // Calculate new hunger level based on food type
       const hungerIncrease = foodType === 'premium' ? 30 : 20;
       const newHunger = Math.min(100, currentHunger + hungerIncrease);
-      
+
       // Update hunger and happiness
       const { data, error } = await supabaseAdmin
         .from(TABLES.FISH_STATES)
         .upsert({
           fish_id: fishId,
           hunger_level: newHunger,
-          happiness_level: Math.min(100, (currentState?.happiness_level || 50) + 10),
+          happiness_level: Math.min(
+            100,
+            (currentState?.happiness_level || 50) + 10
+          ),
           last_fed_timestamp: new Date().toISOString(),
-          last_updated: new Date().toISOString()
+          last_updated: new Date().toISOString(),
         })
         .select()
         .single();
@@ -134,7 +138,7 @@ export class FishService {
           hunger_level: 100,
           health: 100,
           mood: 'happy',
-          last_interaction_timestamp: new Date().toISOString()
+          last_interaction_timestamp: new Date().toISOString(),
         })
         .select()
         .single();
@@ -162,7 +166,7 @@ export class FishService {
       if (!currentState) return null;
 
       let newMood = 'happy';
-      
+
       // Determine mood based on current state
       if (currentState.hunger_level < 30) {
         newMood = 'hungry';
@@ -178,7 +182,7 @@ export class FishService {
         .from(TABLES.FISH_STATES)
         .update({
           mood: newMood,
-          last_updated: new Date().toISOString()
+          last_updated: new Date().toISOString(),
         })
         .eq('fish_id', fishId)
         .select()

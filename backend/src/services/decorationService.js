@@ -3,12 +3,13 @@ import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 
 // Decoration service for managing decoration states and operations
 export class DecorationService {
-  
   // Get decoration state from cache or database
   static async getDecorationState(decorationId) {
     try {
       // Try to get from cache first
-      const cachedState = await redisClient.get(CACHE_KEYS.DECORATION_STATE(decorationId));
+      const cachedState = await redisClient.get(
+        CACHE_KEYS.DECORATION_STATE(decorationId)
+      );
       if (cachedState) {
         return JSON.parse(cachedState);
       }
@@ -39,7 +40,11 @@ export class DecorationService {
   }
 
   // Create new decoration state (called when decoration is created on-chain)
-  static async createDecorationState(decorationId, playerId, aquariumId = null) {
+  static async createDecorationState(
+    decorationId,
+    playerId,
+    aquariumId = null
+  ) {
     try {
       const { data, error } = await supabaseAdmin
         .from(TABLES.DECORATION_STATES)
@@ -51,7 +56,7 @@ export class DecorationService {
           position_y: null,
           rotation_degrees: 0,
           is_visible: true,
-          created_at: new Date().toISOString()
+          created_at: new Date().toISOString(),
         })
         .select()
         .single();
@@ -106,7 +111,13 @@ export class DecorationService {
   }
 
   // Place decoration in aquarium
-  static async placeDecoration(decorationId, aquariumId, positionX, positionY, rotationDegrees = 0) {
+  static async placeDecoration(
+    decorationId,
+    aquariumId,
+    positionX,
+    positionY,
+    rotationDegrees = 0
+  ) {
     try {
       const { data, error } = await supabaseAdmin
         .from(TABLES.DECORATION_STATES)
@@ -116,7 +127,7 @@ export class DecorationService {
           position_y: positionY,
           rotation_degrees: rotationDegrees,
           is_visible: true,
-          last_updated: new Date().toISOString()
+          last_updated: new Date().toISOString(),
         })
         .eq('decoration_id', decorationId)
         .select()
@@ -149,7 +160,7 @@ export class DecorationService {
           position_y: null,
           rotation_degrees: 0,
           is_visible: false,
-          last_updated: new Date().toISOString()
+          last_updated: new Date().toISOString(),
         })
         .eq('decoration_id', decorationId)
         .select()
@@ -172,7 +183,12 @@ export class DecorationService {
   }
 
   // Update decoration position
-  static async updateDecorationPosition(decorationId, positionX, positionY, rotationDegrees) {
+  static async updateDecorationPosition(
+    decorationId,
+    positionX,
+    positionY,
+    rotationDegrees
+  ) {
     try {
       const { data, error } = await supabaseAdmin
         .from(TABLES.DECORATION_STATES)
@@ -180,7 +196,7 @@ export class DecorationService {
           position_x: positionX,
           position_y: positionY,
           rotation_degrees: rotationDegrees,
-          last_updated: new Date().toISOString()
+          last_updated: new Date().toISOString(),
         })
         .eq('decoration_id', decorationId)
         .select()
@@ -216,7 +232,7 @@ export class DecorationService {
         .from(TABLES.DECORATION_STATES)
         .update({
           is_visible: newVisibility,
-          last_updated: new Date().toISOString()
+          last_updated: new Date().toISOString(),
         })
         .eq('decoration_id', decorationId)
         .select()
@@ -248,7 +264,7 @@ export class DecorationService {
           position_x: null, // Reset position for new aquarium
           position_y: null,
           rotation_degrees: 0,
-          last_updated: new Date().toISOString()
+          last_updated: new Date().toISOString(),
         })
         .eq('decoration_id', decorationId)
         .eq('aquarium_id', fromAquariumId)
@@ -285,7 +301,7 @@ export class DecorationService {
         total_decorations: data.length,
         placed_decorations: data.filter(d => d.aquarium_id !== null).length,
         visible_decorations: data.filter(d => d.is_visible).length,
-        unplaced_decorations: data.filter(d => d.aquarium_id === null).length
+        unplaced_decorations: data.filter(d => d.aquarium_id === null).length,
       };
 
       return stats;
