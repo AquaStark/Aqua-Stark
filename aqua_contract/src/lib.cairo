@@ -2,6 +2,7 @@ pub mod systems {
     pub mod AquaStark;
     pub mod Auctions;
     pub mod ShopCatalog;
+    pub mod FishSystem;
     // pub mod experience;
     pub mod daily_challenge;
     pub mod Trade;
@@ -25,6 +26,7 @@ pub mod interfaces {
     pub mod IAquaStark;
     pub mod IShopCatalog;
     pub mod ITransactionHistory;
+    pub mod IFish;
     // pub mod IExperience;
     pub mod ITrade;
 }
@@ -43,13 +45,17 @@ pub mod models {
     pub mod transaction_model;
     pub mod session;
 }
+
+#[cfg(test)]
 pub mod tests {
-    mod test_auction;
-    mod test_daily_challenge;
-    mod test_trading;
+    pub mod test_daily_challenge;
+    pub mod utils;
+    pub mod test_world;
+    pub mod test_trading;
+    pub mod test_auction;
+    pub mod test_fish;
     // mod test_experience;
     mod test_aquarium;
-    mod test_world;
     // mod simple_session_test;
 
 }

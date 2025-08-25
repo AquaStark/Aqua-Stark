@@ -3,6 +3,7 @@ pub mod Trade {
     use dojo::world::IWorldDispatcherTrait;
     use aqua_stark::interfaces::ITrade::{ITrade};
     use aqua_stark::interfaces::IAquaStark::{IAquaStarkDispatcher, IAquaStarkDispatcherTrait};
+    use aqua_stark::interfaces::IFish::{IFishDispatcher, IFishDispatcherTrait};
     use aqua_stark::base::events::{
         TradeOfferCreated, TradeOfferAccepted, TradeOfferCancelled, FishLocked, FishUnlocked,
         TradeOfferExpired,
@@ -52,10 +53,10 @@ pub mod Trade {
 
             // Validate fish ownership through AquaStark contract
             let aqua_stark_address = self.get_aqua_stark_address();
-            let aqua_stark = IAquaStarkDispatcher { contract_address: aqua_stark_address };
+            let fish = IFishDispatcher { contract_address: aqua_stark_address };
 
             // Verify fish exists in AquaStark
-            let _ = aqua_stark.get_fish(offered_fish_id);
+            let _ = fish.get_fish(offered_fish_id);
 
             let fish_owner: FishOwner = world.read_model(offered_fish_id);
             assert(fish_owner.owner == caller, 'You do not own this fish');
@@ -133,10 +134,10 @@ pub mod Trade {
             let mut trade_offer: TradeOffer = world.read_model(offer_id);
 
             let aqua_stark_address = self.get_aqua_stark_address();
-            let aqua_stark = IAquaStarkDispatcher { contract_address: aqua_stark_address };
+            let fish = IFishDispatcher { contract_address: aqua_stark_address };
 
-            let _ = aqua_stark.get_fish(trade_offer.offered_fish_id);
-            let _ = aqua_stark.get_fish(offered_fish_id);
+            let _ = fish.get_fish(trade_offer.offered_fish_id);
+            let _ = fish.get_fish(offered_fish_id);
 
             assert(TradeOfferTrait::is_active(@trade_offer), 'Offer not active');
             assert(trade_offer.creator != caller, 'Cannot accept own offer');
