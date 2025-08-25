@@ -50,6 +50,8 @@
 ### Prerequisites
 - Node.js 20+
 - pnpm 10.13.1+
+- Rust toolchain (for Cairo/Scarb)
+- Dojo CLI tools (sozo, katana, torii)
 
 ### Installation
 ```bash
@@ -60,6 +62,14 @@ cd Aqua-Stark
 # Install all dependencies
 pnpm install
 ```
+
+### 🎯 Local Development Setup
+
+For a complete local development environment setup, follow our comprehensive guide:
+
+**📖 [Local Development Guide](docs/local-development.md)** - Complete setup from clone to running environment in <30 minutes
+
+**🛠️ [Troubleshooting Guide](docs/troubleshooting.md)** - Common issues and solutions
 
 ### Development Commands
 
@@ -119,6 +129,8 @@ To play, make sure you have a StarkNet-compatible wallet like **ArgentX** or **B
 ## 🤝 Contributing  
 Aqua Stark is an **open-source** project! To contribute, follow these steps:  
 
+### 🚀 Quick Start for Contributors
+
 1️⃣ **Fork the repository**  
 ```sh
 git fork https://github.com/AquaStark/Aqua-Stark.git  
@@ -130,9 +142,10 @@ git clone https://github.com/YOUR_USERNAME/Aqua-Stark.git
 cd Aqua-Stark  
 ```
 
-3️⃣ **Install dependencies**
+3️⃣ **Set up local development environment**
 ```sh
-pnpm install
+# Follow our comprehensive setup guide
+# 📖 [Local Development Guide](docs/local-development.md)
 ```
 
 4️⃣ **Create a new branch**
@@ -150,7 +163,13 @@ git commit -m "feat: Add new feature"
 git push origin feature-new  
 ```
 
-7️⃣ **Open a Pull Request 🚀**  
+7️⃣ **Open a Pull Request 🚀**
+
+### 📚 Development Resources
+
+- **📖 [Local Development Guide](docs/local-development.md)** - Complete setup from clone to running environment
+- **🛠️ [Troubleshooting Guide](docs/troubleshooting.md)** - Common issues and solutions
+- **🔧 [Dojo Documentation](https://dojoengine.org/getting-started)** - Framework reference  
 
 ### 🔀 Branch Naming Conventions
 
