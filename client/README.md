@@ -47,13 +47,19 @@ This is the **frontend** of **Aqua Stark**, a Web3 aquarium game built with **Re
 ```
 ## 📦 Installation & Running  
 
+### Prerequisites
+Before starting the frontend, ensure you have:
+- **Local blockchain running** (Katana + Torii)
+- **Contracts deployed** (sozo migrate completed)
+- **Backend server running** (optional, for full functionality)
+
 ### 1️⃣ Navigate to the Client Directory  
 Before installing dependencies, make sure you are in the correct directory:  
 ```sh
 cd client
 ```
 
-### 1️⃣ Install Dependencies  
+### 2️⃣ Install Dependencies  
 Make sure you have **pnpm** installed. If not, install it globally:  
 ```sh
 npm install -g pnpm  
@@ -64,7 +70,14 @@ Now, install the project dependencies:
 pnpm install  
 ```
 
-### 2️⃣ Start the Development Server  
+### 3️⃣ Configure Environment Variables
+Copy the environment template and update with your local settings:
+```sh
+cp .env.example .env
+# Edit .env with your local blockchain addresses
+```
+
+### 4️⃣ Start the Development Server  
 Run the following command to start the frontend in development mode:  
 
 ```sh
@@ -72,6 +85,16 @@ pnpm dev
 ```
 
 The application will be available at http://localhost:5173/ (default Vite port).
+
+### 🔗 Connecting to Local Blockchain
+
+The frontend connects to local blockchain services:
+
+- **Katana RPC**: `http://localhost:5050` (StarkNet devnet)
+- **Torii Indexer**: `http://localhost:8080` (GraphQL endpoint)
+- **World Address**: Your deployed contract address
+
+For complete setup instructions, see the [Local Development Guide](../docs/local-development.md).
 
 ## 🧪 Testing  
 
