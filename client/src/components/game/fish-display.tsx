@@ -19,10 +19,13 @@ interface FishDisplayProps {
     image: string;
     rarity: string;
     generation: number;
+    lastFedTimestamp?: Date | string | number | null;
+    lastUpdated?: Date | string | number | null;
   }>;
+  cleanlinessScore?: number;
 }
 
-export function FishDisplay({ fish }: FishDisplayProps) {
+export function FishDisplay({ fish, cleanlinessScore }: FishDisplayProps) {
   return (
     <div className='relative w-full h-full'>
       {fish.map(fishState => (
@@ -35,10 +38,13 @@ export function FishDisplay({ fish }: FishDisplayProps) {
             rarity: fishState.rarity,
             generation: fishState.generation,
             position: fishState.position,
+            lastFedTimestamp: fishState.lastFedTimestamp,
+            lastUpdated: fishState.lastUpdated,
           }}
           position={fishState.position}
           facingLeft={fishState.facingLeft}
           behaviorState={fishState.behaviorState}
+          cleanlinessScore={cleanlinessScore}
           style={{
             filter:
               fishState.behaviorState === 'feeding'

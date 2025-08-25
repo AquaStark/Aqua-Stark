@@ -4,6 +4,8 @@ import type React from 'react';
 import { motion } from 'framer-motion';
 import type { FishType } from '@/types/game';
 import { useEffect, useState, useRef } from 'react';
+import { useFishIndicators } from '@/hooks/useFishIndicators';
+import { FishStatus } from '@/components/FishStatus';
 
 interface FishProps {
   fish: FishType;
@@ -21,6 +23,7 @@ interface FishProps {
     | 'exploring'
     | 'playful'; //add new state
   style?: React.CSSProperties;
+  cleanlinessScore?: number;
 }
 
 // Define valid rarity types for type safety
@@ -38,26 +41,52 @@ export function Fish({
   facingLeft,
   behaviorState,
   style = {},
+  cleanlinessScore,
 }: FishProps) {
   // Track previous facing direction to detect changes for flip animation
   const prevFacingLeftRef = useRef(facingLeft);
   const [isFlipping, setIsFlipping] = useState(false);
 
-  // Initialize stable stats using useState
-  const [stats, setStats] = useState({
-    happiness: fish.stats?.happiness ?? 50, // Default to 50 if stats unavailable
-    hunger: fish.stats?.hunger ?? 50,
-    energy: fish.stats?.energy ?? 50,
-  });
-
-  // Update stats when fish prop changes
-  useEffect(() => {
-    setStats({
-      happiness: fish.stats?.happiness ?? 50,
+  // Per-fish indicators (hunger, energy, happiness)
+  const { indicators, feed, setCleanliness } = useFishIndicators({
+    fishId: fish.id,
+    initial: {
       hunger: fish.stats?.hunger ?? 50,
       energy: fish.stats?.energy ?? 50,
-    });
-  }, [fish.stats?.happiness, fish.stats?.hunger, fish.stats?.energy]);
+      happiness: fish.stats?.happiness ?? 50,
+    },
+    lastFedTimestamp: fish.lastFedTimestamp ?? null,
+    lastUpdated: fish.lastUpdated ?? null,
+    cleanliness: typeof cleanlinessScore === 'number' ? cleanlinessScore : 100,
+    onChange: state => {
+      // Emit an event so higher-level logic can persist/sync later
+      window.dispatchEvent(
+        new CustomEvent('fish-indicators-changed', {
+          detail: { fishId: fish.id, state },
+        })
+      );
+    },
+  });
+
+  // Keep cleanliness in sync from aquarium dirt system
+  useEffect(() => {
+    if (typeof cleanlinessScore === 'number') {
+      setCleanliness(cleanlinessScore);
+    }
+  }, [cleanlinessScore, setCleanliness]);
+
+  // React to global feeding events emitted by movement logic
+  useEffect(() => {
+    const handler = (evt: Event) => {
+      const ce = evt as CustomEvent<{ fishId: number; foodId: number }>; // runtime-emitted
+      if (ce?.detail?.fishId === fish.id) {
+        feed(); // apply feeding boost to indicators
+      }
+    };
+    window.addEventListener('fish-fed', handler as EventListener);
+    return () =>
+      window.removeEventListener('fish-fed', handler as EventListener);
+  }, [fish.id, feed]);
 
   // Apply flip animation when direction changes
   useEffect(() => {
@@ -356,38 +385,9 @@ export function Fish({
                 {fish.rarity} • Gen {fish.generation} {getBehaviorDisplay()}
               </div>
 
-              {/* Stats Bars */}
-              <div className='space-y-1.5 mt-1'>
-                {/* Happiness */}
-                <div className='flex items-center'>
-                  <span className='w-16 text-xs text-blue-100'>😊</span>
-                  <div className='h-2 bg-blue-800/60 rounded-full flex-1 overflow-hidden'>
-                    <div
-                      className='h-full bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full transition-all duration-300'
-                      style={{ width: `${Math.max(10, stats.happiness)}%` }}
-                    />
-                  </div>
-                </div>
-
-                <div className='flex items-center'>
-                  <span className='w-16 text-xs text-blue-100'>🍽️</span>
-                  <div className='h-2 bg-blue-800/60 rounded-full flex-1 overflow-hidden'>
-                    <div
-                      className='h-full bg-gradient-to-r from-green-400 to-green-500 rounded-full transition-all duration-300'
-                      style={{ width: `${Math.max(10, stats.hunger)}%` }}
-                    />
-                  </div>
-                </div>
-
-                <div className='flex items-center'>
-                  <span className='w-16 text-xs text-blue-100'>⚡</span>
-                  <div className='h-2 bg-blue-800/60 rounded-full flex-1 overflow-hidden'>
-                    <div
-                      className='h-full bg-gradient-to-r from-blue-400 to-blue-500 rounded-full transition-all duration-300'
-                      style={{ width: `${Math.max(10, stats.energy)}%` }}
-                    />
-                  </div>
-                </div>
+              {/* Indicators */}
+              <div className='mt-1'>
+                <FishStatus indicators={indicators} size='sm' showLabels />
               </div>
             </div>
 

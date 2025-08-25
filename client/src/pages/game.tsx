@@ -165,7 +165,11 @@ export default function GamePage() {
         transition={{ duration: 1 }}
         className='relative z-20 w-full h-full'
       >
-        <FeedingAquarium fish={displayFish} feedingSystem={feedingSystem} />
+        <FeedingAquarium
+          fish={displayFish}
+          feedingSystem={feedingSystem}
+          cleanlinessScore={dirtSystem.cleanlinessScore}
+        />
       </motion.div>
 
       <DirtOverlay
