@@ -147,6 +147,10 @@ mod tests {
             player_aquariums: array![],
             player_decorations: array![],
             transaction_history: array![],
+            last_action_reset: 0,
+            daily_fish_creations: 0,
+            daily_decoration_creations: 0,
+            daily_aquarium_creations: 0,
         };
         assert(player.id == 1, 'Player ID should match');
     }
