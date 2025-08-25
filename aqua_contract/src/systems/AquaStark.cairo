@@ -295,19 +295,29 @@ pub mod AquaStark {
         fn move_decoration_to_aquarium(
             ref self: ContractState, decoration_id: u256, from: u256, to: u256,
         ) -> bool {
+            // Get or create unified session
+            let caller = get_caller_address();
+            let session_id = self.get_or_create_session(caller);
+            self.validate_and_update_session(session_id, PERMISSION_MOVE);
+
             let mut world = self.world_default();
             let mut decoration: Decoration = world.read_model(decoration_id);
-            assert(decoration.aquarium_id == from, 'Decoration not in aquarium');
+            assert!(decoration.aquarium_id == from, "Decoration not in aquarium");
             let mut aquarium_from: Aquarium = world.read_model(from);
             let mut aquarium_to: Aquarium = world.read_model(to);
-            assert(
+            assert!(
                 aquarium_to.housed_decorations.len() < aquarium_to.max_decorations,
-                'Aquarium deco limit reached',
+                "Aquarium deco limit reached",
             );
-            assert(aquarium_to.owner == get_caller_address(), 'You do not own this aquarium');
+            assert!(aquarium_to.owner == caller, "You do not own this aquarium");
 
             aquarium_from = AquariumTrait::remove_decoration(aquarium_from.clone(), decoration_id);
             aquarium_to = AquariumTrait::add_decoration(aquarium_to.clone(), decoration_id);
+
+            // Add experience points
+            let mut player: Player = world.read_model(caller);
+            player.experience_points += 3; // 3 XP for moving decoration
+            world.write_model(@player);
 
             decoration.aquarium_id = to;
             world.write_model(@decoration);
@@ -614,18 +624,30 @@ pub mod AquaStark {
 
             let mut world = self.world_default();
             let mut listing: Listing = self.get_listing(listing_id);
-            let mut player: Player = self.get_player(caller);
+            let mut buyer: Player = self.get_player(caller);
             let mut fish: Fish = world.read_model(listing.fish_id);
-            assert(fish.owner != caller, 'You already own this fish');
-            assert(listing.is_active, 'Listing is not active');
+            assert!(fish.owner != caller, "You already own this fish");
+            assert!(listing.is_active, "Listing is not active");
 
             // Store the original seller before transferring ownership
             let original_seller = fish.owner;
 
-            // Purchase the fish
+            // Update seller's Player model
+            let mut seller: Player = world.read_model(original_seller);
+            seller.fish_count -= 1;
+            let mut new_fishes: Array<u256> = array![];
+            for fish_id in seller.player_fishes {
+                if fish_id != listing.fish_id {
+                    new_fishes.append(fish_id);
+                }
+            };
+            seller.player_fishes = new_fishes;
+            world.write_model(@seller);
+
+            // Update buyer's Player model
             let fish = FishTrait::purchase(fish, listing);
-            player.fish_count += 1;
-            player.player_fishes.append(fish.id);
+            buyer.fish_count += 1;
+            buyer.player_fishes.append(fish.id);
             listing.is_active = false;
 
             let experience = if listing.price >= 1000 {
@@ -633,10 +655,10 @@ pub mod AquaStark {
             } else {
                 10
             }; // Scale based on price
-            player.experience_points += experience;
+            buyer.experience_points += experience;
 
             world.write_model(@fish);
-            world.write_model(@player);
+            world.write_model(@buyer);
             world.write_model(@listing);
 
             world
