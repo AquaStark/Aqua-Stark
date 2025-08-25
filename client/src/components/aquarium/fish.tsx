@@ -84,7 +84,8 @@ export function Fish({
       }
     };
     window.addEventListener('fish-fed', handler as EventListener);
-    return () => window.removeEventListener('fish-fed', handler as EventListener);
+    return () =>
+      window.removeEventListener('fish-fed', handler as EventListener);
   }, [fish.id, feed]);
 
   // Apply flip animation when direction changes
