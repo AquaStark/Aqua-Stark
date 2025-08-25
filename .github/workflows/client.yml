@@ -1,5 +1,4 @@
 name: Frontend CI
-
 on:
   push:
     branches: ['main']
@@ -23,18 +22,15 @@ on:
 jobs:
   frontend:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20, 22]  # LTS + Current
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '20'
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -53,31 +49,6 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-
-      - name: Cache node_modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            node_modules
-            client/node_modules
-          key: ${{ runner.os }}-node-modules-${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-${{ matrix.node-version }}-
-            ${{ runner.os }}-node-modules-
-
-      - name: Cache Vite and TypeScript build outputs
-        uses: actions/cache@v4
-        with:
-          path: |
-            client/dist
-            client/.vite
-            client/node_modules/.vite
-            client/tsconfig.app.tsbuildinfo
-            client/tsconfig.node.tsbuildinfo
-          key: ${{ runner.os }}-build-cache-${{ matrix.node-version }}-${{ hashFiles('client/pnpm-lock.yaml', 'client/vite.config.ts', 'client/tsconfig.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-cache-${{ matrix.node-version }}-
-            ${{ runner.os }}-build-cache-
 
       - name: Install dependencies
         run: pnpm install
