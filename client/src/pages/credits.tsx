@@ -97,8 +97,12 @@ export default function Credits() {
                         className='text-xl md:text-2xl'
                       >
                         <div className='flex flex-col items-center'>
-                          <span className='font-bold text-blue-100 text-sm uppercase tracking-wider mb-2'>{item.role}</span>
-                          <span className='text-white font-bold text-2xl md:text-3xl'>{item.name}</span>
+                          <span className='font-bold text-blue-100 text-sm uppercase tracking-wider mb-2'>
+                            {item.role}
+                          </span>
+                          <span className='text-white font-bold text-2xl md:text-3xl'>
+                            {item.name}
+                          </span>
                         </div>
                       </motion.div>
                     ))}
