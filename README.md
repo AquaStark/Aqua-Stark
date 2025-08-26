@@ -223,6 +223,5 @@ cd client && pnpm build  # ❌ Avoid this
 🌊🐠 **Dive into Aqua Stark and build your dream aquarium!** 🎮🚀
 
 
-[FIND MODE OF CONTRIBUTING TO AQUA-STARK HERE](docs/CONTRIBUTING.md) 
-
-[FIND OUR CODE OF CONDUCT DOCUMENT HERE](CODE_OF_CONDUCT.md)
+[Contributing Guide](docs/CONTRIBUTING.md) 
+[CODE OF CONDUCT DOCUMENT HERE](CODE_OF_CONDUCT.md)

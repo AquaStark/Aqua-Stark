@@ -9,22 +9,22 @@ This guide explains everything you need to set up the project locally, follow ou
 ---
 
 ## Table of Contents
-1. [Code of Conduct](#-code-of-conduct)
-2. [Ways to Contribute](#-ways-to-contribute)
-3. [Project Setup](#-project-setup)
-4. [Development Workflow](#-development-workflow)
-5. [Branching Strategy](#-branching-strategy)
-6. [Commit Messages](#-commit-messages)
-7. [Pull Request Process](#-pull-request-process)
-8. [Coding Style](#-coding-style)
-9. [Testing Guidelines](#-testing-guidelines)
-10. [Troubleshooting](#-troubleshooting)
-11. [Getting Help](#-getting-help)
+1. [Code of Conduct](#code-of-conduct)
+2. [Ways to Contribute](#ways-to-contribute)
+3. [Project Setup](#project-setup)
+4. [Development Workflow](#development-workflow)
+5. [Branching Strategy](#branching-strategy)
+6. [Commit Messages](#commit-messages)
+7. [Pull Request Process](#pull-request-process)
+8. [Coding Style](#coding-style)
+9. [Testing Guidelines](#testing-guidelines)
+10. [Troubleshooting](#troubleshooting)
+11. [Getting Help](#getting-help)
 
 ---
 
 ## Code of Conduct
-By contributing, you agree to uphold our [Code of Conduct](./CODE_OF_CONDUCT.md).  
+By contributing, you agree to uphold our [Code of Conduct](../CODE_OF_CONDUCT.md).  
 Please be respectful, inclusive, and constructive in all interactions.  
 
 ---
@@ -50,17 +50,22 @@ Make sure you have the following installed:
 - **Git**
 
 ### Cloning and Installing
++
++Fork the repository on GitHub: [AquaStark/Aqua-Stark](https://github.com/AquaStark/Aqua-Stark).
 
-# Fork the repository (on GitHub)
-git fork https://github.com/AquaStark/Aqua-Stark.git
 
-# Clone your fork locally
-git clone https://github.com/YOUR_USERNAME/Aqua-Stark.git
-cd Aqua-Stark
+# Option A: using GitHub CLI (recommended)
+- gh repo fork AquaStark/Aqua-Stark --clone=true
+- cd Aqua-Stark
 
-# Install all dependencies
-pnpm install
-````
+# Option B: if you forked via the GitHub UI
++git clone git@github.com:YOUR_USERNAME/Aqua-Stark.git
+- cd Aqua-Stark
++
+- # Install all dependencies
+- pnpm install
+
+```
 
 ### Running the Project
 
