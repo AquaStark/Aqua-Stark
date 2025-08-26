@@ -122,6 +122,7 @@ pnpm --filter backend test
 ## 📖 Documentation  
 
 🔹 Frontend README: [Frontend Documentation](https://github.com/AquaStark/Aqua-Stark-V.2/blob/main/client/README.md)  
+🔹 Architecture Decisions: [ADR Documentation](docs/adr/README.md) - Key architectural decisions and rationale
 
 ## 🌍 Connecting to StarkNet  
 To play, make sure you have a StarkNet-compatible wallet like **ArgentX** or **Braavos**. Game assets are backed by **Cairo smart contracts**, ensuring authenticity and scarcity.  
