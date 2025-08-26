@@ -39,6 +39,7 @@ pub mod models {
     pub mod player_model;
     pub mod shop_model;
     pub mod trade_model;
+    pub mod inventory_model;
     // pub mod experience_model;
     pub mod transaction_model;
     pub mod session;
@@ -51,6 +52,7 @@ pub mod tests {
     mod test_aquarium;
     mod test_world;
     // mod simple_session_test;
+    mod test_inventory;
 
 }
 
