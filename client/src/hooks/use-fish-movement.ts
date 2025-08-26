@@ -333,6 +333,19 @@ export function useFishMovement(
           onFoodConsumed(newState.targetFoodId);
         }
 
+        // Dispatch a global event so listeners (e.g., per-fish indicator hooks) can react
+        try {
+          if (typeof window !== 'undefined' && newState.targetFoodId) {
+            window.dispatchEvent(
+              new CustomEvent('fish-fed', {
+                detail: { fishId: newState.id, foodId: newState.targetFoodId },
+              })
+            );
+          }
+        } catch {
+          // no-op: event dispatch failed
+        }
+
         newState.energyLevel = Math.min(1, newState.energyLevel + 0.3);
         newState.behaviorState = 'playful';
         newState.targetFoodId = undefined;
