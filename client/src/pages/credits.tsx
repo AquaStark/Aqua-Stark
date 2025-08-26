@@ -82,23 +82,46 @@ export default function Credits() {
                   {section.title}
                 </h2>
 
-                <div className='space-y-4'>
-                  {section.items.map((item, itemIndex) => (
-                    <motion.div
-                      key={`${section.title}-${itemIndex}`}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 0.6,
-                        delay: sectionIndex * 0.5 + itemIndex * 0.1,
-                      }}
-                      className='text-lg md:text-xl'
-                    >
-                      <span className='font-semibold'>{item.role}: </span>
-                      <span className='text-white/90'>{item.name}</span>
-                    </motion.div>
-                  ))}
-                </div>
+                {section.title === 'Founding Team' ? (
+                  // Founding Team - More prominent styling
+                  <div className='space-y-6'>
+                    {section.items.map((item, itemIndex) => (
+                      <motion.div
+                        key={`${section.title}-${itemIndex}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          duration: 0.6,
+                          delay: sectionIndex * 0.5 + itemIndex * 0.2,
+                        }}
+                        className='text-xl md:text-2xl'
+                      >
+                        <div className='flex flex-col items-center'>
+                          <span className='font-bold text-blue-100 text-sm uppercase tracking-wider mb-2'>{item.role}</span>
+                          <span className='text-white font-bold text-2xl md:text-3xl'>{item.name}</span>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : (
+                  // External Contributors - Two columns layout
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto'>
+                    {section.items.map((item, itemIndex) => (
+                      <motion.div
+                        key={`${section.title}-${itemIndex}`}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          duration: 0.6,
+                          delay: sectionIndex * 0.5 + itemIndex * 0.05,
+                        }}
+                        className='text-lg md:text-xl text-center'
+                      >
+                        <span className='text-white/90'>{item.name}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>
@@ -129,15 +152,18 @@ export default function Credits() {
         }
         
         .credits-container {
-          animation: scrollCredits 20s linear forwards;
+          animation: scrollCredits 35s linear forwards;
         }
 
         @keyframes scrollCredits {
           0% {
-            transform: translateY(100vh);
+            transform: translateY(80vh);
+          }
+          20% {
+            transform: translateY(80vh);
           }
           100% {
-            transform: translateY(-150vh);
+            transform: translateY(-250vh);
           }
         }
       `}</style>
