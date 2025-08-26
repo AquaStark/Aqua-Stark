@@ -130,12 +130,30 @@ const SettingsPage = () => {
                   disabled={isLoading}
                 >
                   <SelectTrigger className='w-full bg-blue-600/50 border-blue-400/50 text-white placeholder:text-blue-200 hover:bg-blue-600/70 focus:ring-blue-400'>
-                    <SelectValue placeholder='Select theme' className='text-white' />
+                    <SelectValue
+                      placeholder='Select theme'
+                      className='text-white'
+                    />
                   </SelectTrigger>
                   <SelectContent className='bg-blue-700 border-blue-500'>
-                    <SelectItem value='light' className='text-white hover:bg-blue-600 focus:bg-blue-600'>Light Theme</SelectItem>
-                    <SelectItem value='dark' className='text-white hover:bg-blue-600 focus:bg-blue-600'>Dark Theme</SelectItem>
-                    <SelectItem value='auto' className='text-white hover:bg-blue-600 focus:bg-blue-600'>Auto (System)</SelectItem>
+                    <SelectItem
+                      value='light'
+                      className='text-white hover:bg-blue-600 focus:bg-blue-600'
+                    >
+                      Light Theme
+                    </SelectItem>
+                    <SelectItem
+                      value='dark'
+                      className='text-white hover:bg-blue-600 focus:bg-blue-600'
+                    >
+                      Dark Theme
+                    </SelectItem>
+                    <SelectItem
+                      value='auto'
+                      className='text-white hover:bg-blue-600 focus:bg-blue-600'
+                    >
+                      Auto (System)
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </SettingsItem>
@@ -189,13 +207,36 @@ const SettingsPage = () => {
                   disabled={isLoading}
                 >
                   <SelectTrigger className='w-full bg-blue-600/50 border-blue-400/50 text-white placeholder:text-blue-200 hover:bg-blue-600/70 focus:ring-blue-400'>
-                    <SelectValue placeholder='Select language' className='text-white' />
+                    <SelectValue
+                      placeholder='Select language'
+                      className='text-white'
+                    />
                   </SelectTrigger>
                   <SelectContent className='bg-blue-700 border-blue-500'>
-                    <SelectItem value='english' className='text-white hover:bg-blue-600 focus:bg-blue-600'>English</SelectItem>
-                    <SelectItem value='espanol' className='text-white hover:bg-blue-600 focus:bg-blue-600'>Español</SelectItem>
-                    <SelectItem value='francais' className='text-white hover:bg-blue-600 focus:bg-blue-600'>Français</SelectItem>
-                    <SelectItem value='deutsch' className='text-white hover:bg-blue-600 focus:bg-blue-600'>Deutsch</SelectItem>
+                    <SelectItem
+                      value='english'
+                      className='text-white hover:bg-blue-600 focus:bg-blue-600'
+                    >
+                      English
+                    </SelectItem>
+                    <SelectItem
+                      value='espanol'
+                      className='text-white hover:bg-blue-600 focus:bg-blue-600'
+                    >
+                      Español
+                    </SelectItem>
+                    <SelectItem
+                      value='francais'
+                      className='text-white hover:bg-blue-600 focus:bg-blue-600'
+                    >
+                      Français
+                    </SelectItem>
+                    <SelectItem
+                      value='deutsch'
+                      className='text-white hover:bg-blue-600 focus:bg-blue-600'
+                    >
+                      Deutsch
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </SettingsItem>
