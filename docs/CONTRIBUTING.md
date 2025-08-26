@@ -231,6 +231,17 @@ pnpm build
 
 ---
 
+## 🏗️ Architecture Decisions
+
+When making significant architectural changes or proposing new technologies:
+
+* Review existing [Architecture Decision Records (ADRs)](docs/adr/README.md) to understand current decisions
+* Create a new ADR using the [template](docs/adr/template.md) for major changes
+* Follow the ADR process: Proposed → Review → Accepted → Implementation
+* Update existing ADRs if they become deprecated or superseded
+
+---
+
 ## 💬 Getting Help
 
 If you have questions:
