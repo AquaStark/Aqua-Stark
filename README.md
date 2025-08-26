@@ -127,7 +127,7 @@ pnpm --filter backend test
 To play, make sure you have a StarkNet-compatible wallet like **ArgentX** or **Braavos**. Game assets are backed by **Cairo smart contracts**, ensuring authenticity and scarcity.  
 
 ## 🤝 Contributing  
-Aqua Stark is an **open-source** project! To contribute, follow these steps:  
+Aqua Stark is an **open-source** project! To contribute, follow these steps:
 
 ### 🚀 Quick Start for Contributors
 
@@ -221,3 +221,7 @@ cd client && pnpm build  # ❌ Avoid this
 ```
 
 🌊🐠 **Dive into Aqua Stark and build your dream aquarium!** 🎮🚀
+
+
+[Contributing Guide](docs/CONTRIBUTING.md) 
+[CODE OF CONDUCT DOCUMENT HERE](CODE_OF_CONDUCT.md)
