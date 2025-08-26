@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Coins, Heart, Plus, Star, Check } from 'lucide-react';
+import { Heart, Plus, Star, Check } from 'lucide-react';
 import { FishTank } from '@/components/fish-tank';
 import { useCartStore } from '@/store/use-cart-store';
 
@@ -227,7 +227,7 @@ export default function StoreItem({
 
         <div className='flex items-center justify-between mt-2'>
           <div className='flex items-center'>
-            <Coins className='text-yellow-400 mr-1' size={20} />
+            <img src='/icons/coin.png' alt='Coins' className='w-5 h-5 mr-1' />
             <div className='flex items-center'>
               {hasDiscount && (
                 <span className='text-white/60 font-medium text-lg line-through mr-2'>
