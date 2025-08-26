@@ -96,9 +96,39 @@ export function useFoodSystem(options: UseFoodSystemOptions) {
   const consumeFood = useCallback((foodId: number) => {
     console.log(`🍽️ CONSUMING food ${foodId} - removing immediately!`);
 
+    // Add validation to prevent race conditions
+    setFoodState(prev => {
+      const foodExists = prev.foods.find(f => f.id === foodId && !f.consumed);
+      if (!foodExists) {
+        console.warn(`⚠️ Food ${foodId} already consumed or doesn't exist`);
+        return prev;
+      }
+
+      console.log(`✅ Successfully consumed food ${foodId}`);
+      return {
+        ...prev,
+        foods: prev.foods.filter(food => food.id !== foodId), // Remove immediately!
+      };
+    });
+  }, []);
+
+  // Add method to check if food exists and is available
+  const isFoodAvailable = useCallback((foodId: number): boolean => {
+    return foodState.foods.some(food => food.id === foodId && !food.consumed);
+  }, [foodState.foods]);
+
+  // Add method to get food by ID
+  const getFoodById = useCallback((foodId: number): FoodItem | undefined => {
+    return foodState.foods.find(food => food.id === foodId && !food.consumed);
+  }, [foodState.foods]);
+
+  // Add method to mark food as consumed (for debugging)
+  const markFoodAsConsumed = useCallback((foodId: number) => {
     setFoodState(prev => ({
       ...prev,
-      foods: prev.foods.filter(food => food.id !== foodId), // Remove immediately!
+      foods: prev.foods.map(food => 
+        food.id === foodId ? { ...food, consumed: true } : food
+      ),
     }));
   }, []);
 
@@ -122,5 +152,9 @@ export function useFoodSystem(options: UseFoodSystemOptions) {
     updateFoodAnimations,
     canSpawnFood:
       Date.now() - foodState.lastSpawnTime >= foodState.spawnCooldown,
+    // Add new utility methods
+    isFoodAvailable,
+    getFoodById,
+    markFoodAsConsumed,
   };
 }

@@ -53,6 +53,10 @@ interface FishMovementState {
   playfulnessTimer: number;
   swimmingPattern: 'straight' | 'zigzag' | 'circular' | 'spiral';
   patternTimer: number;
+  // Add new fields to prevent feeding loops
+  lastFoodConsumedId?: number;
+  feedingAttempts: number;
+  maxFeedingAttempts: number;
 }
 
 interface UseFishMovementOptions {
@@ -115,6 +119,10 @@ export function useFishMovement(
       playfulnessTimer: Math.random() * 5,
       swimmingPattern: 'straight',
       patternTimer: 0,
+      // Initialize new fields
+      lastFoodConsumedId: undefined,
+      feedingAttempts: 0,
+      maxFeedingAttempts: 3,
     };
   }
 
@@ -193,7 +201,12 @@ export function useFishMovement(
     const dy = foodPixelPos.y - fishState.position.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    return distance <= 18;
+    // Increase collision radius slightly and add some randomness to prevent perfect loops
+    const baseRadius = 20;
+    const randomOffset = (Math.random() - 0.5) * 4; // ±2px variation
+    const collisionRadius = baseRadius + randomOffset;
+
+    return distance <= collisionRadius;
   }
 
   function getSafeTargetPosition(
@@ -288,7 +301,7 @@ export function useFishMovement(
     prevStates: FishMovementState[],
     deltaTime: number
   ): FishMovementState[] {
-    return prevStates.map(fishState => {
+    return prevStates.map((fishState: FishMovementState) => {
       const params = fishParamsRef.current.get(fishState.id);
       if (!params) return fishState;
 
@@ -324,58 +337,83 @@ export function useFishMovement(
         newState.patternTimer = 2 + Math.random() * 4;
       }
 
+      // Enhanced food consumption logic with loop prevention
       if (newState.behaviorState === 'feeding' && checkFoodReached(newState)) {
-        console.log(
-          `🐠 Fish ${newState.id} ATE food ${newState.targetFoodId}! (Close contact)`
+        const targetFood = foods.find(
+          f => f.id === newState.targetFoodId && !f.consumed
         );
+        
+        if (targetFood) {
+          console.log(
+            `🐠 Fish ${newState.id} ATE food ${newState.targetFoodId}! (Close contact)`
+          );
 
-        if (onFoodConsumed && newState.targetFoodId) {
-          onFoodConsumed(newState.targetFoodId);
-        }
-
-        // Dispatch a global event so listeners (e.g., per-fish indicator hooks) can react
-        try {
-          if (typeof window !== 'undefined' && newState.targetFoodId) {
-            window.dispatchEvent(
-              new CustomEvent('fish-fed', {
-                detail: { fishId: newState.id, foodId: newState.targetFoodId },
-              })
-            );
+          if (onFoodConsumed && newState.targetFoodId) {
+            onFoodConsumed(newState.targetFoodId);
           }
-        } catch {
-          // no-op: event dispatch failed
-        }
 
-        newState.energyLevel = Math.min(1, newState.energyLevel + 0.3);
-        newState.behaviorState = 'playful';
-        newState.targetFoodId = undefined;
-        newState.feedingCooldown = 0.5;
-        newState.behaviorTimer = 2 + Math.random() * 2;
-        newState.targetPosition = getSafeTargetPosition(
-          newState.position,
-          params.minTargetDistance
-        );
+          // Dispatch a global event so listeners (e.g., per-fish indicator hooks) can react
+          try {
+            if (typeof window !== 'undefined' && newState.targetFoodId) {
+              window.dispatchEvent(
+                new CustomEvent('fish-fed', {
+                  detail: { fishId: newState.id, foodId: newState.targetFoodId },
+                })
+              );
+            }
+          } catch {
+            // no-op: event dispatch failed
+          }
+
+          newState.energyLevel = Math.min(1, newState.energyLevel + 0.3);
+          newState.behaviorState = 'playful';
+          newState.lastFoodConsumedId = newState.targetFoodId;
+          newState.targetFoodId = undefined;
+          newState.feedingCooldown = 1.5; // Increased from 0.5 to prevent immediate re-targeting
+          newState.behaviorTimer = 2 + Math.random() * 2;
+          newState.feedingAttempts = 0; // Reset attempts after successful consumption
+          newState.targetPosition = getSafeTargetPosition(
+            newState.position,
+            params.minTargetDistance
+          );
+        } else {
+          // Food was already consumed by another fish, reset state
+          newState.behaviorState = 'exploring';
+          newState.targetFoodId = undefined;
+          newState.feedingAttempts = 0;
+          newState.behaviorTimer = 1;
+          newState.targetPosition = getSafeTargetPosition(
+            newState.position,
+            params.minTargetDistance
+          );
+        }
       }
 
+      // Enhanced food targeting logic with loop prevention
       if (newState.feedingCooldown <= 0) {
         const nearestFood = findNearestFood(
           newState.position,
           params.foodDetectionRadius
         );
 
-        if (nearestFood && nearestFood.id !== newState.targetFoodId) {
+        if (nearestFood && 
+            nearestFood.id !== newState.targetFoodId && 
+            nearestFood.id !== newState.lastFoodConsumedId && // Don't target recently consumed food
+            newState.feedingAttempts < newState.maxFeedingAttempts) { // Limit attempts
+          
           const foodExists = foods.find(
             f => f.id === nearestFood.id && !f.consumed
           );
 
           if (foodExists) {
             console.log(
-              `🎯 Fish ${newState.id} targeting food ${nearestFood.id}`
+              `🎯 Fish ${newState.id} targeting food ${nearestFood.id} (attempt ${newState.feedingAttempts + 1}/${newState.maxFeedingAttempts})`
             );
 
             newState.behaviorState = 'feeding';
             newState.targetFoodId = nearestFood.id;
             newState.behaviorTimer = 6;
+            newState.feedingAttempts++;
 
             const foodPixelPos = {
               x: (nearestFood.position.x / 100) * aquariumBounds.width,
@@ -386,13 +424,18 @@ export function useFishMovement(
         }
       }
 
+      // Reset feeding state if target food no longer exists or max attempts reached
       if (newState.targetFoodId) {
         const targetFood = foods.find(
           f => f.id === newState.targetFoodId && !f.consumed
         );
-        if (!targetFood) {
+        if (!targetFood || newState.feedingAttempts >= newState.maxFeedingAttempts) {
+          console.log(
+            `🔄 Fish ${newState.id} resetting feeding state - food gone or max attempts reached`
+          );
           newState.behaviorState = 'exploring';
           newState.targetFoodId = undefined;
+          newState.feedingAttempts = 0;
           newState.behaviorTimer = 1;
           newState.targetPosition = getSafeTargetPosition(
             newState.position,
@@ -401,6 +444,7 @@ export function useFishMovement(
         }
       }
 
+      // Enhanced behavior state management
       if (newState.behaviorTimer <= 0 && newState.behaviorState !== 'feeding') {
         const rand = Math.random();
 
@@ -579,7 +623,7 @@ export function useFishMovement(
       const deltaTime = Math.min((now - lastUpdateTimeRef.current) / 1000, 0.1);
       lastUpdateTimeRef.current = now;
 
-      setFishStates(prevStates => updateFishStates(prevStates, deltaTime));
+      setFishStates((prevStates: FishMovementState[]) => updateFishStates(prevStates, deltaTime));
 
       animationFrameRef.current = requestAnimationFrame(animate);
     };
@@ -599,7 +643,7 @@ export function useFishMovement(
     }
   }, [initialFish.length]);
 
-  return fishStates.map(state => ({
+  return fishStates.map((state: FishMovementState) => ({
     id: state.id,
     position: {
       x: (state.position.x / aquariumBounds.width) * 100,

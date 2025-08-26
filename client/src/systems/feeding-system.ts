@@ -125,25 +125,49 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
     (foodId: number) => {
       const consumedFood = foods.find(f => f.id === foodId);
       if (consumedFood) {
-        // Add particle effect
-        setFeedingState(prev => ({
-          ...prev,
-          particleEffects: [
-            ...prev.particleEffects,
-            {
-              id: foodId,
-              position: consumedFood.position,
-              trigger: true,
-            },
-          ],
-        }));
+        // Validate food is still available before consuming
+        if (!consumedFood.consumed) {
+          console.log(`🎯 Processing food consumption for food ${foodId}`);
+          
+          // Add particle effect
+          setFeedingState(prev => ({
+            ...prev,
+            particleEffects: [
+              ...prev.particleEffects,
+              {
+                id: foodId,
+                position: consumedFood.position,
+                trigger: true,
+              },
+            ],
+          }));
 
-        // Consume the food
-        consumeFood(foodId);
+          // Consume the food
+          consumeFood(foodId);
+        } else {
+          console.warn(`⚠️ Food ${foodId} was already consumed, skipping particle effect`);
+        }
+      } else {
+        console.warn(`⚠️ Food ${foodId} not found in foods array`);
       }
     },
     [foods, consumeFood]
   );
+
+  // Add method to validate feeding state
+  const validateFeedingState = useCallback(() => {
+    const activeFoods = foods.filter(f => !f.consumed);
+    console.log(`🔍 Feeding state validation: ${activeFoods.length} active foods`);
+    
+    // Check for any duplicate food IDs (shouldn't happen but good to validate)
+    const foodIds = activeFoods.map(f => f.id);
+    const uniqueIds = new Set(foodIds);
+    if (foodIds.length !== uniqueIds.size) {
+      console.warn(`⚠️ Duplicate food IDs detected: ${foodIds.length} vs ${uniqueIds.size}`);
+    }
+    
+    return activeFoods;
+  }, [foods]);
 
   // Clean up completed particle effects
   const handleParticleComplete = useCallback((foodId: number) => {
@@ -215,6 +239,8 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
     handleParticleComplete,
     getFeedingStatus,
     updateAquariumBounds,
+    // Add new validation method
+    validateFeedingState,
 
     // Status
     isFeeding: feedingState.isFeeding,
