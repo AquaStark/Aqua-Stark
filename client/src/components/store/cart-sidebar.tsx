@@ -1,4 +1,4 @@
-import { X, Plus, Minus, Trash2, Coins, ShoppingCart } from 'lucide-react';
+import { X, Plus, Minus, Trash2, ShoppingCart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore } from '@/store/use-cart-store';
 import { Button } from '@/components/ui/button';
@@ -83,7 +83,11 @@ export function CartSidebar() {
                       <div className='flex items-center space-x-3'>
                         <div>
                           <p className='text-white font-semibold flex items-center justify-end space-x-1'>
-                            <Coins className='text-yellow-400 mr-1' size={20} />
+                            <img
+                              src='/icons/coin.png'
+                              alt='Coins'
+                              className='w-5 h-5 mr-1'
+                            />
                             <span>{item.price}</span>
                           </p>
                           <div className='flex items-center mt-2 bg-blue-800/20 rounded-lg border border-white/50 px-2 py-1'>
@@ -143,21 +147,33 @@ export function CartSidebar() {
                 <div className='flex justify-between text-white mb-2'>
                   <span>Subtotal:</span>
                   <span className='flex items-center'>
-                    <Coins className='text-yellow-400 mr-1' size={20} />
+                    <img
+                      src='/icons/coin.png'
+                      alt='Coins'
+                      className='w-5 h-5 mr-1'
+                    />
                     {subtotal}
                   </span>
                 </div>
                 <div className='flex justify-between text-white mb-2'>
                   <span>Transaction Fee (1%):</span>
                   <span className='flex items-center'>
-                    <Coins className='text-yellow-400 mr-1' size={20} />
+                    <img
+                      src='/icons/coin.png'
+                      alt='Coins'
+                      className='w-5 h-5 mr-1'
+                    />
                     {fee}
                   </span>
                 </div>
                 <div className='flex justify-between text-white font-bold mb-4 border-t border-t-white/20 pt-2'>
                   <span>Total:</span>
                   <span className='flex items-center'>
-                    <Coins className='text-yellow-400 mr-1' size={20} />
+                    <img
+                      src='/icons/coin.png'
+                      alt='Coins'
+                      className='w-5 h-5 mr-1'
+                    />
                     {total}
                   </span>
                 </div>
