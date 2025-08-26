@@ -1,5 +1,5 @@
 'use client';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAccount } from '@starknet-react/core';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -70,29 +70,10 @@ export function HeroSection() {
         <Button
           onClick={handleStartGame}
           disabled={isProcessing || isValidating}
-          className='text-sm sm:text-base md:text-lg lg:text-xl font-bold py-2 sm:py-3 md:py-4 lg:py-5 px-4 sm:px-6 md:px-8 lg:px-12 bg-gradient-to-b from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white rounded-lg sm:rounded-xl md:rounded-2xl shadow-xl sm:shadow-2xl transform hover:scale-105 transition-all duration-200 border-2 sm:border-3 md:border-4 border-green-300 border-b-3 sm:border-b-4 md:border-b-6 lg:border-b-8 border-r-3 sm:border-r-4 md:border-r-6 lg:border-r-8 disabled:opacity-50 disabled:cursor-not-allowed'
+          className='text-sm sm:text-base md:text-lg lg:text-xl font-bold py-2 sm:py-3 md:py-4 lg:py-5 px-4 sm:px-6 md:px-8 lg:px-12 bg-gradient-to-b from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white rounded-lg sm:rounded-xl md:rounded-2xl shadow-xl sm:shadow-2xl transform hover:scale-105 transition-all duration-200 border-2 sm:border-3 md:border-4 border-green-300 border-b-3 sm:border-b-4 md:border-b-6 lg:border-b-8 border-r-3 sm:border-r-4 md:border-r-6 lg:border-r-8 disabled:opacity-50 disabled:cursor-not-allowed animate-heartbeat'
         >
           {isProcessing || isValidating ? 'CHECKING...' : 'START GAME'}
         </Button>
-
-        <Link to='/store'>
-          <Button className='text-xs sm:text-sm md:text-base lg:text-lg font-bold py-2 sm:py-3 md:py-4 px-3 sm:px-4 md:px-6 lg:px-8 bg-gradient-to-b from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white rounded-lg sm:rounded-xl shadow-lg sm:shadow-xl transform hover:scale-105 transition-all duration-200 border-2 sm:border-3 border-orange-300 border-b-3 sm:border-b-4 md:border-b-6 border-r-3 sm:border-r-4 md:border-r-6 flex items-center gap-1 sm:gap-2'>
-            <svg
-              className='w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth={2}
-                d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'
-              />
-            </svg>
-            VISIT STORE
-          </Button>
-        </Link>
       </div>
     </section>
   );
