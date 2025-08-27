@@ -1,0 +1,48 @@
+# .github/dependabot.yml
+version: 2
+updates:
+  # --- JavaScript/TypeScript (pnpm workspaces) ---
+  - package-ecosystem: "npm"   
+    directory: "/"             
+    schedule:
+      interval: "weekly"       
+    open-pull-requests-limit: 10
+    allow:
+      - dependency-type: "all"
+    commit-message:
+      prefix: "deps(root)"
+      include: "scope"
+
+  # Frontend
+  - package-ecosystem: "npm"
+    directory: "/client"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    allow:
+      - dependency-type: "all"
+    commit-message:
+      prefix: "deps(client)"
+      include: "scope"
+
+  # Backend
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    allow:
+      - dependency-type: "all"
+    commit-message:
+      prefix: "deps(backend)"
+      include: "scope"
+
+  # --- GitHub Actions ---
+  - package-ecosystem: "github-actions"
+    directory: "/"             
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "deps(actions)"
+      include: "scope"
