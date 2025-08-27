@@ -342,7 +342,7 @@ export function useFishMovement(
         const targetFood = foods.find(
           f => f.id === newState.targetFoodId && !f.consumed
         );
-        
+
         if (targetFood) {
           console.log(
             `🐠 Fish ${newState.id} ATE food ${newState.targetFoodId}! (Close contact)`
@@ -357,7 +357,10 @@ export function useFishMovement(
             if (typeof window !== 'undefined' && newState.targetFoodId) {
               window.dispatchEvent(
                 new CustomEvent('fish-fed', {
-                  detail: { fishId: newState.id, foodId: newState.targetFoodId },
+                  detail: {
+                    fishId: newState.id,
+                    foodId: newState.targetFoodId,
+                  },
                 })
               );
             }
@@ -396,11 +399,14 @@ export function useFishMovement(
           params.foodDetectionRadius
         );
 
-        if (nearestFood && 
-            nearestFood.id !== newState.targetFoodId && 
-            nearestFood.id !== newState.lastFoodConsumedId && // Don't target recently consumed food
-            newState.feedingAttempts < newState.maxFeedingAttempts) { // Limit attempts
-          
+        if (
+          nearestFood &&
+          nearestFood.id !== newState.targetFoodId &&
+          nearestFood.id !== newState.lastFoodConsumedId && // Don't target recently consumed food
+          newState.feedingAttempts < newState.maxFeedingAttempts
+        ) {
+          // Limit attempts
+
           const foodExists = foods.find(
             f => f.id === nearestFood.id && !f.consumed
           );
@@ -429,7 +435,10 @@ export function useFishMovement(
         const targetFood = foods.find(
           f => f.id === newState.targetFoodId && !f.consumed
         );
-        if (!targetFood || newState.feedingAttempts >= newState.maxFeedingAttempts) {
+        if (
+          !targetFood ||
+          newState.feedingAttempts >= newState.maxFeedingAttempts
+        ) {
           console.log(
             `🔄 Fish ${newState.id} resetting feeding state - food gone or max attempts reached`
           );
@@ -623,7 +632,9 @@ export function useFishMovement(
       const deltaTime = Math.min((now - lastUpdateTimeRef.current) / 1000, 0.1);
       lastUpdateTimeRef.current = now;
 
-      setFishStates((prevStates: FishMovementState[]) => updateFishStates(prevStates, deltaTime));
+      setFishStates((prevStates: FishMovementState[]) =>
+        updateFishStates(prevStates, deltaTime)
+      );
 
       animationFrameRef.current = requestAnimationFrame(animate);
     };

@@ -241,7 +241,7 @@ export default function GamePage() {
         foods={feedingSystem.foods}
         isFeeding={feedingSystem.isFeeding}
         onValidateState={feedingSystem.validateFeedingState}
-        className="z-40"
+        className='z-40'
       />
 
       {/* Show Debug Button (when hidden) */}

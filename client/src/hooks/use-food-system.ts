@@ -113,20 +113,26 @@ export function useFoodSystem(options: UseFoodSystemOptions) {
   }, []);
 
   // Add method to check if food exists and is available
-  const isFoodAvailable = useCallback((foodId: number): boolean => {
-    return foodState.foods.some(food => food.id === foodId && !food.consumed);
-  }, [foodState.foods]);
+  const isFoodAvailable = useCallback(
+    (foodId: number): boolean => {
+      return foodState.foods.some(food => food.id === foodId && !food.consumed);
+    },
+    [foodState.foods]
+  );
 
   // Add method to get food by ID
-  const getFoodById = useCallback((foodId: number): FoodItem | undefined => {
-    return foodState.foods.find(food => food.id === foodId && !food.consumed);
-  }, [foodState.foods]);
+  const getFoodById = useCallback(
+    (foodId: number): FoodItem | undefined => {
+      return foodState.foods.find(food => food.id === foodId && !food.consumed);
+    },
+    [foodState.foods]
+  );
 
   // Add method to mark food as consumed (for debugging)
   const markFoodAsConsumed = useCallback((foodId: number) => {
     setFoodState(prev => ({
       ...prev,
-      foods: prev.foods.map(food => 
+      foods: prev.foods.map(food =>
         food.id === foodId ? { ...food, consumed: true } : food
       ),
     }));
