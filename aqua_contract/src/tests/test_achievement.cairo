@@ -3,15 +3,6 @@ mod test {
     use starknet::ContractAddress;
     use aqua_stark::achievements::achievements::{Achievement, AchievementTrait};
 
-    // pub enum Achievement {
-    //     None,
-    //     FirstFish,
-    //     UnderwaterExplorer,
-    //     SuccessfulBreeding,
-    //     Collector,
-    //     DecoratedAquarium,
-    // }
-
     fn get_achievements() -> Array<Achievement> {
         array![
             Achievement::None,
@@ -150,36 +141,7 @@ mod test {
         );
     }
 
-    // #[inline]
-    // fn tasks(self: Achievement) -> Span<Task> {
-    //     match self {
-    //         Achievement::None => [].span(),
-    //         Achievement::FirstFish => array![
-    //             TaskTrait::new('FirstFish', 1, "Obtain your first fish NFT"),
-    //         ]
-    //             .span(),
-    //         Achievement::UnderwaterExplorer => array![
-    //             TaskTrait::new('UnderwaterExplorer', 1, "Participate in your first aquarium
-    //             event"),
-    //         ]
-    //             .span(),
-    //         Achievement::SuccessfulBreeding => array![
-    //             TaskTrait::new('SuccessfulBreeding', 1, "Complete a breeding action"),
-    //         ]
-    //             .span(),
-    //         Achievement::Collector => array![
-    //             TaskTrait::new('Collector', 10, "Own 10 different fish NFTs"),
-    //         ]
-    //             .span(),
-    //         Achievement::DecoratedAquarium => array![
-    //             TaskTrait::new(
-    //                 'DecoratedAquarium', 3, "Place 3 or more decorations in your aquarium",
-    //             ),
-    //         ]
-    //             .span(),
-    //     }
-    // }
-
+    #[test]
     fn test_achievement_tasks() {
         let arr = get_achievements();
 
@@ -190,5 +152,22 @@ mod test {
             let tasks = achievement.tasks();
             assert!(!tasks.is_empty(), "{} should have at least one task", achievement.title());
         };
+    }
+
+    #[test]
+    fn test_achievement_conversion_success() {
+        let arr = get_achievements();
+        for i in 0..arr.len() {
+            let u8_val: u8 = d(arr.clone(), i).into();
+            assert_eq!(u8_val, i.try_into().unwrap(), "Conversion mismatch at index {}", i);
+            let achievement: Achievement = TryInto::<u32, u8>::try_into(i).unwrap().into();
+            assert_eq!(
+                achievement, d(arr.clone(), i), "Reverse conversion mismatch at index {}", i,
+            );
+        };
+
+        // u8 value greater than 5 should return None
+        let achievement: Achievement = 6_u8.into();
+        assert_eq!(achievement, Achievement::None, "Conversion of 6 should yield None");
     }
 }
