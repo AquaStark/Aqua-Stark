@@ -7,7 +7,6 @@ pub mod Transaction {
     use dojo::event::EventStorage;
     
     use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
-    use aqua_stark::interfaces::ITransaction::ITransaction;
     use aqua_stark::models::transaction_model::{
         EventCounter, EventDetailsTrait, EventTypeDetails, TransactionCounter, TransactionLog,
         TransactionLogTrait, event_id_target, transaction_id_target,
@@ -63,7 +62,7 @@ pub mod Transaction {
                     transaction_id: temp_txn_id,
                     player: caller,
                     event_type_id,
-                    confirmation_hash: event_type_id.into(),
+                    confirmation_hash: event_type_id.try_into().unwrap(),
                     timestamp: get_block_timestamp(),
                 }
             );
@@ -255,7 +254,7 @@ pub mod Transaction {
                 return event_history.span();
             }
 
-            let total_transactions = self.get_transaction_count();
+            let total_transactions = TransactionHistoryImpl::get_transaction_count(self);
 
             let mut i: u256 = start_index.into() + 1;
             let mut count = 0;
@@ -274,10 +273,8 @@ pub mod Transaction {
 
             transaction_history.span()
         }
-    }
 
-    #[abi(embed_v0)]
-    impl TransactionImpl of ITransaction<ContractState> {
+        // Transaction lifecycle functions (additional to ITransactionHistory)
         fn initiate_transaction(
             ref self: ContractState,
             player: ContractAddress,
@@ -309,7 +306,7 @@ pub mod Transaction {
         }
 
         fn process_transaction(ref self: ContractState, transaction_id: u256) -> bool {
-            let world = self.world_default();
+            let mut world = self.world_default();
             let caller = get_caller_address();
             let current_time = get_block_timestamp();
 
@@ -337,7 +334,7 @@ pub mod Transaction {
             transaction_id: u256,
             confirmation_hash: felt252,
         ) -> bool {
-            let world = self.world_default();
+            let mut world = self.world_default();
             let caller = get_caller_address();
             let current_time = get_block_timestamp();
 
@@ -359,51 +356,6 @@ pub mod Transaction {
             true
         }
 
-        fn register_event_type(ref self: ContractState, event_name: ByteArray) -> u256 {
-            // Delegate to the ITransactionHistory implementation
-            TransactionHistoryImpl::register_event_type(ref self, event_name)
-        }
-
-        fn log_event(
-            ref self: ContractState,
-            event_type_id: u256,
-            player: ContractAddress,
-            payload: Array<felt252>,
-        ) -> TransactionLog {
-            // Delegate to the ITransactionHistory implementation
-            TransactionHistoryImpl::log_event(ref self, event_type_id, player, payload)
-        }
-
-        fn get_event_types_count(self: @ContractState) -> u256 {
-            TransactionHistoryImpl::get_event_types_count(self)
-        }
-
-        fn get_all_event_types(self: @ContractState) -> Span<EventTypeDetails> {
-            TransactionHistoryImpl::get_all_event_types(self)
-        }
-
-        fn get_event_type_details(self: @ContractState, event_type_id: u256) -> EventTypeDetails {
-            TransactionHistoryImpl::get_event_type_details(self, event_type_id)
-        }
-
-        fn get_transaction_count(self: @ContractState) -> u256 {
-            TransactionHistoryImpl::get_transaction_count(self)
-        }
-
-        fn get_transaction_history(
-            self: @ContractState,
-            player: Option<ContractAddress>,
-            event_type_id: Option<u256>,
-            start: Option<u32>,
-            limit: Option<u32>,
-            start_timestamp: Option<u64>,
-            end_timestamp: Option<u64>,
-        ) -> Span<TransactionLog> {
-            TransactionHistoryImpl::get_transaction_history(
-                self, player, event_type_id, start, limit, start_timestamp, end_timestamp
-            )
-        }
-
         fn get_transaction_status(self: @ContractState, transaction_id: u256) -> felt252 {
             // Mock implementation - in a real system, this would check transaction state
             'CONFIRMED'
@@ -414,6 +366,7 @@ pub mod Transaction {
             true
         }
     }
+
 
     #[generate_trait]
     impl InternalImpl of InternalTrait {
@@ -447,7 +400,10 @@ pub mod Transaction {
             timestamp: u64
         ) -> u256 {
             // Generate a temporary transaction ID for tracking purposes
-            player.into() + timestamp.into() + 999999
+            let player_felt: felt252 = player.into();
+            let timestamp_felt: felt252 = timestamp.into();
+            let temp_id: felt252 = player_felt + timestamp_felt + 999999;
+            temp_id.into()
         }
     }
 }

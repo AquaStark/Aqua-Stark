@@ -10,9 +10,6 @@ mod tests {
     use aqua_stark::interfaces::ITransactionHistory::{
         ITransactionHistoryDispatcher, ITransactionHistoryDispatcherTrait
     };
-    use aqua_stark::interfaces::ITransaction::{
-        ITransactionDispatcher, ITransactionDispatcherTrait
-    };
     use aqua_stark::models::transaction_model::{
         TransactionLog, EventTypeDetails, EventCounter, TransactionCounter,
         event_id_target, transaction_id_target,
@@ -26,7 +23,7 @@ mod tests {
     use starknet::{ContractAddress, contract_address_const, get_block_timestamp};
     use starknet::testing::{set_caller_address, set_contract_address};
 
-    fn setup() -> (ITransactionDispatcher, ITransactionHistoryDispatcher, ContractAddress) {
+    fn setup() -> (ITransactionHistoryDispatcher, ContractAddress) {
         let caller = contract_address_const::<0x123>();
         let owner = contract_address_const::<0x456>();
         
@@ -47,19 +44,18 @@ mod tests {
         
         // Deploy transaction contract
         let contract_address = world.deploy_contract('salt', Transaction::contract_class_hash(), []);
-        let transaction_contract = ITransactionDispatcher { contract_address };
         let transaction_history_contract = ITransactionHistoryDispatcher { contract_address };
         
         // Set owner permissions
         set_caller_address(owner);
         world.set_owner(contract_address, owner);
         
-        (transaction_contract, transaction_history_contract, caller)
+        (transaction_history_contract, caller)
     }
 
     #[test]
     fn test_register_event_type_emits_events() {
-        let (transaction_contract, transaction_history_contract, caller) = setup();
+        let (transaction_history_contract, caller) = setup();
         set_caller_address(contract_address_const::<0x456>()); // Owner address
         
         let event_name = "FishCreated";
@@ -76,7 +72,7 @@ mod tests {
 
     #[test]
     fn test_log_event_emits_events() {
-        let (transaction_contract, transaction_history_contract, caller) = setup();
+        let (transaction_history_contract, caller) = setup();
         set_caller_address(contract_address_const::<0x456>()); // Owner address
         
         // First register an event type
@@ -118,7 +114,7 @@ mod tests {
 
     #[test]
     fn test_transaction_lifecycle_events() {
-        let (transaction_contract, transaction_history_contract, caller) = setup();
+        let (transaction_history_contract, caller) = setup();
         set_caller_address(contract_address_const::<0x456>()); // Owner address
         
         let player_addr = contract_address_const::<0x789>();
@@ -126,30 +122,30 @@ mod tests {
         let payload = array![123, 456];
         
         // Test transaction initiation
-        let txn_id = transaction_contract.initiate_transaction(
+        let txn_id = transaction_history_contract.initiate_transaction(
             player_addr, event_type_id, payload.clone()
         );
         assert(txn_id > 0, 'Transaction ID should be valid');
         
         // Test transaction processing
-        let processed = transaction_contract.process_transaction(txn_id);
+        let processed = transaction_history_contract.process_transaction(txn_id);
         assert(processed, 'Transaction should be processed');
         
         // Test transaction confirmation
-        let confirmed = transaction_contract.confirm_transaction(txn_id, 'confirmation_hash');
+        let confirmed = transaction_history_contract.confirm_transaction(txn_id, 'confirmation_hash');
         assert(confirmed, 'Transaction should be confirmed');
         
         // Verify transaction status
-        let status = transaction_contract.get_transaction_status(txn_id);
+        let status = transaction_history_contract.get_transaction_status(txn_id);
         assert(status == 'CONFIRMED', 'Transaction should be confirmed');
         
-        let is_confirmed = transaction_contract.is_transaction_confirmed(txn_id);
+        let is_confirmed = transaction_history_contract.is_transaction_confirmed(txn_id);
         assert(is_confirmed, 'Transaction should be confirmed');
     }
 
     #[test]
     fn test_transaction_history_queries() {
-        let (transaction_contract, transaction_history_contract, caller) = setup();
+        let (transaction_history_contract, caller) = setup();
         set_caller_address(contract_address_const::<0x456>()); // Owner address
         
         // Register event type and log some events
@@ -185,7 +181,7 @@ mod tests {
 
     #[test]
     fn test_event_types_management() {
-        let (transaction_contract, transaction_history_contract, caller) = setup();
+        let (transaction_history_contract, caller) = setup();
         set_caller_address(contract_address_const::<0x456>()); // Owner address
         
         // Register multiple event types
@@ -211,7 +207,7 @@ mod tests {
     #[test]
     #[should_panic(expected: ('Only owner',))]
     fn test_unauthorized_event_registration() {
-        let (transaction_contract, transaction_history_contract, caller) = setup();
+        let (transaction_history_contract, caller) = setup();
         // Don't set caller as owner
         set_caller_address(contract_address_const::<0x999>());
         
@@ -221,7 +217,7 @@ mod tests {
     #[test]
     #[should_panic(expected: ('Event name cannot be empty',))]
     fn test_empty_event_name() {
-        let (transaction_contract, transaction_history_contract, caller) = setup();
+        let (transaction_history_contract, caller) = setup();
         set_caller_address(contract_address_const::<0x456>()); // Owner address
         
         transaction_history_contract.register_event_type("");
