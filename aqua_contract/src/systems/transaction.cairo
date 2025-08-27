@@ -379,7 +379,13 @@ pub mod Transaction {
         fn create_event_id(self: @ContractState) -> u256 {
             let mut world = self.world_default();
             let mut event_counter: EventCounter = world.read_model(event_id_target());
-            let new_id = event_counter.current_val + 1;
+            // Start from 1 if counter is uninitialized (current_val == 0)
+            let new_id = if event_counter.current_val == 0 {
+                1
+            } else {
+                event_counter.current_val + 1
+            };
+            event_counter.target = event_id_target();
             event_counter.current_val = new_id;
             world.write_model(@event_counter);
             new_id
@@ -388,7 +394,13 @@ pub mod Transaction {
         fn create_transaction_id(self: @ContractState) -> u256 {
             let mut world = self.world_default();
             let mut txn_counter: TransactionCounter = world.read_model(transaction_id_target());
-            let new_id = txn_counter.current_val + 1;
+            // Start from 1 if counter is uninitialized (current_val == 0)
+            let new_id = if txn_counter.current_val == 0 {
+                1
+            } else {
+                txn_counter.current_val + 1
+            };
+            txn_counter.target = transaction_id_target();
             txn_counter.current_val = new_id;
             world.write_model(@txn_counter);
             new_id
