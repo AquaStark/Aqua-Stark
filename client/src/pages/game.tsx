@@ -21,6 +21,7 @@ import { DirtDebugControls } from '@/components/game/dirt-debug-controls';
 import { useFeedingSystem } from '@/systems/feeding-system';
 import { FeedingAquarium } from '@/components/game/feeding-aquarium';
 import { BottomNavBar } from '@/components/game/bottom-nav-bar';
+import { FeedingDebugPanel } from '@/components/game/feeding-debug-panel';
 
 export default function GamePage() {
   const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
@@ -234,6 +235,14 @@ export default function GamePage() {
           </button>
         </div>
       )}
+
+      {/* Feeding Debug Panel */}
+      <FeedingDebugPanel
+        foods={feedingSystem.foods}
+        isFeeding={feedingSystem.isFeeding}
+        onValidateState={feedingSystem.validateFeedingState}
+        className='z-40'
+      />
 
       {/* Show Debug Button (when hidden) */}
       {!showDirtDebug && (
