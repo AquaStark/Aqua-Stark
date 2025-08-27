@@ -50,6 +50,7 @@ pub mod tests {
     // mod test_experience;
     mod test_aquarium;
     mod test_world;
+    mod test_achievement;
     // mod simple_session_test;
 
 }
