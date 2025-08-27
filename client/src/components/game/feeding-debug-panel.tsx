@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import type { FoodItem } from '@/types/food';
 
 interface FeedingDebugPanelProps {
