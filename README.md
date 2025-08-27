@@ -50,6 +50,8 @@
 ### Prerequisites
 - Node.js 20+
 - pnpm 10.13.1+
+- Rust toolchain (for Cairo/Scarb)
+- Dojo CLI tools (sozo, katana, torii)
 
 ### Installation
 ```bash
@@ -60,6 +62,14 @@ cd Aqua-Stark
 # Install all dependencies
 pnpm install
 ```
+
+### 🎯 Local Development Setup
+
+For a complete local development environment setup, follow our comprehensive guide:
+
+**📖 [Local Development Guide](docs/local-development.md)** - Complete setup from clone to running environment in <30 minutes
+
+**🛠️ [Troubleshooting Guide](docs/troubleshooting.md)** - Common issues and solutions
 
 ### Development Commands
 
@@ -112,12 +122,15 @@ pnpm --filter backend test
 ## 📖 Documentation  
 
 🔹 Frontend README: [Frontend Documentation](https://github.com/AquaStark/Aqua-Stark-V.2/blob/main/client/README.md)  
+🔹 Architecture Decisions: [ADR Documentation](docs/adr/README.md) - Key architectural decisions and rationale
 
 ## 🌍 Connecting to StarkNet  
 To play, make sure you have a StarkNet-compatible wallet like **ArgentX** or **Braavos**. Game assets are backed by **Cairo smart contracts**, ensuring authenticity and scarcity.  
 
 ## 🤝 Contributing  
-Aqua Stark is an **open-source** project! To contribute, follow these steps:  
+Aqua Stark is an **open-source** project! To contribute, follow these steps:
+
+### 🚀 Quick Start for Contributors
 
 1️⃣ **Fork the repository**  
 ```sh
@@ -130,9 +143,10 @@ git clone https://github.com/YOUR_USERNAME/Aqua-Stark.git
 cd Aqua-Stark  
 ```
 
-3️⃣ **Install dependencies**
+3️⃣ **Set up local development environment**
 ```sh
-pnpm install
+# Follow our comprehensive setup guide
+# 📖 [Local Development Guide](docs/local-development.md)
 ```
 
 4️⃣ **Create a new branch**
@@ -150,7 +164,13 @@ git commit -m "feat: Add new feature"
 git push origin feature-new  
 ```
 
-7️⃣ **Open a Pull Request 🚀**  
+7️⃣ **Open a Pull Request 🚀**
+
+### 📚 Development Resources
+
+- **📖 [Local Development Guide](docs/local-development.md)** - Complete setup from clone to running environment
+- **🛠️ [Troubleshooting Guide](docs/troubleshooting.md)** - Common issues and solutions
+- **🔧 [Dojo Documentation](https://dojoengine.org/getting-started)** - Framework reference  
 
 ### 🔀 Branch Naming Conventions
 
@@ -202,3 +222,7 @@ cd client && pnpm build  # ❌ Avoid this
 ```
 
 🌊🐠 **Dive into Aqua Stark and build your dream aquarium!** 🎮🚀
+
+
+[Contributing Guide](docs/CONTRIBUTING.md) 
+[CODE OF CONDUCT DOCUMENT HERE](CODE_OF_CONDUCT.md)

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { GameHeader } from '@/components/game/game-header';
-import { GameSidebarButtons } from '@/components/game/game-sidebar-buttons';
 import { AquariumTabs } from '@/components/game/aquarium-tabs';
 import { TipsPopup } from '@/components/game/tips-popup';
 import { INITIAL_GAME_STATE } from '@/data/game-data';
@@ -20,12 +19,14 @@ import { useDirtSystemFixed as useDirtSystem } from '@/hooks/use-dirt-system-fix
 import { DirtOverlay } from '@/components/game/dirt-overlay';
 import { DirtDebugControls } from '@/components/game/dirt-debug-controls';
 import { useFeedingSystem } from '@/systems/feeding-system';
-import { FeedFishButton } from '@/components/game/feed-fish-button';
 import { FeedingAquarium } from '@/components/game/feeding-aquarium';
 import { useAccount } from '@starknet-react/core';
 import { toast } from 'sonner';
 import { useFish } from '@/hooks/dojo/useFish';
 import { useNavigate } from 'react-router-dom';
+import { BottomNavBar } from '@/components/game/bottom-nav-bar';
+import { FeedingDebugPanel } from '@/components/game/feeding-debug-panel';
+
 
 export default function GamePage() {
   const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
@@ -309,7 +310,11 @@ export default function GamePage() {
         transition={{ duration: 1 }}
         className='relative z-20 w-full h-full'
       >
-        <FeedingAquarium fish={displayFish} feedingSystem={feedingSystem} />
+        <FeedingAquarium
+          fish={displayFish}
+          feedingSystem={feedingSystem}
+          cleanlinessScore={dirtSystem.cleanlinessScore}
+        />
       </motion.div>
 
       <DirtOverlay
@@ -328,29 +333,28 @@ export default function GamePage() {
 
       {showMenu && <GameMenu show={showMenu} />}
 
-      <GameSidebarButtons />
-
       {/* Click to Feed Instructions - Under Header */}
       {!feedingSystem.isFeeding && (
         <div className='absolute top-[9rem] left-1/2 transform -translate-x-1/2 z-30'>
           <div className='bg-black/50 text-white text-sm px-4 py-2 rounded-lg border border-gray-500/20 backdrop-blur-sm'>
             <div className='flex items-center gap-2 text-gray-300'>
               <span>🐠</span>
-              <span>Click "Feed Fish" to start feeding your aquarium</span>
+              <span>
+                Use the bottom navigation to feed your fish and manage your
+                aquarium
+              </span>
             </div>
           </div>
         </div>
       )}
 
-      {/* Feed Fish Button - Bottom Center */}
-      <div className='absolute bottom-20 left-1/2 transform -translate-x-1/2 z-30'>
-        <FeedFishButton
-          isFeeding={feedingSystem.isFeeding}
-          timeRemaining={feedingSystem.getFeedingStatus().timeRemaining}
-          onStartFeeding={() => feedingSystem.startFeeding(30000)} // 30 seconds
-          onStopFeeding={feedingSystem.stopFeeding}
-        />
-      </div>
+      {/* Bottom Navigation */}
+      <BottomNavBar
+        isFeeding={feedingSystem.isFeeding}
+        timeRemaining={feedingSystem.getFeedingStatus().timeRemaining}
+        onStartFeeding={() => feedingSystem.startFeeding(30000)} // 30 seconds
+        onStopFeeding={feedingSystem.stopFeeding}
+      />
 
       {/* Debug Controls */}
       {showDirtDebug && (
@@ -375,6 +379,14 @@ export default function GamePage() {
           </button>
         </div>
       )}
+
+      {/* Feeding Debug Panel */}
+      <FeedingDebugPanel
+        foods={feedingSystem.foods}
+        isFeeding={feedingSystem.isFeeding}
+        onValidateState={feedingSystem.validateFeedingState}
+        className='z-40'
+      />
 
       {/* Show Debug Button (when hidden) */}
       {!showDirtDebug && (

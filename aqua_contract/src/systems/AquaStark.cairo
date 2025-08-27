@@ -33,6 +33,15 @@ pub mod AquaStark {
     use core::traits::Into;
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
+    use aqua_stark::models::session::{
+        SessionKey, SessionAnalytics, SESSION_STATUS_ACTIVE, SESSION_STATUS_EXPIRED,
+        SESSION_STATUS_REVOKED, SESSION_TYPE_BASIC, SESSION_TYPE_PREMIUM, SESSION_TYPE_ADMIN,
+        PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, PERMISSION_ADMIN,
+    };
+    use aqua_stark::helpers::session_validation::{
+        SessionValidationTrait, SessionValidationImpl, MIN_SESSION_DURATION, MAX_SESSION_DURATION,
+        AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION,
+    };
 
 
     #[abi(embed_v0)]
@@ -55,6 +64,10 @@ pub mod AquaStark {
             max_capacity: u32,
             max_decorations: u32,
         ) -> Aquarium {
+            // Get or create unified session
+            let session_id = self.get_or_create_session(owner);
+            self.validate_and_update_session(session_id, PERMISSION_MOVE);
+
             // Delegate to aquarium contract
             let mut world = self.world_default();
             let caller = get_caller_address();
@@ -69,6 +82,13 @@ pub mod AquaStark {
             let mut player: Player = world.read_model(caller);
             player.aquarium_count += 1;
             player.player_aquariums.append(aquarium.id);
+
+            self.check_and_reset_daily_limits(caller);
+            assert(player.daily_aquarium_creations < 2, 'Daily aquarium limit reached');
+
+            player.daily_aquarium_creations += 1;
+            player.experience_points += 5; // 5 XP for aquarium creation
+
             world.write_model(@player);
 
             world.write_model(@aquarium_owner);
@@ -89,6 +109,11 @@ pub mod AquaStark {
         }
 
         fn add_fish_to_aquarium(ref self: ContractState, mut fish: Fish, aquarium_id: u256) {
+            // Get or create unified session
+            let caller = get_caller_address();
+            let session_id = self.get_or_create_session(caller);
+            self.validate_and_update_session(session_id, PERMISSION_MOVE);
+
             let mut world = self.world_default();
             let mut aquarium: Aquarium = world.read_model(aquarium_id);
             assert(aquarium.housed_fish.len() < aquarium.max_capacity, 'Aquarium full');
@@ -151,6 +176,19 @@ pub mod AquaStark {
             player.player_decorations.append(decoration.id);
             aquarium = AquariumTrait::add_decoration(aquarium.clone(), decoration.id);
 
+            self.check_and_reset_daily_limits(get_caller_address());
+
+            if player.daily_decoration_creations < 5 {
+                let experience = match rarity {
+                    0 => 3, // Common
+                    1 => 5, // Rare
+                    2 => 10, // Legendary
+                    _ => 3 // Default to common
+                };
+                player.experience_points += experience;
+                player.daily_decoration_creations += 1;
+            }
+
             world.write_model(@aquarium);
             world.write_model(@player);
             world.write_model(@decoration);
@@ -172,8 +210,12 @@ pub mod AquaStark {
         }
 
         fn new_fish(ref self: ContractState, aquarium_id: u256, species: Species) -> Fish {
-            let mut world = self.world_default();
+            // Get or create unified session
             let caller = get_caller_address();
+            let session_id = self.get_or_create_session(caller);
+            self.validate_and_update_session(session_id, PERMISSION_SPAWN);
+
+            let mut world = self.world_default();
             let mut aquarium = self.get_aquarium(aquarium_id);
             assert(aquarium.owner == get_caller_address(), 'You do not own this aquarium');
             let fish_id = self.create_fish_id();
@@ -188,16 +230,25 @@ pub mod AquaStark {
             player.fish_count += 1;
             player.player_fishes.append(fish_id);
 
+            self.check_and_reset_daily_limits(caller);
+
+            if player.daily_fish_creations < 5 {
+                let experience = match species {
+                    Species::GoldFish => 3,
+                    Species::AngelFish => 5,
+                    Species::Betta => 7,
+                    Species::NeonTetra => 7,
+                    Species::Corydoras => 7,
+                    Species::Hybrid => 10,
+                };
+                player.experience_points += experience;
+                player.daily_fish_creations += 1;
+            }
+
             world.write_model(@aquarium);
             world.write_model(@player);
             world.write_model(@fish_owner);
             world.write_model(@fish);
-
-            // --- Grant Experience for Creating Fish ---
-            // let (contract_address, _) = world.dns(@"experience").unwrap();
-            // let mut experience_system = IExperienceDispatcher { contract_address };
-            // experience_system.grant_experience(player.wallet, 25); // 25 XP for creating fish
-            // self.grant_experience_internal(caller, 25); // 25 XP for creating fish
 
             world
                 .emit_event(
@@ -211,6 +262,11 @@ pub mod AquaStark {
         fn move_fish_to_aquarium(
             ref self: ContractState, fish_id: u256, from: u256, to: u256,
         ) -> bool {
+            // Get or create unified session
+            let caller = get_caller_address();
+            let session_id = self.get_or_create_session(caller);
+            self.validate_and_update_session(session_id, PERMISSION_MOVE);
+
             let mut world = self.world_default();
             let mut fish: Fish = world.read_model(fish_id);
             assert(fish.aquarium_id == from, 'Fish not in source aquarium');
@@ -221,6 +277,10 @@ pub mod AquaStark {
 
             aquarium_from = AquariumTrait::remove_fish(aquarium_from.clone(), fish_id);
             aquarium_to = AquariumTrait::add_fish(aquarium_to.clone(), fish_id);
+
+            let mut player: Player = world.read_model(caller);
+            player.experience_points += 3; // 3 XP for moving fish
+            world.write_model(@player);
 
             fish.aquarium_id = to;
             world.write_model(@fish);
@@ -235,19 +295,29 @@ pub mod AquaStark {
         fn move_decoration_to_aquarium(
             ref self: ContractState, decoration_id: u256, from: u256, to: u256,
         ) -> bool {
+            // Get or create unified session
+            let caller = get_caller_address();
+            let session_id = self.get_or_create_session(caller);
+            self.validate_and_update_session(session_id, PERMISSION_MOVE);
+
             let mut world = self.world_default();
             let mut decoration: Decoration = world.read_model(decoration_id);
-            assert(decoration.aquarium_id == from, 'Decoration not in aquarium');
+            assert!(decoration.aquarium_id == from, "Decoration not in aquarium");
             let mut aquarium_from: Aquarium = world.read_model(from);
             let mut aquarium_to: Aquarium = world.read_model(to);
-            assert(
+            assert!(
                 aquarium_to.housed_decorations.len() < aquarium_to.max_decorations,
-                'Aquarium deco limit reached',
+                "Aquarium deco limit reached",
             );
-            assert(aquarium_to.owner == get_caller_address(), 'You do not own this aquarium');
+            assert!(aquarium_to.owner == caller, "You do not own this aquarium");
 
             aquarium_from = AquariumTrait::remove_decoration(aquarium_from.clone(), decoration_id);
             aquarium_to = AquariumTrait::add_decoration(aquarium_to.clone(), decoration_id);
+
+            // Add experience points
+            let mut player: Player = world.read_model(caller);
+            player.experience_points += 3; // 3 XP for moving decoration
+            world.write_model(@player);
 
             decoration.aquarium_id = to;
             world.write_model(@decoration);
@@ -296,17 +366,22 @@ pub mod AquaStark {
             aquarium.fish_count += 1;
             aquarium.housed_fish.append(new_fish.id);
 
+            let experience = match new_fish.species {
+                Species::GoldFish => 15,
+                Species::AngelFish => 15,
+                Species::Betta => 20,
+                Species::NeonTetra => 20,
+                Species::Corydoras => 20,
+                Species::Hybrid => 25,
+            };
+            player.experience_points += experience;
+
             world.write_model(@aquarium);
             world.write_model(@parent1);
             world.write_model(@parent2);
             world.write_model(@player);
             world.write_model(@fish_owner);
             world.write_model(@new_fish);
-
-            // --- Grant Experience for Breeding ---
-            // let (contract_address, _) = world.dns(@"experience").unwrap();
-            // let mut experience_system = IExperienceDispatcher { contract_address };
-            // experience_system.grant_experience(caller, 50); // 50 XP for breeding
 
             world
                 .emit_event(
@@ -342,6 +417,10 @@ pub mod AquaStark {
             // Address must not already be registered
             let existing_username = self.get_username_from_address(player);
             assert(existing_username == 0, 'USERNAME ALREADY CREATED');
+
+            // --- Create initial session for new player ---
+            let _session_id = self.get_or_create_session(player);
+
             // --- Player Registration ---
 
             let id = self.create_new_player_id();
@@ -376,15 +455,7 @@ pub mod AquaStark {
             aquarium.housed_decorations.append(decoration.id);
             aquarium.decoration_count += 1;
 
-            // --- Initialize Experience ---
-            // let experience = Experience {
-            //     player,
-            //     total_experience: 0,
-            //     current_level: 1,
-            //     experience_in_current_level: 0,
-            //     last_updated: get_block_timestamp(),
-            // };
-            // world.write_model(@experience);
+            new_player.experience_points += 5; // 5 XP for registration
 
             // --- Persist to Storage ---
             world.write_model(@aquarium);
@@ -532,6 +603,9 @@ pub mod AquaStark {
             let mut world = self.world_default();
             let fish: Fish = world.read_model(fish_id);
             let listing: Listing = FishTrait::list(fish, price);
+            let mut player: Player = world.read_model(get_caller_address());
+            player.experience_points += 5; // 5 XP for listing fish
+            world.write_model(@player);
             world.write_model(@listing);
             listing
         }
@@ -543,30 +617,49 @@ pub mod AquaStark {
         }
 
         fn purchase_fish(ref self: ContractState, listing_id: felt252) {
-            let mut world = self.world_default();
+            // Get or create unified session
             let caller = get_caller_address();
+            let session_id = self.get_or_create_session(caller);
+            self.validate_and_update_session(session_id, PERMISSION_TRADE);
+
+            let mut world = self.world_default();
             let mut listing: Listing = self.get_listing(listing_id);
-            let mut player: Player = self.get_player(caller);
+            let mut buyer: Player = self.get_player(caller);
             let mut fish: Fish = world.read_model(listing.fish_id);
-            assert(fish.owner != caller, 'You already own this fish');
-            assert(listing.is_active, 'Listing is not active');
+            assert!(fish.owner != caller, "You already own this fish");
+            assert!(listing.is_active, "Listing is not active");
 
             // Store the original seller before transferring ownership
             let original_seller = fish.owner;
 
-            // Purchase the fish
+            // Update seller's Player model
+            let mut seller: Player = world.read_model(original_seller);
+            seller.fish_count -= 1;
+            let mut new_fishes: Array<u256> = array![];
+            for fish_id in seller.player_fishes {
+                if fish_id != listing.fish_id {
+                    new_fishes.append(fish_id);
+                }
+            };
+            seller.player_fishes = new_fishes;
+            world.write_model(@seller);
+
+            // Update buyer's Player model
             let fish = FishTrait::purchase(fish, listing);
-            player.fish_count += 1;
-            player.player_fishes.append(fish.id);
+            buyer.fish_count += 1;
+            buyer.player_fishes.append(fish.id);
             listing.is_active = false;
 
+            let experience = if listing.price >= 1000 {
+                15
+            } else {
+                10
+            }; // Scale based on price
+            buyer.experience_points += experience;
+
             world.write_model(@fish);
-            world.write_model(@player);
+            world.write_model(@buyer);
             world.write_model(@listing);
-            // --- Grant Experience for Purchasing Fish ---
-            // let (contract_address, _) = world.dns(@"experience").unwrap();
-            // let mut experience_system = IExperienceDispatcher { contract_address };
-            // experience_system.grant_experience(caller, 15); // 15 XP for purchasing fish
 
             world
                 .emit_event(
@@ -1088,6 +1181,178 @@ pub mod AquaStark {
             txn_counter.current_val = new_id;
             world.write_model(@txn_counter);
             new_id
+        }
+
+        // Session management functions
+        fn get_or_create_session(ref self: ContractState, player: ContractAddress) -> felt252 {
+            let mut world = self.world_default();
+            let current_time = get_block_timestamp();
+
+            // Try to find existing active session
+            let session_id = self.generate_session_id(player, current_time);
+
+            // Try to read existing session
+            let existing_session: SessionKey = world.read_model((session_id, player));
+
+            // If session doesn't exist or is invalid, create new one
+            if existing_session.session_id == 0
+                || !existing_session.is_valid
+                || existing_session.status != SESSION_STATUS_ACTIVE {
+                let mut session = self.create_new_session(player, current_time);
+                world.write_model(@session);
+
+                // Create analytics for new session
+                let analytics = SessionAnalytics {
+                    session_id,
+                    total_transactions: 0,
+                    successful_transactions: 0,
+                    failed_transactions: 0,
+                    total_gas_used: 0,
+                    average_gas_per_tx: 0,
+                    last_activity: current_time,
+                    created_at: current_time,
+                };
+                world.write_model(@analytics);
+            }
+
+            session_id
+        }
+
+        fn create_new_session(
+            ref self: ContractState, player: ContractAddress, current_time: u64,
+        ) -> SessionKey {
+            let session_id = self.generate_session_id(player, current_time);
+
+            SessionKey {
+                session_id,
+                player_address: player,
+                created_at: current_time,
+                expires_at: current_time + MIN_SESSION_DURATION,
+                last_used: current_time,
+                max_transactions: MAX_TRANSACTIONS_PER_SESSION,
+                used_transactions: 0,
+                status: SESSION_STATUS_ACTIVE,
+                is_valid: true,
+                auto_renewal_enabled: true,
+                session_type: SESSION_TYPE_PREMIUM, // All permissions
+                permissions: array![
+                    PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, PERMISSION_ADMIN,
+                ],
+            }
+        }
+
+        fn generate_session_id(
+            self: @ContractState, player: ContractAddress, timestamp: u64,
+        ) -> felt252 {
+            player.into() + timestamp.into()
+        }
+
+        fn validate_and_update_session(
+            ref self: ContractState, session_id: felt252, required_permission: u8,
+        ) -> bool {
+            let mut world = self.world_default();
+            let caller = get_caller_address();
+            let current_time = get_block_timestamp();
+
+            // Try to read existing session
+            let existing_session: SessionKey = world.read_model((session_id, caller));
+
+            // If session doesn't exist or is invalid, create a new one
+            if existing_session.session_id == 0
+                || !existing_session.is_valid
+                || existing_session.status != SESSION_STATUS_ACTIVE {
+                let mut session = self.create_new_session(caller, current_time);
+                world.write_model(@session);
+
+                // Create new analytics
+                let analytics = SessionAnalytics {
+                    session_id,
+                    total_transactions: 0,
+                    successful_transactions: 0,
+                    failed_transactions: 0,
+                    total_gas_used: 0,
+                    average_gas_per_tx: 0,
+                    last_activity: current_time,
+                    created_at: current_time,
+                };
+                world.write_model(@analytics);
+
+                // Return true for new session (bypass validation for first use)
+                return true;
+            }
+
+            // Use existing session
+            let mut session = existing_session;
+
+            // Basic validation
+            assert(session.session_id != 0, 'Session not found');
+            assert(session.player_address == caller, 'Unauthorized session');
+            assert(session.is_valid, 'Session invalid');
+            assert(session.status == SESSION_STATUS_ACTIVE, 'Session not active');
+            assert(current_time < session.expires_at, 'Session expired');
+            assert(session.used_transactions < session.max_transactions, 'No transactions left');
+
+            // Check required permission
+            let has_permission = self.check_permission(@session, required_permission);
+            assert(has_permission, 'Insufficient permissions');
+
+            // Auto-renewal check
+            let expires_at = session.expires_at;
+            let time_remaining = if current_time >= expires_at {
+                0
+            } else {
+                expires_at - current_time
+            };
+            if time_remaining < AUTO_RENEWAL_THRESHOLD && session.auto_renewal_enabled {
+                session.expires_at = current_time + MIN_SESSION_DURATION;
+                session.max_transactions = MAX_TRANSACTIONS_PER_SESSION;
+                session.used_transactions = 0;
+            }
+
+            // Update session
+            session.used_transactions += 1;
+            session.last_used = current_time;
+            world.write_model(@session);
+
+            // Update analytics
+            let mut analytics: SessionAnalytics = world.read_model(session_id);
+            analytics.total_transactions += 1;
+            analytics.successful_transactions += 1;
+            analytics.last_activity = current_time;
+            world.write_model(@analytics);
+
+            true
+        }
+
+        fn check_permission(
+            self: @ContractState, session: @SessionKey, required_permission: u8,
+        ) -> bool {
+            let mut i = 0;
+            loop {
+                if i >= session.permissions.len() {
+                    break false;
+                }
+                if *session.permissions.at(i) == required_permission {
+                    break true;
+                }
+                i += 1;
+            }
+        }
+
+
+        fn check_and_reset_daily_limits(ref self: ContractState, player_addr: ContractAddress) {
+            let mut world = self.world_default();
+            let mut player: Player = world.read_model(player_addr);
+            let current_timestamp = get_block_timestamp();
+            let seconds_per_day: u64 = 86400;
+
+            if current_timestamp >= player.last_action_reset + seconds_per_day {
+                player.last_action_reset = current_timestamp;
+                player.daily_fish_creations = 0;
+                player.daily_decoration_creations = 0;
+                player.daily_aquarium_creations = 0;
+                world.write_model(@player);
+            }
         }
     }
 }
