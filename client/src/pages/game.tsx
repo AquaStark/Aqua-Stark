@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import { GameHeader } from '@/components/game/game-header';
 import { AquariumTabs } from '@/components/game/aquarium-tabs';
 import { TipsPopup } from '@/components/game/tips-popup';
@@ -12,7 +11,6 @@ import { GameMenu } from '@/components/game/game-menu';
 import { useBubbles } from '@/hooks/use-bubbles';
 import { BubblesBackground } from '@/components/bubble-background';
 import { motion } from 'framer-motion';
-import type { FishType } from '@/types/game';
 import { useActiveAquarium } from '../store/active-aquarium';
 import { initialAquariums } from '@/data/mock-aquarium';
 import { useDirtSystemFixed as useDirtSystem } from '@/hooks/use-dirt-system-fixed';
@@ -26,7 +24,6 @@ import { useFish } from '@/hooks/dojo/useFish';
 import { useNavigate } from 'react-router-dom';
 import { BottomNavBar } from '@/components/game/bottom-nav-bar';
 import { FeedingDebugPanel } from '@/components/game/feeding-debug-panel';
-
 
 export default function GamePage() {
   const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
