@@ -26,29 +26,47 @@ Read the full tutorial [here](https://dojoengine.org/tutorial/dojo-starter).
 
 ## Running Locally
 
+### Prerequisites
+Before running the contracts locally, ensure you have:
+- **Dojo CLI tools** installed (sozo, katana, torii)
+- **Scarb** installed for Cairo compilation
+- **Local development environment** set up
+
+### Quick Start
+
 #### Terminal one (Make sure this is running)
 
 ```bash
-# Run Katana
+# Run Katana (local StarkNet devnet)
 katana --dev --dev.no-fee
 ```
 
 #### Terminal two
 
 ```bash
-# Build the example
+# Build the contracts
 sozo build
 
 # Inspect the world
 sozo inspect
 
-# Migrate the example
+# Migrate the contracts
 sozo migrate
 
-# Start Torii
-# Replace <WORLD_ADDRESS> with the address of the deployed world from the previous step
+# Start Torii (indexer)
+# Replace <WORLD_ADDRESS> with the address from sozo migrate output
 torii --world <WORLD_ADDRESS> --http.cors_origins "*"
 ```
+
+### 🔗 Integration with Full Stack
+
+This contract integrates with the complete Aqua Stark stack:
+
+- **Frontend**: Connects via Dojo SDK to query and interact with contracts
+- **Backend**: Uses Torii GraphQL for blockchain event indexing
+- **Local Blockchain**: Katana provides fast, no-fee development environment
+
+For complete setup instructions including frontend and backend integration, see the [Local Development Guide](../docs/local-development.md).
 
 ## Docker
 You can start stack using docker compose. [Here are the installation instruction](https://docs.docker.com/engine/install/)

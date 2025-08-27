@@ -80,6 +80,13 @@ pub mod AquaStark {
             let mut player: Player = world.read_model(caller);
             player.aquarium_count += 1;
             player.player_aquariums.append(aquarium.id);
+
+            self.check_and_reset_daily_limits(caller);
+            assert(player.daily_aquarium_creations < 2, 'Daily aquarium limit reached');
+
+            player.daily_aquarium_creations += 1;
+            player.experience_points += 5; // 5 XP for aquarium creation
+
             world.write_model(@player);
 
             world.write_model(@aquarium_owner);
@@ -144,6 +151,19 @@ pub mod AquaStark {
             player.player_decorations.append(decoration.id);
             aquarium = AquariumTrait::add_decoration(aquarium.clone(), decoration.id);
 
+            self.check_and_reset_daily_limits(get_caller_address());
+
+            if player.daily_decoration_creations < 5 {
+                let experience = match rarity {
+                    0 => 3, // Common
+                    1 => 5, // Rare
+                    2 => 10, // Legendary
+                    _ => 3 // Default to common
+                };
+                player.experience_points += experience;
+                player.daily_decoration_creations += 1;
+            }
+
             world.write_model(@aquarium);
             world.write_model(@player);
             world.write_model(@decoration);
@@ -166,19 +186,29 @@ pub mod AquaStark {
         fn move_decoration_to_aquarium(
             ref self: ContractState, decoration_id: u256, from: u256, to: u256,
         ) -> bool {
+            // Get or create unified session
+            let caller = get_caller_address();
+            let session_id = self.get_or_create_session(caller);
+            self.validate_and_update_session(session_id, PERMISSION_MOVE);
+
             let mut world = self.world_default();
             let mut decoration: Decoration = world.read_model(decoration_id);
-            assert(decoration.aquarium_id == from, 'Decoration not in aquarium');
+            assert!(decoration.aquarium_id == from, "Decoration not in aquarium");
             let mut aquarium_from: Aquarium = world.read_model(from);
             let mut aquarium_to: Aquarium = world.read_model(to);
-            assert(
+            assert!(
                 aquarium_to.housed_decorations.len() < aquarium_to.max_decorations,
-                'Aquarium deco limit reached',
+                "Aquarium deco limit reached",
             );
-            assert(aquarium_to.owner == get_caller_address(), 'You do not own this aquarium');
+            assert!(aquarium_to.owner == caller, "You do not own this aquarium");
 
             aquarium_from = AquariumTrait::remove_decoration(aquarium_from.clone(), decoration_id);
             aquarium_to = AquariumTrait::add_decoration(aquarium_to.clone(), decoration_id);
+
+            // Add experience points
+            let mut player: Player = world.read_model(caller);
+            player.experience_points += 3; // 3 XP for moving decoration
+            world.write_model(@player);
 
             decoration.aquarium_id = to;
             world.write_model(@decoration);
@@ -248,15 +278,7 @@ pub mod AquaStark {
             aquarium.housed_decorations.append(decoration.id);
             aquarium.decoration_count += 1;
 
-            // --- Initialize Experience ---
-            // let experience = Experience {
-            //     player,
-            //     total_experience: 0,
-            //     current_level: 1,
-            //     experience_in_current_level: 0,
-            //     last_updated: get_block_timestamp(),
-            // };
-            // world.write_model(@experience);
+            new_player.experience_points += 5; // 5 XP for registration
 
             // --- Persist to Storage ---
             world.write_model(@aquarium);
@@ -1010,6 +1032,22 @@ pub mod AquaStark {
                     break true;
                 }
                 i += 1;
+            }
+        }
+
+
+        fn check_and_reset_daily_limits(ref self: ContractState, player_addr: ContractAddress) {
+            let mut world = self.world_default();
+            let mut player: Player = world.read_model(player_addr);
+            let current_timestamp = get_block_timestamp();
+            let seconds_per_day: u64 = 86400;
+
+            if current_timestamp >= player.last_action_reset + seconds_per_day {
+                player.last_action_reset = current_timestamp;
+                player.daily_fish_creations = 0;
+                player.daily_decoration_creations = 0;
+                player.daily_aquarium_creations = 0;
+                world.write_model(@player);
             }
         }
     }
