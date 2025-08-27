@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { GameHeader } from '@/components/game/game-header';
 import { GameSidebarButtons } from '@/components/game/game-sidebar-buttons';
@@ -22,6 +22,10 @@ import { DirtDebugControls } from '@/components/game/dirt-debug-controls';
 import { useFeedingSystem } from '@/systems/feeding-system';
 import { FeedFishButton } from '@/components/game/feed-fish-button';
 import { FeedingAquarium } from '@/components/game/feeding-aquarium';
+import { useAccount } from '@starknet-react/core';
+import { toast } from 'sonner';
+import { useFish } from '@/hooks/dojo/useFish';
+import { useNavigate } from 'react-router-dom';
 
 export default function GamePage() {
   const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
@@ -32,7 +36,7 @@ export default function GamePage() {
   const { selectedAquarium, handleAquariumChange, aquariums } = useAquarium();
   const [showMenu, setShowMenu] = useState(false);
   const [showTips, setShowTips] = useState(false);
-  const location = useLocation();
+  const navigate = useNavigate();
 
   const [showDirtDebug, setShowDirtDebug] = useState(false); // Debug controls visibility  // Initialize dirt system
   const dirtSystem = useDirtSystem({
@@ -71,71 +75,210 @@ export default function GamePage() {
   const handleTipsToggle = () => {
     setShowTips(!showTips);
   };
+  const [playerFishes, setPlayerFishes] = useState<number[]>([]);
+  const { account } = useAccount();
+  const { getPlayerFishes } = useFish();
 
-  // Parse fish species from URL param
-  const searchParams = new URLSearchParams(location.search);
-  const fishesParam = searchParams.get('fishes');
-  const fishFromUrl = JSON.parse(
-    decodeURIComponent(fishesParam || '[]')
-  ) as string[];
+  useEffect(() => {
+    const fetchFishes = async () => {
+      try {
+        if (!account) {
+          toast.error('Wallet not connected!');
+          return;
+        }
 
-  // Match species to mock data
+        const fishes = await getPlayerFishes(account.address);
+        console.table(`Game.tsx::Player fishes`, fishes);
+
+        if (!fishes || fishes.length === 1) {
+          navigate('/onboarding');
+          return;
+        }
+
+        setPlayerFishes(fishes);
+      } catch (err) {
+        console.error('Error fetching fishes:', err);
+      }
+    };
+
+    fetchFishes();
+  }, [account, navigate]);
+
   const speciesToFishData = {
     AngelFish: {
-      image: '/fish/fish1.png',
-      name: 'Blue Striped Fish',
-      rarity: 'Rare',
+      image: '/fish/fish3.png',
+      name: 'REDGLOW',
+      rarity: 'Epic',
       generation: 1,
     },
     GoldFish: {
       image: '/fish/fish2.png',
-      name: 'Tropical Coral Fish',
+      name: 'BLUESHINE',
+      rarity: 'Rare',
+      generation: 1,
+    },
+    Betta: {
+      image: '/fish/fish2.png',
+      name: 'TROPICORAL',
       rarity: 'Uncommon',
       generation: 2,
     },
-    Betta: {
-      image: '/fish/fish3.png',
-      name: 'Orange Tropical Fish',
-      rarity: 'Epic',
-      generation: 1,
-    },
     NeonTetra: {
       image: '/fish/fish4.png',
-      name: 'Scarlet Fin',
+      name: 'SHADOWFIN',
       rarity: 'Legendary',
       generation: 1,
     },
-  };
-
-  // Create fish objects from URL parameters
-  const fishObjects: FishType[] = fishFromUrl.map((species, index) => {
-    const data = speciesToFishData[
-      species as keyof typeof speciesToFishData
-    ] || {
+    Corydoras: {
       image: '/fish/fish1.png',
-      name: 'Unknown Fish',
-      rarity: 'Common',
+      name: 'SUNBURST',
+      rarity: 'Rare',
       generation: 1,
-    };
+    },
+    Hybrid: {
+      image: '/fish/fish2.png',
+      name: 'DEEPSCALE',
+      rarity: 'Epic',
+      generation: 2,
+    },
+  } as const;
 
-    return {
-      id: index,
-      name: data.name,
-      image: data.image,
-      rarity: data.rarity,
-      generation: data.generation,
-      position: { x: 0, y: 0 },
-    };
-  });
+  // Helper function to get species name from Cairo enum
+  function getSpeciesFromCairoEnum(
+    species: any
+  ): keyof typeof speciesToFishData | null {
+    // If species is already a string (enum variant name)
+    if (typeof species === 'string' && species in speciesToFishData) {
+      return species as keyof typeof speciesToFishData;
+    }
 
-  // Use fish from URL if available, otherwise use selected aquarium fish
-  const displayFish =
-    fishObjects.length > 0
-      ? fishObjects
-      : aquarium.fishes.map(fish => ({
-          ...fish,
-          position: { x: 0, y: 0 }, // Will be repositioned by FishDisplay
-        }));
+    // Handle CairoCustomEnum structure
+    if (species && typeof species === 'object') {
+      // Check if it has a variant property with the actual enum data
+      if (species.variant && typeof species.variant === 'object') {
+        // Look for the key that has a non-undefined value (the active variant)
+        for (const [key, value] of Object.entries(species.variant)) {
+          if (value !== undefined && key in speciesToFishData) {
+            return key as keyof typeof speciesToFishData;
+          }
+        }
+      }
+
+      // Check if it's a CairoCustomEnum with activeVariant
+      if (species.activeVariant && typeof species.activeVariant === 'string') {
+        const variantName = species.activeVariant;
+        if (variantName in speciesToFishData) {
+          return variantName as keyof typeof speciesToFishData;
+        }
+      }
+
+      // Direct check on the species object itself
+      for (const [key, value] of Object.entries(species)) {
+        if (
+          value !== undefined &&
+          typeof value === 'object' &&
+          key in speciesToFishData
+        ) {
+          return key as keyof typeof speciesToFishData;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  // Helper function to convert BigInt to number safely
+  function bigIntToNumber(value: any): number {
+    if (typeof value === 'bigint') {
+      return Number(value);
+    }
+    if (typeof value === 'number') {
+      return value;
+    }
+    return 0;
+  }
+
+  // Helper function to get species from fish_type (BigInt index)
+  function getSpeciesFromIndex(
+    fishType: any
+  ): keyof typeof speciesToFishData | null {
+    const index = bigIntToNumber(fishType);
+    const speciesNames: (keyof typeof speciesToFishData)[] = [
+      'AngelFish',
+      'GoldFish',
+      'Betta',
+      'NeonTetra',
+      'Corydoras',
+      'Hybrid',
+    ];
+
+    if (index >= 0 && index < speciesNames.length) {
+      return speciesNames[index];
+    }
+
+    return null;
+  }
+
+  const displayFish = playerFishes
+    .map((fish: any, index: number) => {
+      if (!fish || typeof fish !== 'object') {
+        console.warn(`Invalid fish at index ${index}:`, fish);
+        return null;
+      }
+
+      let speciesKey: keyof typeof speciesToFishData | null = null;
+
+      if (fish.species) {
+        speciesKey = getSpeciesFromCairoEnum(fish.species);
+      }
+
+      if (!speciesKey && fish.fish_type !== undefined) {
+        speciesKey = getSpeciesFromIndex(fish.fish_type);
+      }
+
+      if (!speciesKey) {
+        console.warn(
+          `Could not determine species for fish at index ${index}:`,
+          {
+            species: fish.species,
+            fish_type: fish.fish_type,
+            speciesKeys: fish.species
+              ? Object.keys(fish.species)
+              : 'no species object',
+            fish: fish,
+          }
+        );
+        return null;
+      }
+
+      // Get species data
+      const data = speciesToFishData[speciesKey];
+
+      if (!data) {
+        console.warn(`No data found for species: ${speciesKey}`);
+        return null;
+      }
+
+      return {
+        id: fish.id ? bigIntToNumber(fish.id) : index,
+        name: data.name,
+        image: data.image,
+        rarity: data.rarity,
+        generation: fish.generation
+          ? bigIntToNumber(fish.generation)
+          : data.generation,
+        position: { x: 0, y: 0 },
+        species: speciesKey,
+        // Include additional fish data from Cairo struct
+        age: fish.age ? bigIntToNumber(fish.age) : 0,
+        health: fish.health ? bigIntToNumber(fish.health) : 100,
+        hunger_level: fish.hunger_level ? bigIntToNumber(fish.hunger_level) : 0,
+        size: fish.size ? bigIntToNumber(fish.size) : 1,
+        color: fish.color,
+        pattern: fish.pattern,
+      };
+    })
+    .filter((fish): fish is NonNullable<typeof fish> => fish !== null);
 
   return (
     <div className='relative w-full h-screen overflow-hidden bg-[#005C99]'>
