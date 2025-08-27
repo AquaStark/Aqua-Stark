@@ -104,7 +104,7 @@ export default function Onboarding() {
       'aquarium id:',
       JSON.stringify(
         aquariums,
-        (key, value) => (typeof value === 'bigint' ? value.toString() : value),
+        (_key, value) => (typeof value === 'bigint' ? value.toString() : value),
         2
       )
     );
