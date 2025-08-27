@@ -99,5 +99,96 @@ mod test {
         assert_eq!(d(arr.clone(), 4).icon(), 'fa-trophy', "Collector icon mismatch");
         assert_eq!(d(arr.clone(), 5).icon(), 'fa-star', "DecoratedAquarium icon mismatch");
     }
-}
 
+    #[test]
+    fn test_achievement_titles() {
+        let arr = get_achievements();
+        assert!(arr.len() == 6, "Should have 6 achievements");
+        assert_eq!(d(arr.clone(), 0).title(), '', "None title should be empty");
+        assert_eq!(d(arr.clone(), 1).title(), 'First Fish', "FirstFish title mismatch");
+        assert_eq!(
+            d(arr.clone(), 2).title(), 'Underwater Explorer', "UnderwaterExplorer title mismatch",
+        );
+        assert_eq!(
+            d(arr.clone(), 3).title(), 'Successful Breeding', "SuccessfulBreeding title mismatch",
+        );
+        assert_eq!(d(arr.clone(), 4).title(), 'Collector', "Collector title mismatch");
+        assert_eq!(
+            d(arr.clone(), 5).title(), 'Decorated Aquarium', "DecoratedAquarium title mismatch",
+        );
+    }
+
+    #[test]
+    fn test_achievement_description() {
+        let arr = get_achievements();
+        assert!(arr.len() == 6, "Should have 6 achievements");
+        assert_eq!(d(arr.clone(), 0).description(), "", "None description should be empty");
+        assert_eq!(
+            d(arr.clone(), 1).description(),
+            "You obtained your first fish NFT!",
+            "FirstFish description mismatch",
+        );
+        assert_eq!(
+            d(arr.clone(), 2).description(),
+            "You visited your first aquarium event",
+            "UnderwaterExplorer description mismatch",
+        );
+        assert_eq!(
+            d(arr.clone(), 3).description(),
+            "You bred a new fish",
+            "SuccessfulBreeding description mismatch",
+        );
+        assert_eq!(
+            d(arr.clone(), 4).description(),
+            "You own at least 10 unique fish",
+            "Collector description mismatch",
+        );
+        assert_eq!(
+            d(arr.clone(), 5).description(),
+            "You placed at least 3 decorations",
+            "DecoratedAquarium description mismatch",
+        );
+    }
+
+    // #[inline]
+    // fn tasks(self: Achievement) -> Span<Task> {
+    //     match self {
+    //         Achievement::None => [].span(),
+    //         Achievement::FirstFish => array![
+    //             TaskTrait::new('FirstFish', 1, "Obtain your first fish NFT"),
+    //         ]
+    //             .span(),
+    //         Achievement::UnderwaterExplorer => array![
+    //             TaskTrait::new('UnderwaterExplorer', 1, "Participate in your first aquarium
+    //             event"),
+    //         ]
+    //             .span(),
+    //         Achievement::SuccessfulBreeding => array![
+    //             TaskTrait::new('SuccessfulBreeding', 1, "Complete a breeding action"),
+    //         ]
+    //             .span(),
+    //         Achievement::Collector => array![
+    //             TaskTrait::new('Collector', 10, "Own 10 different fish NFTs"),
+    //         ]
+    //             .span(),
+    //         Achievement::DecoratedAquarium => array![
+    //             TaskTrait::new(
+    //                 'DecoratedAquarium', 3, "Place 3 or more decorations in your aquarium",
+    //             ),
+    //         ]
+    //             .span(),
+    //     }
+    // }
+
+    fn test_achievement_tasks() {
+        let arr = get_achievements();
+
+        assert!(d(arr.clone(), 0).tasks().is_empty(), "None should have no tasks");
+
+        for i in 1..arr.len() {
+            let achievement = d(arr.clone(), i);
+            let tasks = achievement.tasks();
+            assert!(!tasks.is_empty(), "{} should have at least one task", achievement.title());
+        };
+    }
+}
