@@ -8,7 +8,7 @@ pub mod systems {
     pub mod session;
 }
 
-// pub mod aquarium;
+pub mod inventory;
 
 pub mod achievements {
     pub mod achievements;
@@ -27,7 +27,9 @@ pub mod interfaces {
     pub mod ITransactionHistory;
     // pub mod IExperience;
     pub mod ITrade;
+    pub mod IInventory;
 }
+
 
 pub mod models {
     pub mod aquarium_model;

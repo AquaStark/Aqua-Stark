@@ -1,57 +1,20 @@
-use starknet::{ContractAddress};
-
-use super::models::player_model::Player;
-use super::models::inventory_model::{InventoryItem, ItemType, LocationType,};
-
-use super::base::events::{
-    ItemAddedToInventory,
-    ItemRemovedFromInventory,
-    ItemMovedBetweenAquariums,
-};
-
-#[starknet::interface]
-pub trait IInventory<TContractState> {
-    fn add_item_to_inventory(
-        ref self: TContractState,
-        player_wallet: ContractAddress,
-        item_id: u64,
-        item_type: u8,     // 0=Fish,1=Decoration,2=Aquarium
-    );
-
-    fn remove_item_from_inventory(
-        ref self: TContractState,
-        player_wallet: ContractAddress,
-        item_id: u64,
-        item_type: u8,
-    );
-
-    fn move_item_between_aquariums(
-        ref self: TContractState,
-        player_wallet: ContractAddress,
-        item_id: u64,
-        from_aquarium: u64,
-        to_aquarium: u64,
-        item_type: u8,     // 0=Fish,1=Decoration (moving aquariums themselves usually not supported)
-    );
-
-    fn get_player(self: @TContractState, player_wallet: ContractAddress) -> Player;
-}
-
 #[dojo::contract]
 pub mod AquaInventory {
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
-    
+    use aqua_stark::interfaces::IInventory::IInventory;
+    use starknet::{ContractAddress};
+    use aqua_stark::models::player_model::Player;
+    use aqua_stark::models::inventory_model::{InventoryItem, ItemType, LocationType,};
 
-    use super::{
-        Player,
-        InventoryItem, ItemType, LocationType,
-        ItemAddedToInventory, ItemRemovedFromInventory, ItemMovedBetweenAquariums,
+    use aqua_stark::base::events::{
+        ItemAddedToInventory,
+        ItemRemovedFromInventory,
+        ItemMovedBetweenAquariums,
     };
-    use starknet::ContractAddress;
 
     // ---- helpers ----
-    fn as_item_type(item_type: u8) -> ItemType {
+    pub fn as_item_type(item_type: u8) -> ItemType {
         match item_type {
             0 => ItemType::Fish,
             1 => ItemType::Decoration,
@@ -59,7 +22,7 @@ pub mod AquaInventory {
             _ => panic!("INVALID_ITEM_TYPE"),
         }
     }
-    fn iid(player_wallet: ContractAddress, item_id: u64, item_type: ItemType) -> u256 {
+    pub fn iid(player_wallet: ContractAddress, item_id: u64, item_type: ItemType) -> u256 {
         let addr_felt: felt252 = player_wallet.try_into().unwrap();
         let t: u256 = match item_type {
             ItemType::Fish => 0_u256,
@@ -71,7 +34,7 @@ pub mod AquaInventory {
 
 
     #[abi(embed_v0)]
-    pub impl AquaInventoryImpl of super::IInventory<ContractState> {
+    pub impl AquaInventoryImpl of IInventory<ContractState> {
         fn add_item_to_inventory(
             ref self: ContractState,
             player_wallet: ContractAddress,

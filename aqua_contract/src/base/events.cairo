@@ -329,3 +329,36 @@ pub struct DecorationRemovedFromAquarium {
     pub decoration_id: u256,
     pub timestamp: u64,
 }
+// -----------------------------
+// Inventory Events
+// -----------------------------
+
+#[derive(Drop, Serde)]
+#[dojo::event]
+pub struct ItemAddedToInventory {
+    #[key]
+    pub player_id: u64,
+    pub item_id: u64,
+    pub item_type: u8, // 0 = Fish, 1 = Decoration
+}
+
+#[derive(Drop, Serde)]
+#[dojo::event]
+pub struct ItemRemovedFromInventory {
+    #[key]
+    pub player_id: u64,
+    pub item_id: u64,
+    pub item_type: u8,
+}
+
+#[derive(Drop, Serde)]
+#[dojo::event]
+pub struct ItemMovedBetweenAquariums {
+    #[key]
+    pub player_id: u64,
+    pub item_id: u64,
+    pub from_aquarium: u64,
+    pub to_aquarium: u64,
+    pub item_type: u8,
+}
+

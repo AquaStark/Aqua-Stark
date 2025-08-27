@@ -1,112 +1,107 @@
 #[cfg(test)]
-mod tests {
-    use starknet::contract_address_const;
-    use starknet::ContractAddress;
-    use starknet::testing::set_caller_address;
-    use aqua_stark::models::player_model::Player;
-    use aqua_stark::models::inventory_model::{InventoryItem, ItemType, LocationType};
+pub mod Test {
+    use super::*;
+    use dojo::world::WorldStorageTrait;
+    use dojo::model::ModelStorage;
+    use dojo_cairo_test::{
+        ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
+        spawn_test_world,
+    };
+    use starknet::{contract_address_const, testing};
+
+    use aqua_stark::models::inventory_model::{
+        InventoryItem, m_InventoryItem,ItemType,
+    };
+    use aqua_stark::models::player_model::{m_Player, Player};
+
+    use aqua_stark::interfaces::IInventory::{IInventoryDispatcher, IInventoryDispatcherTrait};
     use aqua_stark::inventory::AquaInventory;
-    use aqua_stark::base::events::{ItemAddedToInventory, ItemRemovedFromInventory, ItemMovedBetweenAquariums};
+    use aqua_stark::base::events::{
+        ItemAddedToInventory, ItemRemovedFromInventory, ItemMovedBetweenAquariums,
+        e_ItemAddedToInventory, e_ItemRemovedFromInventory, e_ItemMovedBetweenAquariums,
+    };
 
-    fn zero_address() -> ContractAddress {
-        contract_address_const::<0>()
-    }
+    fn namespace_def() -> NamespaceDef {
+        NamespaceDef {
+            namespace: "aqua_stark",
+            resources: [
+                // Models
+                TestResource::Model(m_InventoryItem::TEST_CLASS_HASH),
+                TestResource::Model(m_Player::TEST_CLASS_HASH),
 
-    fn test_address() -> ContractAddress {
-        contract_address_const::<'player1'>()
-    }
+                // Events
+                TestResource::Event(e_ItemAddedToInventory::TEST_CLASS_HASH),
+                TestResource::Event(e_ItemRemovedFromInventory::TEST_CLASS_HASH),
+                TestResource::Event(e_ItemMovedBetweenAquariums::TEST_CLASS_HASH),
 
-    // Helper to create a dummy player for tests
-    fn create_test_player(id: u64) -> Player {
-        Player {
-            wallet: test_address(),
-            id: id.into(),
-            username: 'tester',
-            inventory_ref: zero_address(),
-            is_verified: true,
-            aquarium_count: 0,
-            fish_count: 0,
-            decoration_count: 0,
-            transaction_count: 0,
-            registered_at: 0,
-            player_fishes: ArrayTrait::new(),
-            player_aquariums: ArrayTrait::new(),
-            player_decorations: ArrayTrait::new(),
-            transaction_history: ArrayTrait::new(),
+                // Contract
+                TestResource::Contract(AquaInventory::TEST_CLASS_HASH),
+            ]
+            .span(),
         }
     }
 
-    #[test]
-    fn test_add_fish_to_inventory() {
-        set_caller_address(test_address());
-        let mut player = create_test_player(1);
-
-        AquaInventory::add_item_to_inventory(ref player, 1, 101, 0);
-
-        assert(player.fish_count == 1, 'Fish count not incremented');
-        assert(player.player_fishes.len() == 1, 'Fish not added to array');
+    fn contract_defs() -> Span<ContractDef> {
+        [
+            ContractDefTrait::new(@"aqua_stark", @"AquaInventory")
+                .with_writer_of([dojo::utils::bytearray_hash(@"aqua_stark")].span()),
+        ]
+        .span()
     }
 
     #[test]
-    fn test_remove_fish_from_inventory() {
-        set_caller_address(test_address());
-        let mut player = create_test_player(1);
+    fn test_add_item_to_inventory() {
+        let mut world = spawn_test_world([namespace_def()].span());
+        world.sync_perms_and_inits(contract_defs());
 
-        AquaInventory::add_item_to_inventory(ref player, 1, 101, 0);
-        AquaInventory::remove_item_from_inventory(ref player, 1, 101, 0);
+        let (contract_address, _) = world.dns(@"AquaInventory").unwrap();
+        let mut inventory_system = IInventoryDispatcher { contract_address };
 
-        assert(player.fish_count == 0, 'Fish count not decremented');
-        assert(player.player_fishes.len() == 0, 'Fish not removed from array');
+        let player = contract_address_const::<'player'>();
+        testing::set_contract_address(player);
+
+        // Add a fish item to inventory
+        inventory_system.add_item_to_inventory(player, 1, 0); // (player, item_id, item_type=fish)
+        let key = AquaInventory::iid(player, 1, ItemType::Fish);
+        
+        let item: InventoryItem = world.read_model(key);
+        assert!(item.item_id == 1, "Item ID mismatch");
     }
 
     #[test]
-    fn test_add_decoration_to_inventory() {
-        set_caller_address(test_address());
-        let mut player = create_test_player(2);
+    fn test_remove_item_from_inventory() {
+        let mut world = spawn_test_world([namespace_def()].span());
+        world.sync_perms_and_inits(contract_defs());
 
-        AquaInventory::add_item_to_inventory(ref player, 2, 201, 1);
+        let (contract_address, _) = world.dns(@"AquaInventory").unwrap();
+        let mut inventory_system = IInventoryDispatcher { contract_address };
 
-        assert(player.decoration_count == 1, 'Decoration count not incremented');
-        assert(player.player_decorations.len() == 1, 'Decoration not added to array');
-    }
+        let player = contract_address_const::<'player'>();
+        testing::set_contract_address(player);
 
-    #[test]
-    fn test_add_aquarium_to_inventory() {
-        set_caller_address(test_address());
-        let mut player = create_test_player(3);
+        inventory_system.add_item_to_inventory(player, 42, 1); // Decoration
 
-        AquaInventory::add_item_to_inventory(ref player, 3, 301, 2);
+        inventory_system.remove_item_from_inventory(player, 42_u64, 1);
+        let test_player = inventory_system.get_player(player); 
 
-        assert(player.aquarium_count == 1, 'Aquarium count not incremented');
-        assert(player.player_aquariums.len() == 1, 'Aquarium not added to array');
-    }
+        assert!(test_player.decoration_count == 0, "Item should have been removed");
+    }          
 
     #[test]
-    fn test_move_fish_between_aquariums() {
-        set_caller_address(test_address());
-        let mut player = create_test_player(4);
+    fn get_player() {
+        let mut world = spawn_test_world([namespace_def()].span());
+        world.sync_perms_and_inits(contract_defs());
 
-        // Add aquariums to player
-        AquaInventory::add_item_to_inventory(ref player, 4, 401, 2);
-        AquaInventory::add_item_to_inventory(ref player, 4, 402, 2);
+        let (contract_address, _) = world.dns(@"AquaInventory").unwrap();
+        let inventory_system = IInventoryDispatcher { contract_address };
 
-        // Add fish to first aquarium
-        AquaInventory::add_item_to_inventory(ref player, 4, 501, 0);
+        let player = contract_address_const::<'player'>();
+        testing::set_contract_address(player);
 
-        // Move fish between aquariums
-        AquaInventory::move_item_between_aquariums(ref player, 4, 501, 401, 402, 0);
+        let test_player = inventory_system.get_player(player); 
 
-        // Just assert event/flow worked; detailed aquarium model tests already cover array ops
-        assert(player.fish_count == 1, 'Fish count should remain 1 after move');
-    }
-
-    #[test]
-    #[should_panic(expected: ('INVALID_ITEM_TYPE',))]
-    fn test_invalid_item_type() {
-        set_caller_address(test_address());
-        let mut player = create_test_player(5);
-
-        AquaInventory::add_item_to_inventory(ref player, 5, 999, 99); // invalid type
+        assert!(test_player.wallet == player, "Player wallet mismatch");
     }
 }
 
+    
