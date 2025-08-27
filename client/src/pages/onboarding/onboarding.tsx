@@ -8,6 +8,22 @@ import { Button } from '@/components/ui/button';
 import { BubblesBackground } from '@/components/bubble-background';
 import { useBubbles } from '@/hooks/use-bubbles';
 import { FishCard } from '@/components/ui/fish-card/fish-card';
+import { useAquarium } from '@/hooks/dojo/useAquarium';
+import { useAccount } from '@starknet-react/core';
+import { toast } from 'sonner';
+import { useFish } from '@/hooks/dojo/useFish';
+import { CairoCustomEnum } from 'starknet';
+import { SpeciesEnum } from '@/typescript/models.gen';
+
+// This map connects your frontend IDs to Cairo enum variants
+const fishEnumMap: Record<number, SpeciesEnum> = {
+  1: new CairoCustomEnum({ AngelFish: 'AngelFish' }),
+  2: new CairoCustomEnum({ GoldFish: 'GoldFish' }),
+  3: new CairoCustomEnum({ Betta: 'Betta' }),
+  4: new CairoCustomEnum({ NeonTetra: 'NeonTetra' }),
+  5: new CairoCustomEnum({ Corydoras: 'Corydoras' }),
+  6: new CairoCustomEnum({ Hybrid: 'Hybrid' }),
+};
 
 const starterFish = [
   {
@@ -58,7 +74,10 @@ const starterFish = [
 export default function Onboarding() {
   const navigate = useNavigate();
   const bubbles = useBubbles();
+  const { account } = useAccount();
   const [selectedFish, setSelectedFish] = useState<number[]>([]);
+  const { createAquariumId, getPlayerAquariums } = useAquarium();
+  const { newFish } = useFish();
 
   const handleFishSelect = (fishId: number) => {
     console.log('Fish selected:', fishId);
@@ -74,21 +93,96 @@ export default function Onboarding() {
     });
   };
 
-  const handleContinue = () => {
-    console.log('Continue button clicked, selectedFish:', selectedFish);
-    if (selectedFish.length === 2) {
-      const fishParams = selectedFish
-        .map(id => {
-          const fish = starterFish.find(f => f.id === id);
-          return fish?.name.toLowerCase() || '';
-        })
-        .join(',');
+  //  Create Aquarium
+  const createNewAquarium = async (account: any) => {
+    const aquarium = await createAquariumId(account);
+    console.log(`Aquarium Tx Hash : ${JSON.stringify(aquarium)}`);
+    toast.success('Aquarium created successfully!');
 
-      console.log('Navigating to game with fish:', fishParams);
-      navigate(`/game?fish=${fishParams}`);
+    const aquariums = await getPlayerAquariums(account.address);
+    console.log(
+      'aquarium id:',
+      JSON.stringify(
+        aquariums,
+        (_key, value) => (typeof value === 'bigint' ? value.toString() : value),
+        2
+      )
+    );
+
+    return aquariums[0]?.id;
+  };
+
+  const createNewFish = async (
+    account: any,
+    aquariumId: bigint,
+    fishId: number,
+    order: string
+  ) => {
+    try {
+      const speciesenum = fishEnumMap[fishId];
+      if (!speciesenum) {
+        toast.error(`${order} fish not selected`);
+        return null;
+      }
+
+      const tx = await newFish(account, aquariumId, speciesenum);
+      console.log(`${order} Fish Tx Hash: ${tx.transaction_hash}`);
+
+      return { success: true, transactionHash: tx.transaction_hash };
+    } catch (err: any) {
+      if (err.message?.includes('USER_REFUSED_OP')) {
+        toast.error(
+          `You rejected the ${order} fish transaction in your wallet.`
+        );
+        return null;
+      }
+      console.error(`Error while creating ${order} fish:`, err);
+      toast.error(`Something went wrong while creating ${order} fish.`);
+      return null;
     }
   };
 
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  const handleContinue = async () => {
+    console.log('Continue button clicked, selectedFish:', selectedFish);
+
+    if (selectedFish.length !== 2) return;
+    if (!account) {
+      toast.error('Wallet not connected!');
+      return;
+    }
+
+    try {
+      const aquariumId = await createNewAquarium(account);
+      if (!aquariumId) throw new Error("Couldn't create aquarium");
+
+      for (let i = 0; i < 2; i++) {
+        const order = i === 0 ? 'First' : 'Second';
+
+        const result = await createNewFish(
+          account,
+          BigInt(aquariumId),
+          selectedFish[i],
+          order
+        );
+
+        if (result) {
+          toast.success(`${order} fish created successfully in aquarium`);
+        }
+
+        if (i < selectedFish.length - 1) {
+          console.log('Waiting 5s before next fish...');
+          await delay(5000);
+        }
+      }
+
+      navigate(`/game?aquarium=${BigInt(aquariumId)}`);
+    } catch (err) {
+      console.error('Error during onboarding:', err);
+      toast.error('Something went wrong while creating your aquarium.');
+    }
+  };
   return (
     <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-400 via-blue-600 to-blue-800'>
       {/* Ambient lights */}

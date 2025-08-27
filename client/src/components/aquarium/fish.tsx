@@ -117,7 +117,7 @@ export function Fish({
       exotic: 130,
     };
     // Get the lowercase rarity and check if it's a valid key
-    const rarityKey = fish.rarity.toLowerCase() as RarityType;
+    const rarityKey = fish.rarity as RarityType;
 
     // Default to medium size if rarity is not recognized
     const baseSize = rarityFactor[rarityKey] || 100;
