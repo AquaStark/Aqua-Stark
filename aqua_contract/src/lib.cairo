@@ -55,7 +55,6 @@ pub mod tests {
     mod test_world;
     // mod simple_session_test;
     mod test_inventory;
-
 }
 
 

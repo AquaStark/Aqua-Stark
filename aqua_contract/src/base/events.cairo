@@ -339,7 +339,7 @@ pub struct ItemAddedToInventory {
     #[key]
     pub player_id: u64,
     pub item_id: u64,
-    pub item_type: u8, // 0 = Fish, 1 = Decoration
+    pub item_type: u8 // 0 = Fish, 1 = Decoration
 }
 
 #[derive(Drop, Serde)]

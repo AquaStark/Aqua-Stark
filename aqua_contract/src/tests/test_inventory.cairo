@@ -9,9 +9,7 @@ pub mod Test {
     };
     use starknet::{contract_address_const, testing};
 
-    use aqua_stark::models::inventory_model::{
-        InventoryItem, m_InventoryItem,ItemType,
-    };
+    use aqua_stark::models::inventory_model::{InventoryItem, m_InventoryItem, ItemType};
     use aqua_stark::models::player_model::{m_Player, Player};
 
     use aqua_stark::interfaces::IInventory::{IInventoryDispatcher, IInventoryDispatcherTrait};
@@ -28,16 +26,14 @@ pub mod Test {
                 // Models
                 TestResource::Model(m_InventoryItem::TEST_CLASS_HASH),
                 TestResource::Model(m_Player::TEST_CLASS_HASH),
-
                 // Events
                 TestResource::Event(e_ItemAddedToInventory::TEST_CLASS_HASH),
                 TestResource::Event(e_ItemRemovedFromInventory::TEST_CLASS_HASH),
                 TestResource::Event(e_ItemMovedBetweenAquariums::TEST_CLASS_HASH),
-
                 // Contract
                 TestResource::Contract(AquaInventory::TEST_CLASS_HASH),
             ]
-            .span(),
+                .span(),
         }
     }
 
@@ -46,7 +42,7 @@ pub mod Test {
             ContractDefTrait::new(@"aqua_stark", @"AquaInventory")
                 .with_writer_of([dojo::utils::bytearray_hash(@"aqua_stark")].span()),
         ]
-        .span()
+            .span()
     }
 
     #[test]
@@ -63,7 +59,7 @@ pub mod Test {
         // Add a fish item to inventory
         inventory_system.add_item_to_inventory(player, 1, 0); // (player, item_id, item_type=fish)
         let key = AquaInventory::iid(player, 1, ItemType::Fish);
-        
+
         let item: InventoryItem = world.read_model(key);
         assert!(item.item_id == 1, "Item ID mismatch");
     }
@@ -82,10 +78,10 @@ pub mod Test {
         inventory_system.add_item_to_inventory(player, 42, 1); // Decoration
 
         inventory_system.remove_item_from_inventory(player, 42_u64, 1);
-        let test_player = inventory_system.get_player(player); 
+        let test_player = inventory_system.get_player(player);
 
         assert!(test_player.decoration_count == 0, "Item should have been removed");
-    }          
+    }
 
     #[test]
     fn get_player() {
@@ -98,10 +94,9 @@ pub mod Test {
         let player = contract_address_const::<'player'>();
         testing::set_contract_address(player);
 
-        let test_player = inventory_system.get_player(player); 
+        let test_player = inventory_system.get_player(player);
 
         assert!(test_player.wallet == player, "Player wallet mismatch");
     }
 }
 
-    
