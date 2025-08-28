@@ -54,8 +54,8 @@ pub mod Trade {
             let aqua_stark_address = self.get_aqua_stark_address();
             let aqua_stark = IAquaStarkDispatcher { contract_address: aqua_stark_address };
 
-            // Verify fish exists in AquaStark
-            let _ = aqua_stark.get_fish(offered_fish_id);
+            // Fish verification moved to game contract
+            // let _ = aqua_stark.get_fish(offered_fish_id);
 
             let fish_owner: FishOwner = world.read_model(offered_fish_id);
             assert(fish_owner.owner == caller, 'You do not own this fish');
@@ -135,8 +135,9 @@ pub mod Trade {
             let aqua_stark_address = self.get_aqua_stark_address();
             let aqua_stark = IAquaStarkDispatcher { contract_address: aqua_stark_address };
 
-            let _ = aqua_stark.get_fish(trade_offer.offered_fish_id);
-            let _ = aqua_stark.get_fish(offered_fish_id);
+            // Fish verification moved to game contract
+            // let _ = aqua_stark.get_fish(trade_offer.offered_fish_id);
+            // let _ = aqua_stark.get_fish(offered_fish_id);
 
             assert(TradeOfferTrait::is_active(@trade_offer), 'Offer not active');
             assert(trade_offer.creator != caller, 'Cannot accept own offer');
