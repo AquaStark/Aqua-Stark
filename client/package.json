@@ -20,7 +20,7 @@
     "@cartridge/connector": "^0.5.9",
     "@cartridge/controller": "^0.5.9",
     "@cartridge/ui-next": "^0.7.13",
-    "@dojoengine/core": "1.4.4",
+    "@dojoengine/core": "1.6.4",
     "@dojoengine/create-burner": "1.4.4",
     "@dojoengine/predeployed-connector": "1.4.4",
     "@dojoengine/sdk": "1.4.4",
