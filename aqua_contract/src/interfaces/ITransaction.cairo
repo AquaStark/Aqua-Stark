@@ -10,15 +10,10 @@ pub trait ITransaction<TContractState> {
         payload: Array<felt252>,
     ) -> u256;
 
-    fn process_transaction(
-        ref self: TContractState,
-        transaction_id: u256,
-    ) -> bool;
+    fn process_transaction(ref self: TContractState, transaction_id: u256) -> bool;
 
     fn confirm_transaction(
-        ref self: TContractState,
-        transaction_id: u256,
-        confirmation_hash: felt252,
+        ref self: TContractState, transaction_id: u256, confirmation_hash: felt252,
     ) -> bool;
 
     // Transaction status queries

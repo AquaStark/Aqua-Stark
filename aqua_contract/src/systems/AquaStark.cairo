@@ -5,11 +5,14 @@ pub mod AquaStark {
     use dojo::world::WorldStorageTrait;
     use aqua_stark::interfaces::IAquaStark::{IAquaStark};
     use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
-    use aqua_stark::interfaces::ITransactionHistory::{ITransactionHistoryDispatcher, ITransactionHistoryDispatcherTrait};
+    use aqua_stark::interfaces::ITransactionHistory::{
+        ITransactionHistoryDispatcher, ITransactionHistoryDispatcherTrait,
+    };
     use aqua_stark::base::events::{
         PlayerCreated, DecorationCreated, FishCreated, FishBred, FishMoved, DecorationMoved,
         FishAddedToAquarium, DecorationAddedToAquarium, EventTypeRegistered, PlayerEventLogged,
-        FishPurchased, AquariumCreated, TransactionInitiated, TransactionProcessed, TransactionConfirmed,
+        FishPurchased, AquariumCreated, TransactionInitiated, TransactionProcessed,
+        TransactionConfirmed,
     };
     // use aqua_stark::interfaces::IExperience::{IExperienceDispatcher, IExperienceDispatcherTrait};
     // use aqua_stark::models::experience_model::{Experience, ExperienceConfig};
@@ -987,9 +990,10 @@ pub mod AquaStark {
             end_timestamp: Option<u64>,
         ) -> Span<TransactionLog> {
             let transaction_contract = self.get_transaction_contract();
-            transaction_contract.get_transaction_history(
-                player, event_type_id, start, limit, start_timestamp, end_timestamp
-            )
+            transaction_contract
+                .get_transaction_history(
+                    player, event_type_id, start, limit, start_timestamp, end_timestamp,
+                )
         }
 
         fn initiate_transaction(
@@ -1008,9 +1012,7 @@ pub mod AquaStark {
         }
 
         fn confirm_transaction(
-            ref self: ContractState,
-            transaction_id: u256,
-            confirmation_hash: felt252,
+            ref self: ContractState, transaction_id: u256, confirmation_hash: felt252,
         ) -> bool {
             let transaction_contract = self.get_transaction_contract();
             transaction_contract.confirm_transaction(transaction_id, confirmation_hash)
@@ -1073,8 +1075,9 @@ pub mod AquaStark {
 
         fn get_transaction_contract(self: @ContractState) -> ITransactionHistoryDispatcher {
             let world = self.world_default();
-            // In a real implementation, you would get the transaction contract address from world storage
-            // For now, we use a placeholder address that would be configured during deployment
+            // In a real implementation, you would get the transaction contract address from world
+            // storage For now, we use a placeholder address that would be configured during
+            // deployment
             let transaction_contract_address = starknet::contract_address_const::<0x123>();
             ITransactionHistoryDispatcher { contract_address: transaction_contract_address }
         }

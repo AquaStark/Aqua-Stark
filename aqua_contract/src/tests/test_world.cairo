@@ -497,7 +497,9 @@ mod tests {
 
         // Next Register Event
         let (transaction_address, _) = world.dns(@"Transaction").unwrap();
-        let actions_system = ITransactionHistoryDispatcher { contract_address: transaction_address };
+        let actions_system = ITransactionHistoryDispatcher {
+            contract_address: transaction_address,
+        };
         testing::set_contract_address(OWNER());
         let event_id = actions_system.register_event_type("NewFishCreated");
 
@@ -530,7 +532,9 @@ mod tests {
 
         // Next Register Event
         let (transaction_address, _) = world.dns(@"Transaction").unwrap();
-        let actions_system = ITransactionHistoryDispatcher { contract_address: transaction_address };
+        let actions_system = ITransactionHistoryDispatcher {
+            contract_address: transaction_address,
+        };
         testing::set_contract_address(OWNER());
         let event_id_1 = actions_system.register_event_type("NewFishCreated");
         let event_id_2 = actions_system.register_event_type("NewAquariumCreated");
@@ -581,7 +585,9 @@ mod tests {
 
         // Next Register Event
         let (transaction_address, _) = world.dns(@"Transaction").unwrap();
-        let actions_system = ITransactionHistoryDispatcher { contract_address: transaction_address };
+        let actions_system = ITransactionHistoryDispatcher {
+            contract_address: transaction_address,
+        };
         testing::set_contract_address(OWNER());
         let event_id_1 = actions_system.register_event_type("NewFishCreated");
         let event_id_2 = actions_system.register_event_type("NewAquariumCreated");
@@ -629,7 +635,9 @@ mod tests {
 
         // Next Register Event
         let (transaction_address, _) = world.dns(@"Transaction").unwrap();
-        let actions_system = ITransactionHistoryDispatcher { contract_address: transaction_address };
+        let actions_system = ITransactionHistoryDispatcher {
+            contract_address: transaction_address,
+        };
         testing::set_contract_address(OWNER());
         let event_id_1 = actions_system.register_event_type("NewFishCreated");
         let event_id_2 = actions_system.register_event_type("NewAquariumCreated");
@@ -681,7 +689,9 @@ mod tests {
 
         // Next Register Event
         let (transaction_address, _) = world.dns(@"Transaction").unwrap();
-        let actions_system = ITransactionHistoryDispatcher { contract_address: transaction_address };
+        let actions_system = ITransactionHistoryDispatcher {
+            contract_address: transaction_address,
+        };
 
         testing::set_contract_address(OWNER());
         let event_id_1 = actions_system.register_event_type("NewFishCreated");
@@ -733,7 +743,9 @@ mod tests {
 
         // Next Register Event
         let (transaction_address, _) = world.dns(@"Transaction").unwrap();
-        let actions_system = ITransactionHistoryDispatcher { contract_address: transaction_address };
+        let actions_system = ITransactionHistoryDispatcher {
+            contract_address: transaction_address,
+        };
         testing::set_contract_address(OWNER());
         let event_id_1 = actions_system.register_event_type("NewFishCreated");
         let event_id_2 = actions_system.register_event_type("NewAquariumCreated");
@@ -781,7 +793,9 @@ mod tests {
 
         // Next Register Event
         let (transaction_address, _) = world.dns(@"Transaction").unwrap();
-        let actions_system = ITransactionHistoryDispatcher { contract_address: transaction_address };
+        let actions_system = ITransactionHistoryDispatcher {
+            contract_address: transaction_address,
+        };
         testing::set_contract_address(OWNER());
         let event_id_1 = actions_system.register_event_type("NewFishCreated");
         let event_id_2 = actions_system.register_event_type("NewAquariumCreated");

@@ -5,7 +5,7 @@ pub mod Transaction {
     use dojo::world::WorldStorageTrait;
     use dojo::model::ModelStorage;
     use dojo::event::EventStorage;
-    
+
     use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
     use aqua_stark::models::transaction_model::{
         EventCounter, EventDetailsTrait, EventTypeDetails, TransactionCounter, TransactionLog,
@@ -13,12 +13,11 @@ pub mod Transaction {
     };
     use aqua_stark::models::player_model::{Player};
     use aqua_stark::base::events::{
-        EventTypeRegistered, PlayerEventLogged, TransactionInitiated, TransactionProcessed, TransactionConfirmed,
+        EventTypeRegistered, PlayerEventLogged, TransactionInitiated, TransactionProcessed,
+        TransactionConfirmed,
     };
-    
-    use starknet::{
-        ContractAddress, get_caller_address, get_contract_address, get_block_timestamp,
-    };
+
+    use starknet::{ContractAddress, get_caller_address, get_contract_address, get_block_timestamp};
 
 
     #[abi(embed_v0)]
@@ -33,15 +32,16 @@ pub mod Transaction {
 
             // Emit TransactionInitiated event
             let temp_txn_id = self.generate_temp_transaction_id(caller, current_time);
-            world.emit_event(
-                @TransactionInitiated {
-                    transaction_id: temp_txn_id,
-                    player: caller,
-                    event_type_id: 0, // Not yet known
-                    payload_size: event_name.len(),
-                    timestamp: current_time,
-                }
-            );
+            world
+                .emit_event(
+                    @TransactionInitiated {
+                        transaction_id: temp_txn_id,
+                        player: caller,
+                        event_type_id: 0, // Not yet known
+                        payload_size: event_name.len(),
+                        timestamp: current_time,
+                    },
+                );
 
             let event_type_id = self.create_event_id();
             let mut event_details: EventTypeDetails = world.read_model(event_type_id);
@@ -49,23 +49,19 @@ pub mod Transaction {
             world.write_model(@event_details);
 
             // Emit EventTypeRegistered event
-            world.emit_event(
-                @EventTypeRegistered {
-                    event_type_id,
-                    timestamp: current_time,
-                }
-            );
+            world.emit_event(@EventTypeRegistered { event_type_id, timestamp: current_time });
 
             // Emit TransactionConfirmed event
-            world.emit_event(
-                @TransactionConfirmed {
-                    transaction_id: temp_txn_id,
-                    player: caller,
-                    event_type_id,
-                    confirmation_hash: event_type_id.try_into().unwrap(),
-                    timestamp: get_block_timestamp(),
-                }
-            );
+            world
+                .emit_event(
+                    @TransactionConfirmed {
+                        transaction_id: temp_txn_id,
+                        player: caller,
+                        event_type_id,
+                        confirmation_hash: event_type_id.try_into().unwrap(),
+                        timestamp: get_block_timestamp(),
+                    },
+                );
 
             event_type_id
         }
@@ -89,15 +85,16 @@ pub mod Transaction {
             let txn_id = self.create_transaction_id();
 
             // Emit TransactionInitiated event
-            world.emit_event(
-                @TransactionInitiated {
-                    transaction_id: txn_id,
-                    player,
-                    event_type_id,
-                    payload_size: payload.len(),
-                    timestamp: current_time,
-                }
-            );
+            world
+                .emit_event(
+                    @TransactionInitiated {
+                        transaction_id: txn_id,
+                        player,
+                        event_type_id,
+                        payload_size: payload.len(),
+                        timestamp: current_time,
+                    },
+                );
 
             let mut event_details: EventTypeDetails = world.read_model(event_type_id);
             event_details.total_logged += 1;
@@ -105,7 +102,9 @@ pub mod Transaction {
 
             let mut transaction_event: TransactionLog = world.read_model(txn_id);
             transaction_event =
-                TransactionLogTrait::log_transaction(txn_id, event_type_id, player, payload.clone());
+                TransactionLogTrait::log_transaction(
+                    txn_id, event_type_id, player, payload.clone(),
+                );
 
             let mut player_details: Player = world.read_model(player);
             player_details.transaction_count += 1;
@@ -118,15 +117,16 @@ pub mod Transaction {
             let processing_end = get_block_timestamp();
 
             // Emit TransactionProcessed event
-            world.emit_event(
-                @TransactionProcessed {
-                    transaction_id: txn_id,
-                    player,
-                    event_type_id,
-                    processing_time: processing_end - processing_start,
-                    timestamp: processing_end,
-                }
-            );
+            world
+                .emit_event(
+                    @TransactionProcessed {
+                        transaction_id: txn_id,
+                        player,
+                        event_type_id,
+                        processing_time: processing_end - processing_start,
+                        timestamp: processing_end,
+                    },
+                );
 
             // Generate payload hash for logging
             let mut payload_hash: felt252 = 0;
@@ -134,25 +134,24 @@ pub mod Transaction {
                 payload_hash = payload_hash + *item;
             };
 
-            world.emit_event(
-                @PlayerEventLogged {
-                    id: txn_id,
-                    event_type_id,
-                    player,
-                    timestamp: processing_end,
-                }
-            );
+            world
+                .emit_event(
+                    @PlayerEventLogged {
+                        id: txn_id, event_type_id, player, timestamp: processing_end,
+                    },
+                );
 
             // Emit TransactionConfirmed event
-            world.emit_event(
-                @TransactionConfirmed {
-                    transaction_id: txn_id,
-                    player,
-                    event_type_id,
-                    confirmation_hash: payload_hash,
-                    timestamp: get_block_timestamp(),
-                }
-            );
+            world
+                .emit_event(
+                    @TransactionConfirmed {
+                        transaction_id: txn_id,
+                        player,
+                        event_type_id,
+                        confirmation_hash: payload_hash,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
 
             transaction_event
         }
@@ -292,15 +291,16 @@ pub mod Transaction {
             let txn_id = self.create_transaction_id();
 
             // Emit TransactionInitiated event
-            world.emit_event(
-                @TransactionInitiated {
-                    transaction_id: txn_id,
-                    player,
-                    event_type_id,
-                    payload_size: payload.len(),
-                    timestamp: current_time,
-                }
-            );
+            world
+                .emit_event(
+                    @TransactionInitiated {
+                        transaction_id: txn_id,
+                        player,
+                        event_type_id,
+                        payload_size: payload.len(),
+                        timestamp: current_time,
+                    },
+                );
 
             txn_id
         }
@@ -316,23 +316,22 @@ pub mod Transaction {
 
             // In a full implementation, this would contain transaction processing logic
             // For now, we just emit the processing event
-            world.emit_event(
-                @TransactionProcessed {
-                    transaction_id,
-                    player: caller,
-                    event_type_id: 0, // Would be retrieved from transaction data
-                    processing_time: 1, // Mock processing time
-                    timestamp: current_time,
-                }
-            );
+            world
+                .emit_event(
+                    @TransactionProcessed {
+                        transaction_id,
+                        player: caller,
+                        event_type_id: 0, // Would be retrieved from transaction data
+                        processing_time: 1, // Mock processing time
+                        timestamp: current_time,
+                    },
+                );
 
             true
         }
 
         fn confirm_transaction(
-            ref self: ContractState,
-            transaction_id: u256,
-            confirmation_hash: felt252,
+            ref self: ContractState, transaction_id: u256, confirmation_hash: felt252,
         ) -> bool {
             let mut world = self.world_default();
             let caller = get_caller_address();
@@ -343,15 +342,16 @@ pub mod Transaction {
             assert(is_owner || is_contract, 'Only owner or contract');
 
             // Emit TransactionConfirmed event
-            world.emit_event(
-                @TransactionConfirmed {
-                    transaction_id,
-                    player: caller,
-                    event_type_id: 0, // Would be retrieved from transaction data
-                    confirmation_hash,
-                    timestamp: current_time,
-                }
-            );
+            world
+                .emit_event(
+                    @TransactionConfirmed {
+                        transaction_id,
+                        player: caller,
+                        event_type_id: 0, // Would be retrieved from transaction data
+                        confirmation_hash,
+                        timestamp: current_time,
+                    },
+                );
 
             true
         }
@@ -407,9 +407,7 @@ pub mod Transaction {
         }
 
         fn generate_temp_transaction_id(
-            self: @ContractState, 
-            player: ContractAddress, 
-            timestamp: u64
+            self: @ContractState, player: ContractAddress, timestamp: u64,
         ) -> u256 {
             // Generate a temporary transaction ID for tracking purposes
             let player_felt: felt252 = player.into();
