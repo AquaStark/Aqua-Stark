@@ -53,7 +53,7 @@
     "sonner": "^2.0.6",
     "starknet": "^6.23.1",
     "starknetkit": "^2.10.4",
-    "swiper": "^11.2.4",
+    "swiper": "^11.2.10",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^10.0.0",
