@@ -151,3 +151,8 @@ fn test_unauthorized_access() {
     testing::set_contract_address(user);
     aquarium_system.clean(aquarium_id, 10_u32);
 }
+
+#[test]
+fn test_aquarium_start() {
+    
+}
