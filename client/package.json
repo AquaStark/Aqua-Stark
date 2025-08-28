@@ -52,7 +52,7 @@
     "react-router-dom": "^7.1.5",
     "sonner": "^2.0.6",
     "starknet": "^6.23.1",
-    "starknetkit": "^2.10.4",
+    "starknetkit": "^3.0.3",
     "swiper": "^11.2.4",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
