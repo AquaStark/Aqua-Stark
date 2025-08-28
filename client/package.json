@@ -24,7 +24,7 @@
     "@dojoengine/create-burner": "1.4.4",
     "@dojoengine/predeployed-connector": "1.4.4",
     "@dojoengine/sdk": "1.4.4",
-    "@dojoengine/torii-client": "1.4.4",
+    "@dojoengine/torii-client": "1.6.4",
     "@dojoengine/torii-wasm": "1.4.4",
     "@dojoengine/utils": "1.4.4",
     "@heroicons/react": "^2.2.0",
