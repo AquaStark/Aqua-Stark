@@ -11,7 +11,6 @@ const REWARDS_CONTRACT =
 export function useGameActions() {
   // Por ahora, simulamos las acciones hasta que tengamos los contratos reales
   const executeAction = async ({ calls }: { calls: any[] }) => {
-    console.log('Executing actions:', calls);
     // Simular delay de transacción
     await new Promise(resolve => setTimeout(resolve, 2000));
     return { hash: '0x123...' };

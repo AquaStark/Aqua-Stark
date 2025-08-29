@@ -49,8 +49,6 @@ export function useAquaStark({ client, account }: UseAquaStarkProps) {
   const createNewPlayerId = useCallback(() => {
     try {
       const res = client.AquaStark.createNewPlayerId(account);
-      console.log('res', res);
-      console.log('account', account);
       return res;
     } catch (error) {
       console.error(error);

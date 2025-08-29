@@ -51,9 +51,6 @@ export class WalletModeManager {
       useKatanaEnvVar: process.env.NEXT_PUBLIC_USE_KATANA,
     };
 
-    // Add console logging for debugging
-    console.log('🔗 Wallet Mode:', this.getModeDescription());
-    console.log('📊 Debug Info:', debugInfo);
 
     return debugInfo;
   }

@@ -15,22 +15,17 @@ export const getWalletConfig = (): WalletConfig => {
   const useKatanaFromEnv = import.meta.env.VITE_USE_KATANA;
 
   // Add detailed debugging
-  console.log('🔍 Environment Variable Debug:');
-  console.log('  NODE_ENV:', import.meta.env.NODE_ENV);
-  console.log('  VITE_USE_KATANA:', useKatanaFromEnv);
-  console.log('  isDevelopment:', isDevelopment);
-  console.log(
+
     '  useKatanaFromEnv !== undefined:',
     useKatanaFromEnv !== undefined
   );
-  console.log('  useKatanaFromEnv === "true":', useKatanaFromEnv === 'true');
 
   const useKatanaAccounts =
     useKatanaFromEnv !== undefined
       ? useKatanaFromEnv === 'true'
       : isDevelopment;
 
-  console.log('  Final useKatanaAccounts:', useKatanaAccounts);
+
 
   return {
     useKatanaAccounts,
