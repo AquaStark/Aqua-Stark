@@ -67,7 +67,7 @@ export function FilterPanel({
       }
     }
 
-  // Apply filter immediately
+    // Apply filter immediately
     updateCategories(newCategories);
   };
 

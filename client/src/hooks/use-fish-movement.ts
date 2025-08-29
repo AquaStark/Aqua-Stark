@@ -344,7 +344,6 @@ export function useFishMovement(
         );
 
         if (targetFood) {
-
           if (onFoodConsumed && newState.targetFoodId) {
             onFoodConsumed(newState.targetFoodId);
           }
@@ -409,7 +408,6 @@ export function useFishMovement(
           );
 
           if (foodExists) {
-
             newState.behaviorState = 'feeding';
             newState.targetFoodId = nearestFood.id;
             newState.behaviorTimer = 6;

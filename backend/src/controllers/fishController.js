@@ -2,7 +2,6 @@ import { FishService } from '../services/fishService.js';
 
 // Fish controller for handling HTTP requests related to fish operations
 export class FishController {
-  
   // Get fish state
   static async getFishState(req, res) {
     try {
@@ -23,16 +22,25 @@ export class FishController {
       const { fishId } = req.params;
       const { happinessLevel } = req.body;
 
-      if (happinessLevel === undefined || happinessLevel < 0 || happinessLevel > 100) {
-        return res.status(400).json({ error: 'Happiness level must be between 0 and 100' });
+      if (
+        happinessLevel === undefined ||
+        happinessLevel < 0 ||
+        happinessLevel > 100
+      ) {
+        return res
+          .status(400)
+          .json({ error: 'Happiness level must be between 0 and 100' });
       }
 
-      const updatedFish = await FishService.updateFishHappiness(fishId, happinessLevel);
-      
-      res.json({ 
-        success: true, 
+      const updatedFish = await FishService.updateFishHappiness(
+        fishId,
+        happinessLevel
+      );
+
+      res.json({
+        success: true,
         data: updatedFish,
-        message: `Fish happiness updated to ${happinessLevel}`
+        message: `Fish happiness updated to ${happinessLevel}`,
       });
     } catch (error) {
       console.error('Error in updateFishHappiness:', error);
@@ -47,11 +55,11 @@ export class FishController {
       const { foodType = 'regular' } = req.body;
 
       const feedingResult = await FishService.feedFish(fishId, foodType);
-      
-      res.json({ 
-        success: true, 
+
+      res.json({
+        success: true,
         data: feedingResult,
-        message: `Fish fed with ${foodType} food`
+        message: `Fish fed with ${foodType} food`,
       });
     } catch (error) {
       console.error('Error in feedFish:', error);
@@ -65,7 +73,7 @@ export class FishController {
       const { fishId } = req.params;
 
       const stats = await FishService.getFishStats(fishId);
-      
+
       if (!stats) {
         return res.status(404).json({ error: 'Fish not found' });
       }
@@ -83,13 +91,15 @@ export class FishController {
       const { parent1Id, parent2Id } = req.body;
 
       if (!parent1Id || !parent2Id) {
-        return res.status(400).json({ error: 'Both parent fish IDs are required' });
+        return res
+          .status(400)
+          .json({ error: 'Both parent fish IDs are required' });
       }
 
       // This would be implemented when breeding is added
-      res.status(501).json({ 
+      res.status(501).json({
         error: 'Not implemented',
-        message: 'Fish breeding will be implemented in a future update'
+        message: 'Fish breeding will be implemented in a future update',
       });
     } catch (error) {
       console.error('Error in breedFish:', error);
@@ -109,7 +119,7 @@ export class FishController {
       }
 
       const fish = await FishService.getPlayerFish(playerId);
-      
+
       res.json({ success: true, data: fish });
     } catch (error) {
       console.error('Error in getPlayerFish:', error);

@@ -151,7 +151,7 @@ export const FoodParticles: React.FC<FoodParticlesProps> = ({
           })
           .filter(particle => particle.life > 0);
 
-  if (updated.length === 0) {
+        if (updated.length === 0) {
           onComplete();
           return [];
         }

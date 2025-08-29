@@ -2,7 +2,6 @@ import { MinigameService } from '../services/minigameService.js';
 
 // Minigame controller for handling HTTP requests related to game sessions
 export class MinigameController {
-  
   // Create a new game session
   static async createGameSession(req, res) {
     try {
@@ -13,17 +12,26 @@ export class MinigameController {
         return res.status(400).json({ error: 'Game type is required' });
       }
 
-      const validGameTypes = ['flappy_fish', 'angry_fish', 'fish_racing', 'bubble_pop', 'fish_memory'];
+      const validGameTypes = [
+        'flappy_fish',
+        'angry_fish',
+        'fish_racing',
+        'bubble_pop',
+        'fish_memory',
+      ];
       if (!validGameTypes.includes(gameType)) {
         return res.status(400).json({ error: 'Invalid game type' });
       }
 
-      const session = await MinigameService.createGameSession(walletAddress, gameType);
-      
-      res.json({ 
-        success: true, 
+      const session = await MinigameService.createGameSession(
+        walletAddress,
+        gameType
+      );
+
+      res.json({
+        success: true,
         data: session,
-        message: `Game session created for ${gameType}`
+        message: `Game session created for ${gameType}`,
       });
     } catch (error) {
       console.error('Error in createGameSession:', error);
@@ -39,22 +47,30 @@ export class MinigameController {
       const { walletAddress } = req.user;
 
       if (!sessionId || finalScore === undefined) {
-        return res.status(400).json({ error: 'Session ID and final score are required' });
+        return res
+          .status(400)
+          .json({ error: 'Session ID and final score are required' });
       }
 
       if (finalScore < 0) {
-        return res.status(400).json({ error: 'Final score must be non-negative' });
+        return res
+          .status(400)
+          .json({ error: 'Final score must be non-negative' });
       }
 
       // Calculate XP based on game type and score
       const xpEarned = MinigameService.calculateXP(gameType, finalScore);
-      
-      const endedSession = await MinigameService.endGameSession(sessionId, finalScore, xpEarned);
-      
-      res.json({ 
-        success: true, 
+
+      const endedSession = await MinigameService.endGameSession(
+        sessionId,
+        finalScore,
+        xpEarned
+      );
+
+      res.json({
+        success: true,
         data: endedSession,
-        message: `Game ended! Score: ${finalScore}, XP earned: ${xpEarned}`
+        message: `Game ended! Score: ${finalScore}, XP earned: ${xpEarned}`,
       });
     } catch (error) {
       console.error('Error in endGameSession:', error);
@@ -72,7 +88,7 @@ export class MinigameController {
       }
 
       const stats = await MinigameService.getPlayerStats(walletAddress);
-      
+
       res.json({ success: true, data: stats });
     } catch (error) {
       console.error('Error in getPlayerStats:', error);
@@ -90,13 +106,22 @@ export class MinigameController {
         return res.status(400).json({ error: 'Game type is required' });
       }
 
-      const validGameTypes = ['flappy_fish', 'angry_fish', 'fish_racing', 'bubble_pop', 'fish_memory'];
+      const validGameTypes = [
+        'flappy_fish',
+        'angry_fish',
+        'fish_racing',
+        'bubble_pop',
+        'fish_memory',
+      ];
       if (!validGameTypes.includes(gameType)) {
         return res.status(400).json({ error: 'Invalid game type' });
       }
 
-      const leaderboard = await MinigameService.getLeaderboard(gameType, parseInt(limit));
-      
+      const leaderboard = await MinigameService.getLeaderboard(
+        gameType,
+        parseInt(limit)
+      );
+
       res.json({ success: true, data: leaderboard });
     } catch (error) {
       console.error('Error in getGameLeaderboard:', error);
@@ -109,8 +134,10 @@ export class MinigameController {
     try {
       const { limit = 20 } = req.query;
 
-      const leaderboard = await MinigameService.getGlobalLeaderboard(parseInt(limit));
-      
+      const leaderboard = await MinigameService.getGlobalLeaderboard(
+        parseInt(limit)
+      );
+
       res.json({ success: true, data: leaderboard });
     } catch (error) {
       console.error('Error in getGlobalLeaderboard:', error);
@@ -125,19 +152,25 @@ export class MinigameController {
       const { walletAddress } = req.user;
 
       if (!achievement || !bonusXP) {
-        return res.status(400).json({ error: 'Achievement and bonus XP are required' });
+        return res
+          .status(400)
+          .json({ error: 'Achievement and bonus XP are required' });
       }
 
       if (bonusXP <= 0) {
         return res.status(400).json({ error: 'Bonus XP must be positive' });
       }
 
-      const bonusSession = await MinigameService.awardBonusXP(walletAddress, achievement, bonusXP);
-      
-      res.json({ 
-        success: true, 
+      const bonusSession = await MinigameService.awardBonusXP(
+        walletAddress,
+        achievement,
+        bonusXP
+      );
+
+      res.json({
+        success: true,
         data: bonusSession,
-        message: `Bonus XP awarded for achievement: ${achievement}`
+        message: `Bonus XP awarded for achievement: ${achievement}`,
       });
     } catch (error) {
       console.error('Error in awardBonusXP:', error);
@@ -157,10 +190,10 @@ export class MinigameController {
 
       // This would need to be implemented in the service
       // For now, we'll return a placeholder
-      res.json({ 
-        success: true, 
+      res.json({
+        success: true,
         data: { sessionId, status: 'active' },
-        message: 'Session details retrieved'
+        message: 'Session details retrieved',
       });
     } catch (error) {
       console.error('Error in getGameSession:', error);
@@ -177,36 +210,36 @@ export class MinigameController {
           name: 'Flappy Fish',
           description: 'Navigate your fish through obstacles',
           baseXP: 10,
-          difficulty: 'medium'
+          difficulty: 'medium',
         },
         {
           id: 'angry_fish',
           name: 'Angry Fish',
           description: 'Launch your fish to hit targets',
           baseXP: 15,
-          difficulty: 'hard'
+          difficulty: 'hard',
         },
         {
           id: 'fish_racing',
           name: 'Fish Racing',
           description: 'Race your fish against others',
           baseXP: 20,
-          difficulty: 'easy'
+          difficulty: 'easy',
         },
         {
           id: 'bubble_pop',
           name: 'Bubble Pop',
           description: 'Pop bubbles to earn points',
           baseXP: 8,
-          difficulty: 'easy'
+          difficulty: 'easy',
         },
         {
           id: 'fish_memory',
           name: 'Fish Memory',
           description: 'Match fish pairs in memory game',
           baseXP: 12,
-          difficulty: 'medium'
-        }
+          difficulty: 'medium',
+        },
       ];
 
       res.json({ success: true, data: gameTypes });

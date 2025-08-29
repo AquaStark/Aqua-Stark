@@ -66,7 +66,6 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
       clearTimeout(feedingTimeoutRef.current);
       feedingTimeoutRef.current = null;
     }
-
   }, []);
 
   // Start feeding mode
@@ -88,7 +87,6 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
       feedingTimeoutRef.current = setTimeout(() => {
         stopFeeding();
       }, duration);
-
     },
     [stopFeeding]
   );
@@ -96,7 +94,7 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
   // Handle food spawning
   const handleFeedClick = useCallback(
     (clientX: number, clientY: number, containerRect: DOMRect | undefined) => {
-  if (!containerRect || !feedingState.isFeeding) {
+      if (!containerRect || !feedingState.isFeeding) {
         return false;
       }
 
@@ -122,7 +120,6 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
       if (consumedFood) {
         // Validate food is still available before consuming
         if (!consumedFood.consumed) {
-
           // Add particle effect
           setFeedingState(prev => ({
             ...prev,
