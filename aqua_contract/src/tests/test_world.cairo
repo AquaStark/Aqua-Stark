@@ -32,6 +32,7 @@ mod tests {
     // use aqua_stark::systems::experience::experience;
     use aqua_stark::systems::AquaStark::AquaStark;
     use aqua_stark::systems::ShopCatalog::ShopCatalog;
+    use aqua_stark::systems::transaction::Transaction;
     use aqua_stark::base::events;
     // use dojo::model::{ModelStorageTest};
     use dojo::world::WorldStorageTrait;
@@ -78,6 +79,9 @@ mod tests {
                 // TestResource::Model(m_ExperienceCounter::TEST_CLASS_HASH),
                 TestResource::Event(events::e_PlayerEventLogged::TEST_CLASS_HASH),
                 TestResource::Event(events::e_EventTypeRegistered::TEST_CLASS_HASH),
+                TestResource::Event(events::e_TransactionInitiated::TEST_CLASS_HASH),
+                TestResource::Event(events::e_TransactionProcessed::TEST_CLASS_HASH),
+                TestResource::Event(events::e_TransactionConfirmed::TEST_CLASS_HASH),
                 TestResource::Event(events::e_PlayerCreated::TEST_CLASS_HASH),
                 TestResource::Event(events::e_DecorationCreated::TEST_CLASS_HASH),
                 TestResource::Event(events::e_FishCreated::TEST_CLASS_HASH),
@@ -100,6 +104,7 @@ mod tests {
                 // TestResource::Event(events::e_AquariumCleanlinessDecayed::TEST_CLASS_HASH),
                 TestResource::Contract(AquaStark::TEST_CLASS_HASH),
                 TestResource::Contract(ShopCatalog::TEST_CLASS_HASH),
+                TestResource::Contract(Transaction::TEST_CLASS_HASH),
                 // TestResource::Contract(experience::TEST_CLASS_HASH),
             ]
                 .span(),
@@ -115,6 +120,8 @@ mod tests {
             ContractDefTrait::new(@"aqua_stark", @"ShopCatalog")
                 .with_writer_of([dojo::utils::bytearray_hash(@"aqua_stark")].span())
                 .with_init_calldata([OWNER().into()].span()),
+            ContractDefTrait::new(@"aqua_stark", @"Transaction")
+                .with_writer_of([dojo::utils::bytearray_hash(@"aqua_stark")].span()),
             // ContractDefTrait::new(@"aqua_stark", @"experience")
         //     .with_writer_of([dojo::utils::bytearray_hash(@"aqua_stark")].span()),
         ]
@@ -448,7 +455,7 @@ mod tests {
         world.sync_perms_and_inits(contract_defs());
         world.dispatcher.grant_owner(0, caller);
 
-        let (contract_address, _) = world.dns(@"AquaStark").unwrap();
+        let (contract_address, _) = world.dns(@"Transaction").unwrap();
         let actions_system = ITransactionHistoryDispatcher { contract_address };
         testing::set_contract_address(caller);
         let id = actions_system.register_event_type("Purchase Event");
@@ -489,7 +496,10 @@ mod tests {
         actions_system.register(username);
 
         // Next Register Event
-        let actions_system = ITransactionHistoryDispatcher { contract_address };
+        let (transaction_address, _) = world.dns(@"Transaction").unwrap();
+        let actions_system = ITransactionHistoryDispatcher {
+            contract_address: transaction_address,
+        };
         testing::set_contract_address(OWNER());
         let event_id = actions_system.register_event_type("NewFishCreated");
 
@@ -521,7 +531,10 @@ mod tests {
         actions_system.register(username);
 
         // Next Register Event
-        let actions_system = ITransactionHistoryDispatcher { contract_address };
+        let (transaction_address, _) = world.dns(@"Transaction").unwrap();
+        let actions_system = ITransactionHistoryDispatcher {
+            contract_address: transaction_address,
+        };
         testing::set_contract_address(OWNER());
         let event_id_1 = actions_system.register_event_type("NewFishCreated");
         let event_id_2 = actions_system.register_event_type("NewAquariumCreated");
@@ -571,7 +584,10 @@ mod tests {
         actions_system.register(username);
 
         // Next Register Event
-        let actions_system = ITransactionHistoryDispatcher { contract_address };
+        let (transaction_address, _) = world.dns(@"Transaction").unwrap();
+        let actions_system = ITransactionHistoryDispatcher {
+            contract_address: transaction_address,
+        };
         testing::set_contract_address(OWNER());
         let event_id_1 = actions_system.register_event_type("NewFishCreated");
         let event_id_2 = actions_system.register_event_type("NewAquariumCreated");
@@ -618,7 +634,10 @@ mod tests {
         actions_system.register(username);
 
         // Next Register Event
-        let actions_system = ITransactionHistoryDispatcher { contract_address };
+        let (transaction_address, _) = world.dns(@"Transaction").unwrap();
+        let actions_system = ITransactionHistoryDispatcher {
+            contract_address: transaction_address,
+        };
         testing::set_contract_address(OWNER());
         let event_id_1 = actions_system.register_event_type("NewFishCreated");
         let event_id_2 = actions_system.register_event_type("NewAquariumCreated");
@@ -669,7 +688,10 @@ mod tests {
         actions_system.register('player_2');
 
         // Next Register Event
-        let actions_system = ITransactionHistoryDispatcher { contract_address };
+        let (transaction_address, _) = world.dns(@"Transaction").unwrap();
+        let actions_system = ITransactionHistoryDispatcher {
+            contract_address: transaction_address,
+        };
 
         testing::set_contract_address(OWNER());
         let event_id_1 = actions_system.register_event_type("NewFishCreated");
@@ -720,7 +742,10 @@ mod tests {
         actions_system.register('player_2');
 
         // Next Register Event
-        let actions_system = ITransactionHistoryDispatcher { contract_address };
+        let (transaction_address, _) = world.dns(@"Transaction").unwrap();
+        let actions_system = ITransactionHistoryDispatcher {
+            contract_address: transaction_address,
+        };
         testing::set_contract_address(OWNER());
         let event_id_1 = actions_system.register_event_type("NewFishCreated");
         let event_id_2 = actions_system.register_event_type("NewAquariumCreated");
@@ -767,7 +792,10 @@ mod tests {
         actions_system.register('player_2');
 
         // Next Register Event
-        let actions_system = ITransactionHistoryDispatcher { contract_address };
+        let (transaction_address, _) = world.dns(@"Transaction").unwrap();
+        let actions_system = ITransactionHistoryDispatcher {
+            contract_address: transaction_address,
+        };
         testing::set_contract_address(OWNER());
         let event_id_1 = actions_system.register_event_type("NewFishCreated");
         let event_id_2 = actions_system.register_event_type("NewAquariumCreated");

@@ -112,6 +112,43 @@ pub struct EventTypeRegistered {
     pub timestamp: u64,
 }
 
+// Transaction lifecycle events
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct TransactionInitiated {
+    #[key]
+    pub transaction_id: u256,
+    #[key]
+    pub player: ContractAddress,
+    pub event_type_id: u256,
+    pub payload_size: u32,
+    pub timestamp: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct TransactionProcessed {
+    #[key]
+    pub transaction_id: u256,
+    #[key]
+    pub player: ContractAddress,
+    pub event_type_id: u256,
+    pub processing_time: u64,
+    pub timestamp: u64,
+}
+
+#[derive(Copy, Drop, Serde)]
+#[dojo::event]
+pub struct TransactionConfirmed {
+    #[key]
+    pub transaction_id: u256,
+    #[key]
+    pub player: ContractAddress,
+    pub event_type_id: u256,
+    pub confirmation_hash: felt252,
+    pub timestamp: u64,
+}
+
 #[derive(Copy, Drop, Serde)]
 #[dojo::event]
 pub struct FishPurchased {

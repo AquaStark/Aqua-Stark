@@ -7,6 +7,7 @@ pub mod systems {
     pub mod daily_challenge;
     pub mod Trade;
     pub mod session;
+    pub mod transaction;
 }
 
 // pub mod aquarium;
@@ -28,6 +29,7 @@ pub mod interfaces {
     pub mod IGame;
     pub mod IShopCatalog;
     pub mod ITransactionHistory;
+    pub mod ITransaction;
     // pub mod IExperience;
     pub mod ITrade;
 }
