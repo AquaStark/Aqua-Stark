@@ -76,7 +76,7 @@ export default function Onboarding() {
   const bubbles = useBubbles();
   const { account } = useAccount();
   const [selectedFish, setSelectedFish] = useState<number[]>([]);
-  const { createAquariumId, getPlayerAquariums } = useAquarium();
+  const { getPlayerAquariums } = useAquarium();
   const { newFish } = useFish();
 
   const handleFishSelect = (fishId: number) => {
@@ -92,7 +92,6 @@ export default function Onboarding() {
 
   //  Create Aquarium
   const createNewAquarium = async (account: any) => {
-    const aquarium = await createAquariumId(account);
     toast.success('Aquarium created successfully!');
 
     const aquariums = await getPlayerAquariums(account.address);
