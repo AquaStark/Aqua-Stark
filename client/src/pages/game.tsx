@@ -13,9 +13,9 @@ import { BubblesBackground } from '@/components/bubble-background';
 import { motion } from 'framer-motion';
 import { useActiveAquarium } from '../store/active-aquarium';
 import { initialAquariums } from '@/data/mock-aquarium';
+import { DirtDebugger } from '@/components/dirt/dirt-debugger';
 import { useDirtSystemFixed as useDirtSystem } from '@/hooks/use-dirt-system-fixed';
 import { DirtOverlay } from '@/components/dirt/dirt-overlay';
-import { DirtDebugControls } from '@/components/dirt/dirt-debug-controls';
 import { useFeedingSystem } from '@/systems/feeding-system';
 import { FeedingAquarium } from '@/components/game/feeding-aquarium';
 import { useAccount } from '@starknet-react/core';
@@ -36,7 +36,7 @@ export default function GamePage() {
   const [showTips, setShowTips] = useState(false);
   const navigate = useNavigate();
 
-  const [showDirtDebug, setShowDirtDebug] = useState(false); // Debug controls visibility  // Initialize dirt system
+  // Initialize dirt system
   const dirtSystem = useDirtSystem({
     spawnInterval: 5000, // 5 seconds
     maxSpots: 5,
@@ -59,7 +59,7 @@ export default function GamePage() {
     interval: 400,
   });
 
-  // Initialize feeding system - use reasonable default bounds that will be updated by FishDisplay
+  // Initialize feeding system
   const feedingSystem = useFeedingSystem({
     aquariumBounds: {
       width: 1000,
@@ -70,9 +70,7 @@ export default function GamePage() {
     attractionRadius: 50,
   });
 
-  const handleTipsToggle = () => {
-    setShowTips(!showTips);
-  };
+  const handleTipsToggle = () => setShowTips(!showTips);
   const [playerFishes, setPlayerFishes] = useState<number[]>([]);
   const { account } = useAccount();
   const { getPlayerFishes } = useFish();
@@ -141,36 +139,26 @@ export default function GamePage() {
     },
   } as const;
 
-  // Helper function to get species name from Cairo enum
   function getSpeciesFromCairoEnum(
     species: any
   ): keyof typeof speciesToFishData | null {
-    // If species is already a string (enum variant name)
     if (typeof species === 'string' && species in speciesToFishData) {
       return species as keyof typeof speciesToFishData;
     }
-
-    // Handle CairoCustomEnum structure
     if (species && typeof species === 'object') {
-      // Check if it has a variant property with the actual enum data
       if (species.variant && typeof species.variant === 'object') {
-        // Look for the key that has a non-undefined value (the active variant)
         for (const [key, value] of Object.entries(species.variant)) {
           if (value !== undefined && key in speciesToFishData) {
             return key as keyof typeof speciesToFishData;
           }
         }
       }
-
-      // Check if it's a CairoCustomEnum with activeVariant
       if (species.activeVariant && typeof species.activeVariant === 'string') {
         const variantName = species.activeVariant;
         if (variantName in speciesToFishData) {
           return variantName as keyof typeof speciesToFishData;
         }
       }
-
-      // Direct check on the species object itself
       for (const [key, value] of Object.entries(species)) {
         if (
           value !== undefined &&
@@ -181,22 +169,15 @@ export default function GamePage() {
         }
       }
     }
-
     return null;
   }
 
-  // Helper function to convert BigInt to number safely
   function bigIntToNumber(value: any): number {
-    if (typeof value === 'bigint') {
-      return Number(value);
-    }
-    if (typeof value === 'number') {
-      return value;
-    }
+    if (typeof value === 'bigint') return Number(value);
+    if (typeof value === 'number') return value;
     return 0;
   }
 
-  // Helper function to get species from fish_type (BigInt index)
   function getSpeciesFromIndex(
     fishType: any
   ): keyof typeof speciesToFishData | null {
@@ -209,53 +190,22 @@ export default function GamePage() {
       'Corydoras',
       'Hybrid',
     ];
-
-    if (index >= 0 && index < speciesNames.length) {
-      return speciesNames[index];
-    }
-
+    if (index >= 0 && index < speciesNames.length) return speciesNames[index];
     return null;
   }
 
   const displayFish = playerFishes
     .map((fish: any, index: number) => {
-      if (!fish || typeof fish !== 'object') {
-        console.warn(`Invalid fish at index ${index}:`, fish);
-        return null;
-      }
-
+      if (!fish || typeof fish !== 'object') return null;
       let speciesKey: keyof typeof speciesToFishData | null = null;
-
-      if (fish.species) {
-        speciesKey = getSpeciesFromCairoEnum(fish.species);
-      }
-
+      if (fish.species) speciesKey = getSpeciesFromCairoEnum(fish.species);
       if (!speciesKey && fish.fish_type !== undefined) {
         speciesKey = getSpeciesFromIndex(fish.fish_type);
       }
+      if (!speciesKey) return null;
 
-      if (!speciesKey) {
-        console.warn(
-          `Could not determine species for fish at index ${index}:`,
-          {
-            species: fish.species,
-            fish_type: fish.fish_type,
-            speciesKeys: fish.species
-              ? Object.keys(fish.species)
-              : 'no species object',
-            fish: fish,
-          }
-        );
-        return null;
-      }
-
-      // Get species data
       const data = speciesToFishData[speciesKey];
-
-      if (!data) {
-        console.warn(`No data found for species: ${speciesKey}`);
-        return null;
-      }
+      if (!data) return null;
 
       return {
         id: fish.id ? bigIntToNumber(fish.id) : index,
@@ -267,7 +217,6 @@ export default function GamePage() {
           : data.generation,
         position: { x: 0, y: 0 },
         species: speciesKey,
-        // Include additional fish data from Cairo struct
         age: fish.age ? bigIntToNumber(fish.age) : 0,
         health: fish.health ? bigIntToNumber(fish.health) : 100,
         hunger_level: fish.hunger_level ? bigIntToNumber(fish.hunger_level) : 0,
@@ -279,24 +228,24 @@ export default function GamePage() {
     .filter((fish): fish is NonNullable<typeof fish> => fish !== null);
 
   return (
-    <div className='relative w-full h-screen overflow-hidden bg-[#005C99]'>
+    <div className="relative w-full h-screen overflow-hidden bg-[#005C99]">
       {/* Background */}
       <img
-        src='/backgrounds/background2.png'
-        alt='Underwater Background'
-        className='absolute inset-0 w-full h-full object-cover z-0'
-        role='presentation'
+        src="/backgrounds/background2.png"
+        alt="Underwater Background"
+        className="absolute inset-0 w-full h-full object-cover z-0"
+        role="presentation"
       />
 
       {/* Bubbles */}
       <BubblesBackground
         bubbles={bubbles}
-        className='absolute inset-0 z-10 pointer-events-none'
+        className="absolute inset-0 z-10 pointer-events-none"
       />
 
       {/* Effects */}
-      <div className='absolute inset-0 light-rays z-20'></div>
-      <div className='absolute inset-0 animate-water-movement z-20'></div>
+      <div className="absolute inset-0 light-rays z-20"></div>
+      <div className="absolute inset-0 animate-water-movement z-20"></div>
 
       {/* Fish */}
       <motion.div
@@ -305,7 +254,7 @@ export default function GamePage() {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 1 }}
-        className='relative z-20 w-full h-full'
+        className="relative z-20 w-full h-full"
       >
         <FeedingAquarium
           fish={displayFish}
@@ -317,7 +266,7 @@ export default function GamePage() {
       <DirtOverlay
         spots={dirtSystem.spots}
         onRemoveSpot={dirtSystem.removeDirtSpot}
-        className='absolute inset-0 z-50'
+        className="absolute inset-0 z-50"
       />
 
       {/* Header */}
@@ -330,11 +279,11 @@ export default function GamePage() {
 
       {showMenu && <GameMenu show={showMenu} />}
 
-      {/* Click to Feed Instructions - Under Header */}
+      {/* Click to Feed Instructions */}
       {!feedingSystem.isFeeding && (
-        <div className='absolute top-[9rem] left-1/2 transform -translate-x-1/2 z-30'>
-          <div className='bg-black/50 text-white text-sm px-4 py-2 rounded-lg border border-gray-500/20 backdrop-blur-sm'>
-            <div className='flex items-center gap-2 text-gray-300'>
+        <div className="absolute top-[9rem] left-1/2 transform -translate-x-1/2 z-30">
+          <div className="bg-black/50 text-white text-sm px-4 py-2 rounded-lg border border-gray-500/20 backdrop-blur-sm">
+            <div className="flex items-center gap-2 text-gray-300">
               <span>🐠</span>
               <span>
                 Use the bottom navigation to feed your fish and manage your
@@ -349,58 +298,23 @@ export default function GamePage() {
       <BottomNavBar
         isFeeding={feedingSystem.isFeeding}
         timeRemaining={feedingSystem.getFeedingStatus().timeRemaining}
-        onStartFeeding={() => feedingSystem.startFeeding(30000)} // 30 seconds
+        onStartFeeding={() => feedingSystem.startFeeding(30000)}
         onStopFeeding={feedingSystem.stopFeeding}
       />
-
-      {/* Debug Controls */}
-      {showDirtDebug && (
-        <div className='absolute top-4 right-4 z-40'>
-          <DirtDebugControls
-            isSpawnerActive={dirtSystem.isSpawnerActive}
-            spotCount={dirtSystem.spots.length}
-            maxSpots={dirtSystem.config.maxSpots}
-            totalCreated={dirtSystem.totalSpotsCreated}
-            totalRemoved={dirtSystem.totalSpotsRemoved}
-            cleanlinessScore={dirtSystem.cleanlinessScore}
-            onToggleSpawner={dirtSystem.toggleSpawner}
-            onForceSpawn={dirtSystem.forceSpawnSpot}
-            onClearAll={dirtSystem.clearAllSpots}
-          />
-          <button
-            onClick={() => setShowDirtDebug(false)}
-            className='mt-2 w-full text-xs text-gray-400 hover:text-white transition-colors'
-            aria-label='Hide Debug Panel'
-          >
-            Hide Debug
-          </button>
-        </div>
-      )}
 
       {/* Feeding Debug Panel */}
       <FeedingDebugPanel
         foods={feedingSystem.foods}
         isFeeding={feedingSystem.isFeeding}
         onValidateState={feedingSystem.validateFeedingState}
-        className='z-40'
+        className="z-40"
       />
 
-      {/* Show Debug Button (when hidden) */}
-      {!showDirtDebug && (
-        <button
-          onClick={() => setShowDirtDebug(true)}
-          className='absolute top-4 right-4 z-40 bg-black/50 text-white px-3 py-1 rounded text-xs hover:bg-black/70 transition-colors'
-          aria-label='Show Debug Panel'
-        >
-          <span role='img' aria-label='Broom'>
-            🧹
-          </span>{' '}
-          Debug
-        </button>
-      )}
+      {/* 🧹 Dirt Debugger */}
+      <DirtDebugger dirtSystem={dirtSystem} />
 
       {/* Tips */}
-      <div className='absolute bottom-0 right-4 mb-4 z-30'>
+      <div className="absolute bottom-0 right-4 mb-4 z-30">
         <TipsPopup
           show={showTips}
           onClose={() => setShowTips(false)}
