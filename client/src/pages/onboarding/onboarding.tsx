@@ -80,15 +80,12 @@ export default function Onboarding() {
   const { newFish } = useFish();
 
   const handleFishSelect = (fishId: number) => {
-    console.log('Fish selected:', fishId);
     setSelectedFish(prev => {
       const newSelection = prev.includes(fishId)
         ? prev.filter(id => id !== fishId)
         : prev.length < 2
           ? [...prev, fishId]
           : [prev[1], fishId];
-
-      console.log('New selection:', newSelection);
       return newSelection;
     });
   };
@@ -96,18 +93,9 @@ export default function Onboarding() {
   //  Create Aquarium
   const createNewAquarium = async (account: any) => {
     const aquarium = await createAquariumId(account);
-    console.log(`Aquarium Tx Hash : ${JSON.stringify(aquarium)}`);
     toast.success('Aquarium created successfully!');
 
     const aquariums = await getPlayerAquariums(account.address);
-    console.log(
-      'aquarium id:',
-      JSON.stringify(
-        aquariums,
-        (_key, value) => (typeof value === 'bigint' ? value.toString() : value),
-        2
-      )
-    );
 
     return aquariums[0]?.id;
   };
@@ -126,7 +114,6 @@ export default function Onboarding() {
       }
 
       const tx = await newFish(account, aquariumId, speciesenum);
-      console.log(`${order} Fish Tx Hash: ${tx.transaction_hash}`);
 
       return { success: true, transactionHash: tx.transaction_hash };
     } catch (err: any) {
@@ -145,8 +132,6 @@ export default function Onboarding() {
   const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
   const handleContinue = async () => {
-    console.log('Continue button clicked, selectedFish:', selectedFish);
-
     if (selectedFish.length !== 2) return;
     if (!account) {
       toast.error('Wallet not connected!');
@@ -172,7 +157,6 @@ export default function Onboarding() {
         }
 
         if (i < selectedFish.length - 1) {
-          console.log('Waiting 5s before next fish...');
           await delay(5000);
         }
       }

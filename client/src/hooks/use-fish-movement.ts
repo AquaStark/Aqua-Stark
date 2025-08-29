@@ -344,9 +344,6 @@ export function useFishMovement(
         );
 
         if (targetFood) {
-          console.log(
-            `🐠 Fish ${newState.id} ATE food ${newState.targetFoodId}! (Close contact)`
-          );
 
           if (onFoodConsumed && newState.targetFoodId) {
             onFoodConsumed(newState.targetFoodId);
@@ -412,9 +409,6 @@ export function useFishMovement(
           );
 
           if (foodExists) {
-            console.log(
-              `🎯 Fish ${newState.id} targeting food ${nearestFood.id} (attempt ${newState.feedingAttempts + 1}/${newState.maxFeedingAttempts})`
-            );
 
             newState.behaviorState = 'feeding';
             newState.targetFoodId = nearestFood.id;
@@ -439,9 +433,6 @@ export function useFishMovement(
           !targetFood ||
           newState.feedingAttempts >= newState.maxFeedingAttempts
         ) {
-          console.log(
-            `🔄 Fish ${newState.id} resetting feeding state - food gone or max attempts reached`
-          );
           newState.behaviorState = 'exploring';
           newState.targetFoodId = undefined;
           newState.feedingAttempts = 0;

@@ -21,7 +21,7 @@ export default function CommunityEvents() {
   const upcomingEvents = sortedEvents.filter(e => e.status === 'upcoming');
   const pastEvents = sortedEvents.filter(e => e.status === 'past');
 
-  console.log(sortedEvents);
+  // Debug log removed for production
 
   return (
     <div className='space-y-6'>

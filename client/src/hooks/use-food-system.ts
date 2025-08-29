@@ -36,7 +36,6 @@ export function useFoodSystem(options: UseFoodSystemOptions) {
         foods: prev.foods.filter(food => {
           const age = (now - food.createdAt) / 1000;
           if (age > foodLifetime) {
-            console.log(`⏰ Food ${food.id} expired after ${age.toFixed(1)}s`);
             return false;
           }
           return true;
@@ -70,12 +69,6 @@ export function useFoodSystem(options: UseFoodSystemOptions) {
         scale: 0,
       };
 
-      console.log(
-        `🍞 Spawned food ${newFood.id} at (${foodPosition.x.toFixed(
-          1
-        )}%, ${foodPosition.y.toFixed(1)}%)`
-      );
-
       setFoodState(prev => ({
         ...prev,
         foods: [...prev.foods, newFood],
@@ -94,8 +87,6 @@ export function useFoodSystem(options: UseFoodSystemOptions) {
 
   // Consume food - REMOVE IMMEDIATELY
   const consumeFood = useCallback((foodId: number) => {
-    console.log(`🍽️ CONSUMING food ${foodId} - removing immediately!`);
-
     // Add validation to prevent race conditions
     setFoodState(prev => {
       const foodExists = prev.foods.find(f => f.id === foodId && !f.consumed);
@@ -103,8 +94,6 @@ export function useFoodSystem(options: UseFoodSystemOptions) {
         console.warn(`⚠️ Food ${foodId} already consumed or doesn't exist`);
         return prev;
       }
-
-      console.log(`✅ Successfully consumed food ${foodId}`);
       return {
         ...prev,
         foods: prev.foods.filter(food => food.id !== foodId), // Remove immediately!
