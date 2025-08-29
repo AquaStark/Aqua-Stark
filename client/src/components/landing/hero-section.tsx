@@ -26,28 +26,23 @@ export function HeroSection() {
       const validation = await validatePlayer(account.address);
 
       if (validation.exists) {
-        // User exists - check if we need to sync to backend
         if (validation.isOnChain && !validation.isInBackend) {
           try {
             await syncPlayerToBackend(validation.playerData, account.address);
             toast.success('Welcome back! Your data has been synced.');
           } catch (error) {
             console.error('Error syncing player to backend:', error);
-            // Continue anyway, user can still play
           }
         } else {
           toast.success('Welcome back!');
         }
 
-        // Navigate to game
         navigate('/game');
       } else {
-        // New user - go to registration
         navigate('/start');
       }
     } catch (error) {
       console.error('Error validating player:', error);
-      // On error, default to registration flow
       toast.info('Starting registration process...');
       navigate('/start');
     } finally {

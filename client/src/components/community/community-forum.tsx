@@ -49,25 +49,25 @@ export default function CommunityForum() {
         </div>
       </div>
 
-      {/* Contenedor para Popular Categories */}
-      <div className='p-4 bg-white/10 rounded'>
-        {/* Encabezado con título y botón "View All" */}
+              {/* Popular Categories Container */}
+        <div className='p-4 bg-white/10 rounded'>
+        {/* Header with title and "View All" button */}
         <div className='flex items-center justify-between mb-4'>
-          <h3 className='text-lg font-bold'>Popular Categories</h3>
-          <Button
-            className='bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors'
-            onClick={() => setCategory('')}
-          >
-            View All
-          </Button>
+        <h3 className='text-lg font-bold'>Popular Categories</h3>
+        <Button
+        className='bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors'
+        onClick={() => setCategory('')}
+        >
+        View All
+        </Button>
         </div>
 
-        {/* Categorías ocupando todo el ancho en 6 columnas */}
+        {/* Categories taking full width in 6 columns */}
         {/*
-          Si tienes exactamente 6 categorías, "grid-cols-6" está bien.
-          Si tu número de categorías varía, puedes usar:
+          If you have exactly 6 categories, "grid-cols-6" is fine.
+          If your number of categories varies, you can use:
             grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6
-          o un enfoque dinámico:
+          or a dynamic approach:
             grid grid-cols-[repeat(auto-fit,minmax(120px,1fr))]
         */}
         <div className='grid grid-cols-6 gap-3'>
@@ -90,58 +90,58 @@ export default function CommunityForum() {
         </div>
       </div>
 
-      {/* Contenedor para Recent Discussions */}
-      <div className='p-4 bg-white/10 rounded'>
+              {/* Recent Discussions Container */}
+        <div className='p-4 bg-white/10 rounded'>
         <h3 className='text-lg font-bold mb-4'>Recent Discussions</h3>
 
         <div className='space-y-2'>
-          {filteredDiscussions.map(disc => (
-            <div
-              key={disc.id}
-              className='
-                flex items-start gap-4 p-3 rounded
-                transition-colors duration-200
-                hover:bg-white/20
-                cursor-pointer
-              '
-            >
-              {/* Avatar (placeholder) */}
-              <div className='w-12 h-12 bg-white rounded-full flex-shrink-0'>
-                <img
-                  src={disc.imageUrl}
-                  alt={disc.author}
-                  className='w-full h-full rounded-full object-cover'
-                />
-              </div>
+        {filteredDiscussions.map(disc => (
+        <div
+        key={disc.id}
+        className='
+        flex items-start gap-4 p-3 rounded
+        transition-colors duration-200
+        hover:bg-white/20
+        cursor-pointer
+        '
+        >
+        {/* Avatar (placeholder) */}
+        <div className='w-12 h-12 bg-white rounded-full flex-shrink-0'>
+        <img
+        src={disc.imageUrl}
+        alt={disc.author}
+        className='w-full h-full rounded-full object-cover'
+        />
+        </div>
 
-              {/* Bloque de texto */}
-              <div className='flex-1 space-y-1'>
-                {/* Título con Sparkles */}
-                <div className='flex items-center gap-1 text-white font-semibold'>
-                  <Sparkles className='w-4 h-4' />
-                  {disc.title}
-                </div>
+        {/* Text block */}
+        <div className='flex-1 space-y-1'>
+        {/* Title with Sparkles */}
+        <div className='flex items-center gap-1 text-white font-semibold'>
+        <Sparkles className='w-4 h-4' />
+        {disc.title}
+        </div>
 
-                {/* Autor y categoría */}
-                <div className='flex items-center gap-4 text-sm text-gray-300'>
-                  <span className='text-white'>{disc.author}</span>
-                  <span className='text-blue-200'>{disc.category}</span>
-                </div>
+        {/* Author and category */}
+        <div className='flex items-center gap-4 text-sm text-gray-300'>
+        <span className='text-white'>{disc.author}</span>
+        <span className='text-blue-200'>{disc.category}</span>
+        </div>
 
-                {/* Replies y Views con íconos */}
-                <div className='flex items-center gap-4 text-sm text-gray-300'>
-                  <span className='flex items-center gap-1'>
-                    <MessageSquare className='w-4 h-4' />
-                    {disc.replies} replies
-                  </span>
-                  <span className='flex items-center gap-1'>
-                    <Eye className='w-4 h-4' />
-                    {disc.views} views
-                  </span>
-                </div>
-              </div>
+        {/* Replies and Views with icons */}
+        <div className='flex items-center gap-4 text-sm text-gray-300'>
+        <span className='flex items-center gap-1'>
+        <MessageSquare className='w-4 h-4' />
+        {disc.replies} replies
+        </span>
+        <span className='flex items-center gap-1'>
+        <Eye className='w-4 h-4' />
+        {disc.views} views
+        </span>
+        </div>
+        </div>
 
-              {/* Timestamp a la derecha */}
+              {/* Timestamp on the right */}
               <div className='text-sm text-blue-300 flex-shrink-0'>
                 {disc.timestamp}
               </div>
@@ -149,7 +149,7 @@ export default function CommunityForum() {
           ))}
         </div>
 
-        {/* "View All Topics" como enlace subrayado al hover */}
+        {/* "View All Topics" as underlined link on hover */}
         <div className='text-center mt-4'>
           <button
             type='button'

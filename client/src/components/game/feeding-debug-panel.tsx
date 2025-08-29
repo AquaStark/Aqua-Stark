@@ -19,7 +19,6 @@ export function FeedingDebugPanel({
   const [isExpanded, setIsExpanded] = useState(false);
   const [lastUpdate, setLastUpdate] = useState(Date.now());
 
-  // Update timestamp every second
   useEffect(() => {
     const interval = setInterval(() => {
       setLastUpdate(Date.now());
@@ -46,9 +45,7 @@ export function FeedingDebugPanel({
 
   return (
     <div className={`fixed top-20 right-4 z-50 ${className}`}>
-      {/* Collapsible Debug Panel */}
-      <div className='bg-black/80 backdrop-blur-sm rounded-lg border border-blue-400/30 shadow-lg'>
-        {/* Header */}
+              <div className='bg-black/80 backdrop-blur-sm rounded-lg border border-blue-400/30 shadow-lg'>
         <div
           className='flex items-center justify-between p-3 cursor-pointer hover:bg-blue-900/20 transition-colors'
           onClick={() => setIsExpanded(!isExpanded)}
@@ -62,11 +59,9 @@ export function FeedingDebugPanel({
           <div className='text-blue-400 text-xs'>{isExpanded ? '▼' : '▶'}</div>
         </div>
 
-        {/* Expanded Content */}
-        {isExpanded && (
-          <div className='p-3 border-t border-blue-400/20 space-y-3'>
-            {/* Status Overview */}
-            <div className='space-y-2'>
+                {isExpanded && (
+        <div className='p-3 border-t border-blue-400/20 space-y-3'>
+        <div className='space-y-2'>
               <div className='text-white text-xs font-semibold'>Status</div>
               <div className='grid grid-cols-2 gap-2 text-xs'>
                 <div className='text-gray-300'>
@@ -94,7 +89,6 @@ export function FeedingDebugPanel({
               </div>
             </div>
 
-            {/* Active Foods */}
             {activeFoods.length > 0 && (
               <div className='space-y-2'>
                 <div className='text-white text-xs font-semibold'>
@@ -120,7 +114,6 @@ export function FeedingDebugPanel({
               </div>
             )}
 
-            {/* Consumed Foods */}
             {consumedFoods.length > 0 && (
               <div className='space-y-2'>
                 <div className='text-white text-xs font-semibold'>
@@ -142,7 +135,6 @@ export function FeedingDebugPanel({
               </div>
             )}
 
-            {/* Actions */}
             <div className='space-y-2'>
               <div className='text-white text-xs font-semibold'>Actions</div>
               <div className='flex gap-2'>
@@ -161,7 +153,6 @@ export function FeedingDebugPanel({
               </div>
             </div>
 
-            {/* Warnings */}
             {activeFoods.length > 10 && (
               <div className='p-2 bg-yellow-900/30 border border-yellow-400/20 rounded'>
                 <div className='text-yellow-300 text-xs'>
