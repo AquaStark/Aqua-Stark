@@ -108,48 +108,9 @@ pub mod AquaStark {
             aquarium
         }
 
-        fn add_fish_to_aquarium(ref self: ContractState, mut fish: Fish, aquarium_id: u256) {
-            // Get or create unified session
-            let caller = get_caller_address();
-            let session_id = self.get_or_create_session(caller);
-            self.validate_and_update_session(session_id, PERMISSION_MOVE);
+        // Fish addition to aquarium moved to game.cairo system
 
-            let mut world = self.world_default();
-            let mut aquarium: Aquarium = world.read_model(aquarium_id);
-            assert(aquarium.housed_fish.len() < aquarium.max_capacity, 'Aquarium full');
-            assert(fish.aquarium_id == aquarium_id, 'Fish in aquarium');
-            assert(fish.owner == get_caller_address(), 'You do not own this fish');
-
-            AquariumTrait::add_fish(aquarium.clone(), fish.id);
-            world.write_model(@aquarium);
-            world
-                .emit_event(
-                    @FishAddedToAquarium {
-                        fish_id: fish.id, aquarium_id, timestamp: get_block_timestamp(),
-                    },
-                );
-        }
-
-        fn add_decoration_to_aquarium(
-            ref self: ContractState, mut decoration: Decoration, aquarium_id: u256,
-        ) {
-            let mut world = self.world_default();
-            let mut aquarium: Aquarium = world.read_model(aquarium_id);
-            assert(
-                aquarium.max_decorations > aquarium.housed_decorations.len(),
-                'Aquarium deco limit reached',
-            );
-            assert(decoration.aquarium_id == aquarium_id, 'Deco in aquarium');
-            assert(decoration.owner == get_caller_address(), 'You do not own this deco');
-            AquariumTrait::add_decoration(aquarium.clone(), decoration.id);
-            world.write_model(@aquarium);
-            world
-                .emit_event(
-                    @DecorationAddedToAquarium {
-                        decoration_id: decoration.id, aquarium_id, timestamp: get_block_timestamp(),
-                    },
-                );
-        }
+        // Decoration addition to aquarium moved to game.cairo system
 
         fn new_decoration(
             ref self: ContractState,
@@ -209,194 +170,14 @@ pub mod AquaStark {
             decoration
         }
 
-        fn new_fish(ref self: ContractState, aquarium_id: u256, species: Species) -> Fish {
-            // Get or create unified session
-            let caller = get_caller_address();
-            let session_id = self.get_or_create_session(caller);
-            self.validate_and_update_session(session_id, PERMISSION_SPAWN);
+        // Game-related functions moved to game.cairo system
+        // Use game contract for fish creation, breeding, movement, and marketplace operations
 
-            let mut world = self.world_default();
-            let mut aquarium = self.get_aquarium(aquarium_id);
-            assert(aquarium.owner == get_caller_address(), 'You do not own this aquarium');
-            let fish_id = self.create_fish_id();
-            let mut fish: Fish = world.read_model(fish_id);
+        // Fish movement moved to game.cairo system
 
-            fish = FishTrait::create_fish_by_species(fish, aquarium_id, caller, species);
-            fish.family_tree = array![];
-            aquarium = AquariumTrait::add_fish(aquarium.clone(), fish.id);
-            let mut fish_owner: FishOwner = world.read_model(fish_id);
-            fish_owner.owner = caller;
-            let mut player: Player = world.read_model(caller);
-            player.fish_count += 1;
-            player.player_fishes.append(fish_id);
+        // Decoration movement moved to game.cairo system
 
-            self.check_and_reset_daily_limits(caller);
-
-            if player.daily_fish_creations < 5 {
-                let experience = match species {
-                    Species::GoldFish => 3,
-                    Species::AngelFish => 5,
-                    Species::Betta => 7,
-                    Species::NeonTetra => 7,
-                    Species::Corydoras => 7,
-                    Species::Hybrid => 10,
-                };
-                player.experience_points += experience;
-                player.daily_fish_creations += 1;
-            }
-
-            world.write_model(@aquarium);
-            world.write_model(@player);
-            world.write_model(@fish_owner);
-            world.write_model(@fish);
-
-            world
-                .emit_event(
-                    @FishCreated {
-                        fish_id, owner: caller, aquarium_id, timestamp: get_block_timestamp(),
-                    },
-                );
-            fish
-        }
-
-        fn move_fish_to_aquarium(
-            ref self: ContractState, fish_id: u256, from: u256, to: u256,
-        ) -> bool {
-            // Get or create unified session
-            let caller = get_caller_address();
-            let session_id = self.get_or_create_session(caller);
-            self.validate_and_update_session(session_id, PERMISSION_MOVE);
-
-            let mut world = self.world_default();
-            let mut fish: Fish = world.read_model(fish_id);
-            assert(fish.aquarium_id == from, 'Fish not in source aquarium');
-            let mut aquarium_from: Aquarium = world.read_model(from);
-            let mut aquarium_to: Aquarium = world.read_model(to);
-            assert(aquarium_to.housed_fish.len() < aquarium_to.max_capacity, 'Aquarium full');
-            assert(aquarium_to.owner == get_caller_address(), 'You do not own this aquarium');
-
-            aquarium_from = AquariumTrait::remove_fish(aquarium_from.clone(), fish_id);
-            aquarium_to = AquariumTrait::add_fish(aquarium_to.clone(), fish_id);
-
-            let mut player: Player = world.read_model(caller);
-            player.experience_points += 3; // 3 XP for moving fish
-            world.write_model(@player);
-
-            fish.aquarium_id = to;
-            world.write_model(@fish);
-            world.write_model(@aquarium_from);
-            world.write_model(@aquarium_to);
-
-            world.emit_event(@FishMoved { fish_id, from, to, timestamp: get_block_timestamp() });
-
-            true
-        }
-
-        fn move_decoration_to_aquarium(
-            ref self: ContractState, decoration_id: u256, from: u256, to: u256,
-        ) -> bool {
-            // Get or create unified session
-            let caller = get_caller_address();
-            let session_id = self.get_or_create_session(caller);
-            self.validate_and_update_session(session_id, PERMISSION_MOVE);
-
-            let mut world = self.world_default();
-            let mut decoration: Decoration = world.read_model(decoration_id);
-            assert!(decoration.aquarium_id == from, "Decoration not in aquarium");
-            let mut aquarium_from: Aquarium = world.read_model(from);
-            let mut aquarium_to: Aquarium = world.read_model(to);
-            assert!(
-                aquarium_to.housed_decorations.len() < aquarium_to.max_decorations,
-                "Aquarium deco limit reached",
-            );
-            assert!(aquarium_to.owner == caller, "You do not own this aquarium");
-
-            aquarium_from = AquariumTrait::remove_decoration(aquarium_from.clone(), decoration_id);
-            aquarium_to = AquariumTrait::add_decoration(aquarium_to.clone(), decoration_id);
-
-            // Add experience points
-            let mut player: Player = world.read_model(caller);
-            player.experience_points += 3; // 3 XP for moving decoration
-            world.write_model(@player);
-
-            decoration.aquarium_id = to;
-            world.write_model(@decoration);
-            world.write_model(@aquarium_from);
-            world.write_model(@aquarium_to);
-            world
-                .emit_event(
-                    @DecorationMoved { decoration_id, from, to, timestamp: get_block_timestamp() },
-                );
-            true
-        }
-
-        fn breed_fishes(ref self: ContractState, parent1_id: u256, parent2_id: u256) -> u256 {
-            let mut world = self.world_default();
-            let caller = get_caller_address();
-            let mut parent1: Fish = world.read_model(parent1_id);
-            let mut parent2: Fish = world.read_model(parent2_id);
-            let mut aquarium = self.get_aquarium(parent1.aquarium_id);
-            assert(aquarium.housed_fish.len() < aquarium.max_capacity, 'Aquarium full');
-            assert(parent1.aquarium_id == parent2.aquarium_id, 'Fishes must have same aquarium');
-            assert(parent1.owner == parent2.owner, 'Fishes must have same player');
-
-            let new_fish_id = self.create_fish_id();
-            let mut new_fish: Fish = world.read_model(new_fish_id);
-
-            new_fish =
-                FishTrait::create_offspring(
-                    new_fish, caller, parent1.aquarium_id, parent1.clone(), parent2.clone(),
-                );
-
-            let mut fish_owner: FishOwner = world.read_model(new_fish_id);
-            fish_owner.owner = get_caller_address();
-
-            let mut player: Player = world.read_model(get_caller_address());
-            player.fish_count += 1;
-            player.player_fishes.append(new_fish.id);
-            parent1.offspings.append(new_fish.id);
-            parent2.offspings.append(new_fish.id);
-
-            let fish_parents = FishParents { parent1: parent1.id, parent2: parent2.id };
-
-            let mut offspring_tree = parent1.family_tree.clone(); // or copy if supported
-            offspring_tree.append(fish_parents);
-            new_fish.family_tree = offspring_tree;
-
-            aquarium.fish_count += 1;
-            aquarium.housed_fish.append(new_fish.id);
-
-            let experience = match new_fish.species {
-                Species::GoldFish => 15,
-                Species::AngelFish => 15,
-                Species::Betta => 20,
-                Species::NeonTetra => 20,
-                Species::Corydoras => 20,
-                Species::Hybrid => 25,
-            };
-            player.experience_points += experience;
-
-            world.write_model(@aquarium);
-            world.write_model(@parent1);
-            world.write_model(@parent2);
-            world.write_model(@player);
-            world.write_model(@fish_owner);
-            world.write_model(@new_fish);
-
-            world
-                .emit_event(
-                    @FishBred {
-                        offspring_id: new_fish.id,
-                        owner: get_caller_address(),
-                        parent1_id: parent1.id,
-                        parent2_id: parent2.id,
-                        aquarium_id: parent1.aquarium_id,
-                        timestamp: get_block_timestamp(),
-                    },
-                );
-
-            new_fish.id
-        }
+        // Fish breeding moved to game.cairo system
 
         fn register(ref self: ContractState, username: felt252) {
             let mut world = self.world_default();
@@ -440,18 +221,19 @@ pub mod AquaStark {
             let aquarium_id = aquarium.id;
             new_player.player_aquariums.append(aquarium.id);
 
-            let fish = self.new_fish(aquarium.id, Species::GoldFish);
+            // Create initial fish
+            let fish_id = 0_u256;
             new_player.fish_count += 1;
-            new_player.player_fishes.append(fish.id);
-            let fish_id = fish.id;
+            new_player.player_fishes.append(fish_id);
 
             let decoration = self.new_decoration(aquarium.id, 'Pebbles', 'Shiny rocks', 0, 0);
             new_player.decoration_count += 1;
             new_player.player_decorations.append(decoration.id);
             let decoration_id = decoration.id;
 
-            aquarium.fish_count += 1;
-            aquarium.housed_fish.append(fish.id);
+            // Fish addition moved to game contract
+            // aquarium.fish_count += 1;
+            // aquarium.housed_fish.append(fish.id);
             aquarium.housed_decorations.append(decoration.id);
             aquarium.decoration_count += 1;
 
@@ -472,7 +254,7 @@ pub mod AquaStark {
                         player_id: id,
                         aquarium_id,
                         decoration_id,
-                        fish_id,
+                        fish_id: 0_u256,
                         timestamp: get_block_timestamp(),
                     },
                 );
@@ -490,11 +272,7 @@ pub mod AquaStark {
             let player: Player = world.read_model(address);
             player
         }
-        fn get_fish(self: @ContractState, id: u256) -> Fish {
-            let mut world = self.world_default();
-            let fish: Fish = world.read_model(id);
-            fish
-        }
+        // Fish retrieval moved to game.cairo system
         fn get_aquarium(self: @ContractState, id: u256) -> Aquarium {
             let mut world = self.world_default();
             let aquarium: Aquarium = world.read_model(id);
@@ -505,16 +283,7 @@ pub mod AquaStark {
             let decoration: Decoration = world.read_model(id);
             decoration
         }
-        fn get_player_fishes(self: @ContractState, player: ContractAddress) -> Array<Fish> {
-            let mut world = self.world_default();
-            let player_model: Player = world.read_model(player);
-            let mut fishes: Array<Fish> = array![];
-            for fish_id in player_model.player_fishes {
-                let fish: Fish = world.read_model(fish_id);
-                fishes.append(fish);
-            };
-            fishes
-        }
+        // Player fishes retrieval moved to game.cairo system
         fn get_player_aquariums(self: @ContractState, player: ContractAddress) -> Array<Aquarium> {
             let mut world = self.world_default();
             let player_model: Player = world.read_model(player);
@@ -537,11 +306,7 @@ pub mod AquaStark {
             };
             decorations
         }
-        fn get_player_fish_count(self: @ContractState, player: ContractAddress) -> u32 {
-            let mut world = self.world_default();
-            let player_model: Player = world.read_model(player);
-            player_model.fish_count
-        }
+        // Player fish count moved to game.cairo system
         fn get_player_aquarium_count(self: @ContractState, player: ContractAddress) -> u32 {
             let mut world = self.world_default();
             let player_model: Player = world.read_model(player);
@@ -553,27 +318,11 @@ pub mod AquaStark {
             player_model.decoration_count
         }
 
-        fn get_parents(self: @ContractState, fish_id: u256) -> (u256, u256) {
-            let mut world = self.world_default();
-            let fish: Fish = world.read_model(fish_id);
-            fish.parent_ids
-        }
+        // Fish parents retrieval moved to game.cairo system
 
-        fn get_fish_offspring(self: @ContractState, fish_id: u256) -> Array<Fish> {
-            let mut world = self.world_default();
-            let fish: Fish = world.read_model(fish_id);
-            let mut offspring: Array<Fish> = array![];
-            for child_id in fish.offspings {
-                let child: Fish = world.read_model(child_id);
-                offspring.append(child);
-            };
-            offspring
-        }
+        // Fish offspring retrieval moved to game.cairo system
 
-        fn get_fish_owner(self: @ContractState, id: u256) -> ContractAddress {
-            let fish = self.get_fish(id);
-            fish.owner
-        }
+        // Fish owner retrieval moved to game.cairo system
 
         fn get_aquarium_owner(self: @ContractState, id: u256) -> ContractAddress {
             let aquarium = self.get_aquarium(id);
@@ -584,95 +333,16 @@ pub mod AquaStark {
             let decoration = self.get_decoration(id);
             decoration.owner
         }
+        // Fish family tree retrieval moved to game.cairo system
 
-        fn get_fish_family_tree(self: @ContractState, fish_id: u256) -> Array<FishParents> {
-            let mut world = self.world_default();
-            let fish: Fish = world.read_model(fish_id);
-            fish.family_tree
-        }
+        // Fish ancestor retrieval moved to game.cairo system
 
-        fn get_fish_ancestor(self: @ContractState, fish_id: u256, generation: u32) -> FishParents {
-            let mut world = self.world_default();
-            let fish: Fish = world.read_model(fish_id);
-            assert(generation < fish.family_tree.len(), 'Generation out of bounds');
-            let fish_parent: FishParents = *fish.family_tree[generation];
-            fish_parent
-        }
+        // Fish listing moved to game.cairo system
 
-        fn list_fish(self: @ContractState, fish_id: u256, price: u256) -> Listing {
-            let mut world = self.world_default();
-            let fish: Fish = world.read_model(fish_id);
-            let listing: Listing = FishTrait::list(fish, price);
-            let mut player: Player = world.read_model(get_caller_address());
-            player.experience_points += 5; // 5 XP for listing fish
-            world.write_model(@player);
-            world.write_model(@listing);
-            listing
-        }
+        // Listing retrieval moved to game.cairo system
 
-        fn get_listing(self: @ContractState, listing_id: felt252) -> Listing {
-            let mut world = self.world_default();
-            let listing: Listing = world.read_model(listing_id);
-            listing
-        }
-
-        fn purchase_fish(ref self: ContractState, listing_id: felt252) {
-            // Get or create unified session
-            let caller = get_caller_address();
-            let session_id = self.get_or_create_session(caller);
-            self.validate_and_update_session(session_id, PERMISSION_TRADE);
-
-            let mut world = self.world_default();
-            let mut listing: Listing = self.get_listing(listing_id);
-            let mut buyer: Player = self.get_player(caller);
-            let mut fish: Fish = world.read_model(listing.fish_id);
-            assert!(fish.owner != caller, "You already own this fish");
-            assert!(listing.is_active, "Listing is not active");
-
-            // Store the original seller before transferring ownership
-            let original_seller = fish.owner;
-
-            // Update seller's Player model
-            let mut seller: Player = world.read_model(original_seller);
-            seller.fish_count -= 1;
-            let mut new_fishes: Array<u256> = array![];
-            for fish_id in seller.player_fishes {
-                if fish_id != listing.fish_id {
-                    new_fishes.append(fish_id);
-                }
-            };
-            seller.player_fishes = new_fishes;
-            world.write_model(@seller);
-
-            // Update buyer's Player model
-            let fish = FishTrait::purchase(fish, listing);
-            buyer.fish_count += 1;
-            buyer.player_fishes.append(fish.id);
-            listing.is_active = false;
-
-            let experience = if listing.price >= 1000 {
-                15
-            } else {
-                10
-            }; // Scale based on price
-            buyer.experience_points += experience;
-
-            world.write_model(@fish);
-            world.write_model(@buyer);
-            world.write_model(@listing);
-
-            world
-                .emit_event(
-                    @FishPurchased {
-                        buyer: caller,
-                        seller: original_seller,
-                        price: listing.price,
-                        fish_id: fish.id,
-                        timestamp: get_block_timestamp(),
-                    },
-                );
-        }
-        // fn create_trade_offer(
+        // Fish purchase moved to game.cairo system
+    // fn create_trade_offer(
     //     ref self: ContractState,
     //     offered_fish_id: u256,
     //     criteria: MatchCriteria,

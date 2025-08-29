@@ -5,7 +5,7 @@ use achievement::types::task::{Task, TaskTrait};
 use core::traits::Into;
 
 // Achievement enum
-#[derive(Copy, Drop, PartialEq, Debug)]
+#[derive(Copy, Drop)]
 pub enum Achievement {
     None,
     FirstFish,

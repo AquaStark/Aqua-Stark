@@ -2,19 +2,21 @@ pub mod systems {
     pub mod AquaStark;
     pub mod Auctions;
     pub mod ShopCatalog;
+    pub mod game;
     // pub mod experience;
     pub mod daily_challenge;
     pub mod Trade;
     pub mod session;
 }
 
-pub mod inventory;
+// pub mod aquarium;
 
 pub mod achievements {
     pub mod achievements;
 }
 pub mod base {
     pub mod events;
+    pub mod game_events;
 }
 
 // pub mod contracts {
@@ -23,13 +25,12 @@ pub mod base {
 
 pub mod interfaces {
     pub mod IAquaStark;
+    pub mod IGame;
     pub mod IShopCatalog;
     pub mod ITransactionHistory;
     // pub mod IExperience;
     pub mod ITrade;
-    pub mod IInventory;
 }
-
 
 pub mod models {
     pub mod aquarium_model;
@@ -41,7 +42,6 @@ pub mod models {
     pub mod player_model;
     pub mod shop_model;
     pub mod trade_model;
-    pub mod inventory_model;
     // pub mod experience_model;
     pub mod transaction_model;
     pub mod session;
@@ -50,12 +50,12 @@ pub mod tests {
     mod test_auction;
     mod test_daily_challenge;
     mod test_trading;
+    mod test_game;
     // mod test_experience;
     mod test_aquarium;
-    mod test_world;
-    mod test_achievement;
-    // mod simple_session_test;
-    mod test_inventory;
+    // mod test_world;
+// mod simple_session_test;
+
 }
 
 
