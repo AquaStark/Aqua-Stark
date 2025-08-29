@@ -42,12 +42,6 @@ const useSettings = () => {
     }
   }, []);
 
-  /**
-   *
-   *
-   * @param {keyof SettingsState} key
-   * @param {any} value
-   */
   const updateSetting = (key: keyof SettingsState, value: any) => {
     setIsLoading(true);
     try {

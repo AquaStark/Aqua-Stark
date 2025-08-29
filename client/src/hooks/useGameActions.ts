@@ -1,4 +1,4 @@
-// Direcciones de contratos (actualizar con las reales)
+// Contract addresses (update with real ones)
 const GAME_CONTRACT =
   '0x0000000000000000000000000000000000000000000000000000000000000001';
 const NFT_CONTRACT =
@@ -9,15 +9,15 @@ const REWARDS_CONTRACT =
   '0x0000000000000000000000000000000000000000000000000000000000000004';
 
 export function useGameActions() {
-  // Por ahora, simulamos las acciones hasta que tengamos los contratos reales
+  // For now, we simulate actions until we have real contracts
   const executeAction = async ({ calls }: { calls: any[] }) => {
     console.log('Executing actions:', calls);
-    // Simular delay de transacción
+    // Simulate transaction delay
     await new Promise(resolve => setTimeout(resolve, 2000));
     return { hash: '0x123...' };
   };
 
-  // Acciones básicas del acuario
+  // Basic aquarium actions
   const feedFish = async (fishId: string) => {
     return await executeAction({
       calls: [
@@ -54,7 +54,7 @@ export function useGameActions() {
     });
   };
 
-  // Acciones de cría
+  // Breeding actions
   const breedFish = async (fish1Id: string, fish2Id: string) => {
     return await executeAction({
       calls: [
@@ -67,7 +67,7 @@ export function useGameActions() {
     });
   };
 
-  // Acciones de compra/venta
+  // Buy/sell actions
   const buyFish = async (fishType: string, price: string) => {
     return await executeAction({
       calls: [
@@ -92,7 +92,7 @@ export function useGameActions() {
     });
   };
 
-  // Acciones de mejora
+  // Upgrade actions
   const upgradeAquarium = async (upgradeType: string) => {
     return await executeAction({
       calls: [
@@ -117,7 +117,7 @@ export function useGameActions() {
     });
   };
 
-  // Acciones de NFT
+  // NFT actions
   const mintFishNFT = async (fishType: string) => {
     return await executeAction({
       calls: [
@@ -142,7 +142,7 @@ export function useGameActions() {
     });
   };
 
-  // Acciones de marketplace
+  // Marketplace actions
   const listFishForSale = async (fishId: string, price: string) => {
     return await executeAction({
       calls: [
@@ -167,7 +167,7 @@ export function useGameActions() {
     });
   };
 
-  // Acciones de logros
+  // Achievement actions
   const claimAchievement = async (achievementId: string) => {
     return await executeAction({
       calls: [
@@ -192,28 +192,28 @@ export function useGameActions() {
     });
   };
 
-  // Acción por lotes (múltiples transacciones) - Perfecta para session keys
+  // Batch action (multiple transactions) - Perfect for session keys
   const dailyMaintenance = async (fishIds: string[]) => {
     const calls = [
-      // Limpiar acuario
+      // Clean aquarium
       {
         contractAddress: GAME_CONTRACT,
         entrypoint: 'clean_aquarium',
         calldata: [],
       },
-      // Alimentar todos los peces
+      // Feed all fish
       ...fishIds.map(id => ({
         contractAddress: GAME_CONTRACT,
         entrypoint: 'feed_fish',
         calldata: [id],
       })),
-      // Recolectar recompensas
+      // Collect rewards
       {
         contractAddress: GAME_CONTRACT,
         entrypoint: 'collect_rewards',
         calldata: [],
       },
-      // Recompensa diaria
+      // Daily reward
       {
         contractAddress: REWARDS_CONTRACT,
         entrypoint: 'collect_daily',
@@ -224,16 +224,16 @@ export function useGameActions() {
     return await executeAction({ calls });
   };
 
-  // Acción de onboarding para nuevos jugadores
+  // Onboarding action for new players
   const newPlayerSetup = async (username: string) => {
     const calls = [
-      // Crear cuenta de jugador
+      // Create player account
       {
         contractAddress: GAME_CONTRACT,
         entrypoint: 'create_player',
         calldata: [username],
       },
-      // Dar peces iniciales
+      // Give initial fish
       {
         contractAddress: NFT_CONTRACT,
         entrypoint: 'mint',
@@ -244,7 +244,7 @@ export function useGameActions() {
         entrypoint: 'mint',
         calldata: ['starter_fish_2'],
       },
-      // Configurar acuario básico
+      // Setup basic aquarium
       {
         contractAddress: GAME_CONTRACT,
         entrypoint: 'setup_aquarium',
@@ -256,19 +256,19 @@ export function useGameActions() {
   };
 
   return {
-    // Acciones básicas
+    // Basic actions
     feedFish,
     cleanAquarium,
     collectRewards,
 
-    // Cría
+    // Breeding
     breedFish,
 
-    // Compra/venta
+    // Buy/sell
     buyFish,
     sellFish,
 
-    // Mejoras
+    // Upgrades
     upgradeAquarium,
     addDecoration,
 
@@ -280,11 +280,11 @@ export function useGameActions() {
     listFishForSale,
     buyFishFromMarket,
 
-    // Logros
+    // Achievements
     claimAchievement,
     collectDailyReward,
 
-    // Acciones por lotes
+    // Batch actions
     dailyMaintenance,
     newPlayerSetup,
   };
