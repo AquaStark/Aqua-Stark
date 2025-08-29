@@ -70,19 +70,14 @@ export function BottomNavBar({
     // Execute different actions based on the clicked item
     switch (itemId) {
       case 'clean':
-        console.log('Clean tank action triggered');
         break;
       case 'shop':
-        console.log('Shop opened');
         break;
       case 'collection':
-        console.log('Fish collection opened');
         break;
       case 'games':
-        console.log('Mini-games opened');
         break;
       case 'rewards':
-        console.log('Daily rewards opened');
         break;
     }
   };

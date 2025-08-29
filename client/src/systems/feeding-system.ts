@@ -66,8 +66,6 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
       clearTimeout(feedingTimeoutRef.current);
       feedingTimeoutRef.current = null;
     }
-
-    console.log('🛑 Feeding mode stopped');
   }, []);
 
   // Start feeding mode
@@ -89,8 +87,6 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
       feedingTimeoutRef.current = setTimeout(() => {
         stopFeeding();
       }, duration);
-
-      console.log(`🍽️ Feeding mode started for ${duration / 1000} seconds`);
     },
     [stopFeeding]
   );
@@ -99,9 +95,6 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
   const handleFeedClick = useCallback(
     (clientX: number, clientY: number, containerRect: DOMRect | undefined) => {
       if (!containerRect || !feedingState.isFeeding) {
-        console.log(
-          '🚫 Cannot feed - feeding mode is not active or container not ready'
-        );
         return false;
       }
 
@@ -112,7 +105,7 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
       const spawned = spawnFood(clickX, clickY);
 
       if (!spawned) {
-        console.log('⏳ Food spawning on cooldown');
+        // on cooldown, ignore
       }
 
       return spawned;
@@ -127,8 +120,6 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
       if (consumedFood) {
         // Validate food is still available before consuming
         if (!consumedFood.consumed) {
-          console.log(`🎯 Processing food consumption for food ${foodId}`);
-
           // Add particle effect
           setFeedingState(prev => ({
             ...prev,
@@ -159,9 +150,6 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
   // Add method to validate feeding state
   const validateFeedingState = useCallback(() => {
     const activeFoods = foods.filter(f => !f.consumed);
-    console.log(
-      `🔍 Feeding state validation: ${activeFoods.length} active foods`
-    );
 
     // Check for any duplicate food IDs (shouldn't happen but good to validate)
     const foodIds = activeFoods.map(f => f.id);

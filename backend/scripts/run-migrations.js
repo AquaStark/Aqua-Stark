@@ -46,10 +46,14 @@ async function createMigrationsTable() {
     );
   `;
 
-  const { error } = await supabaseAdmin.rpc('exec_sql', { sql: createTableSQL });
-  
+  const { error } = await supabaseAdmin.rpc('exec_sql', {
+    sql: createTableSQL,
+  });
+
   if (error) {
-    console.log('Note: Could not create migrations table (might already exist)');
+    console.log(
+      'Note: Could not create migrations table (might already exist)'
+    );
   }
 }
 

@@ -25,7 +25,7 @@ export function HistoricalEvents() {
           ),
           callback: ({ data, error }) => {
             if (data && data.length > 0) {
-              console.log(data);
+              // data received, handle if needed
             }
             if (error) {
               console.error(error);

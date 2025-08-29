@@ -162,7 +162,6 @@ export default function CommunityForum() {
             '
             onClick={() => {
               // TODO: Implement navigation to all topics
-              console.log('Navigate to all topics');
             }}
           >
             View All Topics &gt;

@@ -9,11 +9,15 @@ describe('PlayerController', () => {
       params: {},
       body: {},
       user: null,
-      resource: null
+      resource: null,
     };
     mockRes = {
-      status: function() { return this; },
-      json: function() { return this; }
+      status: function () {
+        return this;
+      },
+      json: function () {
+        return this;
+      },
     };
   });
 
@@ -23,15 +27,15 @@ describe('PlayerController', () => {
         player_id: 'player_123',
         username: 'testuser',
         level: 1,
-        experience_current: 0
+        experience_current: 0,
       };
       mockReq.resource = mockPlayer;
       let jsonCalled = false;
-      mockRes.json = (data) => { 
-        jsonCalled = true; 
+      mockRes.json = data => {
+        jsonCalled = true;
         expect(data.success).toBe(true);
         expect(data.data).toEqual(mockPlayer);
-        return mockRes; 
+        return mockRes;
       };
 
       await PlayerController.getPlayerProfile(mockReq, mockRes);
@@ -44,15 +48,15 @@ describe('PlayerController', () => {
     it('should return 400 when wallet address is missing', async () => {
       let statusCalled = false;
       let jsonCalled = false;
-      mockRes.status = (code) => { 
-        statusCalled = true; 
+      mockRes.status = code => {
+        statusCalled = true;
         expect(code).toBe(400);
-        return mockRes; 
+        return mockRes;
       };
-      mockRes.json = (data) => { 
-        jsonCalled = true; 
+      mockRes.json = data => {
+        jsonCalled = true;
         expect(data.error).toBe('Wallet address is required');
-        return mockRes; 
+        return mockRes;
       };
 
       await PlayerController.getPlayerByWallet(mockReq, mockRes);

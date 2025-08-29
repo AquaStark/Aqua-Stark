@@ -35,8 +35,6 @@ export const FoodParticles: React.FC<FoodParticlesProps> = ({
   useEffect(() => {
     if (!trigger) return;
 
-    console.log('🎆 Creating AMAZING particles at', position);
-
     // Create diverse particles
     const newParticles: Particle[] = [];
     const coinColors = ['#FFD700', '#FFA500', '#FF8C00', '#DAA520', '#B8860B'];
@@ -154,7 +152,6 @@ export const FoodParticles: React.FC<FoodParticlesProps> = ({
           .filter(particle => particle.life > 0);
 
         if (updated.length === 0) {
-          console.log('🎆 Amazing particles finished!');
           onComplete();
           return [];
         }

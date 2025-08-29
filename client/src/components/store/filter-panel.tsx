@@ -68,7 +68,6 @@ export function FilterPanel({
     }
 
     // Apply filter immediately
-    console.log('Updating categories to:', newCategories);
     updateCategories(newCategories);
   };
 
