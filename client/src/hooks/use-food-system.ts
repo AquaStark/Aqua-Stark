@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import type { FoodItem, FoodSystemState } from '@/types/food';
-
+import type { Fish } from '@/types/fish';
 interface UseFoodSystemOptions {
   aquariumBounds: { width: number; height: number };
   maxFoodsPerSecond?: number;
@@ -112,6 +112,34 @@ export function useFoodSystem(options: UseFoodSystemOptions) {
     });
   }, []);
 
+  //Satiety-aware consumption
+  const tryConsumeFood=useCallback(
+  (
+    foodId: number,
+    fish: Fish,
+    setFishState: (id: string,newState:Partial<Fish>)=>void,
+    increaseHunger:(id:string)=>void
+  ): boolean=>{
+    const now=Date.now();
+    if(fish.hunger>=100){
+      //reject if not not on cooldown
+      if(!fish.lastRejection||now-fish.lastRejection>10000){
+          setFishState(String(fish.id),{
+            state:'rejecting',
+            lastRejection:now,
+          });
+        }
+        return false;
+      }
+      //eat normally
+      consumeFood(foodId);
+      increaseHunger(String(fish.id));
+      setFishState(String(fish.id),{state:'eating'});
+      return true;
+    },
+    [consumeFood]
+  );
+  
   // Add method to check if food exists and is available
   const isFoodAvailable = useCallback(
     (foodId: number): boolean => {
@@ -155,6 +183,7 @@ export function useFoodSystem(options: UseFoodSystemOptions) {
     foods: foodState.foods,
     spawnFood,
     consumeFood,
+    tryConsumeFood,
     updateFoodAnimations,
     canSpawnFood:
       Date.now() - foodState.lastSpawnTime >= foodState.spawnCooldown,

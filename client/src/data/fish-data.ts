@@ -10,6 +10,8 @@ export const fishCollection: Fish[] = [
     rarity: 'Legendary',
     generation: 1,
     level: 8,
+    hunger:50,
+    state:'idle',
     traits: {
       color: 'Blue',
       pattern: 'Spotted',
@@ -26,6 +28,8 @@ export const fishCollection: Fish[] = [
     rarity: 'Rare',
     generation: 1,
     level: 12,
+    hunger:50,
+    state:'idle',
     traits: {
       color: 'Orange',
       pattern: 'Striped',
@@ -42,6 +46,8 @@ export const fishCollection: Fish[] = [
     rarity: 'Epic',
     generation: 1,
     level: 10,
+    hunger:50,
+    state:'idle',
     traits: {
       color: 'Red',
       pattern: 'Solid',
@@ -58,6 +64,8 @@ export const fishCollection: Fish[] = [
     rarity: 'Common',
     generation: 2,
     level: 15,
+    hunger:50,
+    state:'idle',
     traits: {
       color: 'Blue',
       pattern: 'Gradient',
@@ -77,6 +85,8 @@ export const fishCollection: Fish[] = [
     rarity: 'Uncommon',
     generation: 1,
     level: 7,
+    hunger:50,
+    state:'idle',
     traits: {
       color: 'Green',
       pattern: 'Spotted',
@@ -92,6 +102,8 @@ export const fishCollection: Fish[] = [
     rarity: 'Epic',
     generation: 2,
     level: 9,
+    hunger:50,
+    state:'idle',
     traits: {
       color: 'Gold',
       pattern: 'Metallic',
