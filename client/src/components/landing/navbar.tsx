@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import WalletModal from '../modal/walletConnectModal';
+import WalletModal from '@/components/modal/walletConnectModal';
 import { Wallet, LogOut } from 'lucide-react';
 import { useAccount, useDisconnect } from '@starknet-react/core';
 import { toast } from 'sonner';

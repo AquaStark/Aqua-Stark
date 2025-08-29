@@ -1,5 +1,5 @@
 import { Fish } from 'lucide-react';
-import { GameStatusBar } from '../game-status-bar';
+import { GameStatusBar } from '@/components/game-status-bar';
 import { GameButton } from './game-button';
 
 interface GameHeaderProps {
