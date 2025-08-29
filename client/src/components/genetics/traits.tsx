@@ -1,4 +1,4 @@
-import { Card } from '../ui/card';
+import { Card } from '@/components/ui/card';
 import { specialTraits } from '@/data/genetic-combination-data';
 
 const Traits = () => {

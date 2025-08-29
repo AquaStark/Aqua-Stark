@@ -1,4 +1,4 @@
-import { Card } from '../ui/card';
+import { Card } from '@/components/ui/card';
 import { rarityData } from '@/data/genetic-combination-data';
 const Rarity = () => {
   return (
