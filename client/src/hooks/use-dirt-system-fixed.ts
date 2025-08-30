@@ -154,19 +154,15 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
 
   function updateDirtTypeStats(
     prevStats: DirtSystemState['dirtTypeStats'],
-    type: DirtType,
-    updates: Partial<{ created: number; removed: number; averageTimeToClean: number }>
-  ) {
-    const existing = prevStats[type] || { created: 0, removed: 0, averageTimeToClean: 0 };
-    return {
-      ...prevStats,
-      [type]: {
-        created: updates.created !== undefined ? updates.created : existing.created,
-        removed: updates.removed !== undefined ? updates.removed : existing.removed,
-        averageTimeToClean: updates.averageTimeToClean !== undefined ? updates.averageTimeToClean : existing.averageTimeToClean,
-      },
-    };
-  }
+       type: DirtType,
+       updates: Partial<{ created: number; removed: number; averageTimeToClean: number }>
+      ) {
+       const existing = prevStats[type] || { created: 0, removed: 0, averageTimeToClean: 0 };
+       return {
+         ...prevStats,
+          [type]: { ...existing, ...updates },
+       };
+    }
   
 
   // Force spawn function for debugging
@@ -246,6 +242,7 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     });
   }, [finalConfig.maxSpots, dispatchEvent]);
   
+  const removalTimeoutsRef = useRef<Map<number, NodeJS.Timeout>>(new Map());
 
   // Handle spot clicks (for difficulty mechanics)
   const handleSpotClick = useCallback((spotId: number, clickPosition: { x: number; y: number }) => {
@@ -264,9 +261,19 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
             payload: { spot: updatedSpot, clickPosition },
           });
 
-           // Mark for removal if threshold is met
           const typeConfig = getDirtTypeConfig(spot.type);
           if (updatedSpot.clickCount >= typeConfig.cleaningDifficulty) {
+           // Clear any existing timeout for this spot
+            const existingTimeout = removalTimeoutsRef.current.get(spotId);
+            if (existingTimeout) clearTimeout(existingTimeout);
+            
+            // Schedule removal
+            const timeout = setTimeout(() => {
+              removeDirtSpot(spotId);
+              removalTimeoutsRef.current.delete(spotId);
+            }, 100);
+            removalTimeoutsRef.current.set(spotId, timeout);
+            
             return { ...updatedSpot, isRemoving: true };
           }   
 
@@ -277,15 +284,7 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
 
       return { ...prev, spots };
     });
-    // Check for spots marked for removal outside state update
-    setState(prev => {
-        const spotToRemove = prev.spots.find(s => s.id === spotId && s.isRemoving);
-        if (spotToRemove) {
-          setTimeout(() => removeDirtSpot(spotId), 100);
-        }
-        return prev;
-      });
-  }, [dispatchEvent, removeDirtSpot]);
+      }, [dispatchEvent, removeDirtSpot]);
 
   // Toggle spawner
   const toggleSpawner = useCallback(() => {
@@ -382,8 +381,19 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
   const getDirtCoverage = useCallback(() => {
     const totalArea = finalConfig.aquariumBounds.width * finalConfig.aquariumBounds.height;
     const dirtArea = state.spots.reduce((sum, spot) => {
-      const radius = spot.size / 2;
-      return sum + Math.PI * radius * radius;
+      // Account for organic shapes if they exist
+      if (spot.subShapes && spot.subShapes.length > 0) {
+          // Sum areas of all sub-shapes
+          const subShapeArea = spot.subShapes.reduce((subSum, shape) => {
+            const subRadius = shape.size / 2;
+            return subSum + Math.PI * subRadius * subRadius * (shape.opacity || 1);
+          }, 0);
+          return sum + subShapeArea;
+        } else {
+          // Fallback to simple circle
+          const radius = spot.size / 2;
+          return sum + Math.PI * radius * radius;
+        }
     }, 0);
     return (dirtArea / totalArea) * 100;
   }, [state.spots, finalConfig.aquariumBounds]);
@@ -468,6 +478,9 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
       if (agingIntervalRef.current) clearInterval(agingIntervalRef.current);
+      // Clear all pending removal timeouts
+      removalTimeoutsRef.current.forEach(timeout => clearTimeout(timeout));
+      removalTimeoutsRef.current.clear();
     };
   }, []);
 
