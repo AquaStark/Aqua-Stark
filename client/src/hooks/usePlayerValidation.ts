@@ -53,7 +53,7 @@ export const usePlayerValidation = () => {
           playerData: onChainPlayer,
           backendData: backendPlayer,
         };
-      } catch {
+      } catch (error) {
         console.error('Error validating player:', error);
         return {
           exists: false,
