@@ -32,7 +32,7 @@ export function GenealogyTab() {
                 >
                   <div className='relative w-12 sm:w-16 h-12 sm:h-16 mb-2'>
                     <img
-                      src={fish.image || '/fish/unkown-fish.png'}
+                      src={fish.image || '/fish/unknown-fish.png'}
                       alt={fish.name}
                       className='w-full h-full object-contain'
                     />

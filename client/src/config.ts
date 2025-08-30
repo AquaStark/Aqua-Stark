@@ -14,14 +14,7 @@ export const getWalletConfig = (): WalletConfig => {
   // Use Vite environment variables instead of Next.js
   const useKatanaFromEnv = import.meta.env.VITE_USE_KATANA;
 
-  // Add detailed debugging
-  console.log(
-    'useKatanaFromEnv:',
-    useKatanaFromEnv,
-    'useKatanaFromEnv !== undefined:',
-    useKatanaFromEnv !== undefined
-  );
-
+  // Environment variable parsing for Katana accounts
   const useKatanaAccounts =
     useKatanaFromEnv !== undefined
       ? useKatanaFromEnv === 'true'

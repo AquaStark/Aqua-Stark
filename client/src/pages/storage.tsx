@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-// Removed unused imports: useEffect, Link
 import { Filter, Search, SlidersHorizontal, ShoppingCart } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { fishData, type ItemType } from '@/data/mock-game';
@@ -20,7 +19,6 @@ import { PaginationControls } from '@/components/store/pagination-controls';
 import { CartSidebar } from '@/components/store/cart-sidebar';
 import { CheckoutModal } from '@/components/store/checkout-modal';
 import { useCartStore } from '@/store/use-cart-store';
-// import { StoreCarousel } from '@/components/store/store-carousel';
 import { BubblesBackground } from '@/components/bubble-background';
 import { useBubbles } from '@/hooks/use-bubbles';
 import { FilterCategory, FilterPanel } from '@/components/store/filter-panel';

@@ -161,7 +161,7 @@ export default function CommunityForum() {
               bg-transparent border-none cursor-pointer
             '
             onClick={() => {
-              // TODO: Implement navigation to all topics
+              // Navigate to all topics (to be implemented)
             }}
           >
             View All Topics &gt;

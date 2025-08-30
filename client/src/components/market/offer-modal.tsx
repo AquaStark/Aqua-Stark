@@ -20,7 +20,7 @@ export function OfferModal() {
   if (!selectedFish || !selectedFish.exchange) return null;
 
   // Filter user's fish that could be offered
-  const myFish = mockFishData.slice(0, 3); // In a real app, this would be the user's fish
+  const myFish = mockFishData.slice(0, 3); // TODO: Replace with actual user fish data
 
   const handleSubmit = () => {
     if (selectedOffer === null) {
@@ -28,7 +28,7 @@ export function OfferModal() {
       return;
     }
 
-    // In a real app, this would submit the offer to an API
+    // TODO: Implement actual offer submission
     alert(`Offer sent for ${selectedFish.name}!`);
     setShowOfferModal(false);
   };

@@ -35,8 +35,9 @@ export function useAquarium() {
         maxCapacity
       );
       return res;
-    } catch {
-      // Handle error silently
+    } catch (error) {
+      console.error('Failed to create new aquarium:', error);
+      throw error;
     }
   };
 

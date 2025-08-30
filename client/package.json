@@ -11,10 +11,10 @@
     "preview": "vite preview",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "echo 'Tests disabled - focusing on development'",
-    "test:watch": "echo 'Tests disabled - focusing on development'",
-    "test:ui": "echo 'Tests disabled - focusing on development'",
-    "test:coverage": "echo 'Tests disabled - focusing on development'"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@cartridge/connector": "^0.5.9",
