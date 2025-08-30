@@ -20,7 +20,9 @@ const isGameFeature = (feature: any): feature is GameFeature => {
 };
 
 // Type guard to validate mock data structure
-const hasGameFeatures = (data: any): data is { mockGameFeatures: GameFeature[] } => {
+const hasGameFeatures = (
+  data: any
+): data is { mockGameFeatures: GameFeature[] } => {
   return (
     typeof data === 'object' &&
     data !== null &&
@@ -29,8 +31,8 @@ const hasGameFeatures = (data: any): data is { mockGameFeatures: GameFeature[] }
   );
 };
 
-const mockGameFeatures: GameFeature[] = hasGameFeatures(mockData) 
-  ? mockData.mockGameFeatures 
+const mockGameFeatures: GameFeature[] = hasGameFeatures(mockData)
+  ? mockData.mockGameFeatures
   : [];
 
 export function FeaturesSection() {
