@@ -36,6 +36,8 @@ export function useAquarium() {
       );
       return res;
     } catch (error) {
+      console.error('Failed to create new aquarium:', error);
+      throw error;
     }
   };
 

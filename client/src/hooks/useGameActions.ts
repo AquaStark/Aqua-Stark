@@ -3,10 +3,10 @@ const GAME_CONTRACT =
 const REWARDS_CONTRACT =
   '0x0000000000000000000000000000000000000000000000000000000000000004';
 
-export function useGameActions() 
-{
-  const executeAction = async ({ calls: _calls }: { calls: any[] }) => 
-  {
+export function useGameActions() {
+  const executeAction = async ({ calls }: { calls: any[] }) => {
+    // Simulate processing the calls
+    console.debug('Processing calls:', calls.length);
     await new Promise(resolve => setTimeout(resolve, 2000));
     return { hash: '0x123...' };
   };
