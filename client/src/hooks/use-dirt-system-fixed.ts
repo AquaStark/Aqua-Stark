@@ -264,12 +264,11 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
             payload: { spot: updatedSpot, clickPosition },
           });
 
-          // Check if spot should be removed based on difficulty
+           // Mark for removal if threshold is met
           const typeConfig = getDirtTypeConfig(spot.type);
           if (updatedSpot.clickCount >= typeConfig.cleaningDifficulty) {
-            // Remove spot after click threshold is met
-            setTimeout(() => removeDirtSpot(spotId), 100);
-          }
+            return { ...updatedSpot, isRemoving: true };
+          }   
 
           return updatedSpot;
         }
@@ -278,6 +277,14 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
 
       return { ...prev, spots };
     });
+    // Check for spots marked for removal outside state update
+    setState(prev => {
+        const spotToRemove = prev.spots.find(s => s.id === spotId && s.isRemoving);
+        if (spotToRemove) {
+          setTimeout(() => removeDirtSpot(spotId), 100);
+        }
+        return prev;
+      });
   }, [dispatchEvent, removeDirtSpot]);
 
   // Toggle spawner
@@ -427,7 +434,7 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
         intervalRef.current = null;
       }
     };
-  }, [state.isSpawnerActive, generateRandomPosition, isValidPosition, createDirtSpot, dispatchEvent, finalConfig.spawnInterval, finalConfig.maxSpots, finalConfig.spawnChance, finalConfig]);
+  }, [state.isSpawnerActive, generateRandomPosition, isValidPosition, createDirtSpot, dispatchEvent, finalConfig.spawnInterval, finalConfig.maxSpots, finalConfig.spawnChance]);
 
   // Setup aging interval
   useEffect(() => {
