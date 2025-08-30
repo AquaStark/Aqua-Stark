@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { ConnectButton } from './connect-button';
 import { useCartridgeSession } from '@/hooks/use-cartridge-session';
 
@@ -80,7 +79,7 @@ export function CartridgeDemo() {
         </h2>
 
         <div className='space-y-4'>
-          <ConnectButton size='lg' />
+          <ConnectButton />
 
           <div className='text-sm text-gray-400 space-y-2'>
             <p>
