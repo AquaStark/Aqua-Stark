@@ -242,7 +242,7 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     });
   }, [finalConfig.maxSpots, dispatchEvent]);
   
-  const removalTimeoutsRef = useRef<Map<number, NodeJS.Timeout>>(new Map());
+  const removalTimeoutsRef = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
 
   // Handle spot clicks (for difficulty mechanics)
   const handleSpotClick = useCallback((spotId: number, clickPosition: { x: number; y: number }) => {
