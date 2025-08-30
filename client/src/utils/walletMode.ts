@@ -51,7 +51,6 @@ export class WalletModeManager {
       useKatanaEnvVar: process.env.NEXT_PUBLIC_USE_KATANA,
     };
 
-
     return debugInfo;
   }
 
