@@ -83,17 +83,21 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
   }, []);
 
   // Weighted random dirt type selection
-  const selectRandomDirtType = useCallback((): DirtType => {
+   const selectRandomDirtType = useCallback((): DirtType => {
     const weights = finalConfig.dirtTypeWeights || {};
-    const types = Object.keys(DIRT_TYPE_CONFIG) as unknown as DirtType[];
-    const total = types.reduce((sum, t) => sum + (weights[t] ?? DIRT_TYPE_CONFIG[t].spawnProbability ?? 0.1), 0);
+    const types = Object.keys(DIRT_TYPE_CONFIG) as Array<keyof typeof DIRT_TYPE_CONFIG>;
+    const total = types.reduce(
+      (sum, t) => sum + (weights[t as DirtType] ?? DIRT_TYPE_CONFIG[t].spawnProbability ?? 0.1),
+      0
+    );
+    if (total <= 0) return DirtType.BASIC;
     let r = Math.random() * total;
-       for (const t of types) {
-          r -= (weights[t] ?? DIRT_TYPE_CONFIG[t].spawnProbability ?? 0.1);
-         if (r <= 0) return t;
-        }
-        return DirtType.BASIC;
-      }, [finalConfig.dirtTypeWeights]);
+    for (const t of types) {
+      r -= (weights[t as DirtType] ?? DIRT_TYPE_CONFIG[t].spawnProbability ?? 0.1);
+      if (r <= 0) return t as DirtType;
+    }
+    return DirtType.BASIC;
+  }, [finalConfig.dirtTypeWeights]);
 
   // Generate random position within aquarium bounds
   const generateRandomPosition = useCallback((): { x: number; y: number } => {
@@ -110,11 +114,11 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
   const isValidPosition = useCallback(
     (newPos: { x: number; y: number }, spots: DirtSpot[]): boolean => {
       const { minSpotDistance } = finalConfig;
+      const minDist2 = minSpotDistance * minSpotDistance;
       return spots.every(spot => {
-        const distance = Math.sqrt(
-          Math.pow(newPos.x - spot.position.x, 2) + Math.pow(newPos.y - spot.position.y, 2)
-        );
-        return distance >= minSpotDistance;
+        const dx = newPos.x - spot.position.x;
+        const dy = newPos.y - spot.position.y;
+        return (dx * dx + dy * dy) >= minDist2;
       });
     },
     [finalConfig]
@@ -186,7 +190,12 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
               created: (prev.dirtTypeStats[newSpot.type]?.created || 0) + 1,
             }),
           };
-  
+
+          dispatchEvent({
+            type: 'SPOT_SPAWNED',
+            payload: { spot: newSpot, spawnLocation: position },
+          });
+            
           dispatchEvent({
              type: 'CLEANLINESS_CHANGED',
              payload: {
