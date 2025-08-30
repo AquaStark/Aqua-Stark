@@ -25,8 +25,6 @@ export const getWalletConfig = (): WalletConfig => {
       ? useKatanaFromEnv === 'true'
       : isDevelopment;
 
-
-
   return {
     useKatanaAccounts,
     isDevelopment,
