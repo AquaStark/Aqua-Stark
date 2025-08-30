@@ -1,0 +1,73 @@
+name: General CI
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+
+jobs:
+  general-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check file formatting
+        run: |
+          # Check if prettier is available
+          if command -v npx &> /dev/null; then
+            npx prettier --check .
+          else
+            echo "Prettier not available, skipping format check"
+          fi
+
+      - name: Check for sensitive files
+        run: |
+          # Check for common sensitive files that shouldn't be committed
+          if [ -f ".env" ]; then
+            echo "❌ .env file found in repository"
+            exit 1
+          fi
+
+          if [ -f "secrets.json" ]; then
+            echo "❌ secrets.json file found in repository"
+            exit 1
+          fi
+
+          echo "✅ No sensitive files found"
+
+      - name: Check for large files
+        run: |
+          # Check for files larger than 10MB
+          find . -type f -size +10M -not -path "./node_modules/*" -not -path "./.git/*" | head -10
+
+      - name: Validate JSON files
+        run: |
+          # Validate all JSON files
+          find . -name "*.json" -not -path "./node_modules/*" -not -path "./.git/*" -exec sh -c 'echo "Validating $1"; cat "$1" | jq . > /dev/null' _ {} \;
+
+      - name: Check for TODO comments
+        run: |
+          # Count TODO comments (informational only)
+          echo "📝 TODO comments found:"
+          grep -r "TODO" . --exclude-dir=node_modules --exclude-dir=.git | wc -l
+
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
