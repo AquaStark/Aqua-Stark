@@ -73,11 +73,11 @@ export default function EventTabs() {
     );
   };
 
-  const filteredEvents: CalendarEvent[] = (activeTab === 'all'
-    ? mockEvents
-    : mockEvents.filter(
-        e => e.category === activeTab
-      )).filter(isCalendarEvent);
+  const filteredEvents: CalendarEvent[] = (
+    activeTab === 'all'
+      ? mockEvents
+      : mockEvents.filter(e => e.category === activeTab)
+  ).filter(isCalendarEvent);
 
   const handleEventClick = (event: CalendarEvent) => setSelectedEvent(event);
   const closeModal = () => setSelectedEvent(null);

@@ -294,7 +294,9 @@ export default function AquariumsPage() {
               ) : (
                 <AquariumList
                   aquariums={filteredAquariums}
-                  onSelectAquarium={(aquarium) => handleSelectAquarium(aquarium as any)}
+                  onSelectAquarium={aquarium =>
+                    handleSelectAquarium(aquarium as any)
+                  }
                 />
               )}
             </>

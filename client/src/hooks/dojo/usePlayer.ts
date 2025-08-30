@@ -29,7 +29,8 @@ export const usePlayer = () => {
     async (address: string) => {
       try {
         if (!client || !client.AquaStark) return alert('No client found');
-        return await client.AquaStark.getPlayer(address);
+        // Usar 'latest' en lugar de 'pending' para evitar errores de RPC
+        return await client.AquaStark.getPlayer(address, { blockId: 'latest' });
       } catch (error) {
         console.error('Error getting player:', error);
         throw error;

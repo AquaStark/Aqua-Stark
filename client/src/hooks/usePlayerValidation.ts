@@ -24,7 +24,9 @@ export const usePlayerValidation = () => {
 
         try {
           onChainPlayer = await getPlayer(walletAddress);
-        } catch (error) {}
+        } catch {
+          // Handle error silently
+        }
 
         // Check backend (using our API)
         let backendPlayer = null;
@@ -35,7 +37,9 @@ export const usePlayerValidation = () => {
           });
           const response = await ApiClient.get(url);
           backendPlayer = (response as any).data;
-        } catch (error) {}
+        } catch {
+          // Handle error silently
+        }
 
         // Determine if player exists
         const isOnChain = onChainPlayer && onChainPlayer.id > 0;

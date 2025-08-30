@@ -1,13 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import WalletModal from '@/components/modal/walletConnectModal';
-import { Wallet, LogOut } from 'lucide-react';
+import { ConnectButton } from '@/components/ui/connect-button';
+import { LogOut } from 'lucide-react';
 import { useAccount, useDisconnect } from '@starknet-react/core';
 import { toast } from 'sonner';
 
 export function Navbar() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeButton, setActiveButton] = useState<string | null>(null);
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
@@ -122,19 +121,8 @@ export function Navbar() {
             </button>
           </div>
         ) : (
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className='text-sm sm:text-base font-bold py-1.5 sm:py-2 px-3 sm:px-5 bg-gradient-to-b from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 border border-purple-400 flex items-center gap-1 sm:gap-2'
-          >
-            <Wallet className='w-3 h-3 sm:w-4 sm:h-4' />
-            <span className='hidden xs:inline'>Connect</span>
-            <span className='xs:hidden'>💰</span>
-          </button>
+          <ConnectButton />
         )}
-        <WalletModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-        />
       </div>
     </nav>
   );

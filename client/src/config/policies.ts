@@ -128,6 +128,39 @@ export const GAME_POLICIES: SessionPolicies = {
   },
 };
 
+// Configuración adicional para Cartridge
+export const CARTRIDGE_CONFIG = {
+  // Opciones de registro y autenticación
+  enableRegistration: true,
+  showSignUp: true,
+  redirectToSignUp: true,
+
+  // Configuración de sesión
+  sessionConfig: {
+    autoRenewal: true,
+    maxDuration: 24 * 60 * 60 * 1000, // 24 horas
+    enablePasskey: true,
+    enableBiometric: true,
+  },
+
+  // Configuración de UX
+  uxConfig: {
+    showGamingBadge: true,
+    prioritizeGaming: true,
+    showFallbackOptions: true,
+  },
+
+  // Configuración de red
+  networkConfig: {
+    defaultChain: 'sepolia',
+    supportedChains: ['sepolia', 'mainnet'],
+    rpcUrls: {
+      sepolia: 'https://api.cartridge.gg/x/starknet/sepolia',
+      mainnet: 'https://api.cartridge.gg/x/starknet/mainnet',
+    },
+  },
+};
+
 // Políticas simplificadas para desarrollo/testing
 export const DEV_POLICIES: SessionPolicies = {
   contracts: {
