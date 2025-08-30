@@ -35,8 +35,7 @@ export function useAquarium() {
         maxCapacity
       );
       return res;
-    } catch (error) {
-    }
+    } catch (error) {}
   };
 
   return {
