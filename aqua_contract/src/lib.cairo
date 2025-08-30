@@ -8,6 +8,7 @@ pub mod systems {
     pub mod Trade;
     pub mod session;
     pub mod transaction;
+    pub mod FishSystem;
 }
 
 // pub mod aquarium;
@@ -31,6 +32,7 @@ pub mod interfaces {
     pub mod ITransactionHistory;
     pub mod ITransaction;
     // pub mod IExperience;
+    pub mod IFishSystem;
     pub mod ITrade;
 }
 
