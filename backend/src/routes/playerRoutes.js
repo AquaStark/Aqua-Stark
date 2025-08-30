@@ -1,6 +1,10 @@
 import express from 'express';
 import { PlayerController } from '../controllers/playerController.js';
-import { AuthMiddleware, simpleAuth, validateOwnership } from '../middleware/auth.js';
+import {
+  AuthMiddleware,
+  simpleAuth,
+  validateOwnership,
+} from '../middleware/auth.js';
 
 const router = express.Router();
 
