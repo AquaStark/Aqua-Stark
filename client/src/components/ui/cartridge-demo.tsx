@@ -9,7 +9,6 @@ export function CartridgeDemo() {
     isConnected,
     address,
     username,
-    avatar,
     sessionType,
     isConnecting,
     refreshSession,
