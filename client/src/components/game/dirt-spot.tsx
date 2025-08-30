@@ -89,7 +89,7 @@ export function DirtSpot({ spot, onRemove, className = '' }: DirtSpotProps) {
             isDefaultPrevented: () => false,
             isPropagationStopped: () => false,
             persist: () => {},
-            getModifierState: (_key: string) => false,
+            getModifierState: () => false,
             view: window,
           } as unknown as React.MouseEvent;
           handleClick(syntheticEvent);
