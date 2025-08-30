@@ -407,6 +407,7 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
   // Calculate dirt coverage percentage
   const getDirtCoverage = useCallback(() => {
     const totalArea = finalConfig.aquariumBounds.width * finalConfig.aquariumBounds.height;
+    if (totalArea <= 0) return 0;
     const dirtArea = state.spots.reduce((sum, spot) => {
       // Account for organic shapes if they exist
       if (spot.subShapes && spot.subShapes.length > 0) {
