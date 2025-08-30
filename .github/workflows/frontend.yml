@@ -4,7 +4,7 @@ on:
     branches: ['main']
     paths:
       - 'client/**'
-      - '.github/workflows/client.yml'
+      - '.github/workflows/frontend.yml'
       - 'package.json'
       - 'pnpm-workspace.yaml'
       - '.prettierrc'
@@ -13,7 +13,7 @@ on:
     branches: ['main']
     paths:
       - 'client/**'
-      - '.github/workflows/client.yml'
+      - '.github/workflows/frontend.yml'
       - 'package.json'
       - 'pnpm-workspace.yaml'
       - '.prettierrc'
@@ -22,6 +22,9 @@ on:
 jobs:
   frontend:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
 
     steps:
       - name: Checkout code
@@ -55,7 +58,6 @@ jobs:
 
       - name: Check formatting
         run: pnpm format:check
-        continue-on-error: true
 
       - name: Run linting
         run: pnpm lint
@@ -72,8 +74,8 @@ jobs:
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
         with:
-          file: ./client/coverage/coverage-final.json
-          directory: ./client/coverage/
+          file: ./coverage/coverage-final.json
+          directory: ./coverage/
           flags: frontend
           name: frontend-coverage
           fail_ci_if_error: false
