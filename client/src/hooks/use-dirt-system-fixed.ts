@@ -72,8 +72,14 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
 
   // Event system
   const dispatchEvent = useCallback((event: DirtSystemEvent) => {
-    eventListenersRef.current.forEach(listener => listener(event));
-  }, []);
+       for (const listener of eventListenersRef.current) {
+         try {
+           listener(event);
+         } catch {
+           // optionally log
+         }
+       }
+     }, []);
 
   const addEventListener = useCallback((listener: (event: DirtSystemEvent) => void) => {
     eventListenersRef.current.push(listener);
@@ -180,33 +186,30 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
         const position = generateRandomPosition();
         if (isValidPosition(position, prev.spots)) {
           const newSpot = createDirtSpot(position, type);
-          const newState = {
-            ...prev,
-            spots: [...prev.spots, newSpot],
-            totalSpotsCreated: prev.totalSpotsCreated + 1,
-            lastSpawnTime: Date.now(),
-            cleanlinessScore: Math.max(0, prev.cleanlinessScore - 100 / maxSpots),
-            dirtTypeStats: updateDirtTypeStats(prev.dirtTypeStats, newSpot.type, {
-              created: (prev.dirtTypeStats[newSpot.type]?.created || 0) + 1,
-            }),
-          };
-
-          dispatchEvent({
-            type: 'SPOT_SPAWNED',
-            payload: { spot: newSpot, spawnLocation: position },
-          });
-            
-          dispatchEvent({
-             type: 'CLEANLINESS_CHANGED',
-             payload: {
+              const newState = {
+                ...prev,
+                spots: [...prev.spots, newSpot],
+                totalSpotsCreated: prev.totalSpotsCreated + 1,
+                lastSpawnTime: Date.now(),
+                cleanlinessScore: Math.max(0, prev.cleanlinessScore - 100 / maxSpots),
+                dirtTypeStats: updateDirtTypeStats(prev.dirtTypeStats, newSpot.type, {
+                  created: (prev.dirtTypeStats[newSpot.type]?.created || 0) + 1,
+                }),
+              };
+              dispatchEvent({
+                type: 'SPOT_SPAWNED',
+                payload: { spot: newSpot, spawnLocation: position },
+              });
+              dispatchEvent({
+                type: 'CLEANLINESS_CHANGED',
+                payload: {
                   oldScore: prev.cleanlinessScore,
                   newScore: newState.cleanlinessScore,
                   change: newState.cleanlinessScore - prev.cleanlinessScore,
-                     },
-                   });
-  
-         didSpawn = true;
-         return newState;
+                },
+              });
+                didSpawn = true;
+              return newState;
         }
       }
   
@@ -472,17 +475,27 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
 
   // Setup aging interval
   useEffect(() => {
-    if (!finalConfig.enableAging) return;
-
+    // Clear any existing interval first
     if (agingIntervalRef.current) {
       clearInterval(agingIntervalRef.current);
+      agingIntervalRef.current = null;
     }
-
-    agingIntervalRef.current = setInterval(updateSpotAging, 5000); // Update every 5 seconds
-
+    // If aging is disabled, don’t set a new interval (cleanup already done)
+    if (!finalConfig.enableAging) {
+      return () => {
+        if (agingIntervalRef.current) {
+          clearInterval(agingIntervalRef.current);
+          agingIntervalRef.current = null;
+        }
+      };
+    }
+    // Enable aging: set up a new interval
+    agingIntervalRef.current = setInterval(updateSpotAging, 5000);
+    // Cleanup on unmount or before next run
     return () => {
       if (agingIntervalRef.current) {
         clearInterval(agingIntervalRef.current);
+        agingIntervalRef.current = null;
       }
     };
   }, [finalConfig.enableAging, updateSpotAging]);
@@ -515,8 +528,12 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     totalSpotsCreated: state.totalSpotsCreated,
     totalSpotsRemoved: state.totalSpotsRemoved,
     cleanlinessScore: Math.round(state.cleanlinessScore),
-    config: finalConfig,
-
+      // expose an immutable snapshot to callers
+    config: Object.freeze({
+        ...finalConfig,
+        aquariumBounds: { ...finalConfig.aquariumBounds },
+        dirtTypeWeights: { ...(finalConfig.dirtTypeWeights || {}) },
+      }) as Readonly<DirtSystemConfig>,
     // Enhanced state
     averageSpotAge: state.averageSpotAge,
     totalCleaningClicks: state.totalCleaningClicks,
