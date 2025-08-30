@@ -14,6 +14,7 @@ pub struct Auction {
     pub highest_bid: u256,
     pub highest_bidder: Option<ContractAddress>,
     pub active: bool,
+    pub finalized: bool,
 }
 
 #[derive(Serde, Copy, Drop, Introspect)]
@@ -62,5 +63,17 @@ pub struct BidPlaced {
     pub auction_id: u256,
     pub bidder: ContractAddress,
     pub amount: u256,
+}
+
+#[derive(Drop, Serde)]
+#[dojo::event]
+pub struct AuctionFinalized {
+    #[key]
+    pub auction_id: u256,
+    pub seller: ContractAddress,
+    pub winner: Option<ContractAddress>,
+    pub final_price: u256,
+    pub fish_id: u256,
+    pub outcome: felt252, // 0 = no winner, 1 = winner
 }
 
