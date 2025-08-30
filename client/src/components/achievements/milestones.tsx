@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { CircleCheckBig, Gift, Trophy } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 
 interface GameMileStone {
   id: number;
