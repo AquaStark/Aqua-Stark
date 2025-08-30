@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useConnect } from '@starknet-react/core';
+import { ConnectButton } from '@/components/ui/connect-button';
 
 interface WalletModalProps {
   isOpen: boolean;
@@ -9,8 +9,6 @@ interface WalletModalProps {
 }
 
 const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
-  const { connect, connectors } = useConnect();
-
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -21,16 +19,6 @@ const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
-
-  const handleWalletSelect = async (connector: any) => {
-    try {
-      await connect({ connector });
-      onClose();
-    } catch (error) {
-      console.error('Error connecting wallet:', error);
-      // You can add toast notification here
-    }
-  };
 
   if (!isOpen) return null;
 
@@ -48,7 +36,7 @@ const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
         onClick={e => e.stopPropagation()}
         onKeyDown={e => e.stopPropagation()}
       >
-        <div className='flex justify-between items-center mb-4'>
+        <div className='flex justify-between items-center mb-6'>
           <h2 id='wallet-modal-title' className='text-white text-xl font-bold'>
             Connect Wallet
           </h2>
@@ -61,59 +49,69 @@ const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
           </button>
         </div>
 
-        <div className='space-y-3'>
-          {connectors.map(connector => {
-            const isAvailable = connector.available();
-            const isCartridge = connector.id === 'cartridge';
+        <div className='space-y-6'>
+          {/* Botón principal de Cartridge */}
+          <div className='text-center'>
+            <ConnectButton className='w-full' />
+          </div>
 
-            return (
-              <button
-                key={connector.id}
-                onClick={() => handleWalletSelect(connector)}
-                disabled={!isAvailable}
-                className={`flex items-center gap-4 p-4 rounded-md w-full text-left transition-all duration-300 ${
-                  isAvailable
-                    ? isCartridge
-                      ? 'bg-gradient-to-r from-green-600/80 to-blue-600/80 hover:scale-105 border-2 border-green-400/50'
-                      : 'bg-purple-700/60 hover:scale-105'
-                    : 'bg-gray-700 opacity-50 cursor-not-allowed'
-                }`}
+          {/* Información sobre las opciones disponibles */}
+          <div className='bg-gray-800/50 rounded-lg p-4'>
+            <h3 className='text-white font-medium mb-3'>
+              💡 Opciones disponibles en Cartridge:
+            </h3>
+            <div className='space-y-2 text-sm text-gray-300'>
+              <div className='flex items-center gap-2'>
+                <span>🔐</span>
+                <span>
+                  <strong>Google</strong> - Login con cuenta de Google
+                </span>
+              </div>
+              <div className='flex items-center gap-2'>
+                <span>🎮</span>
+                <span>
+                  <strong>Discord</strong> - Login con cuenta de Discord
+                </span>
+              </div>
+              <div className='flex items-center gap-2'>
+                <span>🔗</span>
+                <span>
+                  <strong>WalletConnect</strong> - Conectar wallets externas
+                </span>
+              </div>
+              <div className='flex items-center gap-2'>
+                <span>🦊</span>
+                <span>
+                  <strong>Wallets nativas</strong> - Argent X, Braavos, etc.
+                </span>
+              </div>
+              <div className='flex items-center gap-2'>
+                <span>🔑</span>
+                <span>
+                  <strong>Passkey</strong> - Autenticación biométrica
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Información adicional */}
+          <div className='text-center text-sm text-gray-400 space-y-2'>
+            <p>
+              ¿No tienes una wallet?{' '}
+              <a
+                href='https://starknet.io/ecosystem/wallets/'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='text-purple-400 hover:underline'
               >
-                <div className='flex-shrink-0'>{isCartridge ? '🎮' : '🦊'}</div>
-                <div>
-                  <h3 className='text-white font-semibold flex items-center gap-2'>
-                    {connector.name}
-                    {isCartridge && (
-                      <span className='text-xs bg-green-500 text-white px-2 py-1 rounded-full'>
-                        Gaming Optimized
-                      </span>
-                    )}
-                  </h3>
-                  <p className='text-gray-400 text-sm'>
-                    {isAvailable
-                      ? isCartridge
-                        ? 'Session keys, gasless transactions, passkey auth'
-                        : 'Available'
-                      : 'Wallet not detected'}
-                  </p>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className='mt-4 text-center text-sm text-gray-400'>
-          <p>
-            Don't have a wallet?{' '}
-            <a
-              href='https://starknet.io/ecosystem/wallets/'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='text-purple-400 hover:underline'
-            >
-              Get one here
-            </a>
-          </p>
+                Obtén una aquí
+              </a>
+            </p>
+            <p className='text-xs'>
+              💡 <strong>Tip:</strong> Cartridge es ideal para gaming con
+              transacciones automáticas
+            </p>
+          </div>
         </div>
       </div>
     </div>

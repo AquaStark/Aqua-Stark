@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Search, UserPlus } from 'lucide-react';
 import { mockFriends, mockSuggestions } from '@/data/mock-community';
-import { Input } from '../ui/input';
+import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 
 export default function CommunityFriends() {

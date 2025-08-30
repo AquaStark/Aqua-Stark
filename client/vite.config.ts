@@ -4,13 +4,13 @@ import { defineConfig } from 'vite';
 import wasm from 'vite-plugin-wasm';
 import react from '@vitejs/plugin-react';
 import topLevelAwait from 'vite-plugin-top-level-await';
-import mkcert from 'vite-plugin-mkcert';
+// import mkcert from 'vite-plugin-mkcert';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig({
-  plugins: [react(), wasm(), topLevelAwait(), mkcert()],
+  plugins: [react(), wasm(), topLevelAwait()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
@@ -20,6 +20,6 @@ export default defineConfig({
     global: 'globalThis',
   },
   server: {
-    https: true,
+    // https: true, // Comentado temporalmente
   },
 });

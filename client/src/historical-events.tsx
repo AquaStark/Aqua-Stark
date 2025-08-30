@@ -33,7 +33,14 @@ export function HistoricalEvents() {
           },
           historical: true,
         });
-        setEvents(e as unknown as ParsedEntity<SchemaType>[]);
+        // Type guard to ensure e is the correct type
+        if (Array.isArray(e)) {
+          // Cast through unknown to avoid type mismatch
+          setEvents(e as unknown as ParsedEntity<SchemaType>[]);
+        } else {
+          console.warn('Expected array of events, got:', typeof e);
+          setEvents([]);
+        }
         setSubscription(s);
       } catch (error) {
         setEvents([]);

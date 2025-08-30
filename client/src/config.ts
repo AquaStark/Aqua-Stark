@@ -15,7 +15,6 @@ export const getWalletConfig = (): WalletConfig => {
   const useKatanaFromEnv = import.meta.env.VITE_USE_KATANA;
 
   // Environment variable parsing for Katana accounts
-
   const useKatanaAccounts =
     useKatanaFromEnv !== undefined
       ? useKatanaFromEnv === 'true'

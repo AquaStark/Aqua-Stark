@@ -1,16 +1,39 @@
 'use client';
 import { FeatureCards } from './featured-card';
 import mockData from '@/data/mock-data';
-const mockGameFeatures =
-  (
-    mockData as unknown as {
-      mockGameFeatures?: Array<{
-        title: string;
-        description: string;
-        icon: string;
-      }>;
-    }
-  ).mockGameFeatures ?? [];
+// Define proper interface for game features
+interface GameFeature {
+  title: string;
+  description: string;
+  icon: string;
+}
+
+// Type guard to validate game features
+const isGameFeature = (feature: any): feature is GameFeature => {
+  return (
+    typeof feature === 'object' &&
+    feature !== null &&
+    typeof feature.title === 'string' &&
+    typeof feature.description === 'string' &&
+    typeof feature.icon === 'string'
+  );
+};
+
+// Type guard to validate mock data structure
+const hasGameFeatures = (
+  data: any
+): data is { mockGameFeatures: GameFeature[] } => {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    Array.isArray(data.mockGameFeatures) &&
+    data.mockGameFeatures.every(isGameFeature)
+  );
+};
+
+const mockGameFeatures: GameFeature[] = hasGameFeatures(mockData)
+  ? mockData.mockGameFeatures
+  : [];
 
 export function FeaturesSection() {
   return (

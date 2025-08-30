@@ -293,11 +293,9 @@ export default function AquariumsPage() {
                 </div>
               ) : (
                 <AquariumList
-                  aquariums={
-                    filteredAquariums as unknown as Omit<Aquarium, 'fishes'>[]
-                  }
-                  onSelectAquarium={
-                    handleSelectAquarium as unknown as (aquarium: any) => void
+                  aquariums={filteredAquariums}
+                  onSelectAquarium={aquarium =>
+                    handleSelectAquarium(aquarium as any)
                   }
                 />
               )}

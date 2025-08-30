@@ -59,6 +59,47 @@ interface Bundle {
   description: string;
 }
 
+// Type guards for data validation
+const isStoreItem = (item: any): item is StoreItem => {
+  return (
+    typeof item === 'object' &&
+    item !== null &&
+    typeof item.name === 'string' &&
+    typeof item.image === 'string' &&
+    typeof item.price === 'number' &&
+    typeof item.rarity === 'string' &&
+    typeof item.description === 'string' &&
+    typeof item.rating === 'number' &&
+    typeof item.id === 'string'
+  );
+};
+
+const isBundle = (bundle: any): bundle is Bundle => {
+  return (
+    typeof bundle === 'object' &&
+    bundle !== null &&
+    typeof bundle.id === 'string' &&
+    typeof bundle.name === 'string' &&
+    typeof bundle.image === 'string' &&
+    typeof bundle.price === 'number' &&
+    typeof bundle.originalPrice === 'number' &&
+    typeof bundle.discount === 'string' &&
+    typeof bundle.tag === 'string' &&
+    typeof bundle.rarity === 'string' &&
+    Array.isArray(bundle.items) &&
+    bundle.items.every((item: any) => typeof item === 'string') &&
+    typeof bundle.description === 'string'
+  );
+};
+
+const isStoreItemArray = (data: any): data is StoreItem[] => {
+  return Array.isArray(data) && data.every(isStoreItem);
+};
+
+const isBundleArray = (data: any): data is Bundle[] => {
+  return Array.isArray(data) && data.every(isBundle);
+};
+
 export default function StorePage() {
   const [activeTab, setActiveTab] = useState<ItemType>('fish');
   const [activeCategory, setActiveCategory] = useState('all');
@@ -85,18 +126,17 @@ export default function StorePage() {
   const getTabItems = (): StoreItem[] => {
     switch (activeTab) {
       case 'fish':
-        return fishData as unknown as StoreItem[];
+        return isStoreItemArray(fishData) ? fishData : [];
       case 'food':
         // In a real implementation, these would come from their own data files
-        return foodData as unknown as StoreItem[];
-        return [] as StoreItem[];
+        return isStoreItemArray(foodData) ? foodData : [];
       case 'decorations':
         // In a real implementation, these would come from their own data files
         return decorationItems;
       case 'others':
-        return miscItems as unknown as StoreItem[];
+        return isStoreItemArray(miscItems) ? miscItems : [];
       default:
-        return fishData as unknown as StoreItem[];
+        return isStoreItemArray(fishData) ? fishData : [];
     }
   };
 
@@ -302,11 +342,11 @@ export default function StorePage() {
                       {isSortDropdownOpen && (
                         <SortDropdown
                           sort={sort}
-                          updateSort={
-                            updateSort as unknown as (
-                              field: string,
-                              direction: string
-                            ) => void
+                          updateSort={(field, direction) =>
+                            updateSort(
+                              field as any,
+                              direction as 'asc' | 'desc'
+                            )
                           }
                           onClose={() => setIsSortDropdownOpen(false)}
                         />
@@ -337,7 +377,7 @@ export default function StorePage() {
 
                 {/* Bundles section (only shown in Others tab) */}
                 {shouldShowBundles && (
-                  <BundleGrid bundles={bundles as unknown as Bundle[]} />
+                  <BundleGrid bundles={isBundleArray(bundles) ? bundles : []} />
                 )}
 
                 {/* Special Bundles (only for decorations tab) */}

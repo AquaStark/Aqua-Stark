@@ -62,11 +62,22 @@ export default function EventTabs() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const filteredEvents: CalendarEvent[] = (activeTab === 'all'
-    ? mockEvents
-    : mockEvents.filter(
-        e => e.category === activeTab
-      )) as unknown as CalendarEvent[];
+  // Type guard function to validate CalendarEvent
+  const isCalendarEvent = (event: any): event is CalendarEvent => {
+    return (
+      typeof event === 'object' &&
+      event !== null &&
+      typeof event.id === 'number' &&
+      typeof event.title === 'string' &&
+      typeof event.category === 'string'
+    );
+  };
+
+  const filteredEvents: CalendarEvent[] = (
+    activeTab === 'all'
+      ? mockEvents
+      : mockEvents.filter(e => e.category === activeTab)
+  ).filter(isCalendarEvent);
 
   const handleEventClick = (event: CalendarEvent) => setSelectedEvent(event);
   const closeModal = () => setSelectedEvent(null);

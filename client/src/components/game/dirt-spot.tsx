@@ -56,10 +56,43 @@ export function DirtSpot({ spot, onRemove, className = '' }: DirtSpotProps) {
       onKeyDown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          handleClick({
-            preventDefault() {},
-            stopPropagation() {},
-          } as unknown as React.MouseEvent);
+          // Create a proper synthetic event for keyboard interaction
+          const syntheticEvent = {
+            preventDefault: () => {},
+            stopPropagation: () => {},
+            target: e.target,
+            currentTarget: e.currentTarget,
+            altKey: false,
+            button: 0,
+            buttons: 0,
+            clientX: 0,
+            clientY: 0,
+            ctrlKey: false,
+            metaKey: false,
+            movementX: 0,
+            movementY: 0,
+            nativeEvent: e.nativeEvent,
+            pageX: 0,
+            pageY: 0,
+            relatedTarget: null,
+            screenX: 0,
+            screenY: 0,
+            shiftKey: false,
+            detail: 0,
+            bubbles: false,
+            cancelable: false,
+            defaultPrevented: false,
+            eventPhase: 0,
+            isTrusted: false,
+            timeStamp: 0,
+            type: 'click',
+            isDefaultPrevented: () => false,
+            isPropagationStopped: () => false,
+            persist: () => {},
+            getModifierState: () => false,
+            view: window,
+          } as unknown as React.MouseEvent;
+          handleClick(syntheticEvent);
         }
       }}
       aria-label='Click to clean dirt spot'
