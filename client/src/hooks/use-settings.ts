@@ -43,10 +43,9 @@ const useSettings = () => {
   }, []);
 
   /**
-   *
-   *
-   * @param {keyof SettingsState} key
-   * @param {any} value
+   * Updates a specific setting and saves it to localStorage
+   * @param {keyof SettingsState} key - The setting key to update
+   * @param {any} value - The new value for the setting
    */
   const updateSetting = (key: keyof SettingsState, value: any) => {
     setIsLoading(true);

@@ -14,7 +14,7 @@ export function AquariumActions() {
   } = useGameActions();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [fishIds] = useState(['1', '2', '3']); // IDs de ejemplo
+  const [fishIds] = useState(['1', '2', '3']); // Example fish IDs
 
   if (!isConnected) {
     return (
@@ -55,7 +55,7 @@ export function AquariumActions() {
       </h3>
 
       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-        {/* Acciones básicas */}
+        {/* Basic Actions */}
         <div className='space-y-3'>
           <h4 className='text-white font-medium'>Basic Actions</h4>
 
@@ -88,7 +88,7 @@ export function AquariumActions() {
           </button>
         </div>
 
-        {/* Acciones avanzadas */}
+        {/* Advanced Actions */}
         <div className='space-y-3'>
           <h4 className='text-white font-medium'>Advanced Actions</h4>
 

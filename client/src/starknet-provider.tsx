@@ -71,7 +71,6 @@ function StarknetConnectionWrapper({
   walletConfig,
 }: PropsWithChildren & { walletConfig: ReturnType<typeof getWalletConfig> }) {
   const { account } = useAccount();
-  console.log('account', account);
   const { connect, connectors } = useConnect();
 
   if (!account) {
