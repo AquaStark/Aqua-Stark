@@ -14,17 +14,20 @@ Esta implementación proporciona una integración completa de **Cartridge Contro
 ## 🚀 Características
 
 ### Login Social
+
 - **Google OAuth**: Login directo con cuenta de Google
 - **Discord OAuth**: Login directo con cuenta de Discord
 - **Registro automático**: Creación de cuenta al primer login
 - **Perfiles de usuario**: Información de avatar y username
 
 ### WalletConnect
+
 - **Wallets externas**: MetaMask, Rabby, etc.
 - **QR Code**: Conexión móvil
 - **Multi-chain**: Soporte para múltiples redes
 
 ### Gaming Features
+
 - **Session Keys**: Transacciones automáticas sin popups
 - **Gasless transactions**: Sin costos de gas para acciones del juego
 - **Políticas de sesión**: Configuración granular de permisos
@@ -99,8 +102,8 @@ import { ConnectButton } from '@/components/ui/connect-button';
 
 function MyComponent() {
   return (
-    <ConnectButton 
-      size="lg" 
+    <ConnectButton
+      size="lg"
       variant="default"
       onConnect={(account) => console.log('Conectado:', account)}
     />
@@ -158,16 +161,19 @@ function MyComponent() {
 ## 🎮 Gaming Features
 
 ### Session Keys Automáticas
+
 - Las transacciones del juego se ejecutan automáticamente
 - No se requieren confirmaciones del usuario
 - Optimizado para UX de gaming
 
 ### Transacciones Sin Gas
+
 - Las acciones del juego no requieren gas
 - Cartridge maneja los costos de transacción
 - Experiencia fluida para el jugador
 
 ### Políticas Granulares
+
 - Configuración específica por contrato
 - Métodos permitidos por sesión
 - Seguridad y control total
@@ -246,18 +252,22 @@ useEffect(() => {
 ## 🚨 Troubleshooting
 
 ### Error: "Cartridge Controller no está disponible"
+
 - Verificar que `@cartridge/connector` esté instalado
 - Comprobar configuración en `StarknetProvider.tsx`
 
 ### Error: "Error de cuenta"
+
 - Usuario no tiene cuenta en Cartridge
 - Guiar al usuario al registro
 
 ### Error: "Sesión expirada"
+
 - La sesión ha expirado
 - Usuario debe reconectarse
 
 ### Modal no se abre
+
 - Verificar que `connect({ connector: controller })` se ejecute
 - Comprobar que no haya errores en la consola
 
