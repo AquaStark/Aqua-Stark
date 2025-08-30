@@ -344,7 +344,12 @@ export default function StorePage() {
                       {isSortDropdownOpen && (
                         <SortDropdown
                           sort={sort}
-                          updateSort={(field, direction) => updateSort(field as any, direction as 'asc' | 'desc')}
+                          updateSort={(field, direction) =>
+                            updateSort(
+                              field as any,
+                              direction as 'asc' | 'desc'
+                            )
+                          }
                           onClose={() => setIsSortDropdownOpen(false)}
                         />
                       )}
