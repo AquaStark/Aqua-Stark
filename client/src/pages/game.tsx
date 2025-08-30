@@ -232,7 +232,7 @@ export default function GamePage() {
       {/* Background */}
       <img
         src="/backgrounds/background2.png"
-        alt="Underwater Background"
+        alt=""
         className="absolute inset-0 w-full h-full object-cover z-0"
         role="presentation"
       />

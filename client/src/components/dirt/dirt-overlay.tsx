@@ -23,7 +23,7 @@ export const DirtOverlay = memo(function DirtOverlay({
 
   return (
     <div
-      className={`absolute inset-0 z-30 pointer-events-none ${className}`}
+      className={`absolute inset-0 pointer-events-none ${className}`}
       role="application"
       aria-label={`Dirt overlay with ${spots.length} dirt spot${spots.length === 1 ? '' : 's'}`}
       data-testid="dirt-overlay"

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useState, useEffect, useCallback, useRef} from 'react';
 import {
   DirtSpot,
   DirtType,
@@ -37,7 +37,11 @@ const DEFAULT_CONFIG: DirtSystemConfig = {
 };
 
 export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
-  const finalConfig = useMemo(() => ({ ...DEFAULT_CONFIG, ...config }), [config]);
+  const [localConfig, setLocalConfig] = useState<DirtSystemConfig>(() => ({ ...DEFAULT_CONFIG, ...config }));
+  useEffect(() => {
+  setLocalConfig(prev => ({ ...prev, ...config }));
+   }, [config]);
+   const finalConfig = localConfig;
   
   const [state, setState] = useState<DirtSystemState>({
     spots: [],
@@ -81,19 +85,15 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
   // Weighted random dirt type selection
   const selectRandomDirtType = useCallback((): DirtType => {
     const weights = finalConfig.dirtTypeWeights || {};
-    const types = Object.values(DirtType);
-    const weightedTypes: DirtType[] = [];
-
-    types.forEach(type => {
-      const weight = weights[type] || DIRT_TYPE_CONFIG[type]?.spawnProbability || 0.1;
-      const count = Math.round(weight * 100);
-      for (let i = 0; i < count; i++) {
-        weightedTypes.push(type);
-      }
-    });
-
-    return weightedTypes[Math.floor(Math.random() * weightedTypes.length)] || DirtType.BASIC;
-  }, [finalConfig.dirtTypeWeights]);
+    const types = Object.keys(DIRT_TYPE_CONFIG) as unknown as DirtType[];
+    const total = types.reduce((sum, t) => sum + (weights[t] ?? DIRT_TYPE_CONFIG[t].spawnProbability ?? 0.1), 0);
+    let r = Math.random() * total;
+       for (const t of types) {
+          r -= (weights[t] ?? DIRT_TYPE_CONFIG[t].spawnProbability ?? 0.1);
+         if (r <= 0) return t;
+        }
+        return DirtType.BASIC;
+      }, [finalConfig.dirtTypeWeights]);
 
   // Generate random position within aquarium bounds
   const generateRandomPosition = useCallback((): { x: number; y: number } => {
@@ -343,9 +343,13 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
   const getAnalytics = useCallback((): DirtSystemAnalytics => {
     const sessionDuration = (Date.now() - state.sessionStartTime) / 1000 / 60; // minutes
     const spotsPerMinute = sessionDuration > 0 ? state.totalSpotsCreated / sessionDuration : 0;
-    const averageResponseTime = state.totalSpotsRemoved > 0 
-      ? Object.values(state.dirtTypeStats).reduce((sum, stats) => sum + stats.averageTimeToClean, 0) / state.totalSpotsRemoved / 1000
-      : 0;
+    let totalMs = 0;
+    let removed = 0;
+    Object.values(state.dirtTypeStats).forEach(stats => {
+      totalMs += stats.averageTimeToClean * stats.removed;
+      removed += stats.removed;
+    });
+    const averageResponseTime = removed > 0 ? (totalMs / removed) / 1000 : 0;
 
     return {
       sessionDuration,
@@ -392,6 +396,10 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
             const position = generateRandomPosition();
             if (isValidPosition(position, prev.spots)) {
               const newSpot = createDirtSpot(position);
+              dispatchEvent({
+                type: 'SPOT_SPAWNED',
+                payload: { spot: newSpot, spawnLocation: position },
+              });
               return {
                 ...prev,
                 spots: [...prev.spots, newSpot],
@@ -437,17 +445,14 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
   }, [finalConfig.enableAging, updateSpotAging]);
 
   // Update aquarium bounds
-  const updateAquariumBounds = useCallback(
-    (bounds: DirtSystemConfig['aquariumBounds']) => {
-      Object.assign(finalConfig.aquariumBounds, bounds);
-    },
-    [finalConfig.aquariumBounds]
-  );
+  const updateAquariumBounds = useCallback((bounds: DirtSystemConfig['aquariumBounds']) => {
+    setLocalConfig(prev => ({ ...prev, aquariumBounds: { ...prev.aquariumBounds, ...bounds } }));
+    }, []);
 
   // Update configuration
   const updateConfig = useCallback((newConfig: Partial<DirtSystemConfig>) => {
-    Object.assign(finalConfig, newConfig);
-  }, [finalConfig]);
+     setLocalConfig(prev => ({ ...prev, ...newConfig }));
+    }, []);
 
   // Cleanup on unmount
   useEffect(() => {

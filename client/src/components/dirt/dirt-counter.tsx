@@ -34,12 +34,13 @@ export function DirtCounter({
     return { label: 'Very Dirty', color: 'text-red-500', bgColor: 'bg-red-500/30', icon: AlertTriangle };
   };
 
-  const getDirtSpotColor = (current: number, max: number) => {
-    const ratio = current / max;
-    if (ratio >= 0.8) return 'text-red-400';
-    if (ratio >= 0.6) return 'text-orange-400';
-    if (ratio >= 0.4) return 'text-yellow-400';
-    return 'text-blue-400';
+    const getDirtSpotColor = (current: number, max: number) => {
+      if (max <= 0) return 'text-blue-400';
+      const ratio = current / max;
+      if (ratio >= 0.8) return 'text-red-400';
+      if (ratio >= 0.6) return 'text-orange-400';
+      if (ratio >= 0.4) return 'text-yellow-400';
+      return 'text-blue-400';
   };
 
   const getEfficiency = () => {
@@ -153,7 +154,7 @@ export function DirtCounter({
                 spotCount / maxSpots >= 0.6 ? 'bg-orange-400' :
                 spotCount / maxSpots >= 0.4 ? 'bg-yellow-400' : 'bg-blue-400'
               }`}
-              style={{ width: `${(spotCount / maxSpots) * 100}%` }}
+              style={{ width: `${Math.max(0, Math.min(100, maxSpots > 0 ? (spotCount / maxSpots) * 100 : 0))}%`}}
             />
           </div>
         </div>
@@ -180,7 +181,7 @@ export function DirtCounter({
                 cleanlinessScore >= 60 ? 'bg-yellow-400' :
                 cleanlinessScore >= 40 ? 'bg-orange-400' : 'bg-red-400'
               }`}
-              style={{ width: `${cleanlinessScore}%` }}
+              style={{ width: `${Math.max(0, Math.min(100, cleanlinessScore))}%`}}
             />
           </div>
         </div>

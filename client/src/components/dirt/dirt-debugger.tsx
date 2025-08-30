@@ -1,12 +1,13 @@
 'use client';
 
+import type { DirtSpot as DirtSpotType } from '@/types/dirt';
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, Bug, Play, Pause, Plus, Trash2 } from 'lucide-react';
 
 interface DirtDebuggerProps {
   dirtSystem: {
     isSpawnerActive: boolean;
-    spots: any[];
+    spots: DirtSpotType[];
     config: { maxSpots: number };
     totalSpotsCreated: number;
     totalSpotsRemoved: number;
@@ -168,7 +169,7 @@ export function DirtDebugger({ dirtSystem }: DirtDebuggerProps) {
                   : 'bg-green-600 hover:bg-green-700 text-white'
                 }
               `}
-              aria-pressed={dirtSystem.isSpawnerActive}
+              aria-checked={dirtSystem.isSpawnerActive}
               role="switch"
               aria-label={`Dirt spawner is currently ${dirtSystem.isSpawnerActive ? 'active' : 'inactive'}`}
             >

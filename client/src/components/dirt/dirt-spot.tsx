@@ -1,5 +1,11 @@
-import React, { useState, useRef } from 'react';
-import { DirtSpot as DirtSpotType } from '@/types/dirt';
+import React, { useState, useRef, useMemo} from 'react';
+import {
+  DirtSpot as DirtSpotType,
+  ParticleEffect,
+  BubbleEffect,
+  getDirtTypeConfig,
+  // calculateSpotAge,
+} from '@/types/dirt';
 
 interface DirtSpotProps {
   spot: DirtSpotType;
@@ -8,24 +14,24 @@ interface DirtSpotProps {
   isDebugMode?: boolean;
 }
 
-interface ParticleEffect {
-  id: number;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  life: number;
-  size: number;
-  color: string;
-}
+// interface ParticleEffect {
+//   id: number;
+//   x: number;
+//   y: number;
+//   vx: number;
+//   vy: number;
+//   life: number;
+//   size: number;
+//   color: string;
+// }
 
-interface BubbleEffect {
-  id: number;
-  x: number;
-  y: number;
-  size: number;
-  delay: number;
-}
+// interface BubbleEffect {
+//   id: number;
+//   x: number;
+//   y: number;
+//   size: number;
+//   delay: number;
+// }
 
 export function DirtSpot({ spot, onRemove, className = '', isDebugMode = false }: DirtSpotProps) {
   const [isRemoving, setIsRemoving] = useState(false);
@@ -56,7 +62,7 @@ export function DirtSpot({ spot, onRemove, className = '', isDebugMode = false }
     return shapes;
   };
 
-  const organicShapes = generateOrganicShape();
+  const organicShapes = useMemo(generateOrganicShape, [spot.id, spot.size]);
 
   // Calculate spot age and intensity
   const age = spot.createdAt ? (Date.now() - spot.createdAt) / 1000 : 0;
@@ -143,24 +149,19 @@ export function DirtSpot({ spot, onRemove, className = '', isDebugMode = false }
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
+      const rect = spotRef.current?.getBoundingClientRect();
       handleClick({
         preventDefault: () => {},
         stopPropagation: () => {},
-        clientX: 0,
-        clientY: 0,
-      } as React.MouseEvent);
+        clientX: rect ? rect.left + rect.width / 2 : 0,
+        clientY: rect ? rect.top + rect.height / 2 : 0,
+      } as unknown as React.MouseEvent);
     }
   };
 
   // Get dirt color based on age and type
   const getDirtColors = () => {
-    const baseColors = {
-      organic: ['#8B4513', '#A0522D', '#6B4423'],
-      grime: ['#556B2F', '#6B8E23', '#4F4F2F'],
-      algae: ['#228B22', '#2F4F4F', '#006400'],
-    };
-    
-    const colors = baseColors[spot.type as keyof typeof baseColors] || baseColors.organic;
+    const colors = getDirtTypeConfig(spot.type).baseColors;
     const intensityBoost = intensity * 40;
     
     return colors.map(color => {
