@@ -171,7 +171,8 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
 
   // Force spawn function for debugging
   const forceSpawnSpot = useCallback((type?: DirtType) => {
-    setState(prev => {
+      let didSpawn = false;
+      setState(prev => {
       const { maxSpots } = finalConfig;
       if (prev.spots.length >= maxSpots) return prev;
   
@@ -195,14 +196,15 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
             payload: { spot: newSpot, spawnLocation: position },
           });
   
-          return newState;
+         didSpawn = true;
+         return newState;
         }
       }
   
       return prev;
     });
   
-    return true;
+    return didSpawn;
   }, [finalConfig, generateRandomPosition, isValidPosition, createDirtSpot, dispatchEvent]);
   
 
