@@ -12,7 +12,8 @@ import { GAME_POLICIES } from '../config/policies';
 import { constants } from 'starknet';
 
 // IMPORTANTE: Crear conector de Cartridge FUERA del componente
-const cartridgeConnector = new ControllerConnector({
+// Configuración completa con soporte para login social y WalletConnect
+const controller = new ControllerConnector({
   policies: GAME_POLICIES,
   theme: 'aqua-stark',
   defaultChainId: constants.StarknetChainId.SN_SEPOLIA,
@@ -20,7 +21,14 @@ const cartridgeConnector = new ControllerConnector({
     {
       rpcUrl: 'https://api.cartridge.gg/x/starknet/sepolia',
     },
+    {
+      rpcUrl: 'https://api.cartridge.gg/x/starknet/mainnet',
+    },
   ],
+  // Configuración para login social y WalletConnect
+  namespace: 'aqua_stark',
+  slot: 'aqua5',
+  colorMode: 'dark',
 });
 
 const provider = jsonRpcProvider({
@@ -39,8 +47,9 @@ export function StarknetProvider({ children }: { children: React.ReactNode }) {
     order: 'alphabetical',
   });
 
-  // Combinar Cartridge Controller con wallets detectadas (Ready, Braavos, etc.)
-  const allConnectors = [cartridgeConnector, ...injectedConnectors];
+  // Combinar Cartridge Controller con wallets detectadas
+  // Priorizar Cartridge para gaming, luego wallets tradicionales
+  const allConnectors = [controller, ...injectedConnectors];
 
   return (
     <StarknetConfig
