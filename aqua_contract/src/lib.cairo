@@ -57,6 +57,7 @@ pub mod tests {
     mod test_game;
     // mod test_experience;
     mod test_aquarium;
+    mod test_fish_system;
     // mod test_world;
 // mod simple_session_test;
 
