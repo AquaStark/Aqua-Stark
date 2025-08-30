@@ -188,9 +188,13 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
           };
   
           dispatchEvent({
-            type: 'SPOT_SPAWNED',
-            payload: { spot: newSpot, spawnLocation: position },
-          });
+             type: 'CLEANLINESS_CHANGED',
+             payload: {
+                  oldScore: prev.cleanlinessScore,
+                  newScore: newState.cleanlinessScore,
+                  change: newState.cleanlinessScore - prev.cleanlinessScore,
+                     },
+                   });
   
          didSpawn = true;
          return newState;
@@ -304,7 +308,17 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
   const clearAllSpots = useCallback(() => {
     setState((prev: DirtSystemState) => {
       const clearedCount = prev.spots.length;
-      const newState = {
+      const typeCounts = prev.spots.reduce((acc, s) => {
+            acc[s.type] = (acc[s.type] || 0) + 1;
+            return acc;
+          }, {} as Record<DirtType, number>);
+          const newDirtTypeStats = Object.fromEntries(
+            Object.entries(prev.dirtTypeStats).map(([type, stats]) => {
+              const inc = typeCounts[type as unknown as DirtType] || 0;
+              return [type, { ...stats, removed: stats.removed + inc }];
+            })
+           ) as DirtSystemState['dirtTypeStats'];
+            const newState = {
         ...prev,
         spots: [],
         totalSpotsRemoved: prev.totalSpotsRemoved + clearedCount,
@@ -312,12 +326,13 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
         efficiency: prev.totalSpotsCreated > 0 
           ? ((prev.totalSpotsRemoved + clearedCount) / prev.totalSpotsCreated) * 100 
           : 0,
+          dirtTypeStats: newDirtTypeStats,
       };
 
       dispatchEvent({
-        type: 'SYSTEM_RESET',
-        payload: { timestamp: Date.now() },
-      });
+            type: 'CLEANLINESS_CHANGED',
+             payload: { oldScore: prev.cleanlinessScore, newScore: newState.cleanlinessScore, change: newState.cleanlinessScore - prev.cleanlinessScore },
+           });
 
       return newState;
     });
