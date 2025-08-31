@@ -27,6 +27,7 @@ export const usePlayerValidation = () => {
         } catch (error) {
           // Player not found on-chain, continue with backend check
           console.debug('Player not found on-chain:', error);
+          // Could add specific error handling for different error types
         }
 
         // Check backend (using our API)
@@ -41,6 +42,7 @@ export const usePlayerValidation = () => {
         } catch (error) {
           // Player not found in backend, continue with validation
           console.debug('Player not found in backend:', error);
+          // Could add specific error handling for different error types
         }
 
         // Determine if player exists
@@ -56,7 +58,8 @@ export const usePlayerValidation = () => {
           backendData: backendPlayer,
         };
       } catch (error) {
-        console.error('Error validating player:', error);
+        console.error('Player validation failed:', error);
+        // Could add user notification for validation failures
         return {
           exists: false,
           isOnChain: false,
@@ -82,7 +85,8 @@ export const usePlayerValidation = () => {
         const response = await ApiClient.post(url, data);
         return (response as any).data;
       } catch (error) {
-        console.error('Error creating backend player:', error);
+        console.error('Backend player creation failed:', error);
+        // Could add user notification for creation failures
         throw error;
       }
     },
@@ -98,7 +102,8 @@ export const usePlayerValidation = () => {
 
         return await createBackendPlayer(playerId, walletAddress, username);
       } catch (error) {
-        console.error('Error syncing player to backend:', error);
+        console.error('Player backend sync failed:', error);
+        // Could add user notification for sync failures
         throw error;
       }
     },

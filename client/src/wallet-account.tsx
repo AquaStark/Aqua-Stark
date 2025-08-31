@@ -20,7 +20,8 @@ export function WalletAccount() {
       try {
         await connectAsync({ connector });
       } catch (error) {
-        console.error(error);
+        console.error('Wallet connection failed:', error);
+        // Could add user notification here for connection failures
       }
       setPendingConnectorId(undefined);
     },

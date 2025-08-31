@@ -43,6 +43,9 @@ export async function handleContractRequest<T>(
     const errorMessage = extractErrorMessage(err);
     console.error(`💥 ${operationName} failed:`, errorMessage);
 
+    // Log to error reporting service if available
+    // Could add error reporting service integration here
+
     onError?.(errorMessage);
 
     return { success: false, result: null, error: errorMessage };

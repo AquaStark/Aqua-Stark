@@ -47,7 +47,8 @@ export function HistoricalEvents() {
         if (subscription) {
           subscription.free();
         }
-        console.error(error);
+        console.error('Failed to subscribe to historical events:', error);
+        // Could add user notification here if needed
       }
     }
 

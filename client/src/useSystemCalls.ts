@@ -61,7 +61,8 @@ export const useSystemCalls = () => {
     } catch (error) {
       // Revert the optimistic update if an error occurs
       state.revertOptimisticUpdate(transactionId);
-      console.error('Error executing spawn:', error);
+      console.error('System call spawn failed:', error);
+      // Could add user notification here for system call failures
       throw error;
     } finally {
       // Confirm the transaction if successful

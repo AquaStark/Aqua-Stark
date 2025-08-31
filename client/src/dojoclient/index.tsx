@@ -51,7 +51,7 @@ export function useAquaStark({ client, account }: UseAquaStarkProps) {
       const res = client.AquaStark.createNewPlayerId(account);
       return res;
     } catch (error) {
-      console.error(error);
+      console.error('Failed to create new player ID:', error);
       return null;
     }
   }, [client, account]);
