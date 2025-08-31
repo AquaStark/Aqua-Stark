@@ -102,20 +102,20 @@ export function useFoodSystem(options: UseFoodSystemOptions) {
   }, []);
 
   //Satiety-aware consumption
-  const tryConsumeFood=useCallback(
-  (
-    foodId: number,
-    fish: Fish,
-    setFishState: (id: string,newState:Partial<Fish>)=>void,
-    increaseHunger:(id:string)=>void
-  ): boolean=>{
-    const now=Date.now();
-    if(fish.hunger>=100){
-      //reject if not not on cooldown
-      if(!fish.lastRejection||now-fish.lastRejection>10000){
-          setFishState(String(fish.id),{
-            state:'rejecting',
-            lastRejection:now,
+  const tryConsumeFood = useCallback(
+    (
+      foodId: number,
+      fish: Fish,
+      setFishState: (id: string, newState: Partial<Fish>) => void,
+      increaseHunger: (id: string) => void
+    ): boolean => {
+      const now = Date.now();
+      if (fish.hunger >= 100) {
+        //reject if not not on cooldown
+        if (!fish.lastRejection || now - fish.lastRejection > 10000) {
+          setFishState(String(fish.id), {
+            state: 'rejecting',
+            lastRejection: now,
           });
         }
         return false;
@@ -123,12 +123,12 @@ export function useFoodSystem(options: UseFoodSystemOptions) {
       //eat normally
       consumeFood(foodId);
       increaseHunger(String(fish.id));
-      setFishState(String(fish.id),{state:'eating'});
+      setFishState(String(fish.id), { state: 'eating' });
       return true;
     },
     [consumeFood]
   );
-  
+
   // Add method to check if food exists and is available
   const isFoodAvailable = useCallback(
     (foodId: number): boolean => {
