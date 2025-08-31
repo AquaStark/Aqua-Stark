@@ -1,4 +1,5 @@
-# SSH configuration files (should never be in repo)
+
+z# SSH configuration files (should never be in repo)
 ~/.ssh/
 .ssh/
 *.pem
