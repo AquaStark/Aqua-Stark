@@ -5,7 +5,6 @@ export class FishController {
   // Get fish state
   static async getFishState(req, res) {
     try {
-      const { fishId } = req.params;
       // Resource is already validated by ownership middleware
       const fishState = req.resource;
 

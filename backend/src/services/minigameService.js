@@ -1,5 +1,5 @@
 import { supabase, supabaseAdmin, TABLES } from '../config/supabase.js';
-import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
+// import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 
 // Minigame service for managing game sessions and XP rewards
 export class MinigameService {

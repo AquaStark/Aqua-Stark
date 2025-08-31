@@ -43,13 +43,13 @@ export class MinigameController {
   static async endGameSession(req, res) {
     try {
       const { sessionId } = req.params;
-      const { finalScore } = req.body;
-      const { walletAddress } = req.user;
+      const { finalScore, gameType } = req.body;
+      const { walletAddress: _walletAddress } = req.user;
 
-      if (!sessionId || finalScore === undefined) {
+      if (!sessionId || finalScore === undefined || !gameType) {
         return res
           .status(400)
-          .json({ error: 'Session ID and final score are required' });
+          .json({ error: 'Session ID, final score, and game type are required' });
       }
 
       if (finalScore < 0) {
@@ -81,13 +81,13 @@ export class MinigameController {
   // Get player statistics
   static async getPlayerStats(req, res) {
     try {
-      const { walletAddress } = req.user;
+      const { walletAddress: _walletAddress } = req.user;
 
-      if (!walletAddress) {
+      if (!_walletAddress) {
         return res.status(400).json({ error: 'Wallet address is required' });
       }
 
-      const stats = await MinigameService.getPlayerStats(walletAddress);
+      const stats = await MinigameService.getPlayerStats(_walletAddress);
 
       res.json({ success: true, data: stats });
     } catch (error) {
@@ -182,7 +182,7 @@ export class MinigameController {
   static async getGameSession(req, res) {
     try {
       const { sessionId } = req.params;
-      const { walletAddress } = req.user;
+      const { walletAddress: _walletAddress } = req.user;
 
       if (!sessionId) {
         return res.status(400).json({ error: 'Session ID is required' });

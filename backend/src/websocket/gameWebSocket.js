@@ -14,7 +14,7 @@ export class GameWebSocket {
 
   // Setup WebSocket server
   setupWebSocket() {
-    this.wss.on('connection', (ws, req) => {
+    this.wss.on('connection', (ws, _req) => {
       console.log('New WebSocket connection established');
 
       // Handle authentication
@@ -258,7 +258,7 @@ export class GameWebSocket {
 
   // Broadcast message to subscribers
   broadcastToSubscribers(channel, resourceId, message) {
-    this.clients.forEach((ws, walletAddress) => {
+    this.clients.forEach((ws, _walletAddress) => {
       if (
         ws.subscriptions &&
         ws.subscriptions.has(`${channel}:${resourceId}`)
@@ -313,8 +313,8 @@ export class GameWebSocket {
   }
 
   // Send fish happiness update
-  sendFishHappinessUpdate(fishId, happinessLevel, ownerWallet) {
-    this.sendToClient(ownerWallet, {
+  sendFishHappinessUpdate(fishId, happinessLevel, _ownerWallet) {
+    this.sendToClient(_ownerWallet, {
       type: 'fish_happiness_update',
       fishId: fishId,
       happinessLevel: happinessLevel,

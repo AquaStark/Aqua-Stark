@@ -155,7 +155,7 @@ export class AquariumService {
   }
 
   // Add fish to aquarium
-  static async addFishToAquarium(aquariumId, fishId) {
+  static async addFishToAquarium(aquariumId, _fishId) {
     try {
       // Check aquarium capacity
       const aquarium = await this.getAquariumState(aquariumId);
@@ -194,7 +194,7 @@ export class AquariumService {
   }
 
   // Remove fish from aquarium
-  static async removeFishFromAquarium(aquariumId, fishId) {
+  static async removeFishFromAquarium(aquariumId, _fishId) {
     try {
       const aquarium = await this.getAquariumState(aquariumId);
       const currentFishCount = aquarium?.fish_count || 0;

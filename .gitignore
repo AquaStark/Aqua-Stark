@@ -1,3 +1,9 @@
+# SSH configuration files (should never be in repo)
+~/.ssh/
+.ssh/
+*.pem
+*.key
+
 # Node modules
 node_modules/
 
