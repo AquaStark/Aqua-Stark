@@ -86,7 +86,7 @@ jobs:
             echo "❌ Main entry point not found"
             exit 1
           fi
-          
+
           # Check if all required dependencies are available
           echo "Checking required dependencies..."
           node -e "
