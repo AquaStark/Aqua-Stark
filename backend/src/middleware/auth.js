@@ -105,17 +105,17 @@ export class AuthMiddleware {
 
         // Extract resource ID based on resource type
         switch (resourceType) {
-        case 'fish':
-          resourceId = req.params.fishId;
-          break;
-        case 'aquarium':
-          resourceId = req.params.aquariumId;
-          break;
-        case 'session':
-          resourceId = req.params.sessionId;
-          break;
-        default:
-          return res.status(400).json({ error: 'Invalid resource type' });
+          case 'fish':
+            resourceId = req.params.fishId;
+            break;
+          case 'aquarium':
+            resourceId = req.params.aquariumId;
+            break;
+          case 'session':
+            resourceId = req.params.sessionId;
+            break;
+          default:
+            return res.status(400).json({ error: 'Invalid resource type' });
         }
 
         if (!resourceId) {
@@ -149,20 +149,20 @@ export class AuthMiddleware {
       let tableName, idField;
 
       switch (resourceType) {
-      case 'fish':
-        tableName = 'fish_nfts';
-        idField = 'fish_id';
-        break;
-      case 'aquarium':
-        tableName = 'aquarium_nfts';
-        idField = 'aquarium_id';
-        break;
-      case 'session':
-        tableName = 'minigame_sessions';
-        idField = 'session_id';
-        break;
-      default:
-        return false;
+        case 'fish':
+          tableName = 'fish_nfts';
+          idField = 'fish_id';
+          break;
+        case 'aquarium':
+          tableName = 'aquarium_nfts';
+          idField = 'aquarium_id';
+          break;
+        case 'session':
+          tableName = 'minigame_sessions';
+          idField = 'session_id';
+          break;
+        default:
+          return false;
       }
 
       const { data, error } = await supabase
@@ -307,30 +307,30 @@ export const validateOwnership = resourceType => {
       // Import services dynamically to avoid circular dependencies
       let service;
       switch (resourceType) {
-      case 'fish': {
-        const { FishService } = await import('../services/fishService.js');
-        service = FishService;
-        break;
-      }
-      case 'decoration': {
-        const { DecorationService } = await import(
-          '../services/decorationService.js'
-        );
-        service = DecorationService;
-        break;
-      }
-      case 'player': {
-        const { PlayerService } = await import(
-          '../services/playerService.js'
-        );
-        service = PlayerService;
-        break;
-      }
-      default:
-        return res.status(400).json({
-          error: 'Invalid resource type',
-          message: `Unknown resource type: ${resourceType}`,
-        });
+        case 'fish': {
+          const { FishService } = await import('../services/fishService.js');
+          service = FishService;
+          break;
+        }
+        case 'decoration': {
+          const { DecorationService } = await import(
+            '../services/decorationService.js'
+          );
+          service = DecorationService;
+          break;
+        }
+        case 'player': {
+          const { PlayerService } = await import(
+            '../services/playerService.js'
+          );
+          service = PlayerService;
+          break;
+        }
+        default:
+          return res.status(400).json({
+            error: 'Invalid resource type',
+            message: `Unknown resource type: ${resourceType}`,
+          });
       }
 
       // Get resource and check ownership

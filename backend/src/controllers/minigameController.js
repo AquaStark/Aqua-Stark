@@ -47,9 +47,9 @@ export class MinigameController {
       const { walletAddress: _walletAddress } = req.user;
 
       if (!sessionId || finalScore === undefined || !gameType) {
-        return res
-          .status(400)
-          .json({ error: 'Session ID, final score, and game type are required' });
+        return res.status(400).json({
+          error: 'Session ID, final score, and game type are required',
+        });
       }
 
       if (finalScore < 0) {
