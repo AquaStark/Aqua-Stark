@@ -1,3 +1,4 @@
+export type FishStateType = "idle"|"swimming"|"eating"|"rejecting";
 export interface Fish {
   id: number;
   name: string;
@@ -5,6 +6,9 @@ export interface Fish {
   rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
   generation: number;
   level: number;
+  hunger:number;
+  state:FishStateType;
+  lastRejection?:number;
   traits: {
     color: string;
     pattern: string;

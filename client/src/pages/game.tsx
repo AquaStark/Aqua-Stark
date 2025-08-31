@@ -24,6 +24,7 @@ import { useFish } from '@/hooks/dojo/useFish';
 import { useNavigate } from 'react-router-dom';
 import { BottomNavBar } from '@/components/game/bottom-nav-bar';
 import { FeedingDebugPanel } from '@/components/game/feeding-debug-panel';
+import {fishCollection as fullFishList} from "@/data/fish-data";
 
 export default function GamePage() {
   const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
@@ -309,6 +310,7 @@ export default function GamePage() {
       >
         <FeedingAquarium
           fish={displayFish}
+          fullFishList={fullFishList}
           feedingSystem={feedingSystem}
           cleanlinessScore={dirtSystem.cleanlinessScore}
         />

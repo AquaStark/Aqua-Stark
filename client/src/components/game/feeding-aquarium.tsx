@@ -7,6 +7,8 @@ import { FishDisplay } from './fish-display';
 import { Food } from '@/components/food/Food';
 import { FoodParticles } from '@/components/food/FoodParticles';
 import type { FoodItem } from '@/types/food';
+import {Fish} from "@/types/fish";
+import {useFoodSystem} from "@/hooks/use-food-system";
 
 interface FeedingSystemProps {
   isFeeding: boolean;
@@ -21,9 +23,11 @@ interface FeedingSystemProps {
     clientY: number,
     containerRect: DOMRect | undefined
   ) => boolean;
-  handleFoodConsumed: (foodId: number) => void;
+  handleFoodConsumed: (foodId: number,fish:Fish) => void;
   handleParticleComplete: (foodId: number) => void;
   updateAquariumBounds: (bounds: { width: number; height: number }) => void;
+  updateFishState?:(id:string,newState:Partial<Fish>)=>void;
+  increaseHunger?:(id:string)=>void;
 }
 
 interface FeedingAquariumProps {
@@ -32,6 +36,7 @@ interface FeedingAquariumProps {
   containerWidth?: number;
   containerHeight?: number;
   cleanlinessScore?: number;
+  fullFishList:Fish[];
 }
 
 export function FeedingAquarium({
@@ -40,13 +45,15 @@ export function FeedingAquarium({
   containerWidth = 1000,
   containerHeight = 600,
   cleanlinessScore,
+  fullFishList,
 }: FeedingAquariumProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({
     width: containerWidth,
     height: containerHeight,
   });
-
+  // use food system for spawning+consumption rules
+  const {tryConsumeFood}=useFoodSystem({aquariumBounds:dimensions})
   // Destructure frequent fields to avoid object dependency pitfalls and satisfy lint
   const {
     updateAquariumBounds,
@@ -56,8 +63,10 @@ export function FeedingAquarium({
     particleEffects,
     handleParticleComplete,
     handleFeedClick,
+    updateFishState,
+    increaseHunger,
   } = feedingSystem;
-
+  
   // Handle container resizing
   useEffect(() => {
     const handleResize = () => {
@@ -126,8 +135,21 @@ export function FeedingAquarium({
   const fishWithMovement = useFishMovement(fish, {
     aquariumBounds: dimensions,
     foods,
-    onFoodConsumed: handleFoodConsumed,
-  }).map(state => ({
+    onFoodConsumed:(foodId:number,fishTypeId?:number)=>{
+      const targetFish=fullFishList.find(f=>f.id===fishTypeId);
+      if(!targetFish) return;
+      tryConsumeFood(
+        foodId,
+        targetFish,
+        updateFishState??(()=>{}),
+        increaseHunger??(()=>{}));
+  
+      // instead of always consuming, delegate to tryConsumeFood
+  
+     handleFoodConsumed(foodId,targetFish);
+  },
+
+}).map(state => ({
     ...state,
     ...fishMetadataMap[state.id],
   }));
