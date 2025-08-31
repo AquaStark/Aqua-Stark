@@ -360,8 +360,9 @@ export function useFishMovement(
                 })
               );
             }
-          } catch {
-            // no-op: event dispatch failed
+          } catch (error) {
+            console.error('Failed to dispatch fish-fed event:', error);
+            // Continue execution - this is not critical for fish behavior
           }
 
           newState.energyLevel = Math.min(1, newState.energyLevel + 0.3);

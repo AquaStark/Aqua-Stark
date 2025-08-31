@@ -61,6 +61,7 @@ export function safeStringToFelt(
       error: null,
     };
   } catch (error) {
+    console.error(`Data transformation error for ${fieldName}:`, error);
     return {
       success: false,
       value: null,
@@ -194,6 +195,7 @@ export class GameDataTransformer {
         },
       };
     } catch (error) {
+      console.error('Fish species transformation error:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Invalid fish species',
@@ -307,6 +309,7 @@ export class ResponseFormatter {
         2
       );
     } catch (error) {
+      console.error('Response formatting error:', error);
       return `Error formatting response: ${error instanceof Error ? error.message : 'Unknown error'}`;
     }
   }

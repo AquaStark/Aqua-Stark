@@ -16,6 +16,8 @@ export function WalletConnection() {
       localStorage.setItem('aqua-stark-session', JSON.stringify(sessionData));
     } catch (error) {
       console.error('Wallet connection failed:', error);
+      // Add user-friendly error feedback
+      alert('Failed to connect wallet. Please try again.');
     }
   };
 

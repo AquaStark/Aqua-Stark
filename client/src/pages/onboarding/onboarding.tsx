@@ -115,14 +115,15 @@ export default function Onboarding() {
       const tx = await newFish(account, aquariumId, speciesenum);
 
       return { success: true, transactionHash: tx.transaction_hash };
-    } catch (err: any) {
+    } catch (error: unknown) {
+      const err = error as Error;
       if (err.message?.includes('USER_REFUSED_OP')) {
         toast.error(
           `You rejected the ${order} fish transaction in your wallet.`
         );
         return null;
       }
-      console.error(`Error while creating ${order} fish:`, err);
+      console.error(`Error while creating ${order} fish:`, error);
       toast.error(`Something went wrong while creating ${order} fish.`);
       return null;
     }

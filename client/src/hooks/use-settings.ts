@@ -38,6 +38,7 @@ const useSettings = () => {
       return () => clearTimeout(timeout);
     } catch (error) {
       console.error('Failed to load settings from localStorage:', error);
+      // Could add user notification for settings load failures
       setIsLoading(false);
     }
   }, []);
@@ -61,6 +62,7 @@ const useSettings = () => {
       return () => clearTimeout(timeout);
     } catch (error) {
       console.error('Failed to save settings to localStorage:', error);
+      // Could add user notification for settings save failures
       setIsLoading(false);
     }
   };
