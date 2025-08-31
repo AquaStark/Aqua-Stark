@@ -51,17 +51,17 @@ export function FishDisplay({ fish, cleanlinessScore }: FishDisplayProps) {
               fishState.behaviorState === 'feeding'
                 ? 'brightness(1.2) drop-shadow(0 0 8px rgba(255,215,0,0.6))'
                 : 'none',
-                transitionProperty: 'transform',
-                transitionDuration: '800ms',
-                transitionTimingFunction: 'ease-in-out',
-                transitionDelay:
-                  fishState.behaviorState === 'rejecting' ? '400ms' : '0ms',
-                transform:
-                  fishState.behaviorState === 'rejecting'
-                    ? 'rotate(180deg) translateX(40px) translateY(10px)'
-                    : fishState.behaviorState === 'feeding'
-                    ? 'scale(1.1)'
-                    : 'none',
+            transitionProperty: 'transform',
+            transitionDuration: '800ms',
+            transitionTimingFunction: 'ease-in-out',
+            transitionDelay:
+              fishState.behaviorState === 'rejecting' ? '400ms' : '0ms',
+            transform:
+              fishState.behaviorState === 'rejecting'
+                ? 'rotate(180deg) translateX(40px) translateY(10px)'
+                : fishState.behaviorState === 'feeding'
+                  ? 'scale(1.1)'
+                  : 'none',
           }}
         />
       ))}

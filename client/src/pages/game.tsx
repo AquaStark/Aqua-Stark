@@ -24,7 +24,7 @@ import { useFish } from '@/hooks/dojo/useFish';
 import { useNavigate } from 'react-router-dom';
 import { BottomNavBar } from '@/components/game/bottom-nav-bar';
 import { FeedingDebugPanel } from '@/components/game/feeding-debug-panel';
-import {fishCollection as fullFishList} from "@/data/fish-data";
+import { fishCollection as fullFishList } from '@/data/fish-data';
 
 export default function GamePage() {
   const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
@@ -229,24 +229,24 @@ export default function GamePage() {
     .filter((fish): fish is NonNullable<typeof fish> => fish !== null);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-[#005C99]">
+    <div className='relative w-full h-screen overflow-hidden bg-[#005C99]'>
       {/* Background */}
       <img
-        src="/backgrounds/background2.png"
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover z-0"
-        role="presentation"
+        src='/backgrounds/background2.png'
+        alt=''
+        className='absolute inset-0 w-full h-full object-cover z-0'
+        role='presentation'
       />
 
       {/* Bubbles */}
       <BubblesBackground
         bubbles={bubbles}
-        className="absolute inset-0 z-10 pointer-events-none"
+        className='absolute inset-0 z-10 pointer-events-none'
       />
 
       {/* Effects */}
-      <div className="absolute inset-0 light-rays z-20"></div>
-      <div className="absolute inset-0 animate-water-movement z-20"></div>
+      <div className='absolute inset-0 light-rays z-20'></div>
+      <div className='absolute inset-0 animate-water-movement z-20'></div>
 
       {/* Fish */}
       <motion.div
@@ -255,7 +255,7 @@ export default function GamePage() {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 1 }}
-        className="relative z-20 w-full h-full"
+        className='relative z-20 w-full h-full'
       >
         <FeedingAquarium
           fish={displayFish}
@@ -268,7 +268,7 @@ export default function GamePage() {
       <DirtOverlay
         spots={dirtSystem.spots}
         onRemoveSpot={dirtSystem.removeDirtSpot}
-        className="absolute inset-0 z-50"
+        className='absolute inset-0 z-50'
       />
 
       {/* Header */}
@@ -283,9 +283,9 @@ export default function GamePage() {
 
       {/* Click to Feed Instructions */}
       {!feedingSystem.isFeeding && (
-        <div className="absolute top-[9rem] left-1/2 transform -translate-x-1/2 z-30">
-          <div className="bg-black/50 text-white text-sm px-4 py-2 rounded-lg border border-gray-500/20 backdrop-blur-sm">
-            <div className="flex items-center gap-2 text-gray-300">
+        <div className='absolute top-[9rem] left-1/2 transform -translate-x-1/2 z-30'>
+          <div className='bg-black/50 text-white text-sm px-4 py-2 rounded-lg border border-gray-500/20 backdrop-blur-sm'>
+            <div className='flex items-center gap-2 text-gray-300'>
               <span>🐠</span>
               <span>
                 Use the bottom navigation to feed your fish and manage your
@@ -309,14 +309,14 @@ export default function GamePage() {
         foods={feedingSystem.foods}
         isFeeding={feedingSystem.isFeeding}
         onValidateState={feedingSystem.validateFeedingState}
-        className="z-40"
+        className='z-40'
       />
 
       {/* 🧹 Dirt Debugger */}
       <DirtDebugger dirtSystem={dirtSystem} />
 
       {/* Tips */}
-      <div className="absolute bottom-0 right-4 mb-4 z-30">
+      <div className='absolute bottom-0 right-4 mb-4 z-30'>
         <TipsPopup
           show={showTips}
           onClose={() => setShowTips(false)}

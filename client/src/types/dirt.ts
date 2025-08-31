@@ -24,12 +24,12 @@ export interface DirtSubShape {
 
 export enum DirtType {
   BASIC = 'basic',
-  ALGAE = 'algae', 
+  ALGAE = 'algae',
   WASTE = 'waste',
   DEBRIS = 'debris',
   // Additional types for enhanced visuals
   ORGANIC = 'organic', // Backward compatible with BASIC
-  GRIME = 'grime',     // More stubborn dirt type
+  GRIME = 'grime', // More stubborn dirt type
 }
 
 // Enhanced dirt type properties for visual customization
@@ -130,11 +130,14 @@ export interface DirtSystemState {
   averageSpotAge: number;
   totalCleaningClicks: number;
   efficiency: number; // totalSpotsRemoved / totalSpotsCreated
-  dirtTypeStats: Record<DirtType, {
-    created: number;
-    removed: number;
-    averageTimeToClean: number;
-  }>;
+  dirtTypeStats: Record<
+    DirtType,
+    {
+      created: number;
+      removed: number;
+      averageTimeToClean: number;
+    }
+  >;
   lastSpawnTime: number;
   sessionStartTime: number;
 }
@@ -182,12 +185,27 @@ export interface DirtSystemAnalytics {
 }
 
 // Event system for dirt-related actions
-export type DirtSystemEvent = 
-  | { type: 'SPOT_SPAWNED'; payload: { spot: DirtSpot; spawnLocation: { x: number; y: number } } }
-  | { type: 'SPOT_CLICKED'; payload: { spot: DirtSpot; clickPosition: { x: number; y: number } } }
-  | { type: 'SPOT_CLEANED'; payload: { spot: DirtSpot; cleaningTime: number; clickCount: number } }
-  | { type: 'CLEANLINESS_CHANGED'; payload: { oldScore: number; newScore: number; change: number } }
-  | { type: 'SPAWNER_TOGGLED'; payload: { isActive: boolean; timestamp: number } }
+export type DirtSystemEvent =
+  | {
+      type: 'SPOT_SPAWNED';
+      payload: { spot: DirtSpot; spawnLocation: { x: number; y: number } };
+    }
+  | {
+      type: 'SPOT_CLICKED';
+      payload: { spot: DirtSpot; clickPosition: { x: number; y: number } };
+    }
+  | {
+      type: 'SPOT_CLEANED';
+      payload: { spot: DirtSpot; cleaningTime: number; clickCount: number };
+    }
+  | {
+      type: 'CLEANLINESS_CHANGED';
+      payload: { oldScore: number; newScore: number; change: number };
+    }
+  | {
+      type: 'SPAWNER_TOGGLED';
+      payload: { isActive: boolean; timestamp: number };
+    }
   | { type: 'SYSTEM_RESET'; payload: { timestamp: number } };
 
 // Helper type for component props
@@ -199,14 +217,14 @@ export interface DirtSystemHook {
   config: DirtSystemConfig;
   totalSpotsCreated: number;
   totalSpotsRemoved: number;
-  
+
   // Actions
   toggleSpawner: () => void;
   forceSpawnSpot: () => void;
   removeDirtSpot: (spotId: number) => void;
   clearAllSpots: () => void;
   updateConfig: (newConfig: Partial<DirtSystemConfig>) => void;
-  
+
   // Analytics
   getAnalytics: () => DirtSystemAnalytics;
   getSpotsByType: (type: DirtType) => DirtSpot[];
@@ -226,15 +244,21 @@ export function calculateSpotAge(spot: DirtSpot): number {
   return (Date.now() - spot.createdAt) / 1000; // age in seconds
 }
 
-export function calculateSpotIntensity(spot: DirtSpot, config: DirtSystemConfig): number {
+export function calculateSpotIntensity(
+  spot: DirtSpot,
+  config: DirtSystemConfig
+): number {
   if (!config.enableAging) return spot.opacity;
-  
+
   const age = calculateSpotAge(spot);
   const typeConfig = getDirtTypeConfig(spot.type);
   const agingMultiplier = config.agingRate || 1.0;
-  
+
   // Intensity increases over time based on dirt type
-  const ageIntensity = Math.min(1, (age / 60) * typeConfig.intensityMultiplier * agingMultiplier);
+  const ageIntensity = Math.min(
+    1,
+    (age / 60) * typeConfig.intensityMultiplier * agingMultiplier
+  );
   return Math.min(1, (spot.intensity || 0) + ageIntensity);
 }
 

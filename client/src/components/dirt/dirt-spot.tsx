@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo} from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import {
   DirtSpot as DirtSpotType,
   ParticleEffect,
@@ -13,12 +13,19 @@ interface DirtSpotProps {
   isDebugMode?: boolean;
 }
 
-export function DirtSpot({ spot, onRemove, className = '', isDebugMode = false }: DirtSpotProps) {
+export function DirtSpot({
+  spot,
+  onRemove,
+  className = '',
+  isDebugMode = false,
+}: DirtSpotProps) {
   const [isRemoving, setIsRemoving] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [particles, setParticles] = useState<ParticleEffect[]>([]);
   const [bubbles, setBubbles] = useState<BubbleEffect[]>([]);
-  const [clickRipples, setClickRipples] = useState<{ id: number; x: number; y: number }[]>([]);
+  const [clickRipples, setClickRipples] = useState<
+    { id: number; x: number; y: number }[]
+  >([]);
   const spotRef = useRef<HTMLDivElement>(null);
 
   // Generate organic shape using multiple overlapping circles
@@ -26,12 +33,12 @@ export function DirtSpot({ spot, onRemove, className = '', isDebugMode = false }
     const baseSize = spot.size || 20;
     const shapes = [];
     const shapeCount = Math.floor(baseSize / 8) + 2; // More shapes for larger spots
-    
+
     for (let i = 0; i < shapeCount; i++) {
       const angle = (i / shapeCount) * Math.PI * 2;
       const variation = 0.3 + Math.random() * 0.4; // Size variation
       const offset = (Math.random() - 0.5) * baseSize * 0.3; // Position variation
-      
+
       shapes.push({
         size: baseSize * variation,
         x: Math.cos(angle) * offset,
@@ -60,11 +67,14 @@ export function DirtSpot({ spot, onRemove, className = '', isDebugMode = false }
     if (rect) {
       const clickX = e.clientX - rect.left - rect.width / 2;
       const clickY = e.clientY - rect.top - rect.height / 2;
-      
+
       // Add click ripple effect
       const rippleId = Date.now();
-      setClickRipples(prev => [...prev, { id: rippleId, x: clickX, y: clickY }]);
-      
+      setClickRipples(prev => [
+        ...prev,
+        { id: rippleId, x: clickX, y: clickY },
+      ]);
+
       // Remove ripple after animation
       setTimeout(() => {
         setClickRipples(prev => prev.filter(r => r.id !== rippleId));
@@ -75,46 +85,57 @@ export function DirtSpot({ spot, onRemove, className = '', isDebugMode = false }
 
     // Generate enhanced particle effects
     const particleCount = Math.floor((spot.size || 20) / 3) + 6;
-    const newParticles: ParticleEffect[] = Array.from({ length: particleCount }, (_, i) => {
-      const angle = (i / particleCount) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
-      const speed = 2 + Math.random() * 3;
-      const colors = ['#8B4513', '#D2691E', '#CD853F', '#F4A460', '#DEB887'];
-      
-      return {
-        id: i,
-        x: 0,
-        y: 0,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        life: 1,
-        size: 2 + Math.random() * 3,
-        color: colors[Math.floor(Math.random() * colors.length)],
-      };
-    });
+    const newParticles: ParticleEffect[] = Array.from(
+      { length: particleCount },
+      (_, i) => {
+        const angle =
+          (i / particleCount) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
+        const speed = 2 + Math.random() * 3;
+        const colors = ['#8B4513', '#D2691E', '#CD853F', '#F4A460', '#DEB887'];
+
+        return {
+          id: i,
+          x: 0,
+          y: 0,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1,
+          size: 2 + Math.random() * 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+        };
+      }
+    );
 
     // Generate cleaning bubbles
     const bubbleCount = Math.floor((spot.size || 20) / 4) + 3;
-    const newBubbles: BubbleEffect[] = Array.from({ length: bubbleCount }, (_, i) => ({
-      id: i,
-      x: (Math.random() - 0.5) * (spot.size || 20),
-      y: (Math.random() - 0.5) * (spot.size || 20),
-      size: 4 + Math.random() * 8,
-      delay: i * 50,
-    }));
+    const newBubbles: BubbleEffect[] = Array.from(
+      { length: bubbleCount },
+      (_, i) => ({
+        id: i,
+        x: (Math.random() - 0.5) * (spot.size || 20),
+        y: (Math.random() - 0.5) * (spot.size || 20),
+        size: 4 + Math.random() * 8,
+        delay: i * 50,
+      })
+    );
 
     setParticles(newParticles);
     setBubbles(newBubbles);
 
     // Animate particles
     const animateParticles = () => {
-      setParticles(prev => prev.map(p => ({
-        ...p,
-        x: p.x + p.vx,
-        y: p.y + p.vy,
-        vx: p.vx * 0.98, // Slow down over time
-        vy: p.vy * 0.98 + 0.1, // Add gravity
-        life: p.life - 0.02,
-      })).filter(p => p.life > 0));
+      setParticles(prev =>
+        prev
+          .map(p => ({
+            ...p,
+            x: p.x + p.vx,
+            y: p.y + p.vy,
+            vx: p.vx * 0.98, // Slow down over time
+            vy: p.vy * 0.98 + 0.1, // Add gravity
+            life: p.life - 0.02,
+          }))
+          .filter(p => p.life > 0)
+      );
     };
 
     const particleInterval = setInterval(animateParticles, 16);
@@ -143,7 +164,7 @@ export function DirtSpot({ spot, onRemove, className = '', isDebugMode = false }
   const getDirtColors = () => {
     const colors = getDirtTypeConfig(spot.type).baseColors;
     const intensityBoost = intensity * 40;
-    
+
     return colors.map(color => {
       // Darken colors based on age/intensity
       const hex = color.replace('#', '');
@@ -171,14 +192,14 @@ export function DirtSpot({ spot, onRemove, className = '', isDebugMode = false }
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      role="button"
+      role='button'
       tabIndex={0}
       onKeyDown={handleKeyDown}
       aria-label={`Clean ${spot.type || 'dirt'} spot (${Math.round(currentOpacity * 100)}% intensity)`}
       data-testid={`dirt-spot-${spot.id}`}
     >
       {/* Organic dirt shapes */}
-      <div className="relative">
+      <div className='relative'>
         {organicShapes.map((shape, index) => (
           <div
             key={index}
@@ -223,7 +244,7 @@ export function DirtSpot({ spot, onRemove, className = '', isDebugMode = false }
         {/* Age indicator (subtle darkening around edges) */}
         {intensity > 0.3 && (
           <div
-            className="absolute inset-0 rounded-full pointer-events-none"
+            className='absolute inset-0 rounded-full pointer-events-none'
             style={{
               width: `${(spot.size || 20) + 2}px`,
               height: `${(spot.size || 20) + 2}px`,
@@ -238,7 +259,7 @@ export function DirtSpot({ spot, onRemove, className = '', isDebugMode = false }
       {/* Hover effect glow */}
       {isHovered && !isRemoving && (
         <div
-          className="absolute inset-0 rounded-full pointer-events-none animate-pulse"
+          className='absolute inset-0 rounded-full pointer-events-none animate-pulse'
           style={{
             width: `${(spot.size || 20) + 12}px`,
             height: `${(spot.size || 20) + 12}px`,
@@ -253,7 +274,7 @@ export function DirtSpot({ spot, onRemove, className = '', isDebugMode = false }
       {clickRipples.map(ripple => (
         <div
           key={ripple.id}
-          className="absolute pointer-events-none animate-ping"
+          className='absolute pointer-events-none animate-ping'
           style={{
             left: `${ripple.x}px`,
             top: `${ripple.y}px`,
@@ -271,7 +292,7 @@ export function DirtSpot({ spot, onRemove, className = '', isDebugMode = false }
       {particles.map(p => (
         <div
           key={p.id}
-          className="absolute pointer-events-none rounded-full"
+          className='absolute pointer-events-none rounded-full'
           style={{
             left: `${p.x}px`,
             top: `${p.y}px`,
@@ -288,7 +309,7 @@ export function DirtSpot({ spot, onRemove, className = '', isDebugMode = false }
       {bubbles.map(b => (
         <div
           key={b.id}
-          className="absolute pointer-events-none rounded-full bg-blue-200/60 animate-bounce"
+          className='absolute pointer-events-none rounded-full bg-blue-200/60 animate-bounce'
           style={{
             left: `${b.x}px`,
             top: `${b.y}px`,
@@ -305,7 +326,7 @@ export function DirtSpot({ spot, onRemove, className = '', isDebugMode = false }
       {/* Debug info */}
       {isDebugMode && (
         <div
-          className="absolute top-full left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs p-1 rounded mt-1 pointer-events-none"
+          className='absolute top-full left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs p-1 rounded mt-1 pointer-events-none'
           style={{ whiteSpace: 'nowrap' }}
         >
           ID:{spot.id} | Age:{age.toFixed(1)}s | Size:{spot.size}px

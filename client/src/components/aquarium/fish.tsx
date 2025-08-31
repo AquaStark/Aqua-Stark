@@ -22,8 +22,8 @@ interface FishProps {
     | 'feeding'
     | 'exploring'
     | 'playful'
-    | 'rejecting'
-     //add new state
+    | 'rejecting';
+  //add new state
   style?: React.CSSProperties;
   cleanlinessScore?: number;
 }

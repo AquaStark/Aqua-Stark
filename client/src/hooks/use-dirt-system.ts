@@ -27,6 +27,19 @@ export function useDirtSystem(config: Partial<DirtSystemConfig> = {}) {
     totalSpotsCreated: 0,
     totalSpotsRemoved: 0,
     cleanlinessScore: 100,
+    averageSpotAge: 0,
+    totalCleaningClicks: 0,
+    efficiency: 0,
+    dirtTypeStats: {
+      [DirtType.BASIC]: { created: 0, removed: 0, averageTimeToClean: 0 },
+      [DirtType.ALGAE]: { created: 0, removed: 0, averageTimeToClean: 0 },
+      [DirtType.WASTE]: { created: 0, removed: 0, averageTimeToClean: 0 },
+      [DirtType.DEBRIS]: { created: 0, removed: 0, averageTimeToClean: 0 },
+      [DirtType.ORGANIC]: { created: 0, removed: 0, averageTimeToClean: 0 },
+      [DirtType.GRIME]: { created: 0, removed: 0, averageTimeToClean: 0 },
+    },
+    lastSpawnTime: Date.now(),
+    sessionStartTime: Date.now(),
   });
 
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
