@@ -1,12 +1,8 @@
 import { useExperience } from '@/hooks/use-experience';
 
 const ExperienceBar: React.FC = () => {
-  const { level, experience, requiredXP, progress, gainXP } = useExperience(
-    1,
-    0
-  );
-
-  const isBarFull = false;
+  const { level, experience, requiredXP, progress, isLevelingUp, gainXP } =
+    useExperience(1, 0);
 
   return (
     <>
@@ -22,9 +18,7 @@ const ExperienceBar: React.FC = () => {
             <div className='absolute inset-0 w-full border-t-2 rounded-full border-white/10'></div>
 
             <div
-              className={
-                'absolute top-0 left-0 h-full rounded-full transition-all duration-500 overflow-hidden'
-              }
+              className={`absolute top-0 left-0 h-full rounded-full transition-all duration-500 overflow-hidden ${isLevelingUp ? 'animate-pulse' : ''}`}
               style={{ width: `${progress}%` }}
             >
               <div
@@ -42,15 +36,13 @@ const ExperienceBar: React.FC = () => {
                   ></div>
                 </div>
               </div>
-
-              {isBarFull && (
-                <div className='absolute h-full left-1/2 flex items-center justify-center translate-x-[-50%]'>
-                  <p className='text-[12px] font-bold text-white'>
-                    {isBarFull ? 'LEVEL UP! 🎉' : progress}
-                  </p>
-                </div>
-              )}
             </div>
+
+            {isLevelingUp && (
+              <div className='absolute z-40 h-full left-1/2 flex items-center justify-center translate-x-[-50%]'>
+                <p className='text-[12px] font-bold text-white'>LEVEL UP! 🎉</p>
+              </div>
+            )}
           </div>
         </div>
 

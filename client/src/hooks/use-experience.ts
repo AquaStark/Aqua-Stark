@@ -10,6 +10,8 @@ export const useExperience = (initialLevel = 1, initialXP = 0) => {
     experience: initialXP,
   }));
 
+  const [isLevelingUp, setIsLevelingUp] = useState(false);
+
   const experienceToNextLevel = useCallback(
     (lvl: number) => lvl * 100, // simple linear progression, ie each level grows by 100
     []
@@ -29,6 +31,33 @@ export const useExperience = (initialLevel = 1, initialXP = 0) => {
         amount,
         experienceToNextLevel
       );
+
+      if (result.level > prev.level) {
+        const xpCarryOver = result.experience;
+
+        setIsLevelingUp(true);
+
+        setTimeout(() => {
+          setState(curr => ({
+            level: curr.level + 1,
+            experience: 0,
+          }));
+
+          setTimeout(() => {
+            setState(curr => ({
+              level: curr.level,
+              experience: xpCarryOver,
+            }));
+            setIsLevelingUp(false);
+          }, 300);
+        }, 1200);
+
+        return {
+          level: prev.level,
+          experience: experienceToNextLevel(prev.level),
+        };
+      }
+
       return {
         level: result.level,
         experience: result.experience,
@@ -43,6 +72,7 @@ export const useExperience = (initialLevel = 1, initialXP = 0) => {
     experience: state.experience,
     requiredXP: experienceToNextLevel(state.level),
     progress,
+    isLevelingUp,
     gainXP, // function to call to add XP
   };
 };
