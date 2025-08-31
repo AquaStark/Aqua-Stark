@@ -22,6 +22,7 @@ import { useFeedingSystem } from '@/systems/feeding-system';
 import { FeedingAquarium } from '@/components/game/feeding-aquarium';
 import { BottomNavBar } from '@/components/game/bottom-nav-bar';
 import { FeedingDebugPanel } from '@/components/game/feeding-debug-panel';
+import ExperienceBar from '@/components/game/experience-bar';
 
 export default function GamePage() {
   const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
@@ -178,6 +179,9 @@ export default function GamePage() {
         onRemoveSpot={dirtSystem.removeDirtSpot}
         className='absolute inset-0 z-50'
       />
+
+      {/* XP and Level bar */}
+      <ExperienceBar />
 
       {/* Header */}
       <GameHeader
