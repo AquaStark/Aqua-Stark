@@ -1,17 +1,23 @@
 import { useExperience } from '@/hooks/use-experience';
 
-const ExperienceBar: React.FC = () => {
+interface ExperienceBarProps {
+  currentLevel: number;
+  currentExperience: number;
+}
+
+const ExperienceBar: React.FC<ExperienceBarProps> = ({
+  currentLevel,
+  currentExperience,
+}) => {
   const { level, experience, requiredXP, progress, isLevelingUp } =
-    useExperience(1, 0);
+    useExperience(currentLevel, currentExperience);
 
   return (
     <div className='absolute z-50 left-1/2 top-1/2 gap-2 translate-x-[-50%] md:gap-0 flex flex-col md:flex-row items-center justify-between w-full max-w-lg'>
-      {/* Level Badge */}
       <div className='flex items-center justify-center md:mr-4 gap-2 w-20 bg-blue-800/50 px-3 py-1 rounded-lg'>
         <span className='text-white font-bold'>lvl {level}</span>
       </div>
 
-      {/* Progress Bar */}
       <div className='relative w-[70%] md:flex-1 md:mx-0 h-5 md:h-6'>
         <div className='absolute inset-0 overflow-hidden h-full border-2 rounded-full bg-blue-950/70 border-blue-800/50'>
           <div className='absolute inset-0 w-full h-full border-t-2 rounded-full border-white/10'></div>
@@ -43,7 +49,6 @@ const ExperienceBar: React.FC = () => {
         </div>
       </div>
 
-      {/* XP Text */}
       <div className='text-sm font-bold text-white text-center w-max md:w-[120px]'>
         {experience} / {requiredXP} XP
       </div>
