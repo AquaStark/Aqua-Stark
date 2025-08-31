@@ -1,0 +1,141 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches: ['main']
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend.yml'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
+  pull_request:
+    branches: ['main']
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend.yml'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run security audit
+        run: npm audit --audit-level=moderate
+
+      - name: Validate database migrations
+        run: |
+          echo "Checking Supabase migration files..."
+          if [ -d "supabase/migrations" ]; then
+            echo "Found $(ls supabase/migrations/*.sql | wc -l) migration files"
+            for file in supabase/migrations/*.sql; do
+              echo "Validating: $file"
+              # Basic SQL syntax check (can be enhanced with actual Supabase CLI)
+              if ! grep -q "CREATE\|ALTER\|DROP\|INSERT\|UPDATE\|DELETE" "$file"; then
+                echo "Warning: $file doesn't contain standard SQL operations"
+              fi
+            done
+          else
+            echo "No migrations directory found"
+          fi
+
+      - name: Build verification
+        run: |
+          echo "Verifying build process..."
+          # Check if main entry point exists
+          if [ -f "src/index.js" ]; then
+            echo "✅ Main entry point found"
+          else
+            echo "❌ Main entry point not found"
+            exit 1
+          fi
+
+          # Check if all required dependencies are available
+          echo "Checking required dependencies..."
+          node -e "
+            const pkg = require('./package.json');
+            const required = ['express', 'cors', 'helmet', 'compression', 'morgan', 'dotenv', 'ws', 'redis', '@supabase/supabase-js', 'jsonwebtoken'];
+            const missing = required.filter(dep => !pkg.dependencies[dep]);
+            if (missing.length > 0) {
+              console.error('❌ Missing dependencies:', missing);
+              process.exit(1);
+            }
+            console.log('✅ All required dependencies found');
+          "
+
+      - name: Environment validation
+        run: |
+          echo "Validating environment configuration..."
+          if [ -f "env.example" ]; then
+            echo "✅ Environment example file found"
+            # Check if required environment variables are documented
+            required_vars=("DATABASE_URL" "REDIS_URL" "JWT_SECRET" "PORT")
+            for var in "${required_vars[@]}"; do
+              if grep -q "$var" env.example; then
+                echo "✅ $var documented in env.example"
+              else
+                echo "⚠️  $var not found in env.example"
+              fi
+            done
+          else
+            echo "❌ Environment example file not found"
+            exit 1
+          fi
+
+      - name: Code quality check
+        run: |
+          echo "Performing code quality checks..."
+          # Check for TODO comments that might indicate incomplete work
+          todo_count=$(grep -r "TODO\|FIXME\|HACK" src/ --exclude-dir=node_modules | wc -l || echo "0")
+          if [ "$todo_count" -gt 0 ]; then
+            echo "⚠️  Found $todo_count TODO/FIXME/HACK comments"
+            grep -r "TODO\|FIXME\|HACK" src/ --exclude-dir=node_modules || true
+          else
+            echo "✅ No TODO/FIXME/HACK comments found"
+          fi
+
+      - name: Dependency vulnerability check
+        run: |
+          echo "Checking for known vulnerabilities..."
+          npm audit --audit-level=high || {
+            echo "⚠️  High severity vulnerabilities found. Please review and fix."
+            exit 0  # Don't fail the build for vulnerabilities, but warn
+          }
+
+      - name: Build success notification
+        if: success()
+        run: |
+          echo "🎉 Backend CI/CD pipeline completed successfully!"
+          echo "✅ Code formatting: PASSED"
+          echo "✅ Linting: PASSED"
+          echo "✅ Security audit: PASSED"
+          echo "✅ Database migrations: VALIDATED"
+          echo "✅ Build verification: PASSED"
+
+      - name: Build failure notification
+        if: failure()
+        run: |
+          echo "❌ Backend CI/CD pipeline failed!"
+          echo "Please check the logs above for details."

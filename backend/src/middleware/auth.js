@@ -307,22 +307,25 @@ export const validateOwnership = resourceType => {
       // Import services dynamically to avoid circular dependencies
       let service;
       switch (resourceType) {
-        case 'fish':
+        case 'fish': {
           const { FishService } = await import('../services/fishService.js');
           service = FishService;
           break;
-        case 'decoration':
+        }
+        case 'decoration': {
           const { DecorationService } = await import(
             '../services/decorationService.js'
           );
           service = DecorationService;
           break;
-        case 'player':
+        }
+        case 'player': {
           const { PlayerService } = await import(
             '../services/playerService.js'
           );
           service = PlayerService;
           break;
+        }
         default:
           return res.status(400).json({
             error: 'Invalid resource type',

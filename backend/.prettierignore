@@ -1,32 +1,8 @@
-
-z# SSH configuration files (should never be in repo)
-~/.ssh/
-.ssh/
-*.pem
-*.key
-
-# Node modules
+# Dependencies
 node_modules/
-
-# Build artifacts
-dist/
-build/
-.vite/
-
-# Environment files with sensitive credentials
-.env
-.env.*
-!.env.*.example
-
-# OS files
-.DS_Store
-
-# Logs
-*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 
 # Coverage directory used by tools like istanbul
 coverage/
@@ -59,6 +35,12 @@ jspm_packages/
 # Yarn Integrity file
 .yarn-integrity
 
+# dotenv environment variables file
+.env
+.env.test
+.env.local
+.env.production
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
@@ -68,6 +50,7 @@ jspm_packages/
 
 # Nuxt.js build / generate output
 .nuxt
+dist
 
 # Storybook build outputs
 .out
@@ -77,5 +60,26 @@ jspm_packages/
 tmp/
 temp/
 
-# Claude
-.claude
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Database
+*.sqlite
+*.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
