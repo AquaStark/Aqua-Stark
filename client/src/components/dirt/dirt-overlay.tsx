@@ -24,9 +24,9 @@ export const DirtOverlay = memo(function DirtOverlay({
   return (
     <div
       className={`absolute inset-0 pointer-events-none ${className}`}
-      role="application"
+      role='application'
       aria-label={`Dirt overlay with ${spots.length} dirt spot${spots.length === 1 ? '' : 's'}`}
-      data-testid="dirt-overlay"
+      data-testid='dirt-overlay'
     >
       {/* Render spots grouped by layers for better visual depth */}
       {spots.map(spot => (
@@ -35,16 +35,16 @@ export const DirtOverlay = memo(function DirtOverlay({
           spot={spot}
           onRemove={onRemoveSpot}
           isDebugMode={isDebugMode}
-          className="pointer-events-auto"
+          className='pointer-events-auto'
         />
       ))}
-      
+
       {/* Debug info overlay (only visible in debug mode) */}
       {isDebugMode && spots.length > 0 && (
-        <div 
-          className="absolute top-2 left-2 bg-black/70 text-white text-xs p-2 rounded pointer-events-none z-10"
-          role="status"
-          aria-live="polite"
+        <div
+          className='absolute top-2 left-2 bg-black/70 text-white text-xs p-2 rounded pointer-events-none z-10'
+          role='status'
+          aria-live='polite'
         >
           <div>Active Spots: {spots.length}</div>
           <div>Total Area: {calculateTotalDirtArea(spots).toFixed(1)}%</div>
@@ -58,7 +58,7 @@ export const DirtOverlay = memo(function DirtOverlay({
 // Helper function to calculate total dirt coverage area
 function calculateTotalDirtArea(spots: DirtSpotType[]): number {
   if (spots.length === 0) return 0;
-  
+
   // Estimate total area coverage based on spot sizes
   // Assuming each spot covers a circular area with radius = size
   const totalArea = spots.reduce((sum, spot) => {
@@ -66,7 +66,7 @@ function calculateTotalDirtArea(spots: DirtSpotType[]): number {
     const area = Math.PI * Math.pow(radius, 2);
     return sum + area;
   }, 0);
-  
+
   // Convert to percentage of screen (assuming 1920x1080 viewport)
   const screenArea = 1920 * 1080;
   return (totalArea / screenArea) * 100;
@@ -75,14 +75,14 @@ function calculateTotalDirtArea(spots: DirtSpotType[]): number {
 // Helper function to calculate average spot age
 function calculateAverageAge(spots: DirtSpotType[]): number {
   if (spots.length === 0) return 0;
-  
+
   const now = Date.now();
   const totalAge = spots.reduce((sum, spot) => {
     const createdAt = spot.createdAt || now;
     return sum + (now - createdAt);
   }, 0);
-  
-  return (totalAge / spots.length) / 1000; // Convert to seconds
+
+  return totalAge / spots.length / 1000; // Convert to seconds
 }
 
 // Export default for backward compatibility
