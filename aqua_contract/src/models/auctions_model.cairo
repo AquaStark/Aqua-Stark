@@ -15,6 +15,7 @@ pub struct Auction {
     pub highest_bidder: Option<ContractAddress>,
     pub active: bool,
     pub finalized: bool,
+    pub token: ContractAddress,
 }
 
 #[derive(Serde, Copy, Drop, Introspect)]

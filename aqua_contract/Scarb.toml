@@ -23,6 +23,7 @@ sepolia-build = "sozo --profile sepolia clean && sozo --profile sepolia build"
 [dependencies]
 dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.5.0" }
 achievement = { git = "https://github.com/cartridge-gg/arcade", tag = "v0.0.0" }
+openzeppelin_token = { git = "https://github.com/openzeppelin/cairo-contracts", tag = "v1.0.0" }
 
 [[target.starknet-contract]]
 build-external-contracts = [

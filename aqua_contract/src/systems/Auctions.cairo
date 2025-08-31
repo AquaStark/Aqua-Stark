@@ -20,7 +20,9 @@ pub mod AquaAuction {
     use aqua_stark::models::auctions_model::*;
     use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
+    use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use starknet::{get_block_timestamp, get_caller_address, ContractAddress};
+    use core::num::traits::Zero;
     // Session system imports
     use aqua_stark::models::session::{
         SessionKey, SessionAnalytics, SESSION_STATUS_ACTIVE, SESSION_STATUS_EXPIRED,
@@ -72,6 +74,7 @@ pub mod AquaAuction {
                 highest_bidder: Option::None(()),
                 active: true,
                 finalized: false,
+                token: Zero::zero(),
             };
 
             // Store auction
@@ -183,6 +186,12 @@ pub mod AquaAuction {
 
             let mut auction: Auction = world.read_model(auction_id);
             let mut fish_owner: FishOwnerA = world.read_model(auction.fish_id);
+            let token_dispatcher = IERC20Dispatcher { contract_address: auction.token };
+
+             // Check if the caller is the seller or the winner
+             assert!(caller == auction.seller || caller == auction.highest_bidder.unwrap()
+             , "Caller is not the seller or the winner");
+
 
             // Validate auction exists and has expired
             assert!(auction.auction_id == auction_id, "Auction does not exist");
@@ -200,14 +209,16 @@ pub mod AquaAuction {
                     // Check if bid meets reserve price
                     if auction.highest_bid >= auction.reserve_price {
                         // Valid winning bid - transfer fish to winner
-                        world.write_model(@FishOwnerA { 
-                            fish_id: auction.fish_id, 
-                            owner: winner, 
-                            locked: false 
-                        });
+                        fish_owner.fish_id = auction.fish_id;
+                        fish_owner.owner = winner;
+                        fish_owner.locked = false;
+                        world.write_model(@fish_owner);
 
-                        // To Do: Transfer funds from winner to seller
-                        
+                        // Transfer funds from winner to seller
+                        assert!(
+                            token_dispatcher.transfer(auction.seller, auction.highest_bid),
+                            "Failed to transfer funds to seller",
+                        );
 
                         // Emit event with winner
                         world.emit_event(@AuctionFinalized {
