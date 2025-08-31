@@ -96,8 +96,8 @@ export default function AquariumsPage() {
           fins: 'long',
           size: 'medium',
         },
-        hunger: fish.hunger??50,
-        state: fish.state as any ?? 'idle',
+        hunger: fish.hunger ?? 50,
+        state: (fish.state as any) ?? 'idle',
       })),
     };
   };
