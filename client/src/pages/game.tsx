@@ -181,7 +181,7 @@ export default function GamePage() {
       />
 
       {/* XP and Level bar */}
-      <ExperienceBar />
+      <ExperienceBar currentExperience={0} currentLevel={1} />
 
       {/* Header */}
       <GameHeader
