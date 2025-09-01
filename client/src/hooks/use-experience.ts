@@ -23,7 +23,6 @@ export const useExperience = (initialLevel = 1, initialXP = 0) => {
   );
 
   const gainXP = (amount: number) => {
-    console.log('gainXP called with', amount);
     setState(prev => {
       const result = handleExperienceGain(
         prev.level,
@@ -65,14 +64,12 @@ export const useExperience = (initialLevel = 1, initialXP = 0) => {
     });
   };
 
-  console.log('Hook state:', state.level, state.experience, progress);
-
   return {
     level: state.level,
     experience: state.experience,
     requiredXP: experienceToNextLevel(state.level),
     progress,
     isLevelingUp,
-    gainXP, // function to call to add XP
+    gainXP, // call this function to add XP
   };
 };
