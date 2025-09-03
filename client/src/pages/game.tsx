@@ -22,9 +22,17 @@ import { useAccount } from '@starknet-react/core';
 import { toast } from 'sonner';
 import { useFish } from '@/hooks/dojo/useFish';
 import { useNavigate } from 'react-router-dom';
-import { BottomNavBar } from '@/components/game/bottom-nav-bar';
 import { FeedingDebugPanel } from '@/components/game/feeding-debug-panel';
 import { fishCollection as fullFishList } from '@/data/fish-data';
+import {
+  Utensils,
+  Sparkles,
+  ShoppingBag,
+  Package,
+  Gamepad2,
+  Trophy,
+  Timer,
+} from 'lucide-react';
 
 export default function GamePage() {
   const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
@@ -293,18 +301,122 @@ export default function GamePage() {
         <DirtDebugger dirtSystem={dirtSystem} />
       </div>
 
-      {/* Bottom Navigation - Moved to top right */}
-      <div className='absolute top-4 right-4 z-40'>
-        <BottomNavBar
-          isFeeding={feedingSystem.isFeeding}
-          timeRemaining={feedingSystem.getFeedingStatus().timeRemaining}
-          onStartFeeding={() => feedingSystem.startFeeding(30000)}
-          onStopFeeding={feedingSystem.stopFeeding}
-        />
-      </div>
+      {/* Tips and Action Menu */}
+      <div className='absolute bottom-0 right-4 mb-4 z-30 flex items-end gap-12'>
+        {/* Action Menu with tooltips on hover - Moved more to the left */}
+        <div className='flex items-center gap-2 -ml-8'>
+          {/* Feed button */}
+          <div className='relative group'>
+            <button
+              onClick={
+                feedingSystem.isFeeding
+                  ? feedingSystem.stopFeeding
+                  : () => feedingSystem.startFeeding(30000)
+              }
+              className={`game-button bg-gradient-to-b text-white rounded-xl relative group cursor-pointer w-12 h-12 ${
+                feedingSystem.isFeeding
+                  ? 'from-orange-400 to-orange-600'
+                  : 'from-green-400 to-green-600'
+              }`}
+            >
+              <div className='flex items-center justify-center gap-2 w-full h-full'>
+                {feedingSystem.isFeeding ? (
+                  <Timer className='h-5 w-5' />
+                ) : (
+                  <Utensils className='h-5 w-5' />
+                )}
+              </div>
+            </button>
 
-      {/* Tips */}
-      <div className='absolute bottom-0 right-4 mb-4 z-30'>
+            {/* Tooltip for Feed */}
+            <div className='absolute bottom-16 left-1/2 transform -translate-x-1/2 w-20 bg-blue-600/90 backdrop-blur-md rounded-lg p-2 border border-blue-400/50 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50'>
+              <div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-600/90 transform rotate-45 border-r border-b border-blue-400/50'></div>
+              <span className='text-white text-xs font-medium text-center block'>
+                Feed
+              </span>
+            </div>
+
+            {/* Timer display during feeding */}
+            {feedingSystem.isFeeding &&
+              feedingSystem.getFeedingStatus().timeRemaining > 0 && (
+                <div className='absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-orange-300 font-mono'>
+                  {Math.ceil(
+                    feedingSystem.getFeedingStatus().timeRemaining / 1000
+                  )}
+                  s
+                </div>
+              )}
+          </div>
+
+          {/* Other action items with tooltips */}
+          {[
+            {
+              id: 'clean',
+              label: 'Clean',
+              icon: <Sparkles className='h-5 w-5' />,
+              color: 'from-purple-400 to-purple-600',
+            },
+            {
+              id: 'shop',
+              label: 'Shop',
+              icon: <ShoppingBag className='h-5 w-5' />,
+              color: 'from-blue-400 to-blue-600',
+            },
+            {
+              id: 'collection',
+              label: 'Collection',
+              icon: <Package className='h-5 w-5' />,
+              color: 'from-teal-400 to-teal-600',
+            },
+            {
+              id: 'games',
+              label: 'Games',
+              icon: <Gamepad2 className='h-5 w-5' />,
+              color: 'from-pink-400 to-pink-600',
+            },
+            {
+              id: 'rewards',
+              label: 'Rewards',
+              icon: <Trophy className='h-5 w-5' />,
+              color: 'from-yellow-400 to-yellow-600',
+            },
+          ].map(item => (
+            <div key={item.id} className='relative group'>
+              <button
+                onClick={() => {
+                  // Handle different actions
+                  switch (item.id) {
+                    case 'clean':
+                      break;
+                    case 'shop':
+                      break;
+                    case 'collection':
+                      break;
+                    case 'games':
+                      break;
+                    case 'rewards':
+                      break;
+                  }
+                }}
+                className={`game-button bg-gradient-to-b text-white rounded-xl relative group cursor-pointer w-12 h-12 ${item.color}`}
+              >
+                <div className='flex items-center justify-center gap-2 w-full h-full'>
+                  {item.icon}
+                </div>
+              </button>
+
+              {/* Tooltip for each button */}
+              <div className='absolute bottom-16 left-1/2 transform -translate-x-1/2 w-20 bg-blue-600/90 backdrop-blur-md rounded-lg p-2 border border-blue-400/50 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50'>
+                <div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-600/90 transform rotate-45 border-r border-b border-blue-400/50'></div>
+                <span className='text-white text-xs font-medium text-center block'>
+                  {item.label}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Tips - Separated with more space */}
         <TipsPopup
           show={showTips}
           onClose={() => setShowTips(false)}
