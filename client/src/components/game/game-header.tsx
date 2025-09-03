@@ -54,7 +54,7 @@ export function GameHeader({
 
       <div className='flex items-center gap-2 mr-8'>
         <button
-          className='bg-blue-500 hover:bg-blue-600 text-white rounded-xl w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-blue-400/30 border border-blue-400/40'
+          className='game-button bg-gradient-to-b from-blue-400 to-blue-600 text-white rounded-xl w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-blue-400/30 border border-blue-400/40'
           onClick={onMenuToggle}
         >
           ☰
