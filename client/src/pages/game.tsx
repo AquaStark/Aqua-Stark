@@ -280,40 +280,32 @@ export default function GamePage() {
       />
 
       {showMenu && <GameMenu show={showMenu} />}
+      
+      {/* Debuggers - only shown when explicitly toggled */}
+      <div className='absolute bottom-4 left-4 z-40 hidden' data-feeding-debug>
+        <FeedingDebugPanel
+          foods={feedingSystem.foods}
+          isFeeding={feedingSystem.isFeeding}
+          onValidateState={feedingSystem.validateFeedingState}
+        />
+      </div>
+      <div className='hidden' data-dirt-debug>
+        <DirtDebugger dirtSystem={dirtSystem} />
+      </div>
 
-      {/* Click to Feed Instructions */}
-      {!feedingSystem.isFeeding && (
-        <div className='absolute top-[9rem] left-1/2 transform -translate-x-1/2 z-30'>
-          <div className='bg-black/50 text-white text-sm px-4 py-2 rounded-lg border border-gray-500/20 backdrop-blur-sm'>
-            <div className='flex items-center gap-2 text-gray-300'>
-              <span>🐠</span>
-              <span>
-                Use the bottom navigation to feed your fish and manage your
-                aquarium
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* Bottom Navigation */}
-      <BottomNavBar
-        isFeeding={feedingSystem.isFeeding}
-        timeRemaining={feedingSystem.getFeedingStatus().timeRemaining}
-        onStartFeeding={() => feedingSystem.startFeeding(30000)}
-        onStopFeeding={feedingSystem.stopFeeding}
-      />
 
-      {/* Feeding Debug Panel */}
-      <FeedingDebugPanel
-        foods={feedingSystem.foods}
-        isFeeding={feedingSystem.isFeeding}
-        onValidateState={feedingSystem.validateFeedingState}
-        className='z-40'
-      />
+      {/* Bottom Navigation - Moved to top right */}
+      <div className='absolute top-4 right-4 z-40'>
+        <BottomNavBar
+          isFeeding={feedingSystem.isFeeding}
+          timeRemaining={feedingSystem.getFeedingStatus().timeRemaining}
+          onStartFeeding={() => feedingSystem.startFeeding(30000)}
+          onStopFeeding={feedingSystem.stopFeeding}
+        />
+      </div>
 
-      {/* 🧹 Dirt Debugger */}
-      <DirtDebugger dirtSystem={dirtSystem} />
+
 
       {/* Tips */}
       <div className='absolute bottom-0 right-4 mb-4 z-30'>
