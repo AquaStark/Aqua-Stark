@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface GameButtonProps {
@@ -20,16 +19,16 @@ export function GameButton({
   className,
 }: GameButtonProps) {
   return (
-    <Button
+    <button
       onClick={onClick}
       className={cn(
-        'game-button bg-gradient-to-b text-white rounded-xl relative group',
+        'game-button bg-gradient-to-b text-white rounded-xl relative group cursor-pointer',
         text ? 'px-4 py-2' : 'w-12 h-12',
         color,
         className
       )}
     >
-      <div className='flex items-center gap-2'>
+      <div className='flex items-center justify-center gap-2 w-full h-full'>
         {typeof icon === 'string' ? (
           <span className='text-xl'>{icon}</span>
         ) : (
@@ -42,6 +41,6 @@ export function GameButton({
           <span className='text-white text-xs'>{tooltip}</span>
         </div>
       )}
-    </Button>
+    </button>
   );
 }

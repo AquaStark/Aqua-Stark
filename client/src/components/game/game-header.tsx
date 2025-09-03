@@ -1,6 +1,5 @@
 import { Fish } from 'lucide-react';
 import { GameStatusBar } from '@/components/game-status-bar';
-import { GameButton } from './game-button';
 
 interface GameHeaderProps {
   happiness: number;
@@ -16,7 +15,7 @@ export function GameHeader({
   onMenuToggle,
 }: GameHeaderProps) {
   return (
-    <div className='absolute top-0 left-0 right-0 flex justify-between items-center p-4 z-20'>
+    <div className='absolute top-0 left-0 right-0 flex justify-between items-center p-4 z-50'>
       <div className='flex items-center gap-4'>
         <img
           src='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Aqua_Stark-removebg-preview-ubKSrqYo7jzOH5qXqxEw4CyRHXIjfq.png'
@@ -53,12 +52,13 @@ export function GameHeader({
         />
       </div>
 
-      <div className='flex items-center gap-2'>
-        <GameButton
-          icon='☰'
-          className='bg-blue-500 hover:bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center'
+      <div className='flex items-center gap-2 mr-8'>
+        <button
+          className='bg-blue-500 hover:bg-blue-600 text-white rounded-xl w-12 h-12 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-blue-400/30 border border-blue-400/40'
           onClick={onMenuToggle}
-        />
+        >
+          ☰
+        </button>
       </div>
     </div>
   );
