@@ -45,7 +45,7 @@ export function FeedingDebugPanel({
   };
 
   return (
-    <div className={`fixed top-20 right-4 z-50 ${className}`}>
+    <div className={`${className}`}>
       {/* Collapsible Debug Panel */}
       <div className='bg-black/80 backdrop-blur-sm rounded-lg border border-blue-400/30 shadow-lg'>
         {/* Header */}
