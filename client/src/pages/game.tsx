@@ -280,7 +280,7 @@ export default function GamePage() {
       />
 
       {showMenu && <GameMenu show={showMenu} />}
-      
+
       {/* Debuggers - only shown when explicitly toggled */}
       <div className='absolute bottom-4 left-4 z-40 hidden' data-feeding-debug>
         <FeedingDebugPanel
@@ -293,8 +293,6 @@ export default function GamePage() {
         <DirtDebugger dirtSystem={dirtSystem} />
       </div>
 
-
-
       {/* Bottom Navigation - Moved to top right */}
       <div className='absolute top-4 right-4 z-40'>
         <BottomNavBar
@@ -304,8 +302,6 @@ export default function GamePage() {
           onStopFeeding={feedingSystem.stopFeeding}
         />
       </div>
-
-
 
       {/* Tips */}
       <div className='absolute bottom-0 right-4 mb-4 z-30'>
