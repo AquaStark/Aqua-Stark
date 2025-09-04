@@ -52,6 +52,7 @@ pub mod models {
 }
 pub mod tests {
     mod test_auction;
+    mod test_auction_finalize;
     mod test_daily_challenge;
     mod test_trading;
     mod test_game;
