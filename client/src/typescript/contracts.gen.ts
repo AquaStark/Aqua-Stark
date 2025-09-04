@@ -1,5 +1,5 @@
 import { DojoProvider, DojoCall } from "@dojoengine/core";
-import { Account, AccountInterface, BigNumberish, CairoCustomEnum } from "starknet";
+import { Account, AccountInterface, BigNumberish, CairoCustomEnum, InvokeFunctionResponse, Result } from "starknet";
 import * as models from "./models.gen";
 
 export function setupWorld(provider: DojoProvider) {
@@ -12,7 +12,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_addDecorationToAquarium = async (snAccount: Account | AccountInterface, decoration: models.Decoration, aquariumId: BigNumberish) => {
+	const AquaStark_addDecorationToAquarium = async (snAccount: Account | AccountInterface, decoration: models.Decoration, aquariumId: BigNumberish) : Promise<InvokeFunctionResponse> => {
 		try {
 			return await provider.execute(
 				snAccount,
@@ -33,7 +33,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_addFishToAquarium = async (snAccount: Account | AccountInterface, fish: models.Fish, aquariumId: BigNumberish) => {
+	const AquaStark_addFishToAquarium = async (snAccount: Account | AccountInterface, fish: models.Fish, aquariumId: BigNumberish) : Promise<InvokeFunctionResponse> => {
 		try {
 			return await provider.execute(
 				snAccount,
@@ -54,7 +54,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_breedFishes = async (snAccount: Account | AccountInterface, parent1Id: BigNumberish, parent2Id: BigNumberish) => {
+	const AquaStark_breedFishes = async (snAccount: Account | AccountInterface, parent1Id: BigNumberish, parent2Id: BigNumberish) : Promise<InvokeFunctionResponse> => {
 		try {
 			return await provider.execute(
 				snAccount,
@@ -75,7 +75,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_createAquariumId = async (snAccount: Account | AccountInterface) => {
+	const AquaStark_createAquariumId = async (snAccount: Account | AccountInterface) : Promise<InvokeFunctionResponse> => {
 		try {
 			return await provider.execute(
 				snAccount,
@@ -96,7 +96,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_createDecorationId = async (snAccount: Account | AccountInterface) => {
+	const AquaStark_createDecorationId = async (snAccount: Account | AccountInterface) : Promise<InvokeFunctionResponse> => {
 		try {
 			return await provider.execute(
 				snAccount,
@@ -117,7 +117,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_createFishId = async (snAccount: Account | AccountInterface) => {
+	const AquaStark_createFishId = async (snAccount: Account | AccountInterface) : Promise<InvokeFunctionResponse> => {
 		try {
 			return await provider.execute(
 				snAccount,
@@ -138,7 +138,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_createNewPlayerId = async (snAccount: Account | AccountInterface) => {
+	const AquaStark_createNewPlayerId = async (snAccount: Account | AccountInterface) : Promise<InvokeFunctionResponse> => {
 		try {
 			return await provider.execute(
 				snAccount,
@@ -159,7 +159,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getAquarium = async (id: BigNumberish) => {
+	const AquaStark_getAquarium = async (id: BigNumberish) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getAquarium_calldata(id));
 		} catch (error) {
@@ -176,7 +176,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getAquariumOwner = async (id: BigNumberish) => {
+	const AquaStark_getAquariumOwner = async (id: BigNumberish) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getAquariumOwner_calldata(id));
 		} catch (error) {
@@ -193,7 +193,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getDecoration = async (id: BigNumberish) => {
+	const AquaStark_getDecoration = async (id: BigNumberish) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getDecoration_calldata(id));
 		} catch (error) {
@@ -210,7 +210,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getDecorationOwner = async (id: BigNumberish) => {
+	const AquaStark_getDecorationOwner = async (id: BigNumberish) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getDecorationOwner_calldata(id));
 		} catch (error) {
@@ -227,7 +227,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getFish = async (id: BigNumberish) => {
+	const AquaStark_getFish = async (id: BigNumberish) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getFish_calldata(id));
 		} catch (error) {
@@ -244,7 +244,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getFishAncestor = async (fishId: BigNumberish, generation: BigNumberish) => {
+	const AquaStark_getFishAncestor = async (fishId: BigNumberish, generation: BigNumberish) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getFishAncestor_calldata(fishId, generation));
 		} catch (error) {
@@ -261,7 +261,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getFishFamilyTree = async (fishId: BigNumberish) => {
+	const AquaStark_getFishFamilyTree = async (fishId: BigNumberish) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getFishFamilyTree_calldata(fishId));
 		} catch (error) {
@@ -278,7 +278,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getFishOffspring = async (fishId: BigNumberish) => {
+	const AquaStark_getFishOffspring = async (fishId: BigNumberish) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getFishOffspring_calldata(fishId));
 		} catch (error) {
@@ -295,7 +295,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getFishOwner = async (id: BigNumberish) => {
+	const AquaStark_getFishOwner = async (id: BigNumberish) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getFishOwner_calldata(id));
 		} catch (error) {
@@ -312,7 +312,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getParents = async (fishId: BigNumberish) => {
+	const AquaStark_getParents = async (fishId: BigNumberish) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getParents_calldata(fishId));
 		} catch (error) {
@@ -329,7 +329,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getPlayer = async (address: string) => {
+	const AquaStark_getPlayer = async (address: string) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getPlayer_calldata(address));
 		} catch (error) {
@@ -346,7 +346,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getPlayerAquariumCount = async (player: string) => {
+	const AquaStark_getPlayerAquariumCount = async (player: string) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getPlayerAquariumCount_calldata(player));
 		} catch (error) {
@@ -363,7 +363,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getPlayerAquariums = async (player: string) => {
+	const AquaStark_getPlayerAquariums = async (player: string) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getPlayerAquariums_calldata(player));
 		} catch (error) {
@@ -380,7 +380,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getPlayerDecorationCount = async (player: string) => {
+	const AquaStark_getPlayerDecorationCount = async (player: string) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getPlayerDecorationCount_calldata(player));
 		} catch (error) {
@@ -397,7 +397,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getPlayerDecorations = async (player: string) => {
+	const AquaStark_getPlayerDecorations = async (player: string) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getPlayerDecorations_calldata(player));
 		} catch (error) {
@@ -414,7 +414,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getPlayerFishCount = async (player: string) => {
+	const AquaStark_getPlayerFishCount = async (player: string) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getPlayerFishCount_calldata(player));
 		} catch (error) {
@@ -431,7 +431,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getPlayerFishes = async (player: string) => {
+	const AquaStark_getPlayerFishes = async (player: string) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getPlayerFishes_calldata(player));
 		} catch (error) {
@@ -448,7 +448,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getUsernameFromAddress = async (address: string) => {
+	const AquaStark_getUsernameFromAddress = async (address: string) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_getUsernameFromAddress_calldata(address));
 		} catch (error) {
@@ -465,7 +465,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_isVerified = async (player: string) => {
+	const AquaStark_isVerified = async (player: string) : Promise<Result> => {
 		try {
 			return await provider.call("aqua_stark", build_AquaStark_isVerified_calldata(player));
 		} catch (error) {
@@ -482,7 +482,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_moveDecorationToAquarium = async (snAccount: Account | AccountInterface, decorationId: BigNumberish, from: BigNumberish, to: BigNumberish) => {
+	const AquaStark_moveDecorationToAquarium = async (snAccount: Account | AccountInterface, decorationId: BigNumberish, from: BigNumberish, to: BigNumberish) : Promise<InvokeFunctionResponse> => {
 		try {
 			return await provider.execute(
 				snAccount,
@@ -503,7 +503,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_moveFishToAquarium = async (snAccount: Account | AccountInterface, fishId: BigNumberish, from: BigNumberish, to: BigNumberish) => {
+	const AquaStark_moveFishToAquarium = async (snAccount: Account | AccountInterface, fishId: BigNumberish, from: BigNumberish, to: BigNumberish) : Promise<InvokeFunctionResponse> => {
 		try {
 			return await provider.execute(
 				snAccount,
@@ -524,7 +524,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_newAquarium = async (snAccount: Account | AccountInterface, owner: string, maxCapacity: BigNumberish, maxDecorations: BigNumberish) => {
+	const AquaStark_newAquarium = async (snAccount: Account | AccountInterface, owner: string, maxCapacity: BigNumberish, maxDecorations: BigNumberish) : Promise<InvokeFunctionResponse> => {
 		try {
 			return await provider.execute(
 				snAccount,
@@ -545,7 +545,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_newDecoration = async (snAccount: Account | AccountInterface, aquariumId: BigNumberish, name: BigNumberish, description: BigNumberish, price: BigNumberish, rarity: BigNumberish) => {
+	const AquaStark_newDecoration = async (snAccount: Account | AccountInterface, aquariumId: BigNumberish, name: BigNumberish, description: BigNumberish, price: BigNumberish, rarity: BigNumberish) : Promise<InvokeFunctionResponse> => {
 		try {
 			return await provider.execute(
 				snAccount,
@@ -566,7 +566,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_newFish = async (snAccount: Account | AccountInterface, aquariumId: BigNumberish, species: CairoCustomEnum) => {
+	const AquaStark_newFish = async (snAccount: Account | AccountInterface, aquariumId: BigNumberish, species: CairoCustomEnum) : Promise<InvokeFunctionResponse> => {
 		try {
 			return await provider.execute(
 				snAccount,
@@ -587,7 +587,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_register = async (snAccount: Account | AccountInterface, username: BigNumberish) => {
+	const AquaStark_register = async (snAccount: Account | AccountInterface, username: BigNumberish) : Promise<InvokeFunctionResponse> => {
 		try {
 			return await provider.execute(
 				snAccount,
