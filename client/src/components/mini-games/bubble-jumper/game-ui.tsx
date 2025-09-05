@@ -31,7 +31,7 @@ export function GameUI({
 }: GameUIProps) {
   return (
     <div className="absolute inset-0 z-40 pointer-events-none">
-      <div className="absolute top-32 left-4 right-4 flex justify-end items-center pointer-events-auto">
+      <div className="absolute top-24 left-4 right-4 flex justify-end items-center pointer-events-auto">
         {/* <Button
           onClick={onBack}
           variant="outline"
@@ -44,16 +44,16 @@ export function GameUI({
 
         <div className="flex gap-4">
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 backdrop-blur-md rounded-xl px-6 py-3 border-2 border-blue-400/50 shadow-lg">
-            <span className="text-white font-bold text-lg">Score: {score}</span>
+            <span className="text-white font-bold text-xs">Score: {score}</span>
           </div>
           <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 backdrop-blur-md rounded-xl px-6 py-3 border-2 border-yellow-400/50 shadow-lg">
-            <span className="text-white font-bold text-lg">Best: {bestScore}</span>
+            <span className="text-white font-bold text-xs">Best: {bestScore}</span>
           </div>
         </div>
       </div>
 
       {isPlaying && !isGameOver && (
-        <div className="absolute top-[15rem] right-4 flex flex-col gap-3 pointer-events-auto">
+        <div className="absolute top-[11rem] right-4 flex flex-col gap-3 pointer-events-auto">
           {/* Pause and Stop buttons */}
           <div className="flex gap-2">
             <Button

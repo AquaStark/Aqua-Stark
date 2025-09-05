@@ -422,7 +422,7 @@ export default function BubbleJumperPage() {
         gameConfig={GAME_CONFIG}
       />
 
-      <PageHeader title="Aqua Stark Arcade" backTo="/games" backText="Back to Games" rightContent={null} />
+      <PageHeader title="Bubble Jumper" backTo="/mini-games" backText="Back to Games" rightContent={null} />
 
       <GameUI
         score={gameState.score}
@@ -475,7 +475,7 @@ export default function BubbleJumperPage() {
       )}
 
       {/* Action buttons section */}
-      <div className="absolute bottom-0 right-4 mb-4 z-50 flex items-end gap-12">
+      {/* <div className="absolute bottom-0 right-4 mb-4 z-50 flex items-end gap-12">
         <div className="flex items-center gap-2 -ml-8">
           <div className="relative group">
             <button className="game-button bg-gradient-to-b from-pink-400 to-pink-600 text-white rounded-xl relative group cursor-pointer w-12 h-12">
@@ -492,7 +492,7 @@ export default function BubbleJumperPage() {
         </div>
 
         <TipsPopup show={showTips} onClose={() => setShowTips(false)} onToggle={() => setShowTips(!showTips)} />
-      </div>
+      </div> */}
 
     </div>
   )
