@@ -56,4 +56,10 @@ export const mockGames = [
     image: '/habitat/freshwater.png',
     link: '/game/reef-dash',
   },
+  {
+    id: "game006",
+    name: "Bubble Jumper",
+    image: "/mini-games/bubble-jumper-preview.jpg",
+    link: "/game/bubble-jumper",
+  },
 ];
