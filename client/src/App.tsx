@@ -37,6 +37,7 @@ import Error404Page from './pages/404';
 
 // Extra Game Test
 import { Game } from './Game';
+// import BubbleJumperPage from './pages/bubble-jumper';
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
 
           {/* Main Game Routes */}
           <Route path='/game' element={<GamePage />} />
+          {/* <Route path='/game/bubble-jumper' element={<BubbleJumperPage />} /> */}
           <Route path='/aquariums' element={<AquariumsPage />} />
           <Route path='/store' element={<StoragePage />} />
           <Route path='/trading-market' element={<TradingMarketPage />} />
