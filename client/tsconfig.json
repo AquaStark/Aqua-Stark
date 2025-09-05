@@ -1,33 +1,38 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "useDefineForClassFields": true,
+
     "module": "ESNext",
-    "skipLibCheck": true,
+    "moduleResolution": "Bundler",
 
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-
-    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    /* Path aliases */
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },
 
-    /* Additional options */
-    "allowSyntheticDefaultImports": true
+    "types": ["vitest", "node"]
   },
-  "include": ["src", "dojoConfig.ts", "env.d.ts"]
+  "include": [
+    "src",
+    "dojoConfig.ts",
+    "env.d.ts",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
 }
