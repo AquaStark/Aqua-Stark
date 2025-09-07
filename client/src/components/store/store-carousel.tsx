@@ -7,7 +7,7 @@ import 'swiper/css/pagination';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import { CountdownTimer } from './countdown-timer';
 import { FishTank } from '@/components/fish-tank';
-import { BannerType } from '@/types/ui-types';
+// Use the actual inferred shape from mock data
 
 export const StoreCarousel = () => {
   return (
@@ -33,7 +33,7 @@ export const StoreCarousel = () => {
           }}
           loop={true}
         >
-          {banners.map((banner: BannerType) => (
+          {banners.map((banner: typeof banners[number]) => (
             <SwiperSlide key={String(banner.title)}>
               <div
                 className={`relative rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between  text-white`}

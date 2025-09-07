@@ -1,5 +1,5 @@
 // UI component prop types
-export interface AnimationProps {
+export interface UIAnimationProps {
   duration?: number;
   delay?: number;
   easing?: string;
@@ -78,7 +78,7 @@ export interface ErrorWithMessage {
 }
 
 // Animation props for framer-motion
-export interface AnimationProps {
+export interface MotionAnimationProps {
   animate?: {
     rotate?: number | number[];
     y?: number | number[];
@@ -93,30 +93,6 @@ export interface AnimationProps {
   };
 }
 
-// Framer Motion variants
-export interface MotionVariants {
-  initial: {
-    scale?: number;
-    y?: number;
-    opacity?: number;
-  };
-  hover: {
-    scale?: number | number[];
-    y?: number | number[];
-    transition?: {
-      scale?: {
-        duration?: number;
-        ease?: string;
-      };
-      y?: {
-        duration?: number;
-        ease?: string;
-      };
-    };
-  };
-  animate?: {
-    scale?: number | number[];
-    y?: number | number[];
-    opacity?: number | number[];
-  };
-}
+// Framer Motion variants - use the official Variants type
+import type { Variants } from 'framer-motion';
+export type MotionVariants = Variants;

@@ -1,4 +1,8 @@
-import { GameCall, GameActionParams, GameActionResult } from '@/types/player-types';
+import {
+  GameCall,
+  GameActionParams,
+  GameActionResult,
+} from '@/types/player-types';
 
 const GAME_CONTRACT =
   '0x0000000000000000000000000000000000000000000000000000000000000001';
@@ -6,7 +10,9 @@ const REWARDS_CONTRACT =
   '0x0000000000000000000000000000000000000000000000000000000000000004';
 
 export function useGameActions() {
-  const executeAction = async ({ calls }: GameActionParams): Promise<GameActionResult> => {
+  const executeAction = async ({
+    calls,
+  }: GameActionParams): Promise<GameActionResult> => {
     // Simulate processing the calls
     console.debug('Processing calls:', calls.length);
     await new Promise(resolve => setTimeout(resolve, 2000));

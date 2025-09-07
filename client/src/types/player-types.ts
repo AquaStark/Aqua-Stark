@@ -39,10 +39,12 @@ export interface OnChainPlayerData {
 }
 
 // Game action call types
+import type { BigNumberish } from 'starknet';
+
 export interface GameCall {
   contractAddress: string;
   entrypoint: string;
-  calldata: (string | number)[];
+  calldata: BigNumberish[];
 }
 
 export interface GameActionParams {

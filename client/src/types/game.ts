@@ -60,8 +60,8 @@ export interface ContractFish {
   breeding_cooldown: BigNumberish;
 }
 
-// Fish species enum type
-export type FishSpecies = 'GOLDFISH' | 'DEEPSCALE' | 'Hybrid';
+// Fish species enum type - match the actual species used in the codebase
+export type FishSpecies = 'AngelFish' | 'GoldFish' | 'Betta' | 'NeonTetra' | 'Corydoras' | 'Hybrid';
 
 // Fish species data mapping
 export interface FishSpeciesData {

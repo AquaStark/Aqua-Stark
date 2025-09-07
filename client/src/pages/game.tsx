@@ -149,9 +149,7 @@ export default function GamePage() {
     },
   } as const;
 
-  function getSpeciesFromCairoEnum(
-    species: unknown
-  ): FishSpecies | null {
+  function getSpeciesFromCairoEnum(species: unknown): FishSpecies | null {
     if (typeof species === 'string' && species in speciesToFishData) {
       return species as keyof typeof speciesToFishData;
     }
@@ -188,9 +186,7 @@ export default function GamePage() {
     return 0;
   }
 
-  function getSpeciesFromIndex(
-    fishType: unknown
-  ): FishSpecies | null {
+  function getSpeciesFromIndex(fishType: unknown): FishSpecies | null {
     const index = bigIntToNumber(fishType);
     const speciesNames: (keyof typeof speciesToFishData)[] = [
       'AngelFish',

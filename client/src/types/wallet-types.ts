@@ -27,32 +27,36 @@ export interface WalletState {
 }
 
 // Starknet specific types
+import type { AccountInterface, ProviderInterface } from 'starknet';
+
 export interface StarknetAccount {
   address: string;
   chainId: string;
   isConnected: boolean;
-  provider: unknown; // Starknet provider type
+  provider: ProviderInterface | AccountInterface;
 }
 
 export interface StarknetConnector extends WalletConnector {
-  provider: unknown;
+  provider: ProviderInterface | AccountInterface;
   account: StarknetAccount | null;
 }
 
 // Transaction types
+import type { BigNumberish } from 'starknet';
+
 export interface TransactionRequest {
   to: string;
-  value?: string;
+  value?: BigNumberish;
   data?: string;
-  gasLimit?: string;
-  gasPrice?: string;
+  gasLimit?: BigNumberish;
+  gasPrice?: BigNumberish;
 }
 
 export interface TransactionResponse {
   hash: string;
   status: 'pending' | 'confirmed' | 'failed';
   blockNumber?: number;
-  gasUsed?: string;
+  gasUsed?: BigNumberish;
   error?: string;
 }
 

@@ -41,7 +41,11 @@ export function AquariumList({
           {aquariums.map(aquarium => (
             <AquariumCard
               key={aquarium.id}
-              aquarium={{ ...aquarium, fishes: (aquarium as Aquarium & { fishes?: Fish[] }).fishes ?? [] }}
+              aquarium={{
+                ...aquarium,
+                fishes:
+                  (aquarium as Partial<{ fishes: Fish[] }>).fishes ?? [],
+              }}
               onSelect={() => onSelectAquarium?.(aquarium)}
             />
           ))}

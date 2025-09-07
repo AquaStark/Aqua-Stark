@@ -97,7 +97,11 @@ export class ApiClient {
     return response.json();
   }
 
-  static async post<T>(url: string, data: RequestData, playerId?: string): Promise<T> {
+  static async post<T>(
+    url: string,
+    data: RequestData,
+    playerId?: string
+  ): Promise<T> {
     const response = await fetch(url, {
       method: 'POST',
       headers: createHeaders(playerId),
@@ -111,7 +115,11 @@ export class ApiClient {
     return response.json();
   }
 
-  static async put<T>(url: string, data: RequestData, playerId?: string): Promise<T> {
+  static async put<T>(
+    url: string,
+    data: RequestData,
+    playerId?: string
+  ): Promise<T> {
     const response = await fetch(url, {
       method: 'PUT',
       headers: createHeaders(playerId),
