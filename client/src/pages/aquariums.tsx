@@ -17,6 +17,8 @@ import { useAccount } from '@starknet-react/core';
 import { useAquarium } from '@/hooks/dojo/useAquarium';
 import { useFish } from '@/hooks/dojo/useFish';
 import * as models from '@/typescript/models.gen';
+import { ContractAquarium, ContractFish } from '@/types/game';
+import { BigNumberish } from 'starknet';
 
 export default function AquariumsPage() {
   const [aquariums, setAquariums] = useState<Aquarium[]>([]);
@@ -49,7 +51,7 @@ export default function AquariumsPage() {
       const aquariumData = await getAquarium(BigInt(aquariumId));
       if (!aquariumData) return null;
 
-      const fishPromises = aquariumData.housed_fish.map((fishId: any) =>
+      const fishPromises = aquariumData.housed_fish.map((fishId: BigNumberish) =>
         getFish(fishId)
       );
       const fishData = await Promise.all(fishPromises);
@@ -67,7 +69,7 @@ export default function AquariumsPage() {
   // Function to transform contract aquarium data to UI format
   const transformAquariumData = (
     contractAquarium: models.Aquarium,
-    fishes: any[] = []
+    fishes: ContractFish[] = []
   ): Aquarium => {
     return {
       id: Number(contractAquarium.id),
@@ -122,7 +124,7 @@ export default function AquariumsPage() {
       }
 
       // Load each aquarium with its fish
-      const aquariumPromises = playerAquariums.map(async (aquariumId: any) => {
+      const aquariumPromises = playerAquariums.map(async (aquariumId: BigNumberish) => {
         const result = await loadAquariumWithFishes(aquariumId);
         if (result) {
           return transformAquariumData(result.aquariumData, result.fishData);

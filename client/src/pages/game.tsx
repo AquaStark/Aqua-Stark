@@ -18,6 +18,7 @@ import { useDirtSystemFixed as useDirtSystem } from '@/hooks/use-dirt-system-fix
 import { DirtOverlay } from '@/components/dirt/dirt-overlay';
 import { useFeedingSystem } from '@/systems/feeding-system';
 import { FeedingAquarium } from '@/components/game/feeding-aquarium';
+import { FishSpecies, FishSpeciesData, ContractFish } from '@/types/game';
 import { useAccount } from '@starknet-react/core';
 import { toast } from 'sonner';
 import { useFish } from '@/hooks/dojo/useFish';
@@ -149,8 +150,8 @@ export default function GamePage() {
   } as const;
 
   function getSpeciesFromCairoEnum(
-    species: any
-  ): keyof typeof speciesToFishData | null {
+    species: unknown
+  ): FishSpecies | null {
     if (typeof species === 'string' && species in speciesToFishData) {
       return species as keyof typeof speciesToFishData;
     }
@@ -181,15 +182,15 @@ export default function GamePage() {
     return null;
   }
 
-  function bigIntToNumber(value: any): number {
+  function bigIntToNumber(value: unknown): number {
     if (typeof value === 'bigint') return Number(value);
     if (typeof value === 'number') return value;
     return 0;
   }
 
   function getSpeciesFromIndex(
-    fishType: any
-  ): keyof typeof speciesToFishData | null {
+    fishType: unknown
+  ): FishSpecies | null {
     const index = bigIntToNumber(fishType);
     const speciesNames: (keyof typeof speciesToFishData)[] = [
       'AngelFish',
@@ -204,7 +205,7 @@ export default function GamePage() {
   }
 
   const displayFish = playerFishes
-    .map((fish: any, index: number) => {
+    .map((fish: ContractFish, index: number) => {
       if (!fish || typeof fish !== 'object') return null;
       let speciesKey: keyof typeof speciesToFishData | null = null;
       if (fish.species) speciesKey = getSpeciesFromCairoEnum(fish.species);

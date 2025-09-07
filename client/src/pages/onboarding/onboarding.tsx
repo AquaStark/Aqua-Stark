@@ -14,6 +14,8 @@ import { toast } from 'sonner';
 import { useFish } from '@/hooks/dojo/useFish';
 import { CairoCustomEnum } from 'starknet';
 import { SpeciesEnum } from '@/typescript/models.gen';
+import { WalletAccount } from '@/types/wallet-types';
+import { ErrorWithMessage } from '@/types/ui-types';
 
 // This map connects your frontend IDs to Cairo enum variants
 const fishEnumMap: Record<number, SpeciesEnum> = {
@@ -91,7 +93,7 @@ export default function Onboarding() {
   };
 
   //  Create Aquarium
-  const createNewAquarium = async (account: any) => {
+  const createNewAquarium = async (account: WalletAccount) => {
     toast.success('Aquarium created successfully!');
 
     const aquariums = await getPlayerAquariums(account.address);
@@ -100,7 +102,7 @@ export default function Onboarding() {
   };
 
   const createNewFish = async (
-    account: any,
+    account: WalletAccount,
     aquariumId: bigint,
     fishId: number,
     order: string

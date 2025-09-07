@@ -51,8 +51,8 @@ export default function MarketPage() {
       if (!hasMatchingTrait) return false;
     }
     if (
-      (filters as any).search &&
-      !fish.name.toLowerCase().includes((filters as any).search.toLowerCase())
+      filters.search &&
+      !fish.name.toLowerCase().includes(filters.search.toLowerCase())
     )
       return false;
     return true;

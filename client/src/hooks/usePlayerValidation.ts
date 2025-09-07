@@ -1,13 +1,14 @@
 import { usePlayer } from '@/hooks/dojo/usePlayer';
 import { ApiClient, API_CONFIG, buildApiUrl } from '@/config/api';
 import { useCallback, useState } from 'react';
+import { PlayerData, BackendPlayerData, OnChainPlayerData } from '@/types/player-types';
 
 interface PlayerValidationResult {
   exists: boolean;
   isOnChain: boolean;
   isInBackend: boolean;
-  playerData?: any;
-  backendData?: any;
+  playerData?: OnChainPlayerData;
+  backendData?: BackendPlayerData;
 }
 
 export const usePlayerValidation = () => {
@@ -94,7 +95,7 @@ export const usePlayerValidation = () => {
   );
 
   const syncPlayerToBackend = useCallback(
-    async (onChainPlayer: any, walletAddress: string) => {
+    async (onChainPlayer: OnChainPlayerData, walletAddress: string) => {
       try {
         // If player exists on-chain but not in backend, create backend entry
         const playerId = onChainPlayer.id?.toString() || walletAddress;
