@@ -78,6 +78,8 @@ export interface ErrorWithMessage {
 }
 
 // Animation props for framer-motion
+import type { Easing } from 'framer-motion';
+
 export interface MotionAnimationProps {
   animate?: {
     rotate?: number | number[];
@@ -88,7 +90,7 @@ export interface MotionAnimationProps {
   transition?: {
     duration?: number;
     repeat?: number;
-    ease?: string;
+    ease?: Easing | Easing[];
     delay?: number;
   };
 }

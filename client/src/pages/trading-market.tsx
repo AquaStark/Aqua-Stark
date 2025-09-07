@@ -51,8 +51,7 @@ export default function MarketPage() {
       if (!hasMatchingTrait) return false;
     }
     const q = filters.search?.trim().toLowerCase();
-    if (q && !fish.name.toLowerCase().includes(q))
-      return false;
+    if (q && !fish.name.toLowerCase().includes(q)) return false;
     return true;
   });
 

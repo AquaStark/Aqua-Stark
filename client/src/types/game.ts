@@ -58,10 +58,24 @@ export interface ContractFish {
   };
   last_fed: BigNumberish;
   breeding_cooldown: BigNumberish;
+  // UI compatibility fields (to be removed after migrating UI to traits/stats)
+  fish_type?: BigNumberish;
+  age?: BigNumberish;
+  health?: BigNumberish;
+  hunger_level?: BigNumberish;
+  size?: BigNumberish;
+  color?: BigNumberish;
+  pattern?: BigNumberish;
 }
 
 // Fish species enum type - match the actual species used in the codebase
-export type FishSpecies = 'AngelFish' | 'GoldFish' | 'Betta' | 'NeonTetra' | 'Corydoras' | 'Hybrid';
+export type FishSpecies =
+  | 'AngelFish'
+  | 'GoldFish'
+  | 'Betta'
+  | 'NeonTetra'
+  | 'Corydoras'
+  | 'Hybrid';
 
 // Fish species data mapping
 export interface FishSpeciesData {

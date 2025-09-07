@@ -17,7 +17,7 @@ import { useAccount } from '@starknet-react/core';
 import { useAquarium } from '@/hooks/dojo/useAquarium';
 import { useFish } from '@/hooks/dojo/useFish';
 import * as models from '@/typescript/models.gen';
-import { ContractAquarium, ContractFish } from '@/types/game';
+// Removed unused imports
 import { num, type BigNumberish } from 'starknet';
 
 export default function AquariumsPage() {
@@ -99,8 +99,8 @@ export default function AquariumsPage() {
           fins: 'long',
           size: 'medium',
         },
-        hunger: fish.hunger ?? 50,
-        state: (fish.state as any) ?? 'idle',
+        hunger: (fish as any).hunger ?? 50,
+        state: (fish as any).state ?? 'idle',
       })),
     };
   };

@@ -43,8 +43,7 @@ export function AquariumList({
               key={aquarium.id}
               aquarium={{
                 ...aquarium,
-                fishes:
-                  (aquarium as Partial<{ fishes: Fish[] }>).fishes ?? [],
+                fishes: (aquarium as Partial<{ fishes: Fish[] }>).fishes ?? [],
               }}
               onSelect={() => onSelectAquarium?.(aquarium)}
             />

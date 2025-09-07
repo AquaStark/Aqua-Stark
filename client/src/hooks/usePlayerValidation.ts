@@ -1,12 +1,8 @@
 import { usePlayer } from '@/hooks/dojo/usePlayer';
 import { ApiClient, API_CONFIG, buildApiUrl } from '@/config/api';
 import { useCallback, useState } from 'react';
-import {
-  PlayerData,
-  BackendPlayerData,
-  OnChainPlayerData,
-} from '@/types/player-types';
-import type { ApiResponse, PlayerCreateRequest } from '@/types/api-types';
+import { BackendPlayerData, OnChainPlayerData } from '@/types/player-types';
+import type { ApiResponse, RequestData } from '@/types/api-types';
 
 interface PlayerValidationResult {
   exists: boolean;
@@ -26,7 +22,7 @@ export const usePlayerValidation = () => {
 
       try {
         // Check on-chain first (using existing usePlayer hook)
-        let onChainPlayer: OnChainPlayerData | null = null;
+        let onChainPlayer: OnChainPlayerData | undefined;
 
         try {
           onChainPlayer = await getPlayer(walletAddress);
@@ -37,13 +33,14 @@ export const usePlayerValidation = () => {
         }
 
         // Check backend (using our API)
-        let backendPlayer: BackendPlayerData | null = null;
+        let backendPlayer: BackendPlayerData | undefined;
 
         try {
           const url = buildApiUrl(API_CONFIG.ENDPOINTS.PLAYERS.GET_BY_WALLET, {
             walletAddress,
           });
-          const response = await ApiClient.get<ApiResponse<BackendPlayerData>>(url);
+          const response =
+            await ApiClient.get<ApiResponse<BackendPlayerData>>(url);
           backendPlayer = response.data;
         } catch (error) {
           // Player not found in backend, continue with validation
@@ -82,13 +79,16 @@ export const usePlayerValidation = () => {
     async (playerId: string, walletAddress: string, username?: string) => {
       try {
         const url = buildApiUrl(API_CONFIG.ENDPOINTS.PLAYERS.CREATE);
-        const data: PlayerCreateRequest & { playerId: string } = {
+        const data: RequestData = {
           playerId,
           walletAddress,
           username,
         };
 
-        const response = await ApiClient.post<ApiResponse<BackendPlayerData>>(url, data);
+        const response = await ApiClient.post<ApiResponse<BackendPlayerData>>(
+          url,
+          data
+        );
         return response.data;
       } catch (error) {
         console.error('Backend player creation failed:', error);

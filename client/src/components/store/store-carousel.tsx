@@ -33,7 +33,7 @@ export const StoreCarousel = () => {
           }}
           loop={true}
         >
-          {banners.map((banner: typeof banners[number]) => (
+          {banners.map((banner: (typeof banners)[number]) => (
             <SwiperSlide key={String(banner.title)}>
               <div
                 className={`relative rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between  text-white`}

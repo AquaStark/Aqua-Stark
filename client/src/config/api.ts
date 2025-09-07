@@ -2,7 +2,7 @@
 // Centralized configuration to avoid hardcoding URLs throughout the frontend
 
 import { ENV_CONFIG } from './environment';
-import { RequestData, ApiResponse } from '../types/api-types';
+import { RequestData } from '../types/api-types';
 
 export const API_CONFIG = {
   // Backend base URL - change this for different environments
