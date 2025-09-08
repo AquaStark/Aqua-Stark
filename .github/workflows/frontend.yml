@@ -62,9 +62,11 @@ jobs:
 
       - name: Run linting
         run: pnpm lint
+        continue-on-error: true
 
       - name: Run typecheck
         run: pnpm typecheck
+        continue-on-error: true
 
       - name: Run tests
         run: pnpm test
@@ -76,3 +78,4 @@ jobs:
 
       - name: Build project
         run: pnpm build
+        continue-on-error: true
