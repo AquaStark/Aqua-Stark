@@ -627,19 +627,12 @@ export const schema: SchemaType = {
 			growth_rate: 0,
 			owner: "",
 			species: new CairoCustomEnum({ 
-				AngelFish: "",
-				GoldFish: undefined,
-				Betta: undefined,
-				NeonTetra: undefined,
-				Corydoras: undefined,
-				Hybrid: undefined,
+				AngelFish: {}
 			}),
 			generation: 0,
 			color: 0,
 			pattern: new CairoCustomEnum({ 
-				Plain: "",
-				Spotted: undefined,
-				Stripes: undefined,
+				Plain: {}
 			}),
 			size: 0,
 			speed: 0,
@@ -679,19 +672,13 @@ export const schema: SchemaType = {
 			growth_rate: 0,
 			owner: "",
 			species: new CairoCustomEnum({ 
-				AngelFish: "",
-				GoldFish: undefined,
-				Betta: undefined,
-				NeonTetra: undefined,
-				Corydoras: undefined,
-				Hybrid: undefined,
+				AngelFish: {}
+				
 			}),
 			generation: 0,
 			color: 0,
 			pattern: new CairoCustomEnum({ 
-				Plain: "",
-				Spotted: undefined,
-				Stripes: undefined,
+				Plain: {}
 			}),
 			size: 0,
 			speed: 0,
