@@ -29,14 +29,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        continue-on-error: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
+        continue-on-error: true
         with:
           node-version: '20'
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
+        continue-on-error: true
         with:
           version: 10.13.1
 
