@@ -3,19 +3,55 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
 
-const ROOT = process.cwd(); // run this from client/
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const CLIENT_ROOT = path.resolve(__dirname, "..");
 
-// --- Config (override via env if your layout differs) ---
-const MANIFEST = process.env.DOJO_MANIFEST_PATH
-  ?? path.resolve(ROOT, "../aqua_contract/Scarb.toml");
-const OUT_DIR = process.env.DOJO_TS_OUT
-  ?? path.resolve(ROOT, "src", "typescript");       
+if (process.env.SKIP_CODEGEN === "1") {
+  console.warn("⚠️  SKIP_CODEGEN=1 set — skipping sozo code generation.");
+  process.exit(0);
+}
+
+const MANIFEST =
+  process.env.DOJO_MANIFEST_PATH ??
+  path.resolve(CLIENT_ROOT, "../aqua_contract/Scarb.toml");
+
+const OUT_DIR =
+  process.env.DOJO_TS_OUT ?? path.resolve(CLIENT_ROOT, "src", "typescript");
 
 const SOZO = process.env.SOZO_BIN || "sozo";
-const spawnOpts = { shell: process.platform === "win32", stdio: "inherit" };
+const spawnOpts = {
+  cwd: CLIENT_ROOT,
+  shell: process.platform === "win32",
+  stdio: "inherit",
+};
 
-// --- 0) Preconditions ---
+function run(cmd, args, opts = {}) {
+  return spawnSync(cmd, args, { encoding: "utf8", stdio: "pipe", ...opts });
+}
+
+function hasSozo() {
+  const r = run(SOZO, ["--version"], { ...spawnOpts, stdio: "pipe" });
+  return r.status === 0;
+}
+
+function sozoSupportsBindgen() {
+  const r = run(SOZO, ["--help"], { ...spawnOpts, stdio: "pipe" });
+  return r.status === 0 && /bindgen/.test(r.stdout || "");
+}
+
+function sozoBuildSupportsOutput() {
+  const r = run(SOZO, ["build", "--typescript", "--help"], {
+    ...spawnOpts,
+    stdio: "pipe",
+  });
+  // If help text includes "--output", we can pass it; otherwise use env var
+  return r.status === 0 && /--output/.test(r.stdout || "");
+}
+
+// Preconditions
 if (!fs.existsSync(MANIFEST)) {
   console.error(`❌ Manifest not found: ${MANIFEST}
 Set DOJO_MANIFEST_PATH or fix the default path.`);
@@ -23,45 +59,60 @@ Set DOJO_MANIFEST_PATH or fix the default path.`);
 }
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
-// --- 1) Generate (try modern bindgen, then legacy build) ---
+if (!hasSozo()) {
+  console.error("❌ 'sozo' is not available on PATH");
+  process.exit(1);
+}
+
 console.log(`🔧 Generating TypeScript bindings with Sozo…
   manifest: ${MANIFEST}
   out:      ${OUT_DIR}`);
 
-let res = spawnSync(
-   SOZO, 
-   ["build", "--typescript"], 
-  { ...spawnOpts, env: { ...process.env, DOJO_MANIFEST_PATH: MANIFEST, DOJO_TYPESCRIPT_OUT: OUT_DIR } } 
- );
+let status = 0;
 
-if (res.status !== 0) {
-  console.warn("⚠️  'sozo bindgen typescript' failed. Trying legacy 'sozo build --typescript'…");
-  // Some older versions honor these env vars for output location.
-  res = spawnSync(
+// 1) Try bindgen if available
+if (sozoSupportsBindgen()) {
+  const r = spawnSync(
     SOZO,
-    ["build", "--typescript"],
-    {
-      ...spawnOpts,
-      env: {
-        ...process.env,
-        DOJO_MANIFEST_PATH: MANIFEST,
-        DOJO_TYPESCRIPT_OUT: OUT_DIR,
-      },
-    }
+    ["bindgen", "typescript", "--manifest-path", MANIFEST, "--output", OUT_DIR],
+    spawnOpts
   );
+  if (r.status === 0) {
+    status = 0;
+  } else {
+    console.warn(
+      "⚠️  'sozo bindgen typescript' failed. Trying legacy 'sozo build --typescript'…"
+    );
+    status = 1;
+  }
+} else {
+  console.log("ℹ️  This sozo version has no 'bindgen' subcommand; using legacy build.");
+  status = 1;
 }
 
-if (res.error) {
-  console.error(`❌ Failed to start '${SOZO}': ${res.error.message}`);
-  process.exit(1);
+// 2) Fallback: build --typescript
+if (status !== 0) {
+  const canUseOutput = sozoBuildSupportsOutput();
+  const args = ["build", "--typescript", "--manifest-path", MANIFEST];
+  if (canUseOutput) args.push("--output", OUT_DIR);
+
+  const env = {
+    ...process.env,
+    // Older sozo uses env var for output
+    DOJO_MANIFEST_PATH: MANIFEST,
+    DOJO_TYPESCRIPT_OUT: OUT_DIR,
+  };
+
+  const r2 = spawnSync(SOZO, args, { ...spawnOpts, env });
+  if (r2.status !== 0) {
+    console.error("❌ Code generation exited with", r2.status);
+    process.exit(r2.status || 1);
+  }
 }
-if (res.status !== 0) {
-  console.error(`❌ Code generation exited with ${res.status}`);
-  process.exit(res.status ?? 1);
-}
+
 console.log("✅ Code generation completed");
 
-// --- 2) Guard (existence + basic type-safety checks) ---
+// Post-gen guards
 const required = [
   path.join(OUT_DIR, "contracts.gen.ts"),
   path.join(OUT_DIR, "models.gen.ts"),
@@ -74,20 +125,27 @@ for (const file of required) {
     ok = false;
     continue;
   }
+
   const txt = fs.readFileSync(file, "utf8");
-  if (/@ts-nocheck/.test(txt)) {
+
+  if (/\/\/\s*@ts-nocheck/.test(txt)) {
     console.error(`[codegen] @ts-nocheck present in: ${file}`);
     ok = false;
   }
-  if (/Promise<any>/.test(txt)) {
-    console.error(`[codegen] Promise<any> present in: ${file}`);
-    ok = false;
-  }
-  if (/\b:\s*any\b/.test(txt)) {
+
+  // Strip comments before type checks
+  const noComments = txt.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
+
+  if (/\b:\s*any(\W|$)/.test(noComments)) {
     console.error(`[codegen] Explicit ': any' present in: ${file}`);
     ok = false;
   }
+  if (/\bPromise\s*<\s*any\s*>/.test(noComments)) {
+    console.error(`[codegen] Promise<any> present in: ${file}`);
+    ok = false;
+  }
 }
+
 if (!ok) {
   console.error("❌ Generated files failed type-safety checks.");
   process.exit(1);
