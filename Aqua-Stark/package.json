@@ -1,0 +1,26 @@
+{
+  "name": "aqua-stark-workspace",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "packageManager": "pnpm@10.13.1",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "pnpm -r --filter ./client lint",
+    "lint:backend": "pnpm -r --filter ./backend lint",
+    "typecheck": "pnpm -r --filter ./client typecheck",
+    "build": "pnpm -r --filter ./client build",
+    "dev": "pnpm --filter client dev",
+    "test": "pnpm -r --filter ./client test",
+    "test:coverage": "pnpm -r --filter ./client test:coverage"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "starknet": "6.23.1"
+    }
+  }
+}

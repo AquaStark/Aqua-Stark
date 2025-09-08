@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Poppins-ExtraBold';
+  src: url('@/assets/gui/fonts/Poppins-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+}
+
+html,
+body {
+  font-family: 'Poppins-ExtraBold', sans-serif;
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Prevent content shift when scrollbar appears/disappears */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Landing page specific styles to prevent scroll issues */
+.landing-page {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  height: 100vh;
+  position: relative;
+}
+
+.landing-page::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ensure smooth scrolling */
+.landing-page {
+  scroll-behavior: smooth;
+}
+
+/* Force stable layout */
+.landing-page * {
+  box-sizing: border-box;
+}
+
+/* Prevent any content from causing layout shifts */
+.landing-page {
+  contain: layout style paint;
+}
+
+/* Additional scroll stability */
+.landing-page {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+}
+
+/* Ensure no dynamic content changes affect layout */
+.landing-page * {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Animation classes */
+.animated-background {
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+.water-movement {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    rgba(0, 92, 153, 0.1),
+    rgba(0, 123, 255, 0.1)
+  );
+  animation: waterFlow 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes gradientShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes waterFlow {
+  0%,
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+  25% {
+    transform: translateX(-2px) translateY(-1px);
+  }
+  50% {
+    transform: translateX(1px) translateY(-2px);
+  }
+  75% {
+    transform: translateX(-1px) translateY(1px);
+  }
+}
+
+@keyframes float-up {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-150vh);
+    opacity: 1;
+  }
+}

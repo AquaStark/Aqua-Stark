@@ -1,0 +1,724 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Nunito', sans-serif;
+  }
+}
+
+@layer utilities {
+  /* Efectos de botones de juego */
+  .game-button {
+    @apply relative overflow-hidden transition-all duration-200 transform hover:scale-105 active:scale-95;
+    box-shadow:
+      0 4px 0 rgba(0, 0, 0, 0.2),
+      0 -2px 0 rgba(255, 255, 255, 0.2) inset,
+      0 2px 0 rgba(255, 255, 255, 0.2) inset;
+  }
+
+  .game-button:hover {
+    box-shadow:
+      0 6px 0 rgba(0, 0, 0, 0.2),
+      0 -2px 0 rgba(255, 255, 255, 0.3) inset,
+      0 2px 0 rgba(255, 255, 255, 0.3) inset;
+  }
+
+  .game-button:active {
+    box-shadow:
+      0 2px 0 rgba(0, 0, 0, 0.2),
+      0 -1px 0 rgba(255, 255, 255, 0.2) inset,
+      0 1px 0 rgba(255, 255, 255, 0.2) inset;
+    box-shadow:
+      0 4px 0 rgba(0, 0, 0, 0.2),
+      0 -2px 0 rgba(255, 255, 255, 0.2) inset,
+      0 2px 0 rgba(255, 255, 255, 0.2) inset;
+  }
+
+  .game-button:hover {
+    box-shadow:
+      0 6px 0 rgba(0, 0, 0, 0.2),
+      0 -2px 0 rgba(255, 255, 255, 0.3) inset,
+      0 2px 0 rgba(255, 255, 255, 0.3) inset;
+  }
+
+  .game-button:active {
+    box-shadow:
+      0 2px 0 rgba(0, 0, 0, 0.2),
+      0 -1px 0 rgba(255, 255, 255, 0.2) inset,
+      0 1px 0 rgba(255, 255, 255, 0.2) inset;
+  }
+
+  /* Contenedor de juego con efecto de cristal */
+  .game-container {
+    @apply bg-blue-500/20 backdrop-blur-sm border-2 rounded-xl;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border-image: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.4),
+        rgba(255, 255, 255, 0.1)
+      )
+      1;
+  }
+
+  /* Efectos de agua */
+  .water-effect {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 119, 255, 0.2) 0%,
+      rgba(0, 119, 255, 0.1) 50%,
+      rgba(0, 119, 255, 0.05) 100%
+    );
+  }
+
+  /* Animaciones de burbujas */
+  .bubble {
+    @apply absolute rounded-full pointer-events-none;
+    background: radial-gradient(
+      circle at 30% 30%,
+      rgba(255, 255, 255, 0.8),
+      rgba(255, 255, 255, 0.2)
+    );
+    animation: float-up var(--duration) ease-in infinite;
+  }
+
+  @keyframes float-up {
+    0% {
+      transform: translateY(100vh) scale(1);
+      opacity: 0.8;
+    }
+
+    50% {
+      opacity: 0.4;
+    }
+
+    100% {
+      transform: translateY(-20vh) scale(1.2);
+      opacity: 0;
+    }
+  }
+
+  .animate-bubble {
+    animation: bubble 15s linear infinite;
+  }
+
+  @keyframes bubble {
+    0% {
+      transform: translateY(100vh);
+      opacity: 0.7;
+    }
+
+    100% {
+      transform: translateY(-100px);
+      opacity: 0;
+    }
+  }
+
+  /* Efecto de rayos de luz */
+  .light-rays {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      transparent 100%
+    );
+    animation: light-pulse 8s ease-in-out infinite;
+  }
+
+  @keyframes light-pulse {
+    0%,
+    100% {
+      opacity: 0.5;
+    }
+
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  /* Efecto de ondas de agua */
+  .water-ripple {
+    background: radial-gradient(
+      circle at center,
+      transparent 0%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+    animation: ripple 4s linear infinite;
+  }
+
+  @keyframes ripple {
+    0% {
+      transform: scale(0);
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+
+  /* Animación de líneas diagonales */
+  @keyframes move-stripes {
+    0% {
+      background-position: 0 0;
+    }
+
+    100% {
+      background-position: 20px 20px;
+    }
+  }
+
+  /* Float animation for cards */
+  .animate-float-delayed {
+    animation: floating 3s ease-in-out infinite;
+  }
+  .grid > div:nth-child(1) .animate-float-delayed {
+    animation-delay: 0s;
+  }
+  .grid > div:nth-child(2) .animate-float-delayed {
+    animation-delay: 1s;
+  }
+  .grid > div:nth-child(3) .animate-float-delayed {
+    animation-delay: 2s;
+  }
+
+  /* More natural fish swimming animations with subtle body movements */
+  /* Idle swimming - very subtle */
+  .animate-swim-idle {
+    animation: swim-idle 2s ease-in-out infinite;
+  }
+
+  @keyframes swim-idle {
+    0% {
+      transform: scaleX(1);
+    }
+    50% {
+      transform: scaleX(1.02);
+    }
+    100% {
+      transform: scaleX(1);
+    }
+  }
+
+  /* Darting swimming - more pronounced but still natural */
+  .animate-swim-dart {
+    animation: swim-dart 0.5s ease-in-out infinite;
+  }
+
+  @keyframes swim-dart {
+    0% {
+      transform: scaleX(1);
+    }
+    50% {
+      transform: scaleX(1.04);
+    }
+    100% {
+      transform: scaleX(1);
+    }
+  }
+
+  /* Hovering animation - very subtle movement */
+  .animate-hover {
+    animation: hover 3s ease-in-out infinite;
+  }
+
+  @keyframes hover {
+    0% {
+      transform: scaleX(1) scaleY(1);
+    }
+    50% {
+      transform: scaleX(1.01) scaleY(0.99);
+    }
+    100% {
+      transform: scaleX(1) scaleY(1);
+    }
+  }
+
+  /* Smooth fish direction change transition */
+  .fish-image {
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  .fish-flipping {
+    animation: flip-transition 0.4s ease-in-out;
+  }
+
+  @keyframes flip-transition {
+    0% {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scaleX(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+  }
+
+  /* Legacy swim animation - being replaced with the above */
+  .animate-swim {
+    animation: swim 0.8s ease-in-out infinite;
+  }
+
+  @keyframes swim {
+    0% {
+      transform: scaleX(1);
+    }
+    25% {
+      transform: scaleX(1.03);
+    }
+    50% {
+      transform: scaleX(1);
+    }
+    75% {
+      transform: scaleX(1.03);
+    }
+    100% {
+      transform: scaleX(1);
+    }
+  }
+
+  .animate-float {
+    animation: floating 3s ease-in-out infinite;
+  }
+
+  @keyframes floating {
+    0% {
+      transform: translateY(0px);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  /* Animación de fondo con burbujas */
+  .animated-background {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .background-bubble {
+    position: absolute;
+    background: radial-gradient(
+      circle at 30% 30%,
+      rgba(255, 255, 255, 0.3),
+      rgba(255, 255, 255, 0.1)
+    );
+    border-radius: 50%;
+    pointer-events: none;
+    animation: background-float var(--duration, 15s) ease-in infinite;
+    animation-delay: var(--delay, 0s);
+  }
+
+  .container-default {
+    margin-inline: 1.5rem;
+    max-width: 1240px;
+  }
+
+  @media screen and (min-width: 1220px) {
+    .container-default {
+      margin-inline: auto;
+    }
+  }
+
+  @keyframes background-float {
+    0% {
+      transform: translateY(100%) translateX(0) scale(1);
+      opacity: 0.7;
+    }
+
+    50% {
+      transform: translateY(50%) translateX(var(--drift, 0)) scale(1.1);
+      opacity: 0.5;
+    }
+
+    100% {
+      transform: translateY(-20%) translateX(calc(var(--drift, 0) * 2))
+        scale(1.2);
+      opacity: 0;
+    }
+  }
+
+  /* Efecto de agua en movimiento */
+  .water-movement {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      0deg,
+      rgba(0, 119, 255, 0.05) 0%,
+      rgba(0, 119, 255, 0.1) 50%,
+      rgba(0, 119, 255, 0.05) 100%
+    );
+    animation: water-move 10s ease-in-out infinite alternate;
+  }
+
+  @keyframes water-move {
+    0% {
+      transform: translateY(0) scaleY(1);
+    }
+
+    50% {
+      transform: translateY(-5px) scaleY(1.02);
+    }
+
+    100% {
+      transform: translateY(0) scaleY(1);
+    }
+  }
+
+  /* Animación de partículas flotantes */
+  .floating-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: float-particle var(--float-duration, 20s) ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+  }
+
+  @keyframes float-particle {
+    0% {
+      transform: translate(0, 0) rotate(0deg);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 0.8;
+    }
+
+    90% {
+      opacity: 0.6;
+    }
+
+    100% {
+      transform: translate(var(--float-x, 100px), var(--float-y, -100px))
+        rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  .font-404 {
+    font-family: 'Baloo 2', 'Nunito', 'Quicksand', sans-serif;
+  }
+
+  /* Fish visual effects */
+  .fish-feeding {
+    filter: brightness(1.2) drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+  }
+
+  .fish-feeding-glow {
+    background: radial-gradient(
+      circle,
+      rgba(255, 215, 0, 0.4) 0%,
+      rgba(255, 215, 0, 0) 70%
+    );
+    transform: scale(1.3);
+    animation: fishPulse 1s ease-in-out infinite;
+  }
+
+  .fish-playful-glow {
+    background: radial-gradient(
+      circle,
+      rgba(255, 105, 180, 0.3) 0%,
+      rgba(255, 105, 180, 0) 70%
+    );
+    transform: scale(1.2);
+    animation: fishPlayfulPulse 0.8s ease-in-out infinite;
+  }
+
+  .fish-depth-glow {
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.15) 0%,
+      rgba(255, 255, 255, 0) 70%
+    );
+    transform: scale(1.05);
+  }
+
+  /* Fish animations */
+  @keyframes fishPulse {
+    0%,
+    100% {
+      opacity: 0.2;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+  @keyframes fishPlayfulPulse {
+    0%,
+    100% {
+      opacity: 0.15;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
+
+  /* Flip animation */
+  .fish-flipping {
+    animation: flip-transition 0.4s ease-in-out;
+  }
+
+  @keyframes flip-transition {
+    0% {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scaleX(0.8);
+    }
+    100% {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+  }
+
+  .food-item {
+    animation: foodBob 1.5s ease-in-out infinite;
+  }
+
+  @keyframes foodBob {
+    0%,
+    100% {
+      transform: translate(-50%, -50%) scale(1) translateY(0px);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1) translateY(-2px);
+    }
+  }
+}
+
+@keyframes bubble {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-1000px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+.bubble {
+  position: absolute;
+  bottom: -100px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  animation: bubble 10s infinite;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Different sizes for bubbles */
+.bubble.small {
+  width: 10px;
+  height: 10px;
+  animation-duration: 8s;
+}
+
+.bubble.medium {
+  width: 20px;
+  height: 20px;
+  animation-duration: 12s;
+}
+
+.bubble.large {
+  width: 30px;
+  height: 30px;
+  animation-duration: 15s;
+}
+
+/* Randomize bubble positions and delays */
+.bubble:nth-child(1) {
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.bubble:nth-child(2) {
+  left: 20%;
+  animation-delay: 2s;
+}
+
+.bubble:nth-child(3) {
+  left: 30%;
+  animation-delay: 4s;
+}
+
+.bubble:nth-child(4) {
+  left: 40%;
+  animation-delay: 1s;
+}
+
+.bubble:nth-child(5) {
+  left: 50%;
+  animation-delay: 3s;
+}
+
+.bubble:nth-child(6) {
+  left: 60%;
+  animation-delay: 5s;
+}
+
+.bubble:nth-child(7) {
+  left: 70%;
+  animation-delay: 2s;
+}
+
+.bubble:nth-child(8) {
+  left: 80%;
+  animation-delay: 4s;
+}
+
+.bubble:nth-child(9) {
+  left: 90%;
+  animation-delay: 1s;
+}
+
+.bubble:nth-child(10) {
+  left: 95%;
+  animation-delay: 3s;
+}
+
+.milestone-card:hover {
+  --tw-scale-x: 1.01;
+  --tw-scale-y: 1.01;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y))
+    rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y))
+    scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+/* Animación de palpitaciones para el botón del hero */
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+    box-shadow:
+      0 4px 0 rgba(0, 0, 0, 0.2),
+      0 -2px 0 rgba(255, 255, 255, 0.2) inset,
+      0 2px 0 rgba(255, 255, 255, 0.2) inset;
+  }
+  20% {
+    transform: scale(1.03);
+    box-shadow:
+      0 6px 0 rgba(0, 0, 0, 0.2),
+      0 -2px 0 rgba(255, 255, 255, 0.3) inset,
+      0 2px 0 rgba(255, 255, 255, 0.3) inset;
+  }
+  40% {
+    transform: scale(1.03);
+    box-shadow:
+      0 6px 0 rgba(0, 0, 0, 0.2),
+      0 -2px 0 rgba(255, 255, 255, 0.3) inset,
+      0 2px 0 rgba(255, 255, 255, 0.3) inset;
+  }
+  60% {
+    transform: scale(1.02);
+    box-shadow:
+      0 5px 0 rgba(0, 0, 0, 0.2),
+      0 -2px 0 rgba(255, 255, 255, 0.25) inset,
+      0 2px 0 rgba(255, 255, 255, 0.25) inset;
+  }
+  80% {
+    transform: scale(1.01);
+    box-shadow:
+      0 4px 0 rgba(0, 0, 0, 0.2),
+      0 -2px 0 rgba(255, 255, 255, 0.2) inset,
+      0 2px 0 rgba(255, 255, 255, 0.2) inset;
+  }
+  100% {
+    transform: scale(1);
+    box-shadow:
+      0 4px 0 rgba(0, 0, 0, 0.2),
+      0 -2px 0 rgba(255, 255, 255, 0.2) inset,
+      0 2px 0 rgba(255, 255, 255, 0.2) inset;
+  }
+}
+
+.animate-heartbeat {
+  animation: heartbeat 2.5s ease-in-out infinite;
+}

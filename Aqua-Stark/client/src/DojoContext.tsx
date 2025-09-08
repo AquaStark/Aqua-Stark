@@ -1,0 +1,39 @@
+'use client';
+
+import { useDojoSDK } from '@dojoengine/sdk/react';
+import React, { createContext, useContext, useMemo } from 'react';
+import { useSystemCalls } from './useSystemCalls';
+import { DojoClient } from '@/types/dojo';
+
+interface DojoContextValue {
+  client: DojoClient;
+  systemCalls: ReturnType<typeof useSystemCalls>;
+}
+
+const DojoContext = createContext<DojoContextValue | null>(null);
+
+// Separate component to avoid react-refresh warning
+const DojoProviderComponent = ({ children }: { children: React.ReactNode }) => {
+  const { client } = useDojoSDK();
+  const systemCalls = useSystemCalls();
+
+  const value = useMemo(
+    () => ({
+      client,
+      systemCalls,
+    }),
+    [client, systemCalls]
+  );
+
+  return <DojoContext.Provider value={value}>{children}</DojoContext.Provider>;
+};
+
+export const DojoProvider = DojoProviderComponent;
+
+export const useDojo = () => {
+  const context = useContext(DojoContext);
+  if (!context) {
+    throw new Error('useDojo must be used within a DojoProvider');
+  }
+  return context;
+};

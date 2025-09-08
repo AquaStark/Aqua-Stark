@@ -1,0 +1,2 @@
+export const AQUA_CONTRACT_ADDRESS =
+  '0x02d0fb8c1287928915b10e5dce5ffa906f5bed25b66a4a0da22306cb29d47f25';
