@@ -265,29 +265,6 @@ export default function GamePage() {
     return 0;
   }
 
-  function getSpeciesFromIndex(
-    fishType: any
-  ): keyof typeof speciesToFishData | null {
-    const index = bigIntToNumber(fishType);
-    const speciesNames: (keyof typeof speciesToFishData)[] = [
-      'Fish1',
-      'Fish2',
-      'Fish3',
-      'Fish4',
-      'Fish5',
-      'Fish6',
-      'Fish7',
-      'Fish8',
-      'Fish9',
-      'Fish10',
-      'Fish11',
-      'Fish12',
-      'Fish13',
-      'Fish14',
-    ];
-    if (index >= 0 && index < speciesNames.length) return speciesNames[index];
-    return null;
-  }
 
   const displayFish = playerFishes
     .map((fishId: number, index: number) => {
