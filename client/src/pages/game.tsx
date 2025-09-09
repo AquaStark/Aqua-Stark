@@ -265,7 +265,6 @@ export default function GamePage() {
     return 0;
   }
 
-
   const displayFish = playerFishes
     .map((fishId: number, index: number) => {
       // For now, create a mock fish object since we only have IDs
