@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { BubblesBackground } from '@/components/bubble-background';
 import { useBubbles } from '@/hooks/use-bubbles';
+import { ErrorWithMessage } from '@/types/ui-types';
 
 export default function Start() {
   const { account } = useAccount();
@@ -121,7 +122,8 @@ export default function Start() {
       console.error('Registration error:', error);
 
       // Check for specific error types
-      const errorMessage = (error as any)?.message || error?.toString() || '';
+      const errorMessage =
+        (error as ErrorWithMessage)?.message || error?.toString() || '';
 
       if (
         errorMessage.includes('USERNAME ALREADY TAKEN') ||

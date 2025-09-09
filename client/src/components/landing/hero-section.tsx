@@ -29,7 +29,9 @@ export function HeroSection() {
         // User exists - check if we need to sync to backend
         if (validation.isOnChain && !validation.isInBackend) {
           try {
-            await syncPlayerToBackend(validation.playerData, account.address);
+            if (validation.playerData) {
+              await syncPlayerToBackend(validation.playerData, account.address);
+            }
             toast.success('Welcome back! Your data has been synced.');
           } catch (error) {
             console.error('Error syncing player to backend:', error);

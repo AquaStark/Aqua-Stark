@@ -1,6 +1,7 @@
 import { useConnect, useAccount } from '@starknet-react/core';
 import { useState, useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
+import { WalletConnector } from '@/types/connector-types';
 
 export function useCartridgeConnection() {
   const { connect, connectors } = useConnect();
@@ -54,7 +55,7 @@ export function useCartridgeConnection() {
   }, [connect, cartridgeConnector]);
 
   const connectWithFallback = useCallback(
-    async (connector: any) => {
+    async (connector: WalletConnector) => {
       setIsConnecting(true);
       try {
         await connect({ connector });

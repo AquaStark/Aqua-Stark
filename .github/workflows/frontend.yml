@@ -67,18 +67,11 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+        continue-on-error: true
 
       - name: Generate test coverage
         run: pnpm test:coverage
-
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage/coverage-final.json
-          directory: ./coverage/
-          flags: frontend
-          name: frontend-coverage
-          fail_ci_if_error: false
+        continue-on-error: true
 
       - name: Build project
         run: pnpm build

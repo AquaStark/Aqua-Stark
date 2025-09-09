@@ -1,10 +1,11 @@
 import { useAccount, useConnect, useDisconnect } from '@starknet-react/core';
+import { WalletConnector } from '@/types/connector-types';
 
 export function WalletConnection() {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
-  const handleConnect = async (connector: any) => {
+  const handleConnect = async (connector: WalletConnector) => {
     try {
       await connect({ connector });
       // Initialize gaming session

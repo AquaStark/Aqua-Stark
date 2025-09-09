@@ -6,6 +6,7 @@ import type { FishType } from '@/types/game';
 import { useEffect, useState, useRef } from 'react';
 import { useFishIndicators } from '@/hooks/useFishIndicators';
 import { FishStatus } from '@/components/FishStatus';
+import { MotionAnimationProps } from '@/types/ui-types';
 
 interface FishProps {
   fish: FishType;
@@ -184,7 +185,7 @@ export function Fish({
   const bubblePosition = facingLeft ? 'right-[-5px]' : 'left-[-5px]';
 
   // Enhanced animation based on behavior state
-  const getAnimationProps = () => {
+  const getAnimationProps = (): MotionAnimationProps => {
     switch (behaviorState) {
       case 'feeding':
         return {
@@ -350,7 +351,7 @@ export function Fish({
       >
         <div className='relative'>
           <motion.div
-            {...(animationProps as any)}
+            {...animationProps}
             style={{
               display: 'inline-block',
             }}

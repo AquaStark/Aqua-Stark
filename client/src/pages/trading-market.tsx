@@ -50,11 +50,8 @@ export default function MarketPage() {
       );
       if (!hasMatchingTrait) return false;
     }
-    if (
-      (filters as any).search &&
-      !fish.name.toLowerCase().includes((filters as any).search.toLowerCase())
-    )
-      return false;
+    const q = filters.search?.trim().toLowerCase();
+    if (q && !fish.name.toLowerCase().includes(q)) return false;
     return true;
   });
 

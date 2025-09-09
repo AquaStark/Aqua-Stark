@@ -1,13 +1,15 @@
 import { usePlayer } from '@/hooks/dojo/usePlayer';
 import { ApiClient, API_CONFIG, buildApiUrl } from '@/config/api';
 import { useCallback, useState } from 'react';
+import { BackendPlayerData, OnChainPlayerData } from '@/types/player-types';
+import type { ApiResponse, RequestData } from '@/types/api-types';
 
 interface PlayerValidationResult {
   exists: boolean;
   isOnChain: boolean;
   isInBackend: boolean;
-  playerData?: any;
-  backendData?: any;
+  playerData?: OnChainPlayerData;
+  backendData?: BackendPlayerData;
 }
 
 export const usePlayerValidation = () => {
@@ -20,7 +22,7 @@ export const usePlayerValidation = () => {
 
       try {
         // Check on-chain first (using existing usePlayer hook)
-        let onChainPlayer = null;
+        let onChainPlayer: OnChainPlayerData | undefined;
 
         try {
           onChainPlayer = await getPlayer(walletAddress);
@@ -31,14 +33,15 @@ export const usePlayerValidation = () => {
         }
 
         // Check backend (using our API)
-        let backendPlayer = null;
+        let backendPlayer: BackendPlayerData | undefined;
 
         try {
           const url = buildApiUrl(API_CONFIG.ENDPOINTS.PLAYERS.GET_BY_WALLET, {
             walletAddress,
           });
-          const response = await ApiClient.get(url);
-          backendPlayer = (response as any).data;
+          const response =
+            await ApiClient.get<ApiResponse<BackendPlayerData>>(url);
+          backendPlayer = response.data;
         } catch (error) {
           // Player not found in backend, continue with validation
           console.debug('Player not found in backend:', error);
@@ -46,8 +49,8 @@ export const usePlayerValidation = () => {
         }
 
         // Determine if player exists
-        const isOnChain = onChainPlayer && onChainPlayer.id > 0;
-        const isInBackend = backendPlayer && backendPlayer.player_id;
+        const isOnChain = Boolean(onChainPlayer?.id);
+        const isInBackend = Boolean(backendPlayer?.id);
         const exists = isOnChain || isInBackend;
 
         return {
@@ -76,14 +79,17 @@ export const usePlayerValidation = () => {
     async (playerId: string, walletAddress: string, username?: string) => {
       try {
         const url = buildApiUrl(API_CONFIG.ENDPOINTS.PLAYERS.CREATE);
-        const data = {
+        const data: RequestData = {
           playerId,
           walletAddress,
           username,
         };
 
-        const response = await ApiClient.post(url, data);
-        return (response as any).data;
+        const response = await ApiClient.post<ApiResponse<BackendPlayerData>>(
+          url,
+          data
+        );
+        return response.data;
       } catch (error) {
         console.error('Backend player creation failed:', error);
         // Could add user notification for creation failures
@@ -94,10 +100,10 @@ export const usePlayerValidation = () => {
   );
 
   const syncPlayerToBackend = useCallback(
-    async (onChainPlayer: any, walletAddress: string) => {
+    async (onChainPlayer: OnChainPlayerData, walletAddress: string) => {
       try {
         // If player exists on-chain but not in backend, create backend entry
-        const playerId = onChainPlayer.id?.toString() || walletAddress;
+        const playerId = onChainPlayer.id || walletAddress;
         const username = onChainPlayer.username || `Player_${playerId}`;
 
         return await createBackendPlayer(playerId, walletAddress, username);

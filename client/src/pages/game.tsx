@@ -18,6 +18,7 @@ import { useDirtSystemFixed as useDirtSystem } from '@/hooks/use-dirt-system-fix
 import { DirtOverlay } from '@/components/dirt/dirt-overlay';
 import { useFeedingSystem } from '@/systems/feeding-system';
 import { FeedingAquarium } from '@/components/game/feeding-aquarium';
+import { FishSpecies } from '@/types/game';
 import { useAccount } from '@starknet-react/core';
 // import { toast } from 'sonner';
 import { useFish } from '@/hooks/dojo/useFish';
@@ -89,7 +90,7 @@ export default function GamePage() {
       setShowMenu(false);
     }
   };
-  const [playerFishes, setPlayerFishes] = useState<any[]>([]);
+  const [playerFishes, setPlayerFishes] = useState<unknown[]>([]);
   const { account } = useAccount();
   const { getPlayerFishes } = useFish();
 
@@ -224,98 +225,98 @@ export default function GamePage() {
     },
   } as const;
 
-  function getSpeciesFromCairoEnum(
-    species: any
-  ): keyof typeof speciesToFishData | null {
+  function getSpeciesFromCairoEnum(species: unknown): FishSpecies | null {
     if (typeof species === 'string' && species in speciesToFishData) {
-      return species as keyof typeof speciesToFishData;
+      return species as FishSpecies;
     }
     if (species && typeof species === 'object') {
-      if (species.variant && typeof species.variant === 'object') {
-        for (const [key, value] of Object.entries(species.variant)) {
+      const obj = species as Record<string, unknown>;
+      if ('variant' in obj && obj.variant && typeof obj.variant === 'object') {
+        for (const [key, value] of Object.entries(
+          obj.variant as Record<string, unknown>
+        )) {
           if (value !== undefined && key in speciesToFishData) {
-            return key as keyof typeof speciesToFishData;
+            return key as FishSpecies;
           }
         }
       }
-      if (species.activeVariant && typeof species.activeVariant === 'string') {
-        const variantName = species.activeVariant;
+      if ('activeVariant' in obj && typeof obj.activeVariant === 'string') {
+        const variantName = obj.activeVariant;
         if (variantName in speciesToFishData) {
-          return variantName as keyof typeof speciesToFishData;
+          return variantName as FishSpecies;
         }
       }
-      for (const [key, value] of Object.entries(species)) {
+      for (const [key, value] of Object.entries(obj)) {
         if (
           value !== undefined &&
           typeof value === 'object' &&
           key in speciesToFishData
         ) {
-          return key as keyof typeof speciesToFishData;
+          return key as FishSpecies;
         }
       }
     }
     return null;
   }
 
-  function bigIntToNumber(value: any): number {
+  function bigIntToNumber(value: unknown): number {
     if (typeof value === 'bigint') return Number(value);
     if (typeof value === 'number') return value;
     return 0;
   }
 
-  function getSpeciesFromIndex(
-    fishType: any
-  ): keyof typeof speciesToFishData | null {
-    const index = bigIntToNumber(fishType);
-    const speciesNames: (keyof typeof speciesToFishData)[] = [
-      'Fish1',
-      'Fish2',
-      'Fish3',
-      'Fish4',
-      'Fish5',
-      'Fish6',
-      'Fish7',
-      'Fish8',
-      'Fish9',
-      'Fish10',
-      'Fish11',
-      'Fish12',
-      'Fish13',
-      'Fish14',
-    ];
-    if (index >= 0 && index < speciesNames.length) return speciesNames[index];
-    return null;
-  }
-
   const displayFish = playerFishes
-    .map((fish: any, index: number) => {
-      if (!fish || typeof fish !== 'object') return null;
+    .map((fishId: unknown, index: number) => {
+      // For now, create a mock fish object since we only have IDs
+      // In a real implementation, you'd fetch the fish data by ID
+      const mockFish = {
+        id: typeof fishId === 'number' ? fishId : index,
+        species: null,
+        generation: 1,
+        age: 0,
+        health: 100,
+        hunger_level: 0,
+        size: 1,
+        color: 'blue',
+        pattern: 'striped',
+      };
       let speciesKey: keyof typeof speciesToFishData | null = null;
-      if (fish.species) speciesKey = getSpeciesFromCairoEnum(fish.species);
-      if (!speciesKey && fish.fish_type !== undefined) {
-        speciesKey = getSpeciesFromIndex(fish.fish_type);
+      if (mockFish.species) {
+        const cairoSpecies = getSpeciesFromCairoEnum(mockFish.species);
+        speciesKey =
+          cairoSpecies && cairoSpecies in speciesToFishData
+            ? (cairoSpecies as keyof typeof speciesToFishData)
+            : null;
       }
-      if (!speciesKey) return null;
+      if (!speciesKey) {
+        // Default to first species for now
+        speciesKey = 'Fish1';
+      }
 
-      const data = speciesToFishData[speciesKey];
+      const data = speciesKey ? speciesToFishData[speciesKey] : null;
       if (!data) return null;
 
       return {
-        id: fish.id ? bigIntToNumber(fish.id) : index,
+        id: mockFish.id ? bigIntToNumber(mockFish.id) : index,
         name: data.name,
         image: data.image,
         rarity: data.rarity,
-        generation: fish.generation
-          ? bigIntToNumber(fish.generation)
+        habitat: 'Ocean',
+        description: 'A beautiful fish',
+        price: 100,
+        generation: mockFish.generation
+          ? bigIntToNumber(mockFish.generation)
           : data.generation,
         position: { x: 0, y: 0 },
         species: speciesKey,
-        age: fish.age ? bigIntToNumber(fish.age) : 0,
-        health: fish.health ? bigIntToNumber(fish.health) : 100,
-        hunger_level: fish.hunger_level ? bigIntToNumber(fish.hunger_level) : 0,
-        size: fish.size ? bigIntToNumber(fish.size) : 1,
-        color: fish.color,
-        pattern: fish.pattern,
+        age: mockFish.age ? bigIntToNumber(mockFish.age) : 0,
+        health: mockFish.health ? bigIntToNumber(mockFish.health) : 100,
+        hunger_level: mockFish.hunger_level
+          ? bigIntToNumber(mockFish.hunger_level)
+          : 0,
+        size: mockFish.size ? bigIntToNumber(mockFish.size) : 1,
+        color: mockFish.color,
+        pattern: mockFish.pattern,
       };
     })
     .filter((fish): fish is NonNullable<typeof fish> => fish !== null);

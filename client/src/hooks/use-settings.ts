@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { SettingsValue } from '@/types/player-types';
 
 export interface SettingsState {
   sound_enabled: boolean;
@@ -46,9 +47,9 @@ const useSettings = () => {
   /**
    * Updates a specific setting and saves it to localStorage
    * @param {keyof SettingsState} key - The setting key to update
-   * @param {any} value - The new value for the setting
+   * @param {SettingsValue} value - The new value for the setting
    */
-  const updateSetting = (key: keyof SettingsState, value: any) => {
+  const updateSetting = (key: keyof SettingsState, value: SettingsValue) => {
     setIsLoading(true);
     try {
       const newSettings = { ...settings, [key]: value };
