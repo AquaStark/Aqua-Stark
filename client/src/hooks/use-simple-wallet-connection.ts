@@ -1,6 +1,7 @@
 import { useConnect, useAccount } from '@starknet-react/core';
 import { useState, useCallback } from 'react';
 import { toast } from 'sonner';
+import { WalletConnector } from '@/types/connector-types';
 
 export function useSimpleWalletConnection() {
   const { connect, connectors } = useConnect();
@@ -8,7 +9,7 @@ export function useSimpleWalletConnection() {
   const [isConnecting, setIsConnecting] = useState(false);
 
   const connectWallet = useCallback(
-    async (connector: any) => {
+    async (connector: WalletConnector) => {
       if (!connector || !connector.available()) {
         toast.error('Wallet no disponible');
         return;
