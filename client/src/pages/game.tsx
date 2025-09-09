@@ -247,7 +247,11 @@ export default function GamePage() {
         }
       }
       for (const [key, value] of Object.entries(obj)) {
-        if (value !== undefined && typeof value === 'object' && key in speciesToFishData) {
+        if (
+          value !== undefined &&
+          typeof value === 'object' &&
+          key in speciesToFishData
+        ) {
           return key as FishSpecies;
         }
       }
