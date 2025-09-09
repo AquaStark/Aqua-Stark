@@ -266,11 +266,11 @@ export default function GamePage() {
   }
 
   const displayFish = playerFishes
-    .map((fishId: number, index: number) => {
+    .map((fishId: unknown, index: number) => {
       // For now, create a mock fish object since we only have IDs
       // In a real implementation, you'd fetch the fish data by ID
       const mockFish = {
-        id: fishId,
+        id: typeof fishId === 'number' ? fishId : index,
         species: null,
         generation: 1,
         age: 0,
@@ -281,14 +281,19 @@ export default function GamePage() {
         pattern: 'striped',
       };
       let speciesKey: keyof typeof speciesToFishData | null = null;
-      if (mockFish.species)
-        speciesKey = getSpeciesFromCairoEnum(mockFish.species);
+      if (mockFish.species) {
+        const cairoSpecies = getSpeciesFromCairoEnum(mockFish.species);
+        speciesKey =
+          cairoSpecies && cairoSpecies in speciesToFishData
+            ? (cairoSpecies as keyof typeof speciesToFishData)
+            : null;
+      }
       if (!speciesKey) {
         // Default to first species for now
-        speciesKey = 'AngelFish';
+        speciesKey = 'Fish1';
       }
 
-      const data = speciesToFishData[speciesKey];
+      const data = speciesKey ? speciesToFishData[speciesKey] : null;
       if (!data) return null;
 
       return {
