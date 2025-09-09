@@ -90,7 +90,7 @@ export default function GamePage() {
       setShowMenu(false);
     }
   };
-  const [playerFishes, setPlayerFishes] = useState<any[]>([]);
+  const [playerFishes, setPlayerFishes] = useState<unknown[]>([]);
   const { account } = useAccount();
   const { getPlayerFishes } = useFish();
 
@@ -264,7 +264,6 @@ export default function GamePage() {
     if (typeof value === 'number') return value;
     return 0;
   }
-
 
   function getSpeciesFromIndex(
     fishType: any
