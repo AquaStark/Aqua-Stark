@@ -24,8 +24,8 @@ export interface BraavosConnector extends WalletConnector {
 }
 
 // Union type for all supported connectors
-export type SupportedConnector = 
-  | CartridgeConnector 
-  | ArgentXConnector 
-  | BraavosConnector 
+export type SupportedConnector =
+  | CartridgeConnector
+  | ArgentXConnector
+  | BraavosConnector
   | WalletConnector;
