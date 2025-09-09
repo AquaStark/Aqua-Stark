@@ -140,6 +140,9 @@ export function Fish({
         '/fish/fish2.png',
         '/fish/fish3.png',
         '/fish/fish4.png',
+        '/fish/fish5.png',
+        '/fish/fish6.png',
+        '/fish/fish7.png',
       ];
 
       if (!facingLeft) {
