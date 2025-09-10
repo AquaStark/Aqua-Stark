@@ -19,7 +19,9 @@ const MANIFEST =
   path.resolve(CLIENT_ROOT, "../aqua_contract/Scarb.toml");
 
 const OUT_DIR =
-  process.env.DOJO_TS_OUT ?? path.resolve(CLIENT_ROOT, "src", "typescript");
+   process.env.DOJO_TS_OUT ??
+   process.env.DOJO_TYPESCRIPT_OUT ??
+   path.resolve(CLIENT_ROOT, "bindings", "typescript");
 
 const SOZO = process.env.SOZO_BIN || "sozo";
 const spawnOpts = {
