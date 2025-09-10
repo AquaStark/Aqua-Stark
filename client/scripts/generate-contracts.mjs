@@ -120,36 +120,81 @@ const required = [
   path.join(OUT_DIR, "models.gen.ts"),
 ];
 
-let ok = true;
+const results = []; // [{ file, checks: [{ name, ok, msg }] }]
+let anyFail = false;
+
 for (const file of required) {
+  const checks = [];
+
+  // 0) existence
   if (!fs.existsSync(file)) {
-    console.error(`[codegen] Missing generated file: ${file}`);
-    ok = false;
+    checks.push({
+      name: "exists",
+      ok: false,
+      msg: `Missing generated file`,
+    });
+    results.push({ file, checks });
+    anyFail = true;
+    // Nothing else to check if file is missing
     continue;
   }
 
   const txt = fs.readFileSync(file, "utf8");
-
-  if (/\/\/\s*@ts-nocheck/.test(txt)) {
-    console.error(`[codegen] @ts-nocheck present in: ${file}`);
-    ok = false;
-  }
-
-  // Strip comments before type checks
   const noComments = txt.replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
 
-  if (/\b:\s*any(\W|$)/.test(noComments)) {
-    console.error(`[codegen] Explicit ': any' present in: ${file}`);
-    ok = false;
+  // 1) ban @ts-nocheck
+  const hasNoCheck = /\/\/\s*@ts-nocheck/.test(txt);
+  checks.push({
+    name: "no-ts-nocheck",
+    ok: !hasNoCheck,
+    msg: hasNoCheck ? "@ts-nocheck present" : undefined,
+  });
+
+  // 2) ban explicit : any
+  const hasAny = /\b:\s*any(\W|$)/.test(noComments);
+  checks.push({
+    name: "no-explicit-any",
+    ok: !hasAny,
+    msg: hasAny ? "Explicit ': any' present" : undefined,
+  });
+
+  // 3) ban Promise<any>
+  const hasPromiseAny = /\bPromise\s*<\s*any\s*>/.test(noComments);
+  checks.push({
+    name: "no-promise-any",
+    ok: !hasPromiseAny,
+    msg: hasPromiseAny ? "Promise<any> present" : undefined,
+  });
+
+  // Track failures
+  if (checks.some(c => !c.ok)) {
+    anyFail = true;
   }
-  if (/\bPromise\s*<\s*any\s*>/.test(noComments)) {
-    console.error(`[codegen] Promise<any> present in: ${file}`);
-    ok = false;
-  }
+
+  results.push({ file, checks });
 }
 
-if (!ok) {
-  console.error("❌ Generated files failed type-safety checks.");
+// Print immediate errors (keep current behavior), then a compact summary
+if (anyFail) {
+  // Preserve existing detailed logs for CI visibility
+  for (const { file, checks } of results) {
+    for (const c of checks) {
+      if (!c.ok) {
+        console.error(`[codegen] ${c.msg || "Failed check"}: ${file} (${c.name})`);
+      }
+    }
+  }
+
+  // Compact summary: file → failing rules
+  console.error("\nPost-gen checks: failures detected ❌");
+  for (const { file, checks } of results) {
+    const failed = checks.filter(c => !c.ok);
+    if (!failed.length) continue;
+    const names = failed.map(c => c.name).join(", ");
+    console.error(`• ${file} → ${names}`);
+  }
+  const filesWithFailures = results.filter(r => r.checks.some(c => !c.ok)).length;
+  console.error(`\nSummary: ${filesWithFailures} file(s) with failures.`);
   process.exit(1);
 }
 
