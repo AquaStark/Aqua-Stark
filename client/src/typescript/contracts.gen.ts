@@ -595,3 +595,4 @@ export function setupWorld(provider: DojoProvider): { AquaStark: AquaStarkModule
 		},
 	};
 }
+export interface WorldBindings extends Awaited<ReturnType<typeof setupWorld>> {}
