@@ -1,6 +1,7 @@
 import { X, Plus, Minus, Trash2, ShoppingCart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore } from '@/store/use-cart-store';
+import { useShopData } from '@/hooks/use-shop-data';
 import { Button } from '@/components/ui/button';
 
 export function CartSidebar() {
@@ -9,16 +10,9 @@ export function CartSidebar() {
     setCheckoutStep,
     isOpen,
     toggleCart,
-    removeItem,
-    updateQuantity,
   } = useCartStore();
 
-  const subtotal = items.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
-  const fee = subtotal * 0.01;
-  const total = subtotal + fee;
+  const { cartSummary, removeItem, updateQuantity, processCartCheckout } = useShopData();
 
   return (
     <AnimatePresence>
@@ -152,7 +146,7 @@ export function CartSidebar() {
                       alt='Coins'
                       className='w-5 h-5 mr-1'
                     />
-                    {subtotal}
+                    {cartSummary.subtotal}
                   </span>
                 </div>
                 <div className='flex justify-between text-white mb-2'>
@@ -163,7 +157,7 @@ export function CartSidebar() {
                       alt='Coins'
                       className='w-5 h-5 mr-1'
                     />
-                    {fee}
+                    {cartSummary.fee}
                   </span>
                 </div>
                 <div className='flex justify-between text-white font-bold mb-4 border-t border-t-white/20 pt-2'>
@@ -174,13 +168,16 @@ export function CartSidebar() {
                       alt='Coins'
                       className='w-5 h-5 mr-1'
                     />
-                    {total}
+                    {cartSummary.total}
                   </span>
                 </div>
                 <Button
                   className='w-full bg-orange-500 hover:bg-orange-600 text-white'
-                  onClick={() => setCheckoutStep('confirm')}
-                  disabled={items.length === 0}
+                  onClick={async () => {
+                    setCheckoutStep('confirm');
+                    await processCartCheckout();
+                  }}
+                  disabled={cartSummary.items.length === 0}
                 >
                   Proceed to Checkout
                 </Button>
