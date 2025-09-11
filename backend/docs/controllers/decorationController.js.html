@@ -1,5 +1,32 @@
-import { DecorationService } from '../services/decorationService.js';
-import { loggingMiddleware } from '../middleware/logging.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: decorationController.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: decorationController.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { DecorationService } from '../services/decorationService.js';
 
 /**
  * Decoration Controller
@@ -25,7 +52,7 @@ export class DecorationController {
    * @param {Object} req - Express request object
    * @param {Object} req.resource - Pre-validated decoration resource from middleware
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with decoration state data
+   * @returns {Promise&lt;void>} JSON response with decoration state data
    *
    * @example
    * // GET /api/decorations/123/state
@@ -38,14 +65,7 @@ export class DecorationController {
 
       res.json({ success: true, data: decorationState });
     } catch (error) {
-      loggingMiddleware.logControllerError(
-        'DecorationController',
-        'getDecorationState',
-        error,
-        {
-          decorationId: req.params?.decorationId,
-        }
-      );
+      console.error('Error in getDecorationState:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -64,7 +84,7 @@ export class DecorationController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.playerId - Authenticated player's ID
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with created decoration data
+   * @returns {Promise&lt;void>} JSON response with created decoration data
    *
    * @example
    * // POST /api/decorations
@@ -92,15 +112,7 @@ export class DecorationController {
         message: 'Decoration state created successfully',
       });
     } catch (error) {
-      loggingMiddleware.logControllerError(
-        'DecorationController',
-        'createDecorationState',
-        error,
-        {
-          decorationId: req.body?.decorationId,
-          aquariumId: req.body?.aquariumId,
-        }
-      );
+      console.error('Error in createDecorationState:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -119,7 +131,7 @@ export class DecorationController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.playerId - Authenticated player's ID
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with array of player's decorations
+   * @returns {Promise&lt;void>} JSON response with array of player's decorations
    *
    * @example
    * // GET /api/players/123/decorations
@@ -140,14 +152,7 @@ export class DecorationController {
 
       res.json({ success: true, data: decorations });
     } catch (error) {
-      loggingMiddleware.logControllerError(
-        'DecorationController',
-        'getPlayerDecorations',
-        error,
-        {
-          playerId: req.params?.playerId,
-        }
-      );
+      console.error('Error in getPlayerDecorations:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -163,7 +168,7 @@ export class DecorationController {
    * @param {Object} req.params - Request parameters
    * @param {string} req.params.aquariumId - Aquarium ID from URL
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with array of aquarium decorations
+   * @returns {Promise&lt;void>} JSON response with array of aquarium decorations
    *
    * @example
    * // GET /api/aquariums/456/decorations
@@ -172,11 +177,9 @@ export class DecorationController {
   static async getAquariumDecorations(req, res) {
     try {
       const { aquariumId } = req.params;
-      const { playerId: authenticatedPlayerId } = req.user;
 
-      // Ensure player can only access their own aquarium decorations
-      if (aquariumId !== authenticatedPlayerId) {
-        return res.status(403).json({ error: 'Access denied' });
+      if (!aquariumId) {
+        return res.status(400).json({ error: 'Aquarium ID is required' });
       }
 
       const decorations =
@@ -184,14 +187,7 @@ export class DecorationController {
 
       res.json({ success: true, data: decorations });
     } catch (error) {
-      loggingMiddleware.logControllerError(
-        'DecorationController',
-        'getAquariumDecorations',
-        error,
-        {
-          aquariumId: req.params?.aquariumId,
-        }
-      );
+      console.error('Error in getAquariumDecorations:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -212,7 +208,7 @@ export class DecorationController {
    * @param {number} req.body.positionY - Y coordinate position
    * @param {number} [req.body.rotationDegrees=0] - Rotation angle in degrees
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with placed decoration data
+   * @returns {Promise&lt;void>} JSON response with placed decoration data
    *
    * @example
    * // PUT /api/decorations/123/place
@@ -222,34 +218,34 @@ export class DecorationController {
   static async placeDecoration(req, res) {
     try {
       const { decorationId } = req.params;
-      const { position } = req.body;
+      const {
+        aquariumId,
+        positionX,
+        positionY,
+        rotationDegrees = 0,
+      } = req.body;
 
-      if (!position || !position.x || !position.y) {
-        return res.status(400).json({
-          error: 'Position with x and y coordinates is required',
-        });
+      if (!aquariumId || positionX === undefined || positionY === undefined) {
+        return res
+          .status(400)
+          .json({ error: 'Aquarium ID and position are required' });
       }
 
-      const updatedDecoration = await DecorationService.placeDecoration(
+      const placedDecoration = await DecorationService.placeDecoration(
         decorationId,
-        position
+        aquariumId,
+        positionX,
+        positionY,
+        rotationDegrees
       );
 
       res.json({
         success: true,
-        data: updatedDecoration,
+        data: placedDecoration,
         message: 'Decoration placed successfully',
       });
     } catch (error) {
-      loggingMiddleware.logControllerError(
-        'DecorationController',
-        'placeDecoration',
-        error,
-        {
-          decorationId: req.params?.decorationId,
-          position: req.body?.position,
-        }
-      );
+      console.error('Error in placeDecoration:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -265,7 +261,7 @@ export class DecorationController {
    * @param {Object} req.params - Request parameters
    * @param {string} req.params.decorationId - Decoration ID from URL
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with removed decoration data
+   * @returns {Promise&lt;void>} JSON response with removed decoration data
    *
    * @example
    * // DELETE /api/decorations/123
@@ -275,22 +271,16 @@ export class DecorationController {
     try {
       const { decorationId } = req.params;
 
-      const result = await DecorationService.removeDecoration(decorationId);
+      const removedDecoration =
+        await DecorationService.removeDecoration(decorationId);
 
       res.json({
         success: true,
-        data: result,
+        data: removedDecoration,
         message: 'Decoration removed successfully',
       });
     } catch (error) {
-      loggingMiddleware.logControllerError(
-        'DecorationController',
-        'removeDecoration',
-        error,
-        {
-          decorationId: req.params?.decorationId,
-        }
-      );
+      console.error('Error in removeDecoration:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -310,7 +300,7 @@ export class DecorationController {
    * @param {number} req.body.positionY - New Y coordinate position
    * @param {number} [req.body.rotationDegrees=0] - New rotation angle in degrees
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with updated decoration data
+   * @returns {Promise&lt;void>} JSON response with updated decoration data
    *
    * @example
    * // PUT /api/decorations/123/position
@@ -320,18 +310,20 @@ export class DecorationController {
   static async updateDecorationPosition(req, res) {
     try {
       const { decorationId } = req.params;
-      const { position } = req.body;
+      const { positionX, positionY, rotationDegrees = 0 } = req.body;
 
-      if (!position || !position.x || !position.y) {
-        return res.status(400).json({
-          error: 'Position with x and y coordinates is required',
-        });
+      if (positionX === undefined || positionY === undefined) {
+        return res
+          .status(400)
+          .json({ error: 'Position coordinates are required' });
       }
 
       const updatedDecoration =
         await DecorationService.updateDecorationPosition(
           decorationId,
-          position
+          positionX,
+          positionY,
+          rotationDegrees
         );
 
       res.json({
@@ -340,15 +332,7 @@ export class DecorationController {
         message: 'Decoration position updated successfully',
       });
     } catch (error) {
-      loggingMiddleware.logControllerError(
-        'DecorationController',
-        'updateDecorationPosition',
-        error,
-        {
-          decorationId: req.params?.decorationId,
-          position: req.body?.position,
-        }
-      );
+      console.error('Error in updateDecorationPosition:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -364,7 +348,7 @@ export class DecorationController {
    * @param {Object} req.params - Request parameters
    * @param {string} req.params.decorationId - Decoration ID from URL
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with updated decoration data
+   * @returns {Promise&lt;void>} JSON response with updated decoration data
    *
    * @example
    * // PUT /api/decorations/123/visibility
@@ -380,19 +364,10 @@ export class DecorationController {
       res.json({
         success: true,
         data: updatedDecoration,
-        message: `Decoration visibility toggled to ${
-          updatedDecoration.visible ? 'visible' : 'hidden'
-        }`,
+        message: `Decoration visibility ${updatedDecoration.is_visible ? 'enabled' : 'disabled'}`,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError(
-        'DecorationController',
-        'toggleDecorationVisibility',
-        error,
-        {
-          decorationId: req.params?.decorationId,
-        }
-      );
+      console.error('Error in toggleDecorationVisibility:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -411,7 +386,7 @@ export class DecorationController {
    * @param {string} req.body.fromAquariumId - Source aquarium ID
    * @param {string} req.body.toAquariumId - Destination aquarium ID
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with moved decoration data
+   * @returns {Promise&lt;void>} JSON response with moved decoration data
    *
    * @example
    * // PUT /api/decorations/123/move
@@ -421,34 +396,27 @@ export class DecorationController {
   static async moveDecoration(req, res) {
     try {
       const { decorationId } = req.params;
-      const { newPosition } = req.body;
+      const { fromAquariumId, toAquariumId } = req.body;
 
-      if (!newPosition || !newPosition.x || !newPosition.y) {
-        return res.status(400).json({
-          error: 'New position with x and y coordinates is required',
-        });
+      if (!fromAquariumId || !toAquariumId) {
+        return res
+          .status(400)
+          .json({ error: 'From aquarium ID and to aquarium ID are required' });
       }
 
-      const updatedDecoration = await DecorationService.moveDecoration(
+      const movedDecoration = await DecorationService.moveDecoration(
         decorationId,
-        newPosition
+        fromAquariumId,
+        toAquariumId
       );
 
       res.json({
         success: true,
-        data: updatedDecoration,
+        data: movedDecoration,
         message: 'Decoration moved successfully',
       });
     } catch (error) {
-      loggingMiddleware.logControllerError(
-        'DecorationController',
-        'moveDecoration',
-        error,
-        {
-          decorationId: req.params?.decorationId,
-          newPosition: req.body?.newPosition,
-        }
-      );
+      console.error('Error in moveDecoration:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -467,7 +435,7 @@ export class DecorationController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.playerId - Authenticated player's ID
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with decoration statistics
+   * @returns {Promise&lt;void>} JSON response with decoration statistics
    *
    * @example
    * // GET /api/players/123/decorations/stats
@@ -478,26 +446,16 @@ export class DecorationController {
       const { playerId } = req.params;
       const { playerId: authenticatedPlayerId } = req.user;
 
-      // Ensure player can only access their own stats
+      // Ensure player can only access their own decoration stats
       if (playerId !== authenticatedPlayerId) {
         return res.status(403).json({ error: 'Access denied' });
       }
 
       const stats = await DecorationService.getPlayerDecorationStats(playerId);
 
-      res.json({
-        success: true,
-        data: stats,
-      });
+      res.json({ success: true, data: stats });
     } catch (error) {
-      loggingMiddleware.logControllerError(
-        'DecorationController',
-        'getPlayerDecorationStats',
-        error,
-        {
-          playerId: req.params?.playerId,
-        }
-      );
+      console.error('Error in getPlayerDecorationStats:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -520,7 +478,7 @@ export class DecorationController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.playerId - Authenticated player's ID
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with updated decorations array
+   * @returns {Promise&lt;void>} JSON response with updated decorations array
    *
    * @example
    * // PUT /api/decorations/bulk-update
@@ -532,40 +490,68 @@ export class DecorationController {
    */
   static async bulkUpdatePositions(req, res) {
     try {
-      const { updates } = req.body;
+      const { decorations } = req.body;
+      const { playerId } = req.user;
 
-      if (!Array.isArray(updates) || updates.length === 0) {
-        return res.status(400).json({
-          error: 'Updates array is required and must not be empty',
-        });
+      if (!decorations || !Array.isArray(decorations)) {
+        return res.status(400).json({ error: 'Decorations array is required' });
       }
 
-      // Validate each update
-      for (const update of updates) {
-        if (!update.decorationId || !update.position) {
-          return res.status(400).json({
-            error: 'Each update must have decorationId and position',
+      // Validate that all decorations belong to the authenticated player
+      for (const decoration of decorations) {
+        const decorationState = await DecorationService.getDecorationState(
+          decoration.decorationId
+        );
+        if (!decorationState || decorationState.player_id !== playerId) {
+          return res.status(403).json({
+            error: 'Access denied',
+            message: `Decoration ${decoration.decorationId} does not belong to you`,
           });
         }
       }
 
-      const results = await DecorationService.bulkUpdatePositions(updates);
+      const updatePromises = decorations.map(decoration =>
+        DecorationService.updateDecorationPosition(
+          decoration.decorationId,
+          decoration.positionX,
+          decoration.positionY,
+          decoration.rotationDegrees || 0
+        )
+      );
+
+      const updatedDecorations = await Promise.all(updatePromises);
 
       res.json({
         success: true,
-        data: results,
-        message: `Updated ${results.length} decorations successfully`,
+        data: updatedDecorations,
+        message: `${updatedDecorations.length} decorations updated successfully`,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError(
-        'DecorationController',
-        'bulkUpdatePositions',
-        error,
-        {
-          updates: req.body?.updates,
-        }
-      );
+      console.error('Error in bulkUpdatePositions:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul><h3>Classes</h3><ul><li><a href="DecorationController.html">DecorationController</a></li><li><a href="FishController.html">FishController</a></li><li><a href="MinigameController.html">MinigameController</a></li><li><a href="PlayerController.html">PlayerController</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Thu Sep 11 2025 11:48:53 GMT+0100 (Horário Padrão da África Ocidental)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
