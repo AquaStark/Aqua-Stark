@@ -15,7 +15,6 @@
     "docs:validate": "echo 'JSDoc validation is now handled by ESLint - use npm run lint'",
     "docs:serve": "npx http-server docs/controllers -p 3002",
     "docs:auto": "npm run docs && npm run docs:serve",
-    "prepare": "cd .. && husky install backend/.husky",
     "audit": "npm audit --audit-level=moderate",
     "audit:fix": "npm audit fix",
     "validate": "npm run lint && npm run format:check",
