@@ -3,356 +3,217 @@
 /**
  * Documentation Validation Script
  *
- * This script validates JSDoc documentation across all service files,
- * checking for completeness, consistency, and proper formatting.
- *
- * @fileoverview Documentation validation and reporting
- * @author Aqua Stark Team
- * @version 1.0.0
- * @since 2025-09-16
+ * Validates JSDoc comments in controller files to ensure:
+ * - All exported classes have class-level JSDoc
+ * - All static methods have method-level JSDoc
+ * - Required JSDoc tags are present (@param, @returns, etc.)
+ * - Examples are provided for complex methods
  */
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath, pathToFileURL } from 'url';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configuration
-const SERVICES_DIR = path.join(__dirname, '../src/services');
-const EXCLUDED_FILES = ['index.js'];
-const REQUIRED_TAGS = ['@param', '@returns'];
-const OPTIONAL_TAGS = [
-  '@since',
-  '@author',
-  '@version',
-  '@description',
-  '@throws',
-  '@example',
+const CONTROLLERS_DIR = path.join(__dirname, '..', 'src', 'controllers');
+const CONTROLLER_FILES = [
+  'playerController.js',
+  'fishController.js',
+  'decorationController.js',
+  'minigameController.js'
 ];
 
-/**
- * Validation results storage
- */
-class ValidationResults {
+class DocValidator {
   constructor() {
     this.errors = [];
     this.warnings = [];
-    this.stats = {
-      totalFiles: 0,
-      totalMethods: 0,
-      documentedMethods: 0,
-      missingDocumentation: 0,
-    };
   }
 
-  addError(file, method, message) {
-    this.errors.push({ file, method, message });
+  /**
+   * Validate all controller files
+   */
+  async validateAll() {
+    console.log('🔍 Validating JSDoc documentation...\n');
+
+    for (const file of CONTROLLER_FILES) {
+      const filePath = path.join(CONTROLLERS_DIR, file);
+      await this.validateFile(filePath);
+    }
+
+    this.printResults();
+    return this.errors.length === 0;
   }
 
-  addWarning(file, method, message) {
-    this.warnings.push({ file, method, message });
+  /**
+   * Validate a single file
+   */
+  async validateFile(filePath) {
+    const content = fs.readFileSync(filePath, 'utf-8');
+    const fileName = path.basename(filePath);
+
+    console.log(`📄 Validating ${fileName}...`);
+
+    // Check for class-level JSDoc
+    this.validateClassDoc(content, fileName);
+
+    // Check for method-level JSDoc
+    this.validateMethodDocs(content, fileName);
+
+    // Check for consistent patterns
+    this.validatePatterns(content, fileName);
   }
 
-  incrementStats(stat) {
-    this.stats[stat]++;
+  /**
+   * Validate class-level documentation
+   */
+  validateClassDoc(content, fileName) {
+    const classMatch = content.match(/export class (\w+)Controller/);
+    if (!classMatch) {
+      this.errors.push(`${fileName}: Could not find exported controller class`);
+      return;
+    }
+
+    const className = classMatch[1] + 'Controller';
+    // Look for JSDoc comment before the class declaration
+    const classDocPattern = /\/\*\*\s*\n(?:\s*\*\s*[^*]*\n)*\s*\*\//g;
+    const classDocMatches = content.match(classDocPattern);
+
+    if (!classDocMatches || classDocMatches.length === 0) {
+      this.errors.push(`${fileName}: Missing class-level JSDoc for ${className}`);
+      return;
+    }
+
+    // Check if any JSDoc comment contains the class name
+    const hasClassDoc = classDocMatches.some(doc => doc.includes(className));
+    if (!hasClassDoc) {
+      this.errors.push(`${fileName}: Missing or incorrect class-level JSDoc for ${className}`);
+    }
+
+    // Check for @class tag
+    const classTagPattern = /@class\s+\w+Controller/;
+    if (!classTagPattern.test(content)) {
+      this.warnings.push(`${fileName}: Missing @class tag in class documentation`);
+    }
   }
 
-  getReport() {
-    const totalIssues = this.errors.length + this.warnings.length;
-    const documentationCoverage =
-      this.stats.totalMethods > 0
-        ? (
-            (this.stats.documentedMethods / this.stats.totalMethods) *
-            100
-          ).toFixed(2)
-        : 0;
+  /**
+   * Validate method-level documentation
+   */
+  validateMethodDocs(content, fileName) {
+    const methodMatches = content.matchAll(/static async (\w+)\([^)]*\)/g);
+    const methods = Array.from(methodMatches, match => match[1]);
 
-    return {
-      summary: {
-        totalFiles: this.stats.totalFiles,
-        totalMethods: this.stats.totalMethods,
-        documentedMethods: this.stats.documentedMethods,
-        documentationCoverage: `${documentationCoverage}%`,
-        totalErrors: this.errors.length,
-        totalWarnings: this.warnings.length,
-        totalIssues: totalIssues,
-      },
-      errors: this.errors,
-      warnings: this.warnings,
-    };
-  }
-}
-
-/**
- * Extract JSDoc comments from file content
- */
-function extractJSDocComments(content) {
-  const jsdocRegex = /\/\*\*[\s\S]*?\*\//g;
-  const comments = [];
-  let match;
-
-  while ((match = jsdocRegex.exec(content)) !== null) {
-    comments.push({
-      content: match[0],
-      start: match.index,
-      end: match.index + match[0].length,
-    });
+    for (const method of methods) {
+      this.validateMethodDoc(content, method, fileName);
+    }
   }
 
-  return comments;
-}
+  /**
+   * Validate individual method documentation
+   */
+  validateMethodDoc(content, methodName, fileName) {
+    const methodPattern = new RegExp(`static async ${methodName}\\([^)]*\\)`, 'g');
+    const methodMatch = methodPattern.exec(content);
 
-/**
- * Extract method signatures from file content
- */
-function extractMethods(content) {
-  const methodRegex = /static\s+(?:async\s+)?(\w+)\s*\(([^)]*)\)\s*{/g;
-  const methods = [];
-  let match;
+    if (!methodMatch) return;
 
-  while ((match = methodRegex.exec(content)) !== null) {
-    const methodName = match[1];
-    const paramsRaw = (match[2] || '').trim();
-    const paramCount =
-      paramsRaw === ''
-        ? 0
-        : paramsRaw.split(',').filter(p => p.trim() !== '').length;
-    methods.push({
-      name: methodName,
-      paramCount,
-      start: match.index,
-      end: match.index + match[0].length,
-    });
-  }
+    const methodIndex = methodMatch.index;
+    const beforeMethod = content.substring(0, methodIndex);
 
-  return methods;
-}
+    // Look for JSDoc comment before the method - improved regex
+    const jsdocPattern = /\/\*\*\s*\n(?:\s*\*\s*[^*]*\n)*\s*\*\//g;
+    const jsdocMatches = [...beforeMethod.matchAll(jsdocPattern)];
+    const lastJSDocMatch = jsdocMatches[jsdocMatches.length - 1];
 
-/**
- * Validate JSDoc comment structure
- */
-function validateJSDocComment(comment, method, results, fileName) {
-  const content = comment.content;
+    if (!lastJSDocMatch) {
+      this.errors.push(`${fileName}: Missing JSDoc for method ${methodName}`);
+      return;
+    }
 
-  // Check for required tags
-  for (const tag of REQUIRED_TAGS) {
-    if (!content.includes(tag)) {
-      // Methods with no parameters don't need @param
-      if (tag === '@param' && method.paramCount === 0) {
-        continue;
+    const jsdoc = lastJSDocMatch[0];
+
+    // Check for @static tag
+    if (!jsdoc.includes('@static')) {
+      this.warnings.push(`${fileName}: Missing @static tag for method ${methodName}`);
+    }
+
+    // Check for @async tag
+    if (!jsdoc.includes('@async')) {
+      this.warnings.push(`${fileName}: Missing @async tag for method ${methodName}`);
+    }
+
+    // Check for @param tags if method has parameters
+    const methodSignature = content.substring(methodIndex, methodIndex + 200);
+    const paramMatch = methodSignature.match(/static async \w+\(([^)]*)\)/);
+
+    if (paramMatch && paramMatch[1].trim()) {
+      const params = paramMatch[1].split(',').map(p => p.trim().split(' ')[0]).filter(p => p !== 'req' && p !== 'res');
+      const paramTags = (jsdoc.match(/@param\s+\{[^}]+\}\s+\w+/g) || []).length;
+
+      if (paramTags === 0) {
+        this.errors.push(`${fileName}: Missing @param tags for method ${methodName}`);
       }
-      results.addError(fileName, method.name, `Missing required tag: ${tag}`);
+    }
+
+    // Check for @returns tag
+    if (!jsdoc.includes('@returns')) {
+      this.errors.push(`${fileName}: Missing @returns tag for method ${methodName}`);
+    }
+
+    // Check for @example tag for complex methods
+    const complexMethods = ['bulkUpdatePositions', 'getPlayerDashboard', 'createGameSession'];
+    if (complexMethods.includes(methodName) && !jsdoc.includes('@example')) {
+      this.warnings.push(`${fileName}: Missing @example for complex method ${methodName}`);
     }
   }
 
-  // Check for proper parameter documentation (optional warning)
-  const paramMatches = content.match(
-    /@param\s+\{([^}]+)\}\s+([\w.\[\]]+)(?:\s+-?\s*(.+))?/g
-  );
-  if (paramMatches) {
-    paramMatches.forEach(param => {
-      // Only warn if parameter has no description at all
-      if (
-        !param.includes('-') &&
-        !param.includes('The ') &&
-        !param.includes('Optional')
-      ) {
-        results.addWarning(
-          fileName,
-          method.name,
-          `Parameter description missing: ${param}`
-        );
-      }
-    });
-  }
+  /**
+   * Validate consistent patterns
+   */
+  validatePatterns(content, fileName) {
+    // Check for consistent error handling pattern
+    const errorPatterns = content.match(/res\.status\(\d+\)\.json\(\{\s*error:/g);
+    if (!errorPatterns || errorPatterns.length === 0) {
+      this.warnings.push(`${fileName}: No standard error responses found`);
+    }
 
-  // Check for return type documentation
-  if (content.includes('@returns')) {
-    const returnsMatch = content.match(/@returns\s+\{([^}]+)\}/);
-    if (!returnsMatch) {
-      results.addError(
-        fileName,
-        method.name,
-        'Missing return type in @returns tag'
-      );
+    // Check for consistent success pattern
+    const successPatterns = content.match(/res\.json\(\{\s*success:\s*true/g);
+    if (!successPatterns || successPatterns.length === 0) {
+      this.warnings.push(`${fileName}: No standard success responses found`);
     }
   }
 
-  // Check for example code (optional)
-  if (content.includes('@example')) {
-    const exampleMatch = content.match(/@example[\s\S]*?```[\s\S]+?```/);
-    if (!exampleMatch) {
-      results.addWarning(
-        fileName,
-        method.name,
-        'Example code block is empty or malformed'
-      );
+  /**
+   * Print validation results
+   */
+  printResults() {
+    if (this.errors.length === 0 && this.warnings.length === 0) {
+      console.log('✅ All documentation validation passed!');
+      return;
     }
-  }
 
-  // Check for class documentation
-  if (content.includes('@class')) {
-    if (
-      !content.includes('@description') &&
-      !content.includes('@fileoverview')
-    ) {
-      results.addWarning(
-        fileName,
-        method.name,
-        'Class documentation missing description'
-      );
+    if (this.errors.length > 0) {
+      console.log('\n❌ Documentation Errors:');
+      this.errors.forEach(error => console.log(`  - ${error}`));
     }
-  }
-}
 
-/**
- * Validate a single service file
- */
-function validateServiceFile(filePath, results) {
-  const fileName = path.basename(filePath);
-
-  if (EXCLUDED_FILES.includes(fileName)) {
-    return;
-  }
-
-  try {
-    const content = fs.readFileSync(filePath, 'utf8');
-    results.incrementStats('totalFiles');
-
-    // Extract methods and JSDoc comments
-    const methods = extractMethods(content);
-    const jsdocComments = extractJSDocComments(content);
-
-    // Validate each method
-    methods.forEach(method => {
-      results.incrementStats('totalMethods');
-
-      // Find corresponding JSDoc comment
-      const comment = jsdocComments.find(
-        c => c.end < method.start && method.start - c.end < 100 // allow reasonable spacing
-      );
-
-      if (comment) {
-        results.incrementStats('documentedMethods');
-        validateJSDocComment(comment, method, results, fileName);
-      } else {
-        results.incrementStats('missingDocumentation');
-        results.addError(
-          fileName,
-          method.name,
-          'Method missing JSDoc documentation'
-        );
-      }
-    });
-
-    // Check for class-level documentation
-    const classComment = jsdocComments.find(c => c.content.includes('@class'));
-    if (!classComment) {
-      results.addWarning(
-        fileName,
-        'Class',
-        'Missing class-level JSDoc documentation'
-      );
+    if (this.warnings.length > 0) {
+      console.log('\n⚠️  Documentation Warnings:');
+      this.warnings.forEach(warning => console.log(`  - ${warning}`));
     }
-  } catch (error) {
-    results.addError(fileName, 'File', `Error reading file: ${error.message}`);
+
+    console.log(`\n📊 Summary: ${this.errors.length} errors, ${this.warnings.length} warnings`);
   }
 }
 
-/**
- * Generate detailed report
- */
-function generateReport(results) {
-  const report = results.getReport();
+// Run validation
+const validator = new DocValidator();
+const isValid = await validator.validateAll();
 
-  console.log('\nDOCUMENTATION VALIDATION REPORT');
-  console.log('=====================================\n');
-
-  // Summary
-  console.log('SUMMARY');
-  console.log(`   Total Files: ${report.summary.totalFiles}`);
-  console.log(`   Total Methods: ${report.summary.totalMethods}`);
-  console.log(`   Documented Methods: ${report.summary.documentedMethods}`);
-  console.log(
-    `   Documentation Coverage: ${report.summary.documentationCoverage}`
-  );
-  console.log(`   Total Errors: ${report.summary.totalErrors}`);
-  console.log(`   Total Warnings: ${report.summary.totalWarnings}`);
-  console.log(`   Total Issues: ${report.summary.totalIssues}\n`);
-
-  // Errors
-  if (report.errors.length > 0) {
-    console.log('ERRORS');
-    report.errors.forEach(error => {
-      console.log(`   ${error.file}::${error.method}: ${error.message}`);
-    });
-    console.log();
-  }
-
-  // Warnings
-  if (report.warnings.length > 0) {
-    console.log('WARNINGS');
-    report.warnings.forEach(warning => {
-      console.log(`   ${warning.file}::${warning.method}: ${warning.message}`);
-    });
-    console.log();
-  }
-
-  // Recommendations
-  console.log('RECOMMENDATIONS');
-  if (report.summary.totalErrors === 0 && report.summary.totalWarnings === 0) {
-    console.log('   All documentation is properly formatted!');
-  } else {
-    console.log('   Fix errors and warnings to improve documentation quality');
-    console.log('   Add missing @param, @returns, @throws, and @example tags');
-    console.log(
-      '   Include descriptive parameter and return value documentation'
-    );
-  }
-
-  return report.summary.totalErrors === 0;
+if (!isValid) {
+  console.log('\n💡 Fix the errors above and run validation again.');
+  process.exit(1);
 }
-
-/**
- * Main validation function
- */
-function main() {
-  console.log('Starting documentation validation...\n');
-
-  const results = new ValidationResults();
-
-  console.log(`Services directory: ${SERVICES_DIR}`);
-  console.log(`Directory exists: ${fs.existsSync(SERVICES_DIR)}`);
-
-  // Read services directory
-  if (!fs.existsSync(SERVICES_DIR)) {
-    console.error(`Services directory not found: ${SERVICES_DIR}`);
-    process.exit(1);
-  }
-
-  const files = fs
-    .readdirSync(SERVICES_DIR)
-    .filter(file => file.endsWith('.js'))
-    .map(file => path.join(SERVICES_DIR, file));
-
-  // Validate each file
-  files.forEach(file => validateServiceFile(file, results));
-
-  // Generate and display report
-  const isValid = generateReport(results);
-
-  // Exit with appropriate code
-  process.exit(isValid ? 0 : 1);
-}
-
-// Run validation only when executed directly (cross-platform)
-if (
-  process.argv[1] &&
-  pathToFileURL(process.argv[1]).href === import.meta.url
-) {
-  main();
-}
-
-export { ValidationResults, validateServiceFile, generateReport };

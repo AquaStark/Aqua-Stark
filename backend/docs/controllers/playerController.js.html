@@ -1,4 +1,32 @@
-import { PlayerService } from '../services/playerService.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: playerController.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: playerController.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { PlayerService } from '../services/playerService.js';
 
 /**
  * Player Controller
@@ -24,7 +52,7 @@ export class PlayerController {
    * @param {Object} req - Express request object
    * @param {Object} req.resource - Pre-validated player resource from middleware
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with player profile data
+   * @returns {Promise&lt;void>} JSON response with player profile data
    *
    * @example
    * // GET /api/players/profile
@@ -54,7 +82,7 @@ export class PlayerController {
    * @param {Object} req.params - Request parameters
    * @param {string} req.params.walletAddress - The wallet address to search for
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with player data or error
+   * @returns {Promise&lt;void>} JSON response with player data or error
    *
    * @example
    * // GET /api/players/wallet/0x1234567890abcdef
@@ -95,7 +123,7 @@ export class PlayerController {
    * @param {string} req.body.walletAddress - Player's wallet address
    * @param {string} [req.body.username] - Optional username for the player
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with created player data
+   * @returns {Promise&lt;void>} JSON response with created player data
    *
    * @example
    * // POST /api/players
@@ -145,7 +173,7 @@ export class PlayerController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.playerId - Authenticated player's ID
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with updated player data
+   * @returns {Promise&lt;void>} JSON response with updated player data
    *
    * @example
    * // PUT /api/players/123/experience
@@ -167,7 +195,7 @@ export class PlayerController {
         return res.status(400).json({ error: 'Experience gained is required' });
       }
 
-      if (experienceGained < 0) {
+      if (experienceGained &lt; 0) {
         return res
           .status(400)
           .json({ error: 'Experience gained must be positive' });
@@ -205,7 +233,7 @@ export class PlayerController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.playerId - Authenticated player's ID
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with updated player data
+   * @returns {Promise&lt;void>} JSON response with updated player data
    *
    * @example
    * // PUT /api/players/123/currency
@@ -258,7 +286,7 @@ export class PlayerController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.playerId - Authenticated player's ID
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with updated player data
+   * @returns {Promise&lt;void>} JSON response with updated player data
    *
    * @example
    * // PUT /api/players/123/stats
@@ -309,7 +337,7 @@ export class PlayerController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.playerId - Authenticated player's ID
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with updated player data
+   * @returns {Promise&lt;void>} JSON response with updated player data
    *
    * @example
    * // PUT /api/players/123/last-login
@@ -351,7 +379,7 @@ export class PlayerController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.playerId - Authenticated player's ID
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with player preferences
+   * @returns {Promise&lt;void>} JSON response with player preferences
    *
    * @example
    * // GET /api/players/123/preferences
@@ -395,7 +423,7 @@ export class PlayerController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.playerId - Authenticated player's ID
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with updated preferences
+   * @returns {Promise&lt;void>} JSON response with updated preferences
    *
    * @example
    * // PUT /api/players/123/preferences
@@ -447,7 +475,7 @@ export class PlayerController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.playerId - Authenticated player's ID
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with dashboard data
+   * @returns {Promise&lt;void>} JSON response with dashboard data
    *
    * @example
    * // GET /api/players/123/dashboard
@@ -485,3 +513,26 @@ export class PlayerController {
     }
   }
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul><h3>Classes</h3><ul><li><a href="DecorationController.html">DecorationController</a></li><li><a href="FishController.html">FishController</a></li><li><a href="MinigameController.html">MinigameController</a></li><li><a href="PlayerController.html">PlayerController</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Thu Sep 11 2025 11:48:53 GMT+0100 (Horário Padrão da África Ocidental)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

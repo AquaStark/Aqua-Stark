@@ -1,4 +1,32 @@
-import { FishService } from '../services/fishService.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: fishController.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: fishController.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { FishService } from '../services/fishService.js';
 
 /**
  * Fish Controller
@@ -24,7 +52,7 @@ export class FishController {
    * @param {Object} req - Express request object
    * @param {Object} req.resource - Pre-validated fish resource from middleware
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with fish state data
+   * @returns {Promise&lt;void>} JSON response with fish state data
    *
    * @example
    * // GET /api/fish/123/state
@@ -56,7 +84,7 @@ export class FishController {
    * @param {Object} req.body - Request body
    * @param {number} req.body.happinessLevel - New happiness level (0-100)
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with updated fish data
+   * @returns {Promise&lt;void>} JSON response with updated fish data
    *
    * @example
    * // PUT /api/fish/123/happiness
@@ -70,7 +98,7 @@ export class FishController {
 
       if (
         happinessLevel === undefined ||
-        happinessLevel < 0 ||
+        happinessLevel &lt; 0 ||
         happinessLevel > 100
       ) {
         return res
@@ -108,7 +136,7 @@ export class FishController {
    * @param {Object} req.body - Request body
    * @param {string} [req.body.foodType='regular'] - Type of food to feed
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with feeding result
+   * @returns {Promise&lt;void>} JSON response with feeding result
    *
    * @example
    * // POST /api/fish/123/feed
@@ -144,7 +172,7 @@ export class FishController {
    * @param {Object} req.params - Request parameters
    * @param {string} req.params.fishId - Fish ID from URL
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with fish statistics
+   * @returns {Promise&lt;void>} JSON response with fish statistics
    *
    * @example
    * // GET /api/fish/123/stats
@@ -180,7 +208,7 @@ export class FishController {
    * @param {string} req.body.parent1Id - ID of first parent fish
    * @param {string} req.body.parent2Id - ID of second parent fish
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response indicating not implemented
+   * @returns {Promise&lt;void>} JSON response indicating not implemented
    *
    * @example
    * // POST /api/fish/breed
@@ -222,7 +250,7 @@ export class FishController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.playerId - Authenticated player's ID
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with array of player's fish
+   * @returns {Promise&lt;void>} JSON response with array of player's fish
    *
    * @example
    * // GET /api/players/123/fish
@@ -246,107 +274,27 @@ export class FishController {
       res.status(500).json({ error: 'Internal server error' });
     }
   }
-
-  // Feed multiple fish
-  static async feedMultipleFish(req, res) {
-    try {
-      const { fishIds, foodType = 'basic' } = req.body;
-
-      if (!Array.isArray(fishIds) || fishIds.length === 0) {
-        return res
-          .status(400)
-          .json({ error: 'Fish IDs must be a non-empty array' });
-      }
-
-      const result = await FishService.feedMultipleFish(fishIds, foodType);
-
-      res.json({
-        success: true,
-        data: result,
-        message: `Fed ${result.successful.length} fish successfully, ${result.failed.length} failed`,
-      });
-    } catch (error) {
-      console.error('Error in feedMultipleFish:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  }
-
-  // Filter fish
-  static async filterFish(req, res) {
-    try {
-      const filters = req.query;
-
-      const filteredFish = await FishService.filterFish(filters);
-
-      res.json({
-        success: true,
-        data: filteredFish,
-        count: filteredFish.length,
-      });
-    } catch (error) {
-      console.error('Error in filterFish:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  }
-
-  // Get fish needing attention
-  static async getFishNeedingAttention(req, res) {
-    try {
-      const { playerId } = req.params;
-      const { playerId: authenticatedPlayerId } = req.user;
-
-      if (playerId !== authenticatedPlayerId) {
-        return res.status(403).json({ error: 'Access denied' });
-      }
-
-      const fishNeedingAttention =
-        await FishService.getFishNeedingAttention(playerId);
-
-      res.json({
-        success: true,
-        data: fishNeedingAttention,
-        count: fishNeedingAttention.length,
-      });
-    } catch (error) {
-      console.error('Error in getFishNeedingAttention:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  }
-
-  // Update fish mood
-  static async updateFishMood(req, res) {
-    try {
-      const { fishId } = req.params;
-
-      const updatedFish = await FishService.updateFishMood(fishId);
-
-      if (!updatedFish) {
-        return res.status(404).json({ error: 'Fish not found' });
-      }
-
-      res.json({
-        success: true,
-        data: updatedFish,
-        message: `Fish mood updated to ${updatedFish.mood}`,
-      });
-    } catch (error) {
-      console.error('Error in updateFishMood:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  }
-
-  // Get global fish statistics
-  static async getGlobalFishStats(req, res) {
-    try {
-      const stats = await FishService.getFishStats(null);
-
-      res.json({
-        success: true,
-        data: stats,
-      });
-    } catch (error) {
-      console.error('Error in getGlobalFishStats:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  }
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul><h3>Classes</h3><ul><li><a href="DecorationController.html">DecorationController</a></li><li><a href="FishController.html">FishController</a></li><li><a href="MinigameController.html">MinigameController</a></li><li><a href="PlayerController.html">PlayerController</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Thu Sep 11 2025 11:48:53 GMT+0100 (Horário Padrão da África Ocidental)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
