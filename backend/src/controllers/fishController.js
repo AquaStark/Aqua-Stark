@@ -1,8 +1,35 @@
 import { FishService } from '../services/fishService.js';
 
-// Fish controller for handling HTTP requests related to fish operations
+/**
+ * Fish Controller
+ *
+ * Handles HTTP requests related to fish operations including state management,
+ * happiness updates, feeding, statistics, and breeding operations.
+ *
+ * All methods follow a consistent response format:
+ * - Success: { success: true, data: result, message?: string }
+ * - Error: { error: string }
+ *
+ * @class FishController
+ */
 export class FishController {
-  // Get fish state
+  /**
+   * Get fish state
+   *
+   * Retrieves the current state of a specific fish.
+   * The resource is pre-validated by ownership middleware.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.resource - Pre-validated fish resource from middleware
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with fish state data
+   *
+   * @example
+   * // GET /api/fish/123/state
+   * // Response: { success: true, data: { fishId: "123", happiness: 85, ... } }
+   */
   static async getFishState(req, res) {
     try {
       // Resource is already validated by ownership middleware
@@ -15,7 +42,27 @@ export class FishController {
     }
   }
 
-  // Update fish happiness
+  /**
+   * Update fish happiness
+   *
+   * Updates the happiness level of a specific fish.
+   * Happiness must be between 0 and 100.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.fishId - Fish ID from URL
+   * @param {Object} req.body - Request body
+   * @param {number} req.body.happinessLevel - New happiness level (0-100)
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with updated fish data
+   *
+   * @example
+   * // PUT /api/fish/123/happiness
+   * // Body: { happinessLevel: 90 }
+   * // Response: { success: true, data: { ... }, message: "Fish happiness updated to 90" }
+   */
   static async updateFishHappiness(req, res) {
     try {
       const { fishId } = req.params;
@@ -47,7 +94,27 @@ export class FishController {
     }
   }
 
-  // Feed fish
+  /**
+   * Feed fish
+   *
+   * Feeds a fish with specified food type, affecting happiness and growth.
+   * Defaults to 'regular' food type if not specified.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.fishId - Fish ID from URL
+   * @param {Object} req.body - Request body
+   * @param {string} [req.body.foodType='regular'] - Type of food to feed
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with feeding result
+   *
+   * @example
+   * // POST /api/fish/123/feed
+   * // Body: { foodType: "premium" }
+   * // Response: { success: true, data: { ... }, message: "Fish fed with premium food" }
+   */
   static async feedFish(req, res) {
     try {
       const { fishId } = req.params;
@@ -66,7 +133,23 @@ export class FishController {
     }
   }
 
-  // Get fish statistics
+  /**
+   * Get fish statistics
+   *
+   * Retrieves detailed statistics for a specific fish including growth, feeding history, etc.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.fishId - Fish ID from URL
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with fish statistics
+   *
+   * @example
+   * // GET /api/fish/123/stats
+   * // Response: { success: true, data: { totalFeedings: 15, growthRate: 1.2, ... } }
+   */
   static async getFishStats(req, res) {
     try {
       const { fishId } = req.params;
@@ -84,7 +167,26 @@ export class FishController {
     }
   }
 
-  // Breed fish (placeholder for future implementation)
+  /**
+   * Breed fish
+   *
+   * Placeholder endpoint for fish breeding functionality.
+   * Currently returns a "not implemented" response.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.body - Request body
+   * @param {string} req.body.parent1Id - ID of first parent fish
+   * @param {string} req.body.parent2Id - ID of second parent fish
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response indicating not implemented
+   *
+   * @example
+   * // POST /api/fish/breed
+   * // Body: { parent1Id: "123", parent2Id: "456" }
+   * // Response: { error: "Not implemented", message: "Fish breeding will be implemented in a future update" }
+   */
   static async breedFish(req, res) {
     try {
       const { parent1Id, parent2Id } = req.body;
@@ -106,7 +208,26 @@ export class FishController {
     }
   }
 
-  // Get all fish for a player
+  /**
+   * Get all fish for a player
+   *
+   * Retrieves all fish belonging to a specific player.
+   * Players can only access their own fish.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.playerId - Player ID from URL
+   * @param {Object} req.user - Authenticated user data
+   * @param {string} req.user.playerId - Authenticated player's ID
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with array of player's fish
+   *
+   * @example
+   * // GET /api/players/123/fish
+   * // Response: { success: true, data: [{ fishId: "456", species: "goldfish", ... }, ...] }
+   */
   static async getPlayerFish(req, res) {
     try {
       const { playerId } = req.params;
