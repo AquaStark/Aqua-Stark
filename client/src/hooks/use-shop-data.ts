@@ -493,7 +493,7 @@ export function useShopData() {
 
       return { items, bundles };
     },
-    [shopCache, getShopItems, getShopBundles]
+    [shopCache, getShopItems, getShopBundles, CACHE_DURATION]
   );
 
   /**
