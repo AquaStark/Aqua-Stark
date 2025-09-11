@@ -56,19 +56,6 @@ interface Bundle {
 }
 
 // Type guards for data validation
-const isStoreItem = (item: any): item is StoreItem => {
-  return (
-    typeof item === 'object' &&
-    item !== null &&
-    typeof item.name === 'string' &&
-    typeof item.image === 'string' &&
-    typeof item.price === 'number' &&
-    typeof item.rarity === 'string' &&
-    typeof item.description === 'string' &&
-    typeof item.rating === 'number' &&
-    typeof item.id === 'string'
-  );
-};
 
 const isBundle = (bundle: any): bundle is Bundle => {
   return (
