@@ -1,4 +1,32 @@
-import { MinigameService } from '../services/minigameService.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: minigameController.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: minigameController.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { MinigameService } from '../services/minigameService.js';
 
 /**
  * Minigame Controller
@@ -34,7 +62,7 @@ export class MinigameController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.walletAddress - Player's wallet address
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with created session data
+   * @returns {Promise&lt;void>} JSON response with created session data
    *
    * @example
    * // POST /api/minigames/sessions
@@ -94,7 +122,7 @@ export class MinigameController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.walletAddress - Player's wallet address
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with ended session data
+   * @returns {Promise&lt;void>} JSON response with ended session data
    *
    * @example
    * // PUT /api/minigames/sessions/123/end
@@ -112,7 +140,7 @@ export class MinigameController {
         });
       }
 
-      if (finalScore < 0) {
+      if (finalScore &lt; 0) {
         return res
           .status(400)
           .json({ error: 'Final score must be non-negative' });
@@ -149,7 +177,7 @@ export class MinigameController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.walletAddress - Player's wallet address
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with player statistics
+   * @returns {Promise&lt;void>} JSON response with player statistics
    *
    * @example
    * // GET /api/minigames/stats
@@ -185,7 +213,7 @@ export class MinigameController {
    * @param {Object} req.query - Query parameters
    * @param {number} [req.query.limit=10] - Maximum number of results to return
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with game leaderboard
+   * @returns {Promise&lt;void>} JSON response with game leaderboard
    *
    * @example
    * // GET /api/minigames/leaderboard/flappy_fish?limit=20
@@ -234,7 +262,7 @@ export class MinigameController {
    * @param {Object} req.query - Query parameters
    * @param {number} [req.query.limit=20] - Maximum number of results to return
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with global leaderboard
+   * @returns {Promise&lt;void>} JSON response with global leaderboard
    *
    * @example
    * // GET /api/minigames/leaderboard/global?limit=50
@@ -269,7 +297,7 @@ export class MinigameController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.walletAddress - Player's wallet address
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with bonus XP session data
+   * @returns {Promise&lt;void>} JSON response with bonus XP session data
    *
    * @example
    * // POST /api/minigames/bonus-xp
@@ -287,7 +315,7 @@ export class MinigameController {
           .json({ error: 'Achievement and bonus XP are required' });
       }
 
-      if (bonusXP <= 0) {
+      if (bonusXP &lt;= 0) {
         return res.status(400).json({ error: 'Bonus XP must be positive' });
       }
 
@@ -322,7 +350,7 @@ export class MinigameController {
    * @param {Object} req.user - Authenticated user data
    * @param {string} req.user.walletAddress - Player's wallet address
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with session details
+   * @returns {Promise&lt;void>} JSON response with session details
    *
    * @example
    * // GET /api/minigames/sessions/123
@@ -358,7 +386,7 @@ export class MinigameController {
    * @async
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object
-   * @returns {Promise<void>} JSON response with array of game types
+   * @returns {Promise&lt;void>} JSON response with array of game types
    *
    * @example
    * // GET /api/minigames/types
@@ -414,3 +442,26 @@ export class MinigameController {
     }
   }
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-controllers.html">controllers</a></li></ul><h3>Classes</h3><ul><li><a href="DecorationController.html">DecorationController</a></li><li><a href="FishController.html">FishController</a></li><li><a href="MinigameController.html">MinigameController</a></li><li><a href="PlayerController.html">PlayerController</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Thu Sep 11 2025 11:48:53 GMT+0100 (Horário Padrão da África Ocidental)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
