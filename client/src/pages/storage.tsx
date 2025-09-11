@@ -3,13 +3,11 @@
 import { useState } from 'react';
 import { Filter, Search, SlidersHorizontal, ShoppingCart } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
-import { fishData, type ItemType } from '@/data/mock-game';
+import { type ItemType } from '@/data/mock-game';
 
 import {
-  miscItems,
   bundles,
   decorationBundles,
-  decorationItems,
 } from '@/data/mock-store';
 import { StoreTabs } from '@/components/store/store-tabs';
 import { StoreCategories } from '@/components/store/store-categories';
@@ -26,7 +24,7 @@ import { SortDropdown } from '@/components/store/sort-dropdown';
 import { PageHeader } from '@/components/layout/page-header';
 import { Footer } from '@/components/layout/footer';
 import { SpecialBundles } from '@/components/store/special-bundles';
-import { foodData, specialFoodBundles } from '@/data/market-data';
+import { specialFoodBundles } from '@/data/market-data';
 import { useStoreFilters } from '@/hooks/use-store-filters';
 import { useShopData } from '@/hooks/use-shop-data';
 import { Button } from '@/components/ui/button';
@@ -93,9 +91,6 @@ const isBundle = (bundle: any): bundle is Bundle => {
   );
 };
 
-const isStoreItemArray = (data: any): data is StoreItem[] => {
-  return Array.isArray(data) && data.every(isStoreItem);
-};
 
 const isBundleArray = (data: any): data is Bundle[] => {
   return Array.isArray(data) && data.every(isBundle);
