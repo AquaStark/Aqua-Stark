@@ -5,14 +5,10 @@ import { useShopData } from '@/hooks/use-shop-data';
 import { Button } from '@/components/ui/button';
 
 export function CartSidebar() {
-  const {
-    items,
-    setCheckoutStep,
-    isOpen,
-    toggleCart,
-  } = useCartStore();
+  const { items, setCheckoutStep, isOpen, toggleCart } = useCartStore();
 
-  const { cartSummary, removeItem, updateQuantity, processCartCheckout } = useShopData();
+  const { cartSummary, removeItem, updateQuantity, processCartCheckout } =
+    useShopData();
 
   return (
     <AnimatePresence>
