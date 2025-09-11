@@ -97,8 +97,8 @@ export function useShopData() {
   const getShopItems = useCallback((category: ItemType): ShopItem[] => {
     switch (category) {
       case 'fish':
-        return fishData.map(fish => ({
-          id: fish.id,
+        return fishData.map((fish, index) => ({
+          id: `fish-${index}`,
           name: fish.name,
           image: fish.image,
           price: fish.price,
@@ -107,12 +107,12 @@ export function useShopData() {
           category: 'Fish',
           description: fish.description,
           rating: fish.rating,
-          isNew: fish.isNew,
-          stock: fish.stock,
-          isLimited: fish.isLimited,
-          discounted: fish.discounted,
-          popularity: fish.popularity,
-          createdAt: fish.createdAt,
+          isNew: false,
+          stock: 100,
+          isLimited: false,
+          discounted: false,
+          popularity: 0,
+          createdAt: new Date(),
         }));
       case 'food':
         return foodData.map(food => ({
@@ -128,9 +128,9 @@ export function useShopData() {
           isNew: food.isNew,
           stock: food.stock,
           isLimited: food.isLimited,
-          discounted: food.discounted,
-          popularity: food.popularity,
-          createdAt: food.createdAt,
+          discounted: (food as any).discounted || false,
+          popularity: (food as any).popularity || 0,
+          createdAt: (food as any).createdAt || new Date(),
         }));
       case 'decorations':
         return decorationItems.map(item => ({
@@ -138,7 +138,7 @@ export function useShopData() {
           name: item.name,
           image: item.image,
           price: item.price,
-          originalPrice: item.originalPrice,
+          originalPrice: (item as any).originalPrice,
           rarity: item.rarity,
           category: item.category,
           description: item.description,
@@ -146,9 +146,9 @@ export function useShopData() {
           isNew: item.isNew,
           stock: item.stock,
           isLimited: item.isLimited,
-          discounted: item.discounted,
-          popularity: item.popularity,
-          createdAt: item.createdAt,
+          discounted: (item as any).discounted || false,
+          popularity: (item as any).popularity || 0,
+          createdAt: (item as any).createdAt || new Date(),
         }));
       case 'others':
         return miscItems.map(item => ({
@@ -156,7 +156,7 @@ export function useShopData() {
           name: item.name,
           image: item.image,
           price: item.price,
-          originalPrice: item.originalPrice,
+          originalPrice: (item as any).originalPrice,
           rarity: item.rarity,
           category: item.category,
           description: item.description,
@@ -164,9 +164,9 @@ export function useShopData() {
           isNew: item.isNew,
           stock: item.stock,
           isLimited: item.isLimited,
-          discounted: item.discounted,
-          popularity: item.popularity,
-          createdAt: item.createdAt,
+          discounted: (item as any).discounted || false,
+          popularity: (item as any).popularity || 0,
+          createdAt: (item as any).createdAt || new Date(),
         }));
       default:
         return [];
@@ -202,9 +202,9 @@ export function useShopData() {
           image: bundle.image,
           price: bundle.price,
           originalPrice: bundle.originalPrice,
-          discount: bundle.discount,
-          tag: bundle.tag,
-          rarity: bundle.rarity,
+          discount: `${bundle.savingsPercentage}% OFF`,
+          tag: 'Special',
+          rarity: 'Special',
           items: bundle.items,
           description: bundle.description,
           savingsPercentage: bundle.savingsPercentage,
