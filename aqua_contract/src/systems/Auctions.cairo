@@ -8,6 +8,7 @@ pub trait IAquaAuction<T> {
 
     fn place_bid(ref self: T, auction_id: u256, amount: u256);
     fn end_auction(ref self: T, auction_id: u256);
+    fn finalize_auction(ref self: T, auction_id: u256);
     fn get_active_auctions(self: @T) -> Array<Auction>;
     fn get_auction_by_id(self: @T, auction_id: u256) -> Auction;
 }
@@ -19,7 +20,9 @@ pub mod AquaAuction {
     use aqua_stark::models::auctions_model::*;
     use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
+    use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
     use starknet::{get_block_timestamp, get_caller_address, ContractAddress};
+    use core::num::traits::Zero;
     // Session system imports
     use aqua_stark::models::session::{
         SessionKey, SessionAnalytics, SESSION_STATUS_ACTIVE, SESSION_STATUS_EXPIRED,
@@ -70,6 +73,8 @@ pub mod AquaAuction {
                 highest_bid: 0,
                 highest_bidder: Option::None(()),
                 active: true,
+                finalized: false,
+                token: Zero::zero(),
             };
 
             // Store auction
@@ -168,6 +173,99 @@ pub mod AquaAuction {
                         final_price: auction.highest_bid,
                     },
                 );
+        }
+
+        fn finalize_auction(ref self: ContractState, auction_id: u256) {
+            let mut world = self.world_default();
+            let caller = get_caller_address();
+            let current_time = get_block_timestamp();
+
+            // Get or create unified session
+            let session_id = self.get_or_create_session(caller);
+            self.validate_and_update_session(session_id, PERMISSION_TRADE);
+
+            let mut auction: Auction = world.read_model(auction_id);
+            let mut fish_owner: FishOwnerA = world.read_model(auction.fish_id);
+            let token_dispatcher = IERC20Dispatcher { contract_address: auction.token };
+
+             // Check if the caller is the seller or the winner
+             assert!(caller == auction.seller || caller == auction.highest_bidder.unwrap()
+             , "Caller is not the seller or the winner");
+
+
+            // Validate auction exists and has expired
+            assert!(auction.auction_id == auction_id, "Auction does not exist");
+            assert!(auction.active, "Auction is not active");
+            assert!(auction.end_time <= current_time, "Auction has not expired");
+            assert!(!auction.finalized, "Auction already finalized");
+
+            auction.finalized = true;
+            auction.active = false;
+            world.write_model(@auction);
+
+            // Handle auction outcome
+            match auction.highest_bidder {
+                Option::Some(winner) => {
+                    // Check if bid meets reserve price
+                    if auction.highest_bid >= auction.reserve_price {
+                        // Valid winning bid - transfer fish to winner
+                        fish_owner.fish_id = auction.fish_id;
+                        fish_owner.owner = winner;
+                        fish_owner.locked = false;
+                        world.write_model(@fish_owner);
+
+                        // Transfer funds from winner to seller
+                        assert!(
+                            token_dispatcher.transfer(auction.seller, auction.highest_bid),
+                            "Failed to transfer funds to seller",
+                        );
+
+                        // Emit event with winner
+                        world.emit_event(@AuctionFinalized {
+                            auction_id,
+                            seller: auction.seller,
+                            winner: Option::Some(winner),
+                            final_price: auction.highest_bid,
+                            fish_id: auction.fish_id,
+                            outcome: 1, // Winner
+                        });
+                    } else {
+                        // Bid doesn't meet reserve - return fish to seller
+                        world.write_model(@FishOwnerA { 
+                            fish_id: auction.fish_id, 
+                            owner: auction.seller, 
+                            locked: false 
+                        });
+
+                        // Emit event with no winner
+                        world.emit_event(@AuctionFinalized {
+                            auction_id,
+                            seller: auction.seller,
+                            winner: Option::None(()),
+                            final_price: 0,
+                            fish_id: auction.fish_id,
+                            outcome: 0, // No winner
+                        });
+                    }
+                },
+                Option::None(()) => {
+                    // No bids - return fish to seller
+                    world.write_model(@FishOwnerA { 
+                        fish_id: auction.fish_id, 
+                        owner: auction.seller, 
+                        locked: false 
+                    });
+
+                    world.emit_event(@AuctionFinalized {
+                        auction_id,
+                        seller: auction.seller,
+                        winner: Option::None(()),
+                        final_price: 0,
+                        fish_id: auction.fish_id,
+                        outcome: 0, // No winner
+                    });
+                },
+            }
         }
 
         fn get_active_auctions(self: @ContractState) -> Array<Auction> {
