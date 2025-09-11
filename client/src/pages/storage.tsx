@@ -28,6 +28,7 @@ import { Footer } from '@/components/layout/footer';
 import { SpecialBundles } from '@/components/store/special-bundles';
 import { foodData, specialFoodBundles } from '@/data/market-data';
 import { useStoreFilters } from '@/hooks/use-store-filters';
+import { useShopData } from '@/hooks/use-shop-data';
 import { Button } from '@/components/ui/button';
 
 // Define types for our data model
@@ -119,25 +120,27 @@ export default function StorePage() {
   } = useStoreFilters({ initialTab: 'fish' });
 
   const bubbles = useBubbles();
-  const { items, toggleCart } = useCartStore();
-  const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
+  const { toggleCart } = useCartStore();
+  const { cartSummary } = useShopData();
+
+  const { getShopItems } = useShopData();
 
   // Get the correct items based on the active tab
   const getTabItems = (): StoreItem[] => {
-    switch (activeTab) {
-      case 'fish':
-        return isStoreItemArray(fishData) ? fishData : [];
-      case 'food':
-        // In a real implementation, these would come from their own data files
-        return isStoreItemArray(foodData) ? foodData : [];
-      case 'decorations':
-        // In a real implementation, these would come from their own data files
-        return decorationItems;
-      case 'others':
-        return isStoreItemArray(miscItems) ? miscItems : [];
-      default:
-        return isStoreItemArray(fishData) ? fishData : [];
-    }
+    const shopItems = getShopItems(activeTab);
+    return shopItems.map(item => ({
+      name: item.name,
+      image: item.image,
+      price: item.price,
+      rarity: item.rarity,
+      description: item.description,
+      rating: item.rating,
+      category: item.category,
+      discounted: item.discounted,
+      popularity: item.popularity,
+      createdAt: item.createdAt,
+      id: item.id,
+    }));
   };
 
   // Filter items based on all filters
@@ -269,9 +272,9 @@ export default function StorePage() {
               onClick={toggleCart}
             >
               <ShoppingCart className='mr-2' />
-              {itemCount > 0 && (
+              {cartSummary.itemCount > 0 && (
                 <span className='absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-red-500 rounded-full -top-1 -right-1'>
-                  {itemCount}
+                  {cartSummary.itemCount}
                 </span>
               )}
             </Button>
