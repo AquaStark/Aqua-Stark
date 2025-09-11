@@ -5,10 +5,7 @@ import { Filter, Search, SlidersHorizontal, ShoppingCart } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { type ItemType } from '@/data/mock-game';
 
-import {
-  bundles,
-  decorationBundles,
-} from '@/data/mock-store';
+import { bundles, decorationBundles } from '@/data/mock-store';
 import { StoreTabs } from '@/components/store/store-tabs';
 import { StoreCategories } from '@/components/store/store-categories';
 import { StoreGrid } from '@/components/store/store-grid';
@@ -90,7 +87,6 @@ const isBundle = (bundle: any): bundle is Bundle => {
     typeof bundle.description === 'string'
   );
 };
-
 
 const isBundleArray = (data: any): data is Bundle[] => {
   return Array.isArray(data) && data.every(isBundle);
