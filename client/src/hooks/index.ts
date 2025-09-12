@@ -18,6 +18,7 @@
  * @category Hooks
  */
 
+// Top-level hooks
 export { useAquarium } from './use-aquarium';
 export { useBubbles } from './use-bubbles';
 export { useCartridgeConnection } from './use-cartridge-connection';
