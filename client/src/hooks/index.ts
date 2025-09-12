@@ -1,3 +1,23 @@
+/**
+ * @file hooks/index.ts
+ * @description
+ * Central export hub (barrel file) for all custom hooks used across the application.
+ *
+ * This file re-exports hooks from individual hook modules and subfolders,
+ * allowing for clean, centralized imports:
+ *
+ * ```ts
+ * import { useAquarium, useFishMovement } from "@/hooks";
+ * ```
+ *
+ * ### Benefits
+ * - Simplifies import paths (no need to import from subfolders manually).
+ * - Provides a single, organized entry point for all hooks.
+ * - Makes refactoring and code navigation easier.
+ *
+ * @category Hooks
+ */
+
 export { useAquarium } from './use-aquarium';
 export { useBubbles } from './use-bubbles';
 export { useCartridgeConnection } from './use-cartridge-connection';
