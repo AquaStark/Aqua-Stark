@@ -4,9 +4,7 @@
 
 import { useCallback } from 'react';
 import { useAccount } from '@starknet-react/core';
-import { useDecoration } from '@/hooks';
-import { useFish } from '@/hooks';
-import { usePlayer } from '@/hooks';
+import { useAquarium, useDecoration, useFish, usePlayer } from './dojo';
 import { handleContractRequest } from '@/systems/contract-request-system';
 import {
   GameDataTransformer,
@@ -14,7 +12,6 @@ import {
   safeParseInt,
 } from '@/systems/data-transformation-system';
 import { useDevConsoleStore } from '@/store/dev-console-store';
-import { useAquarium } from './dojo';
 
 export const useDevConsoleHandlers = () => {
   const { account } = useAccount();
