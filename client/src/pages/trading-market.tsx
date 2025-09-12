@@ -13,7 +13,7 @@ import { mockFishData } from '@/data/market-data';
 import '@/styles/market.css';
 import { Footer } from '@/components/layout/footer';
 import { PageHeader } from '@/components/layout/page-header';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 import '@/styles/market.css';
 import { useState } from 'react';
 

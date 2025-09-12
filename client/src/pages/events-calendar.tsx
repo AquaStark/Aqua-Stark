@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { BubblesBackground } from '@/components/bubble-background';
 import { Footer } from '@/components/layout/footer';
 import { PageHeader } from '@/components/layout/page-header';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 import EventTabs from '@/components/events-calendar/event-tabs';
 import { ComingSoonModal } from '@/components/ui/coming-soon-modal';
 

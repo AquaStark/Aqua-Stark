@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAccount } from '@starknet-react/core';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { usePlayerValidation } from '@/hooks/usePlayerValidation';
+import { usePlayerValidation } from '@/hooks';
 import { useState } from 'react';
 
 export function HeroSection() {

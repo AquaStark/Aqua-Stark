@@ -13,7 +13,7 @@ export interface SettingsState {
 
 const SETTINGS_STORAGE_KEY = 'aqua-stark-settings';
 
-const useSettings = () => {
+export const useSettings = () => {
   const [settings, setSettings] = useState<SettingsState>({
     sound_enabled: true,
     animations_enabled: true,
@@ -70,5 +70,3 @@ const useSettings = () => {
 
   return { settings, updateSetting, isLoading };
 };
-
-export default useSettings;

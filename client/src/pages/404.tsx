@@ -1,6 +1,6 @@
 import { BubblesBackground } from '@/components/bubble-background';
 import BackToHomeButton from '@/components/ui/back-to-home-button';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 
 export default function Error404Page() {
   const bubbles = useBubbles({ maxBubbles: 20 });

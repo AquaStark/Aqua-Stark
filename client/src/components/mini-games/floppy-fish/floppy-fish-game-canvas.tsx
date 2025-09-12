@@ -1,5 +1,5 @@
-import { useGameLogic } from '@/hooks/minigames/floppy-fish/use-game-logic';
-import { useInputHandler } from '@/hooks/minigames/floppy-fish/use-input-handler';
+import { useGameLogic } from '@/hooks';
+import { useInputHandler } from '@/hooks';
 import { Fish } from './Fish';
 import { Obstacles } from './Obstacles';
 import { BottomInfoPanel } from './bottom-info-panel';

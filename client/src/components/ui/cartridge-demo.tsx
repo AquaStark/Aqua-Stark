@@ -1,7 +1,7 @@
 'use client';
 
 import { ConnectButton } from './connect-button';
-import { useCartridgeSession } from '@/hooks/use-cartridge-session';
+import { useCartridgeSession } from '@/hooks';
 
 export function CartridgeDemo() {
   const {

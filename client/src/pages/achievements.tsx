@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BubblesBackground } from '@/components/bubble-background';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 import { PageHeader } from '@/components/layout/page-header';
 import { Footer } from '@/components/layout/footer';
 import { Trophy } from 'lucide-react';

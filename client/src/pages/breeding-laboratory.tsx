@@ -10,7 +10,7 @@ import { fishCollection } from '@/data/fish-data';
 import '@/styles/laboratory.css';
 import { Footer } from '@/components/layout/footer';
 import { PageHeader } from '@/components/layout/page-header';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 
 export default function LaboratoryPage() {
   const [activeTab, setActiveTab] = useState('breeding');

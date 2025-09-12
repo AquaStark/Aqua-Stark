@@ -1,6 +1,6 @@
 import { PageHeader } from '@/components/layout/page-header';
 import { Footer } from '@/components/layout/footer';
-import { useGames } from '@/hooks/use-games';
+import { useGames } from '@/hooks';
 import { FloppyFishGame } from '@/components/mini-games/floppy-fish-game';
 
 export default function FloppyFishGamePage() {

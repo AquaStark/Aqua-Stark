@@ -5,9 +5,9 @@ import { Footer } from '@/components/layout/footer';
 import { PageHeader } from '@/components/layout/page-header';
 import { Tabs } from '@/components/ui/tabs';
 import EncyclopediaTabs from '@/components/encyclopedia/encyclopedia-tabs';
-import { useEncyclopedia } from '@/hooks/use-encyclopedia';
+import { useEncyclopedia } from '@/hooks';
 import { BubblesBackground } from '@/components/bubble-background';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 import { ComingSoonModal } from '@/components/ui/coming-soon-modal';
 
 export default function EncyclopediaPage() {

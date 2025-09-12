@@ -114,7 +114,7 @@ function MyComponent() {
 ### useCartridgeSession Hook
 
 ```typescript
-import { useCartridgeSession } from '@/hooks/use-cartridge-session';
+import { useCartridgeSession } from '@/hooks';
 
 function MyComponent() {
   const {

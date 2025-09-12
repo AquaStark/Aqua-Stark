@@ -6,11 +6,11 @@ import { featuredTopics } from '@/data/help-center-data';
 import HelpCenterSidebar from '@/components/help-center/help-sidebar';
 import HelpMainContent from '@/components/help-center/help-main-content';
 import { BubblesBackground } from '@/components/bubble-background';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 import { PageHeader } from '@/components/layout/page-header';
 import { Footer } from '@/components/layout/footer';
 import { Input } from '@/components/ui/input';
-import { useHelpCenter } from '@/hooks/use-help-center';
+import { useHelpCenter } from '@/hooks';
 import { ComingSoonModal } from '@/components/ui/coming-soon-modal';
 
 function HelpCenter() {

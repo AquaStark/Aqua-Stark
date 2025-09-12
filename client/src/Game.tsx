@@ -9,7 +9,7 @@ import {
   GenealogySection,
 } from './components/game/dev-console';
 import { useDevConsoleStore } from './store/dev-console-store';
-import { useDevConsoleHandlers } from './hooks/use-dev-console-handlers';
+import { useDevConsoleHandlers } from './hooks';
 
 export const Game = () => {
   const { state, handlers } = useDevConsoleHandlers();

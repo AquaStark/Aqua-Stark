@@ -5,7 +5,7 @@ import { FeaturedFish } from '@/components/landing/featured-fish';
 import { Footer } from '@/components/landing/footer';
 import { HeroSection } from '@/components/landing/hero-section';
 import { Navbar } from '@/components/landing/navbar';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 
 export default function LandingPage() {
   // Bubbles configuration for background effect
