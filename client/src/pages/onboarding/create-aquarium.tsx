@@ -3,12 +3,12 @@
 import { useAccount } from '@starknet-react/core';
 import { useState, useEffect } from 'react';
 import { CairoCustomEnum } from 'starknet';
-import { useAquarium } from '@/hooks/dojo/useAquarium';
-import { useFish } from '@/hooks/dojo/useFish';
+import { useAquarium } from '@/hooks/dojo';
+import { useFish } from '@/hooks';
 import { PageHeader } from '@/components/layout/page-header';
 import { Footer } from '@/components/layout/footer';
 import { BubblesBackground } from '@/components/bubble-background';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';

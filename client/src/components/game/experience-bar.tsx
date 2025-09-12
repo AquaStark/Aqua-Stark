@@ -1,4 +1,4 @@
-import { useExperience } from '@/hooks/use-experience';
+import { useExperience } from '@/hooks';
 
 interface ExperienceBarProps {
   currentLevel: number;

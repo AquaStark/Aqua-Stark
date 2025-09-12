@@ -1,4 +1,4 @@
-import { usePlayer } from '@/hooks/dojo/usePlayer';
+import { usePlayer } from '@/hooks';
 import { ApiClient, API_CONFIG, buildApiUrl } from '@/config/api';
 import { useCallback, useState } from 'react';
 import { BackendPlayerData, OnChainPlayerData } from '@/types/player-types';

@@ -4,10 +4,9 @@
 
 import { useCallback } from 'react';
 import { useAccount } from '@starknet-react/core';
-import { useAquarium } from '@/hooks/dojo/useAquarium';
-import { useDecoration } from '@/hooks/dojo/useDecoration';
-import { useFish } from '@/hooks/dojo/useFish';
-import { usePlayer } from '@/hooks/dojo/usePlayer';
+import { useDecoration } from '@/hooks';
+import { useFish } from '@/hooks';
+import { usePlayer } from '@/hooks';
 import { handleContractRequest } from '@/systems/contract-request-system';
 import {
   GameDataTransformer,
@@ -15,6 +14,7 @@ import {
   safeParseInt,
 } from '@/systems/data-transformation-system';
 import { useDevConsoleStore } from '@/store/dev-console-store';
+import { useAquarium } from './dojo';
 
 export const useDevConsoleHandlers = () => {
   const { account } = useAccount();

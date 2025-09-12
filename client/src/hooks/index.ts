@@ -27,5 +27,5 @@ export { usePlayerValidation } from './usePlayerValidation';
 // dojo hooks
 export * from './dojo/index';
 
-// minigames hook (categories nested within)
+// minigames hook (floppy fish)
 export * from './minigames/floppy-fish/index';
