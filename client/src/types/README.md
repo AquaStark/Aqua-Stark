@@ -47,11 +47,12 @@ const myFish: FishType = {
 
 **Usage Example**:
 ```typescript
-import { Fish, BreedingPair } from '@/types/fish';
-
++import { Fish, BreedingPair } from '@/types/fish';
+const fatherFish: Fish = {} as Fish;
+const motherFish: Fish = {} as Fish;
 const breedingPair: BreedingPair = {
-  father: myFish,
-  mother: anotherFish
+  father: fatherFish,
+  mother: motherFish,
 };
 ```
 
@@ -374,4 +375,4 @@ When contributing new types:
 
 ---
 
-*This documentation is automatically validated against the actual type definitions. Last updated: 2025-09-12*
+> Note: Keep this README in sync with the source type definitions. Last updated: 2025-09-12.
