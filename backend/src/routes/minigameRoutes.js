@@ -1,12 +1,13 @@
 import express from 'express';
 import { MinigameController } from '../controllers/minigameController.js';
 import { AuthMiddleware } from '../middleware/auth.js';
+import { rateLimitPresets } from '../middleware/rateLimiting.js';
 
 const router = express.Router();
 
 // Apply authentication middleware to all routes
 router.use(AuthMiddleware.verifyToken);
-router.use(AuthMiddleware.rateLimit(300, 15 * 60 * 1000)); // 300 requests per 15 minutes
+router.use(rateLimitPresets.minigame);
 
 // Game session routes
 router.post('/sessions', MinigameController.createGameSession);

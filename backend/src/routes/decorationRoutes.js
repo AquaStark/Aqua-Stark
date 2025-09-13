@@ -1,8 +1,12 @@
 import express from 'express';
 import { DecorationController } from '../controllers/decorationController.js';
 import { simpleAuth, validateOwnership } from '../middleware/auth.js';
+import { rateLimitPresets } from '../middleware/rateLimiting.js';
 
 const router = express.Router();
+
+// Apply rate limiting to all decoration routes
+router.use(rateLimitPresets.authenticated);
 
 // Decoration state routes (require authentication)
 router.get(

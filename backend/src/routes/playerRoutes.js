@@ -1,15 +1,15 @@
 import express from 'express';
 import { PlayerController } from '../controllers/playerController.js';
 import {
-  AuthMiddleware,
   simpleAuth,
   validateOwnership,
 } from '../middleware/auth.js';
+import { rateLimitPresets } from '../middleware/rateLimiting.js';
 
 const router = express.Router();
 
 // Apply rate limiting to all player routes (protects endpoints performing authorization)
-router.use(AuthMiddleware.rateLimit(300, 15 * 60 * 1000)); // 300 requests per 15 minutes
+router.use(rateLimitPresets.authenticated);
 
 // Player profile routes (require authentication)
 router.get(
