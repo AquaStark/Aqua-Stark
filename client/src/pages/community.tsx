@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BubblesBackground } from '@/components/bubble-background';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 import { PageHeader } from '@/components/layout/page-header';
 import { Footer } from '@/components/layout/footer';
 import { CommunityTabs } from '@/components/community/community-tabs';

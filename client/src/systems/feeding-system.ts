@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { useFoodSystem } from '@/hooks/use-food-system';
+import { useFoodSystem } from '@/hooks';
 
 interface FeedingSystemOptions {
   aquariumBounds: { width: number; height: number };

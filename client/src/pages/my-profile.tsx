@@ -12,7 +12,7 @@ import {
   PlayerStatistics,
   BubblesBackground,
 } from '@/components/profile';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 
 export default function MyProfile() {
   const [activeTab, setActiveTab] = useState('collection');

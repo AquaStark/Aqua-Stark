@@ -172,7 +172,7 @@ The implementation uses these backend endpoints:
 ### Basic Usage
 
 ```typescript
-import { usePlayerValidation } from '@/hooks/usePlayerValidation';
+import { usePlayerValidation } from '@/hooks';
 
 function MyComponent() {
   const { validatePlayer, isValidating } = usePlayerValidation();

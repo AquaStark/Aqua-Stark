@@ -5,23 +5,22 @@ import { GameHeader } from '@/components/game/game-header';
 import { AquariumTabs } from '@/components/game/aquarium-tabs';
 import { TipsPopup } from '@/components/game/tips-popup';
 import { INITIAL_GAME_STATE } from '@/data/game-data';
-import { useAquarium } from '@/hooks/use-aquarium';
-import { useFishStats } from '@/hooks/use-fish-stats';
+import { useFishStats } from '@/hooks';
 import { GameMenu } from '@/components/game/game-menu';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 import { BubblesBackground } from '@/components/bubble-background';
 import { motion } from 'framer-motion';
 import { useActiveAquarium } from '../store/active-aquarium';
 import { initialAquariums } from '@/data/mock-aquarium';
 import { DirtDebugger } from '@/components/dirt/dirt-debugger';
-import { useDirtSystemFixed as useDirtSystem } from '@/hooks/use-dirt-system-fixed';
+import { useDirtSystemFixed as useDirtSystem } from '@/hooks';
 import { DirtOverlay } from '@/components/dirt/dirt-overlay';
 import { useFeedingSystem } from '@/systems/feeding-system';
 import { FeedingAquarium } from '@/components/game/feeding-aquarium';
 import { FishSpecies } from '@/types/game';
 import { useAccount } from '@starknet-react/core';
 // import { toast } from 'sonner';
-import { useFish } from '@/hooks/dojo/useFish';
+import { useFish } from '@/hooks';
 import { useNavigate } from 'react-router-dom';
 import { FeedingDebugPanel } from '@/components/game/feeding-debug-panel';
 import { fishCollection as fullFishList } from '@/data/fish-data';
@@ -35,6 +34,7 @@ import {
   Timer,
   Monitor,
 } from 'lucide-react';
+import { useAquarium } from '@/hooks';
 
 export default function GamePage() {
   const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
