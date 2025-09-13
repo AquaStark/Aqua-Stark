@@ -1,4 +1,4 @@
-import { useEncyclopedia } from '@/hooks/use-encyclopedia';
+import { useEncyclopedia } from '@/hooks';
 import CollectionProgress from '@/components/encyclopedia/collection-stats/collection-progress';
 import BreakdownSection from '@/components/encyclopedia/collection-stats/breakdown-section';
 import RecentDiscoveries from '@/components/encyclopedia/collection-stats/recent-discoveries';

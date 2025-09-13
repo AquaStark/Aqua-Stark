@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAccount } from '@starknet-react/core';
-import { useGameActions } from '@/hooks/useGameActions';
+import { useGameActions } from '@/hooks';
 import { toast } from 'sonner';
 
 export function AquariumActions() {

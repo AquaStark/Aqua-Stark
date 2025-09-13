@@ -18,7 +18,8 @@ import { PageHeader } from '@/components/layout/page-header';
 
 import { Footer } from '@/components/layout/footer';
 
-import useSettings, { SettingsState } from '@/hooks/use-settings';
+import { useSettings } from '@/hooks';
+import { SettingsState } from '@/hooks/use-settings';
 
 interface SettingsItemProps {
   icon: React.ReactNode;

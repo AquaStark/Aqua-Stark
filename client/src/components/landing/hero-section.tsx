@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAccount } from '@starknet-react/core';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { usePlayerValidation } from '@/hooks/usePlayerValidation';
+import { usePlayerValidation } from '@/hooks';
 import { useState } from 'react';
 
 export function HeroSection() {
@@ -29,7 +29,9 @@ export function HeroSection() {
         // User exists - check if we need to sync to backend
         if (validation.isOnChain && !validation.isInBackend) {
           try {
-            await syncPlayerToBackend(validation.playerData, account.address);
+            if (validation.playerData) {
+              await syncPlayerToBackend(validation.playerData, account.address);
+            }
             toast.success('Welcome back! Your data has been synced.');
           } catch (error) {
             console.error('Error syncing player to backend:', error);

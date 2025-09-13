@@ -13,7 +13,7 @@ import { mockFishData } from '@/data/market-data';
 import '@/styles/market.css';
 import { Footer } from '@/components/layout/footer';
 import { PageHeader } from '@/components/layout/page-header';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 import '@/styles/market.css';
 import { useState } from 'react';
 
@@ -50,11 +50,8 @@ export default function MarketPage() {
       );
       if (!hasMatchingTrait) return false;
     }
-    if (
-      (filters as any).search &&
-      !fish.name.toLowerCase().includes((filters as any).search.toLowerCase())
-    )
-      return false;
+    const q = filters.search?.trim().toLowerCase();
+    if (q && !fish.name.toLowerCase().includes(q)) return false;
     return true;
   });
 

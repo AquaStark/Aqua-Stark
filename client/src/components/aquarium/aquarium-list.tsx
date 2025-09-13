@@ -1,6 +1,7 @@
 import { AquariumCard } from './aquarium-card';
 
 import type { Aquarium as AquariumCardType } from './aquarium-card';
+import type { Fish } from '@/types/fish';
 
 interface Aquarium extends Omit<AquariumCardType, 'fishes'> {
   id: number;
@@ -40,7 +41,10 @@ export function AquariumList({
           {aquariums.map(aquarium => (
             <AquariumCard
               key={aquarium.id}
-              aquarium={{ ...aquarium, fishes: (aquarium as any).fishes ?? [] }}
+              aquarium={{
+                ...aquarium,
+                fishes: (aquarium as Partial<{ fishes: Fish[] }>).fishes ?? [],
+              }}
               onSelect={() => onSelectAquarium?.(aquarium)}
             />
           ))}

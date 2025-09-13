@@ -1,4 +1,4 @@
-import { useLoadingNavigation } from '@/hooks/use-loading-navigation';
+import { useLoadingNavigation } from '@/hooks';
 import { motion } from 'framer-motion';
 
 interface PlayButtonProps {

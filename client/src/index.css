@@ -722,3 +722,42 @@
 .animate-heartbeat {
   animation: heartbeat 2.5s ease-in-out infinite;
 }
+
+/* Wallpaper Mode Styles */
+.wallpaper-mode {
+  /* Ensure full screen coverage */
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+}
+
+.wallpaper-mode .wallpaper-exit-button {
+  /* Style for the exit button in wallpaper mode */
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.wallpaper-mode .wallpaper-exit-button:hover {
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
+}
+
+/* Hide scrollbars in wallpaper mode */
+.wallpaper-mode {
+  overflow: hidden;
+}
+
+/* Ensure aquarium content is centered and full screen in wallpaper mode */
+.wallpaper-mode .feeding-aquarium {
+  width: 100vw !important;
+  height: 100vh !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+}

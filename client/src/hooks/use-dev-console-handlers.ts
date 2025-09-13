@@ -4,10 +4,7 @@
 
 import { useCallback } from 'react';
 import { useAccount } from '@starknet-react/core';
-import { useAquarium } from '@/hooks/dojo/useAquarium';
-import { useDecoration } from '@/hooks/dojo/useDecoration';
-import { useFish } from '@/hooks/dojo/useFish';
-import { usePlayer } from '@/hooks/dojo/usePlayer';
+import { useAquarium, useDecoration, useFish, usePlayer } from './dojo';
 import { handleContractRequest } from '@/systems/contract-request-system';
 import {
   GameDataTransformer,

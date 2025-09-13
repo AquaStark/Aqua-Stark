@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { Gift, Award } from 'lucide-react';
 import { achievements } from '@/lib/constants/mock-data/mock-achievements';
 
@@ -22,7 +22,7 @@ export const Achievements = () => {
       : achievements.filter(achievement => achievement.category === activeTab);
 
   // Animation variants for the card
-  const cardVariants: any = {
+  const cardVariants: Variants = {
     initial: {
       scale: 1,
       y: 0,

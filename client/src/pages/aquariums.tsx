@@ -8,15 +8,17 @@ import { AquariumList } from '@/components/aquarium/aquarium-list';
 import { PurchaseModal } from '@/components/aquarium/purchase-modal';
 import { CreateAquariumButton } from '@/components/aquarium/create-aquarium-button';
 import { BubblesBackground } from '@/components/bubble-background';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 import { Search, Filter } from 'lucide-react';
 import { useActiveAquarium } from '../store/active-aquarium';
 import { useNavigate } from 'react-router-dom';
 import type { Aquarium } from '@/components/aquarium/aquarium-card';
 import { useAccount } from '@starknet-react/core';
-import { useAquarium } from '@/hooks/dojo/useAquarium';
-import { useFish } from '@/hooks/dojo/useFish';
+import { useFish } from '@/hooks';
 import * as models from '@/typescript/models.gen';
+// Removed unused imports
+import { num, type BigNumberish } from 'starknet';
+import { useAquarium } from '@/hooks/dojo';
 
 export default function AquariumsPage() {
   const [aquariums, setAquariums] = useState<Aquarium[]>([]);
@@ -44,19 +46,20 @@ export default function AquariumsPage() {
   const navigate = useNavigate();
 
   // Function to load aquarium with its fish
-  const loadAquariumWithFishes = async (aquariumId: string | number) => {
+  const loadAquariumWithFishes = async (aquariumId: BigNumberish) => {
     try {
-      const aquariumData = await getAquarium(BigInt(aquariumId));
+      const id = num.toBigInt(aquariumId);
+      const aquariumData = await getAquarium(id);
       if (!aquariumData) return null;
 
-      const fishPromises = aquariumData.housed_fish.map((fishId: any) =>
-        getFish(fishId)
+      const fishPromises = aquariumData.housed_fish.map(
+        (fishId: BigNumberish) => getFish(fishId)
       );
       const fishData = await Promise.all(fishPromises);
 
       return {
         aquariumData,
-        fishData: fishData.filter(fish => fish !== null),
+        fishData: fishData.filter((fish): fish is models.Fish => fish !== null),
       };
     } catch (error) {
       console.error('Error loading aquarium with fishes:', error);
@@ -67,7 +70,7 @@ export default function AquariumsPage() {
   // Function to transform contract aquarium data to UI format
   const transformAquariumData = (
     contractAquarium: models.Aquarium,
-    fishes: any[] = []
+    fishes: models.Fish[] = []
   ): Aquarium => {
     return {
       id: Number(contractAquarium.id),
@@ -96,8 +99,8 @@ export default function AquariumsPage() {
           fins: 'long',
           size: 'medium',
         },
-        hunger: fish.hunger ?? 50,
-        state: (fish.state as any) ?? 'idle',
+        hunger: (fish as any).hunger ?? 50,
+        state: (fish as any).state ?? 'idle',
       })),
     };
   };
@@ -122,13 +125,15 @@ export default function AquariumsPage() {
       }
 
       // Load each aquarium with its fish
-      const aquariumPromises = playerAquariums.map(async (aquariumId: any) => {
-        const result = await loadAquariumWithFishes(aquariumId);
-        if (result) {
-          return transformAquariumData(result.aquariumData, result.fishData);
+      const aquariumPromises = playerAquariums.map(
+        async (aquariumId: BigNumberish) => {
+          const result = await loadAquariumWithFishes(aquariumId);
+          if (result) {
+            return transformAquariumData(result.aquariumData, result.fishData);
+          }
+          return null;
         }
-        return null;
-      });
+      );
 
       const loadedAquariums = (await Promise.all(aquariumPromises)).filter(
         Boolean

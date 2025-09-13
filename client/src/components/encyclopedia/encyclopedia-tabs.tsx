@@ -1,6 +1,6 @@
 import { TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Book, Droplet, BarChart3 } from 'lucide-react';
-import { useEncyclopedia } from '@/hooks/use-encyclopedia';
+import { useEncyclopedia } from '@/hooks';
 import EncyclopediaCatalog from '@/components/encyclopedia/encyclopedia-catalog';
 import EncyclopediaHabitats from '@/components/encyclopedia/encyclopedia-habitats';
 import EncyclopediaStats from '@/components/encyclopedia/encyclopedia-stats';
