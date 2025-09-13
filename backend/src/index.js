@@ -144,10 +144,10 @@ async function startServer() {
         '🌊 ╔══════════════════════════════════════════════════════════════╗'
       );
       console.log(
-        '🐟 ║                    AQUA STARK BACKEND                      ║'
+        '🐟 ║                    AQUA STARK BACKEND                        ║'
       );
       console.log(
-        '🌊 ║                     Underwater API                         ║'
+        '🌊 ║                     Underwater API                           ║'
       );
       console.log(
         '🐠 ╚══════════════════════════════════════════════════════════════╝'

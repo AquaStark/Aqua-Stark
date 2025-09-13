@@ -125,4 +125,107 @@ export class FishController {
       res.status(500).json({ error: 'Internal server error' });
     }
   }
+
+  // Feed multiple fish
+  static async feedMultipleFish(req, res) {
+    try {
+      const { fishIds, foodType = 'basic' } = req.body;
+
+      if (!Array.isArray(fishIds) || fishIds.length === 0) {
+        return res
+          .status(400)
+          .json({ error: 'Fish IDs must be a non-empty array' });
+      }
+
+      const result = await FishService.feedMultipleFish(fishIds, foodType);
+
+      res.json({
+        success: true,
+        data: result,
+        message: `Fed ${result.successful.length} fish successfully, ${result.failed.length} failed`,
+      });
+    } catch (error) {
+      console.error('Error in feedMultipleFish:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  // Filter fish
+  static async filterFish(req, res) {
+    try {
+      const filters = req.query;
+
+      const filteredFish = await FishService.filterFish(filters);
+
+      res.json({
+        success: true,
+        data: filteredFish,
+        count: filteredFish.length,
+      });
+    } catch (error) {
+      console.error('Error in filterFish:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  // Get fish needing attention
+  static async getFishNeedingAttention(req, res) {
+    try {
+      const { playerId } = req.params;
+      const { playerId: authenticatedPlayerId } = req.user;
+
+      if (playerId !== authenticatedPlayerId) {
+        return res.status(403).json({ error: 'Access denied' });
+      }
+
+      const fishNeedingAttention =
+        await FishService.getFishNeedingAttention(playerId);
+
+      res.json({
+        success: true,
+        data: fishNeedingAttention,
+        count: fishNeedingAttention.length,
+      });
+    } catch (error) {
+      console.error('Error in getFishNeedingAttention:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  // Update fish mood
+  static async updateFishMood(req, res) {
+    try {
+      const { fishId } = req.params;
+
+      const updatedFish = await FishService.updateFishMood(fishId);
+
+      if (!updatedFish) {
+        return res.status(404).json({ error: 'Fish not found' });
+      }
+
+      res.json({
+        success: true,
+        data: updatedFish,
+        message: `Fish mood updated to ${updatedFish.mood}`,
+      });
+    } catch (error) {
+      console.error('Error in updateFishMood:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  // Get global fish statistics
+  static async getGlobalFishStats(req, res) {
+    try {
+      const stats = await FishService.getFishStats(null);
+
+      res.json({
+        success: true,
+        data: stats,
+      });
+    } catch (error) {
+      console.error('Error in getGlobalFishStats:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 }
