@@ -1,45 +1,45 @@
-"use client"
+'use client';
 
-import { useState, useEffect, useCallback, useRef } from "react"
-import { PageHeader } from "@/components/layout/page-header"
-import { useBubbles } from "@/hooks/use-bubbles"
-import { BubblesBackground } from "@/components/bubble-background"
-import { GameCanvas } from "@/components/mini-games/bubble-jumper/game-canvas"
-import { GameUI } from "@/components/mini-games/bubble-jumper/game-ui"
-import { GameModals } from "@/components/mini-games/bubble-jumper/game-modals"
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { PageHeader } from '@/components/layout/page-header';
+import { useBubbles } from '@/hooks/use-bubbles';
+import { BubblesBackground } from '@/components/bubble-background';
+import { GameCanvas } from '@/components/mini-games/bubble-jumper/game-canvas';
+import { GameUI } from '@/components/mini-games/bubble-jumper/game-ui';
+import { GameModals } from '@/components/mini-games/bubble-jumper/game-modals';
 
 interface Platform {
-  id: number
-  x: number
-  y: number
-  width: number
-  type: "normal" | "spring" | "broken"
-  bounceAnimation?: boolean
+  id: number;
+  x: number;
+  y: number;
+  width: number;
+  type: 'normal' | 'spring' | 'broken';
+  bounceAnimation?: boolean;
 }
 
 interface Fish {
-  x: number
-  y: number
-  velocityX: number
-  velocityY: number
-  width: number
-  height: number
-  image: string
-  name: string
-  rarity: string
-  multiplier: number
+  x: number;
+  y: number;
+  velocityX: number;
+  velocityY: number;
+  width: number;
+  height: number;
+  image: string;
+  name: string;
+  rarity: string;
+  multiplier: number;
 }
 
 interface GameState {
-  isPlaying: boolean
-  isPaused: boolean
-  isGameOver: boolean
-  score: number
-  bestScore: number
-  platforms: Platform[]
-  fish: Fish
-  camera: { y: number }
-  keys: { left: boolean; right: boolean }
+  isPlaying: boolean;
+  isPaused: boolean;
+  isGameOver: boolean;
+  score: number;
+  bestScore: number;
+  platforms: Platform[];
+  fish: Fish;
+  camera: { y: number };
+  keys: { left: boolean; right: boolean };
 }
 
 const GAME_CONFIG = {
@@ -53,36 +53,56 @@ const GAME_CONFIG = {
   gameHeight: 600,
   fishWidth: 40,
   fishHeight: 30,
-}
+};
 
 const FISH_TYPES = [
-  { image: "/fish/fish1.png", name: "SUNBURST", rarity: "Common", multiplier: 1.0 },
-  { image: "/fish/fish2.png", name: "BLUESHINE", rarity: "Rare", multiplier: 1.2 },
-  { image: "/fish/fish3.png", name: "REDGLOW", rarity: "Epic", multiplier: 1.5 },
-  { image: "/fish/fish4.png", name: "SHADOWFIN", rarity: "Legendary", multiplier: 2.0 },
-]
+  {
+    image: '/fish/fish1.png',
+    name: 'SUNBURST',
+    rarity: 'Common',
+    multiplier: 1.0,
+  },
+  {
+    image: '/fish/fish2.png',
+    name: 'BLUESHINE',
+    rarity: 'Rare',
+    multiplier: 1.2,
+  },
+  {
+    image: '/fish/fish3.png',
+    name: 'REDGLOW',
+    rarity: 'Epic',
+    multiplier: 1.5,
+  },
+  {
+    image: '/fish/fish4.png',
+    name: 'SHADOWFIN',
+    rarity: 'Legendary',
+    multiplier: 2.0,
+  },
+];
 
 export default function BubbleJumperPage() {
-  const gameRef = useRef<HTMLDivElement>(null)
-  const animationRef = useRef<number>()
+  const gameRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<number>();
   const [selectedFish, setSelectedFish] = useState(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("selected-fish")
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('selected-fish');
       if (stored) {
         try {
-          const parsedFish = JSON.parse(stored)
+          const parsedFish = JSON.parse(stored);
           // Ensure the fish has the correct structure with 'multiplier' property
           return {
             ...parsedFish,
             multiplier: parsedFish.multiplier || parsedFish.xpMultiplier || 1.0,
-          }
+          };
         } catch {
-          return FISH_TYPES[0]
+          return FISH_TYPES[0];
         }
       }
     }
-    return FISH_TYPES[0]
-  })
+    return FISH_TYPES[0];
+  });
   // const [showMenu, setShowMenu] = useState(false)
   // const [showTips, setShowTips] = useState(false)
 
@@ -94,11 +114,13 @@ export default function BubbleJumperPage() {
     minDuration: 10,
     maxDuration: 18,
     interval: 400,
-  })
+  });
 
   const [gameState, setGameState] = useState<GameState>(() => {
     const bestScore =
-      typeof window !== "undefined" ? Number.parseInt(localStorage.getItem("bubble-jumper-best") || "0") : 0
+      typeof window !== 'undefined'
+        ? Number.parseInt(localStorage.getItem('bubble-jumper-best') || '0')
+        : 0;
 
     return {
       isPlaying: false,
@@ -121,30 +143,30 @@ export default function BubbleJumperPage() {
       },
       camera: { y: 0 },
       keys: { left: false, right: false },
-    }
-  })
+    };
+  });
 
   const generatePlatforms = useCallback(() => {
-    const platforms: Platform[] = []
+    const platforms: Platform[] = [];
 
     platforms.push({
       id: 0,
       x: GAME_CONFIG.gameWidth / 2 - GAME_CONFIG.platformWidth / 2,
       y: GAME_CONFIG.gameHeight - 50,
       width: GAME_CONFIG.platformWidth,
-      type: "normal",
-    })
+      type: 'normal',
+    });
 
     for (let i = 1; i < 200; i++) {
-      let type: "normal" | "spring" | "broken" = "normal"
+      let type: 'normal' | 'spring' | 'broken' = 'normal';
 
-      const rand = Math.random()
-      if (rand < 0.4) type = "spring"
-      else if (rand < 0.5) type = "broken"
+      const rand = Math.random();
+      if (rand < 0.4) type = 'spring';
+      else if (rand < 0.5) type = 'broken';
 
-      const minX = GAME_CONFIG.gameWidth * 0.1
-      const maxX = GAME_CONFIG.gameWidth * 0.9 - GAME_CONFIG.platformWidth
-      const xRange = maxX - minX
+      const minX = GAME_CONFIG.gameWidth * 0.1;
+      const maxX = GAME_CONFIG.gameWidth * 0.9 - GAME_CONFIG.platformWidth;
+      const xRange = maxX - minX;
 
       platforms.push({
         id: i,
@@ -152,58 +174,61 @@ export default function BubbleJumperPage() {
         y: GAME_CONFIG.gameHeight - 50 - i * GAME_CONFIG.platformSpacing,
         width: GAME_CONFIG.platformWidth,
         type,
-      })
+      });
     }
 
-    return platforms
-  }, [])
+    return platforms;
+  }, []);
 
-  const generateMorePlatforms = useCallback((currentPlatforms: Platform[], highestY: number) => {
-    const newPlatforms = [...currentPlatforms]
-    const lastId = Math.max(...currentPlatforms.map((p) => p.id))
+  const generateMorePlatforms = useCallback(
+    (currentPlatforms: Platform[], highestY: number) => {
+      const newPlatforms = [...currentPlatforms];
+      const lastId = Math.max(...currentPlatforms.map(p => p.id));
 
-    for (let i = 1; i <= 50; i++) {
-      let type: "normal" | "spring" | "broken" = "normal"
+      for (let i = 1; i <= 50; i++) {
+        let type: 'normal' | 'spring' | 'broken' = 'normal';
 
-      const rand = Math.random()
-      if (rand < 0.4) type = "spring"
-      else if (rand < 0.5) type = "broken"
+        const rand = Math.random();
+        if (rand < 0.4) type = 'spring';
+        else if (rand < 0.5) type = 'broken';
 
-      const minX = GAME_CONFIG.gameWidth * 0.1
-      const maxX = GAME_CONFIG.gameWidth * 0.9 - GAME_CONFIG.platformWidth
-      const xRange = maxX - minX
+        const minX = GAME_CONFIG.gameWidth * 0.1;
+        const maxX = GAME_CONFIG.gameWidth * 0.9 - GAME_CONFIG.platformWidth;
+        const xRange = maxX - minX;
 
-      newPlatforms.push({
-        id: lastId + i,
-        x: minX + Math.random() * xRange,
-        y: highestY - i * GAME_CONFIG.platformSpacing,
-        width: GAME_CONFIG.platformWidth,
-        type,
-      })
-    }
+        newPlatforms.push({
+          id: lastId + i,
+          x: minX + Math.random() * xRange,
+          y: highestY - i * GAME_CONFIG.platformSpacing,
+          width: GAME_CONFIG.platformWidth,
+          type,
+        });
+      }
 
-    return newPlatforms
-  }, [])
+      return newPlatforms;
+    },
+    []
+  );
 
   const togglePause = () => {
-    setGameState((prev) => ({
+    setGameState(prev => ({
       ...prev,
       isPaused: !prev.isPaused,
-    }))
-  }
+    }));
+  };
 
   const endGame = () => {
-    setGameState((prev) => ({
+    setGameState(prev => ({
       ...prev,
       isGameOver: true,
       isPlaying: false,
       isPaused: false,
-    }))
-  }
+    }));
+  };
 
   const initializeGame = useCallback(() => {
-    const platforms = generatePlatforms()
-    setGameState((prev) => ({
+    const platforms = generatePlatforms();
+    setGameState(prev => ({
       ...prev,
       isPlaying: true,
       isPaused: false,
@@ -222,71 +247,90 @@ export default function BubbleJumperPage() {
         multiplier: selectedFish.multiplier,
       },
       camera: { y: 0 },
-    }))
-  }, [generatePlatforms, selectedFish])
+    }));
+  }, [generatePlatforms, selectedFish]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!gameState.isPlaying || gameState.isPaused) return
+      if (!gameState.isPlaying || gameState.isPaused) return;
 
-      if (e.key === " ") {
-        e.preventDefault()
-        togglePause()
-        return
+      if (e.key === ' ') {
+        e.preventDefault();
+        togglePause();
+        return;
       }
 
-      setGameState((prev) => ({
+      setGameState(prev => ({
         ...prev,
         keys: {
           ...prev.keys,
-          left: e.key === "ArrowLeft" || e.key === "a" || e.key === "A" ? true : prev.keys.left,
-          right: e.key === "ArrowRight" || e.key === "d" || e.key === "D" ? true : prev.keys.right,
+          left:
+            e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A'
+              ? true
+              : prev.keys.left,
+          right:
+            e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D'
+              ? true
+              : prev.keys.right,
         },
-      }))
-    }
+      }));
+    };
 
     const handleKeyUp = (e: KeyboardEvent) => {
-      setGameState((prev) => ({
+      setGameState(prev => ({
         ...prev,
         keys: {
           ...prev.keys,
-          left: e.key === "ArrowLeft" || e.key === "a" || e.key === "A" ? false : prev.keys.left,
-          right: e.key === "ArrowRight" || e.key === "d" || e.key === "D" ? false : prev.keys.right,
+          left:
+            e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A'
+              ? false
+              : prev.keys.left,
+          right:
+            e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D'
+              ? false
+              : prev.keys.right,
         },
-      }))
-    }
+      }));
+    };
 
-    window.addEventListener("keydown", handleKeyDown)
-    window.addEventListener("keyup", handleKeyUp)
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown)
-      window.removeEventListener("keyup", handleKeyUp)
-    }
-  }, [gameState.isPlaying, gameState.isPaused])
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [gameState.isPlaying, gameState.isPaused]);
 
   useEffect(() => {
-    if (!gameState.isPlaying || gameState.isGameOver || gameState.isPaused) return
+    if (!gameState.isPlaying || gameState.isGameOver || gameState.isPaused)
+      return;
 
     const gameLoop = () => {
-      setGameState((prev) => {
-        const newState = { ...prev }
-        const fish = { ...newState.fish }
+      setGameState(prev => {
+        const newState = { ...prev };
+        const fish = { ...newState.fish };
 
         if (newState.keys.left) {
-          fish.velocityX = Math.max(fish.velocityX - 0.5, -GAME_CONFIG.horizontalSpeed)
+          fish.velocityX = Math.max(
+            fish.velocityX - 0.5,
+            -GAME_CONFIG.horizontalSpeed
+          );
         } else if (newState.keys.right) {
-          fish.velocityX = Math.min(fish.velocityX + 0.5, GAME_CONFIG.horizontalSpeed)
+          fish.velocityX = Math.min(
+            fish.velocityX + 0.5,
+            GAME_CONFIG.horizontalSpeed
+          );
         } else {
-          fish.velocityX *= 0.9
+          fish.velocityX *= 0.9;
         }
 
-        fish.velocityY += GAME_CONFIG.gravity
-        fish.x += fish.velocityX
-        fish.y += fish.velocityY
+        fish.velocityY += GAME_CONFIG.gravity;
+        fish.x += fish.velocityX;
+        fish.y += fish.velocityY;
 
-        if (fish.x < -fish.width) fish.x = GAME_CONFIG.gameWidth
-        if (fish.x > GAME_CONFIG.gameWidth) fish.x = -fish.width
+        if (fish.x < -fish.width) fish.x = GAME_CONFIG.gameWidth;
+        if (fish.x > GAME_CONFIG.gameWidth) fish.x = -fish.width;
 
         if (fish.velocityY > 0) {
           for (const platform of newState.platforms) {
@@ -297,120 +341,145 @@ export default function BubbleJumperPage() {
               fish.y + fish.height < platform.y + 20 &&
               fish.velocityY > 0
             ) {
-              if (platform.type === "broken") {
-                platform.type = "normal"
-                continue
-              } else if (platform.type === "spring") {
-                fish.velocityY = GAME_CONFIG.springJumpForce
-                platform.bounceAnimation = true
+              if (platform.type === 'broken') {
+                platform.type = 'normal';
+                continue;
+              } else if (platform.type === 'spring') {
+                fish.velocityY = GAME_CONFIG.springJumpForce;
+                platform.bounceAnimation = true;
                 setTimeout(() => {
-                  setGameState((prev) => ({
+                  setGameState(prev => ({
                     ...prev,
-                    platforms: prev.platforms.map((p) => (p.id === platform.id ? { ...p, bounceAnimation: false } : p)),
-                  }))
-                }, 200)
+                    platforms: prev.platforms.map(p =>
+                      p.id === platform.id
+                        ? { ...p, bounceAnimation: false }
+                        : p
+                    ),
+                  }));
+                }, 200);
               } else {
-                fish.velocityY = GAME_CONFIG.jumpForce
+                fish.velocityY = GAME_CONFIG.jumpForce;
               }
 
-              const heightScore = Math.max(0, Math.floor((GAME_CONFIG.gameHeight - platform.y) / 10))
-              newState.score = Math.max(newState.score, Math.floor(heightScore * selectedFish.multiplier))
-              break
+              const heightScore = Math.max(
+                0,
+                Math.floor((GAME_CONFIG.gameHeight - platform.y) / 10)
+              );
+              newState.score = Math.max(
+                newState.score,
+                Math.floor(heightScore * selectedFish.multiplier)
+              );
+              break;
             }
           }
         }
 
-        const fishScreenY = fish.y - newState.camera.y
+        const fishScreenY = fish.y - newState.camera.y;
         if (fishScreenY < GAME_CONFIG.gameHeight * 0.4) {
-          newState.camera.y = fish.y - GAME_CONFIG.gameHeight * 0.4
+          newState.camera.y = fish.y - GAME_CONFIG.gameHeight * 0.4;
         }
 
-        const highestPlatform = Math.min(...newState.platforms.map((p) => p.y))
-        const fishDistanceFromTop = fish.y - highestPlatform
+        const highestPlatform = Math.min(...newState.platforms.map(p => p.y));
+        const fishDistanceFromTop = fish.y - highestPlatform;
 
         if (fishDistanceFromTop < 1000) {
-          newState.platforms = generateMorePlatforms(newState.platforms, highestPlatform)
+          newState.platforms = generateMorePlatforms(
+            newState.platforms,
+            highestPlatform
+          );
         }
 
         if (fish.y > newState.camera.y + GAME_CONFIG.gameHeight + 200) {
-          newState.isGameOver = true
-          newState.isPlaying = false
+          newState.isGameOver = true;
+          newState.isPlaying = false;
 
           if (newState.score > newState.bestScore) {
-            newState.bestScore = newState.score
-            localStorage.setItem("bubble-jumper-best", newState.bestScore.toString())
+            newState.bestScore = newState.score;
+            localStorage.setItem(
+              'bubble-jumper-best',
+              newState.bestScore.toString()
+            );
           }
         }
 
-        newState.fish = fish
-        return newState
-      })
+        newState.fish = fish;
+        return newState;
+      });
 
       if (gameState.isPlaying && !gameState.isGameOver && !gameState.isPaused) {
-        animationRef.current = requestAnimationFrame(gameLoop)
+        animationRef.current = requestAnimationFrame(gameLoop);
       }
-    }
+    };
 
-    animationRef.current = requestAnimationFrame(gameLoop)
+    animationRef.current = requestAnimationFrame(gameLoop);
 
     return () => {
       if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
+        cancelAnimationFrame(animationRef.current);
       }
-    }
-  }, [gameState.isPlaying, gameState.isGameOver, gameState.isPaused, selectedFish.multiplier, generateMorePlatforms])
+    };
+  }, [
+    gameState.isPlaying,
+    gameState.isGameOver,
+    gameState.isPaused,
+    selectedFish.multiplier,
+    generateMorePlatforms,
+  ]);
 
   const handlePlayAgain = () => {
     if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current)
+      cancelAnimationFrame(animationRef.current);
     }
 
     setTimeout(() => {
-      initializeGame()
-    }, 100)
-  }
+      initializeGame();
+    }, 100);
+  };
 
   const handleBack = () => {
     if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current)
+      cancelAnimationFrame(animationRef.current);
     }
-    window.history.back()
-  }
+    window.history.back();
+  };
 
   useEffect(() => {
     const handleStorageChange = () => {
-      const stored = localStorage.getItem("selected-fish")
+      const stored = localStorage.getItem('selected-fish');
       if (stored) {
         try {
-          const parsedFish = JSON.parse(stored)
+          const parsedFish = JSON.parse(stored);
           setSelectedFish({
             ...parsedFish,
             multiplier: parsedFish.multiplier || parsedFish.xpMultiplier || 1.0,
-          })
+          });
         } catch {
           // Keep current fish if parsing fails
         }
       }
-    }
+    };
 
-    window.addEventListener("storage", handleStorageChange)
-    return () => window.removeEventListener("storage", handleStorageChange)
-  }, [])
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-[#005C99]">
+    <div className='relative w-full h-screen overflow-hidden bg-[#005C99]'>
       {/* Background */}
       <img
-        src="/backgrounds/background2.png"
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover z-0"
-        role="presentation"
+        src='/backgrounds/background2.png'
+        alt=''
+        className='absolute inset-0 w-full h-full object-cover z-0'
+        role='presentation'
       />
 
-      <BubblesBackground bubbles={bubbles} className="absolute inset-0 z-10 pointer-events-none" />
+      <BubblesBackground
+        bubbles={bubbles}
+        className='absolute inset-0 z-10 pointer-events-none'
+      />
 
-      <div className="absolute inset-0 light-rays z-20"></div>
-      <div className="absolute inset-0 animate-water-movement z-20"></div>
+      <div className='absolute inset-0 light-rays z-20'></div>
+      <div className='absolute inset-0 animate-water-movement z-20'></div>
 
       <GameCanvas
         gameRef={gameRef}
@@ -420,7 +489,12 @@ export default function BubbleJumperPage() {
         gameConfig={GAME_CONFIG}
       />
 
-      <PageHeader title="Bubble Jumper" backTo="/mini-games" backText="Back to Games" rightContent={null} />
+      <PageHeader
+        title='Bubble Jumper'
+        backTo='/mini-games'
+        backText='Back to Games'
+        rightContent={null}
+      />
 
       <GameUI
         score={gameState.score}
@@ -449,26 +523,26 @@ export default function BubbleJumperPage() {
 
       {/* Bottom Info Panel */}
       {gameState.isPlaying && (
-        <div className="absolute bottom-4 left-4 right-4 pointer-events-none z-40">
-          <div className="bg-gradient-to-r from-blue-600/90 to-blue-700/90 backdrop-blur-md rounded-xl p-4 border-2 border-blue-400/50 flex items-center gap-4 shadow-lg">
+        <div className='absolute bottom-4 left-4 right-4 pointer-events-none z-40'>
+          <div className='bg-gradient-to-r from-blue-600/90 to-blue-700/90 backdrop-blur-md rounded-xl p-4 border-2 border-blue-400/50 flex items-center gap-4 shadow-lg'>
             <img
-              src={selectedFish.image || "/placeholder.svg"}
+              src={selectedFish.image || '/placeholder.svg'}
               alt={selectedFish.name}
-              className="w-12 h-9 object-contain"
+              className='w-12 h-9 object-contain'
             />
-            <div className="flex-1">
-              <h3 className="text-white font-bold">{selectedFish.name}</h3>
-              <p className="text-white/70 text-sm">
+            <div className='flex-1'>
+              <h3 className='text-white font-bold'>{selectedFish.name}</h3>
+              <p className='text-white/70 text-sm'>
                 {selectedFish.rarity} • {selectedFish.multiplier}x XP
               </p>
             </div>
-            <div className="text-right">
-              <p className="text-white/70 text-sm">Controls</p>
-              <p className="text-white text-sm">← → or A D • Space to pause</p>
+            <div className='text-right'>
+              <p className='text-white/70 text-sm'>Controls</p>
+              <p className='text-white text-sm'>← → or A D • Space to pause</p>
             </div>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }

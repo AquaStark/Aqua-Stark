@@ -57,9 +57,9 @@ export const mockGames = [
     link: '/game/reef-dash',
   },
   {
-    id: "game006",
-    name: "Bubble Jumper",
-    image: "/mini-games/bubble-jumper-preview.jpg",
-    link: "/game/bubble-jumper",
+    id: 'game006',
+    name: 'Bubble Jumper',
+    image: '/mini-games/bubble-jumper-preview.jpg',
+    link: '/game/bubble-jumper',
   },
 ];

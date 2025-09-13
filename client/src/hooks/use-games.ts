@@ -9,10 +9,17 @@ export function useGames() {
   // const [selectedFish, setSelectedFish] = useState(mockFish[0]);
   const [selectedFish, setSelectedFishState] = useState(mockFish[0]);
 
-const setSelectedFish = (fish: SetStateAction<{ id: string; name: string; image: string; experienceMultiplier: number; }>) => {
-  setSelectedFishState(fish);
-  localStorage.setItem("selected-fish", JSON.stringify(fish));
-};
+  const setSelectedFish = (
+    fish: SetStateAction<{
+      id: string;
+      name: string;
+      image: string;
+      experienceMultiplier: number;
+    }>
+  ) => {
+    setSelectedFishState(fish);
+    localStorage.setItem('selected-fish', JSON.stringify(fish));
+  };
   // All available games
   const allGames = mockGames;
 
