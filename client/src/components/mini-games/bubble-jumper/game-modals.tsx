@@ -3,9 +3,10 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Play, RotateCcw, Trophy } from "lucide-react"
-import { FishSelector } from "./fish-selector"
+import StartGameButton from "./start-game"
 
 interface FishType {
+  id: string
   image: string
   name: string
   rarity: string
@@ -18,9 +19,8 @@ interface GameModalsProps {
   isGameOver: boolean
   score: number
   bestScore: number
-  selectedFish: FishType
-  fishTypes: FishType[]
-  onSelectFish: (fish: FishType) => void
+  selectedFish: FishType | null
+  // fishTypes: FishType[]
   onStartGame: () => void
   onTogglePause: () => void
   onPlayAgain: () => void
@@ -34,8 +34,7 @@ export function GameModals({
   score,
   bestScore,
   selectedFish,
-  fishTypes,
-  onSelectFish,
+  // fishTypes,
   onStartGame,
   onTogglePause,
   onPlayAgain,
@@ -81,14 +80,8 @@ export function GameModals({
               <span className="text-red-400 font-semibold">Red platforms</span> are fragile!
             </p>
 
-            <FishSelector fishTypes={fishTypes} selectedFish={selectedFish} onSelectFish={onSelectFish} />
+            <StartGameButton onStartGame={onStartGame} />
 
-            <Button
-              onClick={onStartGame}
-              className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold px-10 py-4 text-lg shadow-lg"
-            >
-              Start Game
-            </Button>
           </motion.div>
         </div>
       )}
@@ -107,13 +100,13 @@ export function GameModals({
 
               <div className="flex items-center justify-center gap-4 mb-6 bg-white/10 rounded-xl p-4">
                 <img
-                  src={selectedFish.image || "/placeholder.svg"}
-                  alt={selectedFish.name}
+                  src={selectedFish?.image || "/placeholder.svg"}
+                  alt={selectedFish?.name || "Fish"}
                   className="w-20 h-16 object-contain"
                 />
                 <div className="text-left">
-                  <p className="text-white font-bold text-lg">{selectedFish.name}</p>
-                  <p className="text-white/70">{selectedFish.rarity}</p>
+                  <p className="text-white font-bold text-lg">{selectedFish?.name}</p>
+                  <p className="text-white/70">{selectedFish?.rarity}</p>
                 </div>
               </div>
 
@@ -152,3 +145,4 @@ export function GameModals({
     </>
   )
 }
+

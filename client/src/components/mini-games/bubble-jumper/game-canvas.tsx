@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { motion } from "framer-motion"
 
 interface Platform {
@@ -39,14 +38,15 @@ interface GameCanvasProps {
 export function GameCanvas({ gameRef, platforms, fish, camera, gameConfig }: GameCanvasProps) {
   const getPlatformStyle = (platform: Platform) => {
     const baseStyle = {
-      left: platform.x,
-      top: platform.y - camera.y,
       width: platform.width,
       height: 20,
       borderRadius: "8px",
       border: "2px solid rgba(255,255,255,0.4)",
-      transform: platform.bounceAnimation ? "scaleY(0.8)" : "scaleY(1)",
+      transform: `translate(${platform.x}px, ${platform.y - camera.y}px) ${
+        platform.bounceAnimation ? "scaleY(0.8)" : "scaleY(1)"
+      }`,
       transition: "transform 0.2s ease-out",
+      willChange: "transform",
     }
 
     switch (platform.type) {
@@ -65,7 +65,7 @@ export function GameCanvas({ gameRef, platforms, fish, camera, gameConfig }: Gam
       default:
         return {
           ...baseStyle,
-          backgroundImage: "url(/minigames/base.jpg)",
+          backgroundImage: "url(/minigames/base.png)",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundColor: "#4A90E2",
@@ -76,7 +76,7 @@ export function GameCanvas({ gameRef, platforms, fish, camera, gameConfig }: Gam
   return (
     <div
       ref={gameRef}
-      className="absolute inset-0 z-30"
+      className="absolute z-30"
       style={{
         width: gameConfig.gameWidth,
         height: gameConfig.gameHeight,
@@ -95,16 +95,21 @@ export function GameCanvas({ gameRef, platforms, fish, camera, gameConfig }: Gam
           return platformScreenY > -50 && platformScreenY < gameConfig.gameHeight + 50
         })
         .map((platform) => (
-          <div key={platform.id} className="absolute" style={getPlatformStyle(platform)} />
+          <div
+            key={platform.id}
+            className="absolute will-change-transform"
+            style={getPlatformStyle(platform)}
+          />
         ))}
 
       <motion.div
         className="absolute z-20"
         style={{
-          left: fish.x,
-          top: fish.y - camera.y,
+          x: fish.x,
+          y: fish.y - camera.y,
           width: fish.width,
           height: fish.height,
+          willChange: "transform",
         }}
         animate={{
           rotate: fish.velocityX > 0 ? 5 : fish.velocityX < 0 ? -5 : 0,

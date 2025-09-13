@@ -2,10 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from "react"
 import { PageHeader } from "@/components/layout/page-header"
-import { TipsPopup } from "@/components/game/tips-popup"
 import { useBubbles } from "@/hooks/use-bubbles"
 import { BubblesBackground } from "@/components/bubble-background"
-import { Gamepad2 } from "lucide-react"
 import { GameCanvas } from "@/components/mini-games/bubble-jumper/game-canvas"
 import { GameUI } from "@/components/mini-games/bubble-jumper/game-ui"
 import { GameModals } from "@/components/mini-games/bubble-jumper/game-modals"
@@ -85,8 +83,8 @@ export default function BubbleJumperPage() {
     }
     return FISH_TYPES[0]
   })
-  const [showMenu, setShowMenu] = useState(false)
-  const [showTips, setShowTips] = useState(false)
+  // const [showMenu, setShowMenu] = useState(false)
+  // const [showTips, setShowTips] = useState(false)
 
   const bubbles = useBubbles({
     initialCount: 10,
@@ -443,8 +441,6 @@ export default function BubbleJumperPage() {
         score={gameState.score}
         bestScore={gameState.bestScore}
         selectedFish={selectedFish}
-        fishTypes={FISH_TYPES}
-        onSelectFish={setSelectedFish}
         onStartGame={initializeGame}
         onTogglePause={togglePause}
         onPlayAgain={handlePlayAgain}
@@ -473,27 +469,6 @@ export default function BubbleJumperPage() {
           </div>
         </div>
       )}
-
-      {/* Action buttons section */}
-      {/* <div className="absolute bottom-0 right-4 mb-4 z-50 flex items-end gap-12">
-        <div className="flex items-center gap-2 -ml-8">
-          <div className="relative group">
-            <button className="game-button bg-gradient-to-b from-pink-400 to-pink-600 text-white rounded-xl relative group cursor-pointer w-12 h-12">
-              <div className="flex items-center justify-center gap-2 w-full h-full">
-                <Gamepad2 className="h-5 w-5" />
-              </div>
-            </button>
-
-            <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 w-20 bg-blue-600/90 backdrop-blur-md rounded-lg p-2 border border-blue-400/50 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50">
-              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-600/90 transform rotate-45 border-r border-b border-blue-400/50"></div>
-              <span className="text-white text-xs font-medium text-center block">Games</span>
-            </div>
-          </div>
-        </div>
-
-        <TipsPopup show={showTips} onClose={() => setShowTips(false)} onToggle={() => setShowTips(!showTips)} />
-      </div> */}
-
     </div>
   )
 }

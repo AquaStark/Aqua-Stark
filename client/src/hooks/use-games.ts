@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { mockFish, mockGames } from '@/data/mockdata-games';
 
 export function useGames() {
@@ -6,8 +6,13 @@ export function useGames() {
   const [availableFish] = useState(mockFish);
 
   // Currently selected fish
-  const [selectedFish, setSelectedFish] = useState(mockFish[0]);
+  // const [selectedFish, setSelectedFish] = useState(mockFish[0]);
+  const [selectedFish, setSelectedFishState] = useState(mockFish[0]);
 
+const setSelectedFish = (fish: SetStateAction<{ id: string; name: string; image: string; experienceMultiplier: number; }>) => {
+  setSelectedFishState(fish);
+  localStorage.setItem("selected-fish", JSON.stringify(fish));
+};
   // All available games
   const allGames = mockGames;
 
