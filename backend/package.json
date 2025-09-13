@@ -42,6 +42,9 @@
     "redis",
     "websocket"
   ],
+  "engines": {
+    "node": ">=16"
+  },
   "author": "Aqua Stark Team",
   "license": "MIT"
 }
