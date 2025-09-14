@@ -1,8 +1,12 @@
 import express from 'express';
 import { FishController } from '../controllers/fishController.js';
 import { simpleAuth, validateOwnership } from '../middleware/auth.js';
+import { rateLimitPresets } from '../middleware/rateLimiting.js';
 
 const router = express.Router();
+
+// Apply rate limiting to all fish routes
+router.use(rateLimitPresets.authenticated);
 
 // Fish state routes (require authentication)
 router.get(
