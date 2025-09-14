@@ -43,9 +43,9 @@ module.exports = {
           {
             exemptedBy: ['type'],
             contexts: [
-              'MethodDefinition[key.name=/^(bulkUpdatePositions|getPlayerDashboard|createGameSession)$/]' // Require examples for complex methods only
-            ]
-          }
+              'MethodDefinition[key.name=/^(bulkUpdatePositions|getPlayerDashboard|createGameSession)$/]', // Require examples for complex methods only
+            ],
+          },
         ],
         'jsdoc/require-jsdoc': [
           'error',
@@ -53,13 +53,13 @@ module.exports = {
             publicOnly: true,
             require: {
               ClassDeclaration: true,
-              MethodDefinition: true
+              MethodDefinition: true,
             },
             contexts: [
               'ClassDeclaration',
-              'MethodDefinition:not([key.name=/^constructor$/])'
-            ]
-          }
+              'MethodDefinition:not([key.name=/^constructor$/])',
+            ],
+          },
         ],
         'jsdoc/require-param': [
           'error',
@@ -67,8 +67,8 @@ module.exports = {
             checkConstructors: false,
             checkGetters: false,
             checkSetters: false,
-            exemptedBy: ['type']
-          }
+            exemptedBy: ['type'],
+          },
         ],
         'jsdoc/require-param-description': 'error',
         'jsdoc/require-param-name': 'error',
@@ -77,14 +77,14 @@ module.exports = {
           'error',
           {
             checkGetters: false,
-            exemptedBy: ['type']
-          }
+            exemptedBy: ['type'],
+          },
         ],
         'jsdoc/require-returns-check': 'error',
         'jsdoc/require-returns-description': 'error',
         'jsdoc/require-returns-type': 'error',
         'jsdoc/tag-lines': ['error', 'any', { startLines: 1 }],
-        'jsdoc/valid-types': 'error'
+        'jsdoc/valid-types': 'error',
       },
       settings: {
         jsdoc: {
@@ -93,15 +93,15 @@ module.exports = {
             object: 'Object',
             'object.': 'Object',
             'Object.<>': 'Object',
-            'object<>': 'Object'
+            'object<>': 'Object',
           },
           tagNamePreference: {
             returns: 'returns',
-            yield: 'yields'
-          }
-        }
-      }
-    }
+            yield: 'yields',
+          },
+        },
+      },
+    },
   ],
   ignorePatterns: ['node_modules/', 'dist/', 'coverage/', 'docs/'],
 };
