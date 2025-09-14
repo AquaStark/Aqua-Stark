@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Play, Pause, Square } from 'lucide-react';
+import { Play, Pause, Square } from 'lucide-react';
 
 interface GameUIProps {
   score: number;
@@ -25,23 +25,12 @@ export function GameUI({
   isGameOver,
   isPaused,
   selectedFish,
-  onBack,
   onTogglePause,
   onEndGame,
 }: GameUIProps) {
   return (
     <div className='absolute inset-0 z-40 pointer-events-none'>
       <div className='absolute top-24 left-4 right-4 flex justify-end items-center pointer-events-auto'>
-        {/* <Button
-          onClick={onBack}
-          variant="outline"
-          size="sm"
-          className="bg-gradient-to-r from-blue-600 to-blue-700 border-blue-400/50 text-white hover:from-blue-500 hover:to-blue-600 shadow-lg"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
-        </Button> */}
-
         <div className='flex gap-4'>
           <div className='bg-gradient-to-r from-blue-600 to-blue-700 backdrop-blur-md rounded-xl px-6 py-3 border-2 border-blue-400/50 shadow-lg'>
             <span className='text-white font-bold text-xs'>Score: {score}</span>
