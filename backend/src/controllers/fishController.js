@@ -293,7 +293,26 @@ export class FishController {
     }
   }
 
-  // Feed multiple fish
+  /**
+   * Feed multiple fish
+   *
+   * Feeds multiple fish in a single request with the specified food type.
+   * Defaults to 'basic' food if none is provided.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.body - Request body
+   * @param {string[]} req.body.fishIds - Array of fish IDs to feed
+   * @param {string} [req.body.foodType='basic'] - Type of food to feed the fish
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response summarizing successes and failures
+   *
+   * @example
+   * // POST /api/fish/feed-bulk
+   * // Body: { fishIds: ["123", "456"], foodType: "premium" }
+   * // Response: { success: true, data: { successful: ["123"], failed: ["456"] }, message: "Fed 1 fish successfully, 1 failed" }
+   */
   static async feedMultipleFish(req, res) {
     try {
       const { fishIds, foodType = 'basic' } = req.body;
@@ -325,7 +344,23 @@ export class FishController {
     }
   }
 
-  // Filter fish
+  /**
+   * Filter fish
+   *
+   * Retrieves fish matching the provided query parameters such as species, mood,
+   * growth stage, or ownership. All filters are optional and combined with AND logic.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.query - Query parameters used for filtering
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with filtered fish and count
+   *
+   * @example
+   * // GET /api/fish?species=goldfish&mood=happy
+   * // Response: { success: true, data: [...], count: 3 }
+   */
   static async filterFish(req, res) {
     try {
       const filters = req.query;
@@ -350,7 +385,27 @@ export class FishController {
     }
   }
 
-  // Get fish needing attention
+  /**
+   * Get fish needing attention
+   *
+   * Returns a list of a player's fish that require attention (e.g., low happiness,
+   * hungry, or other maintenance conditions). Access is restricted to the
+   * authenticated player.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.playerId - Player ID from URL
+   * @param {Object} req.user - Authenticated user data
+   * @param {string} req.user.playerId - Authenticated player's ID
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with fish needing attention and count
+   *
+   * @example
+   * // GET /api/players/123/fish/attention
+   * // Response: { success: true, data: [...], count: 2 }
+   */
   static async getFishNeedingAttention(req, res) {
     try {
       const { playerId } = req.params;
@@ -381,7 +436,24 @@ export class FishController {
     }
   }
 
-  // Update fish mood
+  /**
+   * Update fish mood
+   *
+   * Updates the mood of a specific fish based on its current state
+   * (e.g., hunger level, recent interactions). Returns 404 if fish is not found.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.fishId - Fish ID from URL
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with the updated fish
+   *
+   * @example
+   * // PATCH /api/fish/123/mood
+   * // Response: { success: true, data: { ... }, message: "Fish mood updated to happy" }
+   */
   static async updateFishMood(req, res) {
     try {
       const { fishId } = req.params;
@@ -410,7 +482,21 @@ export class FishController {
     }
   }
 
-  // Get global fish statistics
+  /**
+   * Get global fish statistics
+   *
+   * Retrieves aggregated statistics across all fish in the system.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with global fish statistics
+   *
+   * @example
+   * // GET /api/fish/stats
+   * // Response: { success: true, data: { totalFish: 1200, avgHappiness: 76, ... } }
+   */
   static async getGlobalFishStats(req, res) {
     try {
       const stats = await FishService.getFishStats(null);

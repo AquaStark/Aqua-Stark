@@ -5,7 +5,6 @@ import {
   fishIdSchema,
   playerIdSchema,
   happinessSchema,
-  foodTypeSchema,
 } from '../../utils/validators.js';
 import { ServiceError } from '../../utils/errors.js';
 
