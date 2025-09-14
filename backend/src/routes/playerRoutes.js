@@ -1,9 +1,6 @@
 import express from 'express';
 import { PlayerController } from '../controllers/playerController.js';
-import {
-  simpleAuth,
-  validateOwnership,
-} from '../middleware/auth.js';
+import { simpleAuth, validateOwnership } from '../middleware/auth.js';
 import { rateLimitPresets } from '../middleware/rateLimiting.js';
 
 const router = express.Router();
