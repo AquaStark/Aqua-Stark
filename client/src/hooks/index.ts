@@ -38,6 +38,7 @@ export { useFoodSystem } from './use-food-system';
 export { useGames } from './use-games';
 export { useHelpCenter } from './use-help-center';
 export { useLoadingNavigation } from './use-loading-navigation';
+export { useNotifications } from './use-notifications';
 export { useSettings } from './use-settings';
 export { useSimpleWalletConnection } from './use-simple-wallet-connection';
 export { useStoreFilters } from './use-store-filters';
