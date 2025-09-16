@@ -33,7 +33,9 @@ export const useSettings = () => {
         const parsedSettings = get<SettingsState>(SETTINGS_STORAGE_KEY, {
           parser: (raw: string) => JSON.parse(raw) as SettingsState,
           validate: (v: unknown): v is SettingsState =>
-            !!v && typeof v === 'object' && Array.isArray((v as SettingsState).tutorial_completed_steps),
+            !!v &&
+            typeof v === 'object' &&
+            Array.isArray((v as SettingsState).tutorial_completed_steps),
         });
         if (parsedSettings) setSettings(parsedSettings);
         setIsLoading(false);
