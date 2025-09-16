@@ -231,7 +231,11 @@ class DocumentationGenerator {
           if (doc.tags.has('param')) {
             markdown += '**Parameters:**\n';
             const paramContent = doc.tags.get('param');
-            const params = paramContent.split('\n').filter(p => p.trim());
+            const params = (
+              Array.isArray(paramContent) ? paramContent : [paramContent]
+            )
+              .flatMap(p => String(p).split('\n'))
+              .filter(p => p.trim());
             params.forEach(param => {
               const paramMatch = param.match(
                 /^\{([^}]+)\}\s+(\w+)(?:\s+(.*))?$/
