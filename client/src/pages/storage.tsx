@@ -21,7 +21,7 @@ import { SortDropdown } from '@/components/store/sort-dropdown';
 import { PageHeader } from '@/components/layout/page-header';
 import { Footer } from '@/components/layout/footer';
 import { SpecialBundles } from '@/components/store/special-bundles';
-import { foodData, specialFoodBundles } from '@/data/market-data';
+import { specialFoodBundles } from '@/data/market-data';
 import { useStoreFilters } from '@/hooks';
 import { Button } from '@/components/ui/button';
 
