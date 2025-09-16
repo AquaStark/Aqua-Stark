@@ -218,6 +218,91 @@ KEYS *
 GET fish:happiness:fish-123
 ```
 
+## Services Architecture
+
+### Core Services
+
+The backend is built with a modular service architecture. Each service handles specific domain logic:
+
+#### FishService
+- **Purpose**: Manages fish states, health, and interactions
+- **Key Features**: 
+  - Fish state management with Redis caching
+  - Feeding system with food types (basic/premium)
+  - Happiness and mood tracking
+  - Batch operations for multiple fish
+  - Advanced filtering and statistics
+- **Database Tables**: `fish_states`
+- **Cache Keys**: `fish:happiness:{fishId}`
+
+#### AquariumService  
+- **Purpose**: Manages aquarium environmental conditions and capacity
+- **Key Features**:
+  - Water temperature control (20-30°C optimal)
+  - Lighting level adjustment (0-100%)
+  - Pollution management and cleaning
+  - Fish capacity tracking
+  - Health score calculation
+- **Database Tables**: `aquarium_states`, `aquarium_nfts`
+- **Cache Keys**: `aquarium:state:{aquariumId}`
+
+#### DecorationService
+- **Purpose**: Handles decoration placement and management
+- **Key Features**:
+  - Position tracking (x, y coordinates)
+  - Rotation management (0-360 degrees)
+  - Visibility control
+  - Movement between aquariums
+  - Statistics and analytics
+- **Database Tables**: `decoration_states`
+- **Cache Keys**: `decoration:state:{decorationId}`
+
+#### MinigameService
+- **Purpose**: Manages minigame sessions and XP rewards
+- **Key Features**:
+  - Session lifecycle management
+  - XP calculation with game-specific multipliers
+  - Leaderboards (per-game and global)
+  - Blockchain synchronization tracking
+  - Achievement bonus XP
+- **Database Tables**: `minigame_sessions`
+- **Supported Games**: flappy_fish, angry_fish, fish_racing, bubble_pop, fish_memory
+
+#### PlayerService
+- **Purpose**: Manages player profiles and progression
+- **Key Features**:
+  - Profile management with wallet integration
+  - Experience and level progression
+  - Currency management (earning/spending)
+  - Statistics tracking
+  - Preferences and settings
+- **Database Tables**: `players`, `player_preferences`
+- **Cache Keys**: `player:session:{playerId}`
+
+### Service Usage
+
+```javascript
+// Import services
+import { Services } from './src/services/index.js';
+const { FishService, AquariumService, PlayerService } = Services;
+
+// Or import individually
+import { FishService } from './src/services/fishService.js';
+
+// Use services
+const fishState = await FishService.getFishState('fish_123');
+await FishService.feedFish('fish_123', 'premium');
+await AquariumService.updateWaterTemperature('aqua_456', 26.5);
+```
+
+### Performance Features
+
+- **Redis Caching**: All services use Redis for performance optimization
+- **Batch Operations**: Support for bulk operations where applicable
+- **Error Handling**: Comprehensive error handling with custom error types
+- **Validation**: Input validation using Zod schemas
+- **Logging**: Structured logging with context information
+
 ## 🌐 Endpoints API
 
 ### Health Check
@@ -301,20 +386,109 @@ PORT=3002
 lsof -ti:3001 | xargs kill -9
 ```
 
+## Documentation
+
+### Service Documentation
+
+All services include comprehensive JSDoc documentation:
+
+```bash
+# Validate documentation
+node scripts/validate-docs.js
+
+# Generate documentation
+node scripts/generate-docs.js
+
+# Update service metadata from central config
+node scripts/update-service-metadata.js
+```
+
+### Documentation Features
+
+- **JSDoc Comments**: Complete method documentation with parameters, return values, and examples
+- **Validation**: Automated validation of documentation completeness
+- **Generation**: Automatic markdown documentation generation
+- **Examples**: Practical usage examples for each service method
+- **API Reference**: Complete API reference with detailed descriptions
+- **Centralized Metadata**: Version, date, and author information managed from one location
+
+### Documentation Structure
+
+```
+docs/
+├── services/
+│   ├── README.md              # API overview
+│   ├── usage-examples.md      # Practical examples
+│   ├── AquariumService.md     # Aquarium service docs
+│   ├── DecorationService.md   # Decoration service docs
+│   ├── FishService.md         # Fish service docs
+│   ├── MinigameService.md     # Minigame service docs
+│   └── PlayerService.md       # Player service docs
+```
+
+### Centralized Metadata Management
+
+Version, date, and author information is managed centrally in `src/config/package-info.js`:
+
+```javascript
+export const PACKAGE_INFO = {
+  version: '1.0.0',
+  since: '2025-09-16',
+  author: 'Aqua Stark Team'
+};
+```
+
+To update metadata across all services:
+```bash
+npm run metadata:update
+```
+
+### Adding Documentation
+
+When adding new methods to services, include:
+
+```javascript
+/**
+ * Brief description of what the method does
+ * 
+ * Detailed explanation of functionality, behavior, and use cases.
+ * 
+ * @static
+ * @async
+ * @param {string} param1 - Description of parameter
+ * @param {number} [param2] - Optional parameter description
+ * @returns {Promise<Object>} Description of return value
+ * @throws {Error} When something goes wrong
+ * 
+ * @example
+ * ```javascript
+ * // Example usage
+ * const result = await Service.methodName('param1', 42);
+ * console.log(result);
+ * ```
+ */
+static async methodName(param1, param2) {
+  // Implementation
+}
+```
+
 ## 🤝 Contribuir
 
 1. **Fork** el repositorio
 2. **Crea** una rama para tu feature
 3. **Configura** tu entorno local
 4. **Desarrolla** y **testea**
-5. **Commit** con mensajes descriptivos
-6. **Push** y crea un **Pull Request**
+5. **Documenta** tu código con JSDoc
+6. **Valida** la documentación
+7. **Commit** con mensajes descriptivos
+8. **Push** y crea un **Pull Request**
 
 ### Convenciones de Código
 - **ESLint** y **Prettier** configurados
-- **Comentarios** en inglés
+- **Comentarios** en inglés con JSDoc
 - **Nombres** descriptivos para funciones y variables
 - **Error handling** en todos los endpoints
+- **Documentación** completa para todos los métodos públicos
 
 ## 📚 Recursos
 

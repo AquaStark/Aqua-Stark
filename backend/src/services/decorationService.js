@@ -1,9 +1,38 @@
 import { supabase, supabaseAdmin, TABLES } from '../config/supabase.js';
 import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 
-// Decoration service for managing decoration states and operations
+/**
+ * Decoration Service for managing decoration states and operations
+ * 
+ * This service handles all decoration-related operations including placement,
+ * positioning, visibility management, and movement between aquariums.
+ * Decorations enhance the visual appeal and functionality of aquariums.
+ * 
+ * @class DecorationService
+ * @author Aqua Stark Team
+ * @version 1.0.0
+ * @since 2025-09-16
+ */
 export class DecorationService {
-  // Get decoration state from cache or database
+  /**
+   * Get decoration state from cache or database
+   * 
+   * Retrieves the current state of a decoration including its position,
+   * visibility, and associated aquarium.
+   * 
+   * @static
+   * @async
+   * @param {string} decorationId - The unique identifier of the decoration
+   * @returns {Promise<Object|null>} Decoration state object or null if not found
+   * @throws {Error} When database query fails or decoration ID is invalid
+   * 
+   * @example
+   * ```javascript
+   * // Get decoration state
+   * const decoration = await DecorationService.getDecorationState('dec_123');
+   * console.log(`Decoration is at position (${decoration.position_x}, ${decoration.position_y})`);
+   * ```
+   */
   static async getDecorationState(decorationId) {
     try {
       // Try to get from cache first
@@ -39,7 +68,27 @@ export class DecorationService {
     }
   }
 
-  // Create new decoration state (called when decoration is created on-chain)
+  /**
+   * Create new decoration state (called when decoration is created on-chain)
+   * 
+   * Initializes a new decoration state in the database when a decoration
+   * is minted or created on the blockchain.
+   * 
+   * @static
+   * @async
+   * @param {string} decorationId - The unique identifier of the decoration
+   * @param {string} playerId - The ID of the player who owns the decoration
+   * @param {string|null} [aquariumId=null] - Optional aquarium ID if decoration is placed immediately
+   * @returns {Promise<Object>} Created decoration state object
+   * @throws {Error} When database insert fails or decoration ID already exists
+   * 
+   * @example
+   * ```javascript
+   * // Create decoration state for newly minted decoration
+   * const decoration = await DecorationService.createDecorationState('dec_123', 'player_456');
+   * console.log(`Decoration ${decoration.decoration_id} created for player`);
+   * ```
+   */
   static async createDecorationState(
     decorationId,
     playerId,
@@ -77,7 +126,25 @@ export class DecorationService {
     }
   }
 
-  // Get all decorations for a player
+  /**
+   * Get all decorations for a player
+   * 
+   * Retrieves all decorations owned by a specific player, regardless of
+   * their current placement status.
+   * 
+   * @static
+   * @async
+   * @param {string} playerId - The unique identifier of the player
+   * @returns {Promise<Array>} Array of decoration objects
+   * @throws {Error} When database query fails or player ID is invalid
+   * 
+   * @example
+   * ```javascript
+   * // Get all player decorations
+   * const decorations = await DecorationService.getPlayerDecorations('player_123');
+   * console.log(`Player has ${decorations.length} decorations`);
+   * ```
+   */
   static async getPlayerDecorations(playerId) {
     try {
       const { data, error } = await supabase
@@ -93,7 +160,24 @@ export class DecorationService {
     }
   }
 
-  // Get decorations in a specific aquarium
+  /**
+   * Get decorations in a specific aquarium
+   * 
+   * Retrieves all visible decorations currently placed in a specific aquarium.
+   * 
+   * @static
+   * @async
+   * @param {string} aquariumId - The unique identifier of the aquarium
+   * @returns {Promise<Array>} Array of visible decoration objects in the aquarium
+   * @throws {Error} When database query fails or aquarium ID is invalid
+   * 
+   * @example
+   * ```javascript
+   * // Get all decorations in aquarium
+   * const decorations = await DecorationService.getAquariumDecorations('aqua_123');
+   * console.log(`Aquarium has ${decorations.length} visible decorations`);
+   * ```
+   */
   static async getAquariumDecorations(aquariumId) {
     try {
       const { data, error } = await supabase
@@ -110,7 +194,29 @@ export class DecorationService {
     }
   }
 
-  // Place decoration in aquarium
+  /**
+   * Place decoration in aquarium
+   * 
+   * Places a decoration at a specific position within an aquarium with
+   * optional rotation.
+   * 
+   * @static
+   * @async
+   * @param {string} decorationId - The unique identifier of the decoration
+   * @param {string} aquariumId - The unique identifier of the target aquarium
+   * @param {number} positionX - X coordinate position (0-100)
+   * @param {number} positionY - Y coordinate position (0-100)
+   * @param {number} [rotationDegrees=0] - Rotation angle in degrees (0-360)
+   * @returns {Promise<Object>} Updated decoration state object
+   * @throws {Error} When database update fails or decoration/aquarium ID is invalid
+   * 
+   * @example
+   * ```javascript
+   * // Place decoration in aquarium at specific position
+   * const decoration = await DecorationService.placeDecoration('dec_123', 'aqua_456', 50, 30, 45);
+   * console.log(`Decoration placed at (${decoration.position_x}, ${decoration.position_y})`);
+   * ```
+   */
   static async placeDecoration(
     decorationId,
     aquariumId,
@@ -149,7 +255,25 @@ export class DecorationService {
     }
   }
 
-  // Remove decoration from aquarium
+  /**
+   * Remove decoration from aquarium
+   * 
+   * Removes a decoration from its current aquarium, making it unplaced
+   * and invisible.
+   * 
+   * @static
+   * @async
+   * @param {string} decorationId - The unique identifier of the decoration
+   * @returns {Promise<Object>} Updated decoration state object
+   * @throws {Error} When database update fails or decoration ID is invalid
+   * 
+   * @example
+   * ```javascript
+   * // Remove decoration from aquarium
+   * const decoration = await DecorationService.removeDecoration('dec_123');
+   * console.log('Decoration removed and stored in inventory');
+   * ```
+   */
   static async removeDecoration(decorationId) {
     try {
       const { data, error } = await supabaseAdmin
@@ -182,7 +306,27 @@ export class DecorationService {
     }
   }
 
-  // Update decoration position
+  /**
+   * Update decoration position
+   * 
+   * Updates the position and rotation of a decoration within its current aquarium.
+   * 
+   * @static
+   * @async
+   * @param {string} decorationId - The unique identifier of the decoration
+   * @param {number} positionX - New X coordinate position (0-100)
+   * @param {number} positionY - New Y coordinate position (0-100)
+   * @param {number} rotationDegrees - New rotation angle in degrees (0-360)
+   * @returns {Promise<Object>} Updated decoration state object
+   * @throws {Error} When database update fails or decoration ID is invalid
+   * 
+   * @example
+   * ```javascript
+   * // Move decoration to new position
+   * const decoration = await DecorationService.updateDecorationPosition('dec_123', 75, 60, 90);
+   * console.log(`Decoration moved to new position`);
+   * ```
+   */
   static async updateDecorationPosition(
     decorationId,
     positionX,
@@ -218,7 +362,24 @@ export class DecorationService {
     }
   }
 
-  // Toggle decoration visibility
+  /**
+   * Toggle decoration visibility
+   * 
+   * Toggles the visibility state of a decoration between visible and hidden.
+   * 
+   * @static
+   * @async
+   * @param {string} decorationId - The unique identifier of the decoration
+   * @returns {Promise<Object>} Updated decoration state object
+   * @throws {Error} When decoration not found or database update fails
+   * 
+   * @example
+   * ```javascript
+   * // Toggle decoration visibility
+   * const decoration = await DecorationService.toggleDecorationVisibility('dec_123');
+   * console.log(`Decoration is now ${decoration.is_visible ? 'visible' : 'hidden'}`);
+   * ```
+   */
   static async toggleDecorationVisibility(decorationId) {
     try {
       const currentState = await this.getDecorationState(decorationId);
@@ -254,7 +415,27 @@ export class DecorationService {
     }
   }
 
-  // Move decoration between aquariums
+  /**
+   * Move decoration between aquariums
+   * 
+   * Moves a decoration from one aquarium to another, resetting its position
+   * in the new aquarium.
+   * 
+   * @static
+   * @async
+   * @param {string} decorationId - The unique identifier of the decoration
+   * @param {string} fromAquariumId - The unique identifier of the source aquarium
+   * @param {string} toAquariumId - The unique identifier of the destination aquarium
+   * @returns {Promise<Object>} Updated decoration state object
+   * @throws {Error} When database update fails or aquarium/decoration ID is invalid
+   * 
+   * @example
+   * ```javascript
+   * // Move decoration between aquariums
+   * const decoration = await DecorationService.moveDecoration('dec_123', 'aqua_456', 'aqua_789');
+   * console.log(`Decoration moved to aquarium ${decoration.aquarium_id}`);
+   * ```
+   */
   static async moveDecoration(decorationId, fromAquariumId, toAquariumId) {
     try {
       const { data, error } = await supabaseAdmin
@@ -287,7 +468,26 @@ export class DecorationService {
     }
   }
 
-  // Get decoration statistics for a player
+  /**
+   * Get decoration statistics for a player
+   * 
+   * Calculates comprehensive decoration statistics including total count,
+   * placement status, and visibility metrics.
+   * 
+   * @static
+   * @async
+   * @param {string} playerId - The unique identifier of the player
+   * @returns {Promise<Object>} Statistics object with decoration metrics
+   * @throws {Error} When database query fails or player ID is invalid
+   * 
+   * @example
+   * ```javascript
+   * // Get player decoration statistics
+   * const stats = await DecorationService.getPlayerDecorationStats('player_123');
+   * console.log(`Player has ${stats.total_decorations} decorations`);
+   * console.log(`${stats.placed_decorations} are currently placed`);
+   * ```
+   */
   static async getPlayerDecorationStats(playerId) {
     try {
       const { data, error } = await supabase

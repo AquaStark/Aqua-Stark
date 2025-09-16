@@ -13,7 +13,11 @@
     "format:check": "prettier --check src/",
     "audit": "npm audit --audit-level=moderate",
     "audit:fix": "npm audit fix",
-    "validate": "npm run lint && npm run format:check"
+    "validate": "npm run lint && npm run format:check",
+    "docs:validate": "node scripts/validate-docs.js",
+    "docs:generate": "node scripts/generate-docs.js",
+    "docs:build": "npm run docs:validate && npm run docs:generate",
+    "metadata:update": "node scripts/update-service-metadata.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.4",
