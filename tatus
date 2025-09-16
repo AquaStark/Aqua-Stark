@@ -1,0 +1,5 @@
+[33m2aaccfb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #458 from Jopsan-gm/feature/unified-notifications-hook
+[33m73b539e[m Merge pull request #452 from Jopsan-gm/feature/unified-shop-data-hook
+[33m04d2005[m fix: resolve TypeScript errors in storage.tsx
+[33mba66ad7[m fix: remove unused foodData import from storage.tsx
+[33m39ba7a2[m update: pnpm-lock.yaml
