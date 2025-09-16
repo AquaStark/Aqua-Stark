@@ -47,6 +47,9 @@ export { useFishIndicators } from './useFishIndicators';
 export { useGameActions } from './useGameActions';
 export { usePlayerValidation } from './usePlayerValidation';
 
+// API hooks
+export { useApi, useApiRequest } from './use-api';
+
 // dojo hooks
 export * from './dojo/index';
 
