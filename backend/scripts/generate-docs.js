@@ -259,7 +259,9 @@ class DocumentationGenerator {
           if (doc.tags.has('example')) {
             markdown += '**Example:**\n';
             const examples = doc.tags.get('example');
-            const exampleArray = Array.isArray(examples) ? examples : [examples];
+            const exampleArray = Array.isArray(examples)
+              ? examples
+              : [examples];
             exampleArray.forEach(example => {
               const sanitized = String(example)
                 .replace(/```javascript\n?/g, '')
@@ -411,7 +413,10 @@ function main() {
 }
 
 // Run if called directly (cross-platform)
-if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
+if (
+  process.argv[1] &&
+  pathToFileURL(process.argv[1]).href === import.meta.url
+) {
   main();
 }
 

@@ -348,7 +348,10 @@ function main() {
 }
 
 // Run validation only when executed directly (cross-platform)
-if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
+if (
+  process.argv[1] &&
+  pathToFileURL(process.argv[1]).href === import.meta.url
+) {
   main();
 }
 
