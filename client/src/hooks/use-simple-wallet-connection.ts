@@ -47,7 +47,10 @@ export function useSimpleWalletConnection() {
     try {
       return connector.available();
     } catch (connectorError) {
-      console.warn(`Error checking availability for ${connector.name}:`, connectorError);
+      console.warn(
+        `Error checking availability for ${connector.name}:`,
+        connectorError
+      );
       return false;
     }
   });
