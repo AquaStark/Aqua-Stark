@@ -12,7 +12,7 @@ export function AquariumActions() {
     upgradeAquarium,
   } = useGameActions();
   const { success, error } = useNotifications();
-  
+
   // Use the unified API hook instead of local loading state
   const { loading: apiLoading, error: apiError } = useApi();
 
