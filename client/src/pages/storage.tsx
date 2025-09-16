@@ -22,7 +22,7 @@ import { PageHeader } from '@/components/layout/page-header';
 import { Footer } from '@/components/layout/footer';
 import { SpecialBundles } from '@/components/store/special-bundles';
 import { specialFoodBundles } from '@/data/market-data';
-import { useStoreFilters } from '@/hooks';
+import { useStoreFilters, useShopData } from '@/hooks';
 import { Button } from '@/components/ui/button';
 
 // Define types for our data model
@@ -105,7 +105,7 @@ export default function StorePage() {
   // Get the correct items based on the active tab
   const getTabItems = (): StoreItem[] => {
     const shopItems = getShopItems(activeTab);
-    return shopItems.map(item => ({
+    return shopItems.map((item: any) => ({
       name: item.name,
       image: item.image,
       price: item.price,
