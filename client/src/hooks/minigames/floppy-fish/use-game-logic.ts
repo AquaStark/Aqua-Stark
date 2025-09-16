@@ -39,7 +39,8 @@ export function useGameLogic(onGameOver?: (score: number) => void) {
   useEffect(() => {
     const stored = get<number>('floppyFishBestScore', {
       parser: (raw: string) => Number(raw),
-      validate: (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v),
+      validate: (v: unknown): v is number =>
+        typeof v === 'number' && Number.isFinite(v),
     });
     if (typeof stored === 'number') setBestScore(stored);
   }, []);
