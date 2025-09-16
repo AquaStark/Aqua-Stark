@@ -100,7 +100,10 @@ export const useCommunity = () => {
     ) {
       return false;
     }
-    if (eventFilters.status !== 'all' && event.status !== eventFilters.status) {
+    if (
+      eventFilters.status !== 'all' &&
+      event.status !== eventFilters.status
+    ) {
       return false;
     }
     return true;
