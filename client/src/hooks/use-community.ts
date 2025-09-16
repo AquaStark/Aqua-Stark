@@ -29,7 +29,9 @@ export const useCommunity = () => {
   const filteredAquariums = mockAquariums.filter(aquarium => {
     if (
       debouncedGallerySearch &&
-      !aquarium.name.toLowerCase().includes(debouncedGallerySearch.toLowerCase())
+      !aquarium.name
+        .toLowerCase()
+        .includes(debouncedGallerySearch.toLowerCase())
     ) {
       return false;
     }
