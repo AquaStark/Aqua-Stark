@@ -7,7 +7,7 @@ import { ENV_CONFIG } from '@/config/environment';
  * Unified hook for handling API calls with built-in error handling, loading states,
  * caching, and response validation. Centralizes all HTTP request logic to avoid
  * duplication across components.
- * 
+ *
  * Features:
  * - GET, POST, PUT, DELETE methods
  * - Automatic loading state management
@@ -16,7 +16,7 @@ import { ENV_CONFIG } from '@/config/environment';
  * - Request/response validation
  * - Request cancellation
  * - TypeScript support
- * 
+ *
  * @category Hooks
  */
 
@@ -86,14 +86,14 @@ const DEFAULT_CONFIG: Required<ApiConfig> = {
 export function useApi(config: ApiConfig = {}) {
   // Merge user config with defaults
   const apiConfig = { ...DEFAULT_CONFIG, ...config };
-  
+
   // State management
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
-  
+
   // Cache storage
   const cacheRef = useRef<Map<string, CacheEntry<any>>>(new Map());
-  
+
   // Abort controller for request cancellation
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -103,7 +103,7 @@ export function useApi(config: ApiConfig = {}) {
   const clearExpiredCache = useCallback(() => {
     const now = Date.now();
     const cache = cacheRef.current;
-    
+
     for (const [key, entry] of cache.entries()) {
       if (now - entry.timestamp > entry.ttl) {
         cache.delete(key);
@@ -123,15 +123,15 @@ export function useApi(config: ApiConfig = {}) {
    */
   const getCachedResponse = useCallback(<T>(options: RequestOptions): T | null => {
     if (!options.cache) return null;
-    
+
     clearExpiredCache();
     const cacheKey = getCacheKey(options);
     const cached = cacheRef.current.get(cacheKey);
     
-    if (cached && Date.now() - cached.timestamp < cached.ttl) {
+    if (cached && Date.now() - cached.timestamp < cached.timestamp < cached.ttl) {
       return cached.data;
     }
-    
+
     return null;
   }, [clearExpiredCache, getCacheKey]);
 
@@ -140,7 +140,7 @@ export function useApi(config: ApiConfig = {}) {
    */
   const setCachedResponse = useCallback(<T>(options: RequestOptions, data: T): void => {
     if (!options.cache) return;
-    
+
     const cacheKey = getCacheKey(options);
     cacheRef.current.set(cacheKey, {
       data,
@@ -157,12 +157,12 @@ export function useApi(config: ApiConfig = {}) {
     if (data === null || data === undefined) {
       return false;
     }
-    
+
     // Check for common error patterns
     if (typeof data === 'object' && data.error) {
       return false;
     }
-    
+
     return true;
   }, []);
 
@@ -193,8 +193,8 @@ export function useApi(config: ApiConfig = {}) {
       abortControllerRef.current = abortController;
 
       // Build request URL
-      const url = options.url.startsWith('http') 
-        ? options.url 
+      const url = options.url.startsWith('http')
+        ? options.url
         : `${apiConfig.baseURL}${options.url}`;
 
       // Build request options
@@ -221,15 +221,15 @@ export function useApi(config: ApiConfig = {}) {
 
       // Make the request
       const response = await fetch(finalUrl, requestOptions);
-      
+
       // Parse response
       let responseData: T;
       const contentType = response.headers.get('content-type');
-      
+
       if (contentType && contentType.includes('application/json')) {
         responseData = await response.json();
       } else {
-        responseData = await response.text() as unknown as T;
+        responseData = (await response.text()) as unknown as T;
       }
 
       // Validate response
@@ -267,7 +267,7 @@ export function useApi(config: ApiConfig = {}) {
 
       // Retry logic
       if (attempt < (options.retries || apiConfig.retries)) {
-        await new Promise(resolve => 
+        await new Promise((resolve) =>
           setTimeout(resolve, apiConfig.retryDelay * attempt)
         );
         return makeRequest<T>(options, attempt + 1);
@@ -275,7 +275,8 @@ export function useApi(config: ApiConfig = {}) {
 
       // Create error object
       const apiError: ApiError = {
-        message: error instanceof Error ? error.message : 'Unknown error occurred',
+        message:
+          error instanceof Error ? error.message : 'Unknown error occurred',
         status: error instanceof Response ? error.status : undefined,
         code: error instanceof Error ? error.name : undefined,
         details: error,
@@ -444,11 +445,11 @@ export function useApi(config: ApiConfig = {}) {
     post,
     put,
     delete: del,
-    
+
     // State
     loading,
     error,
-    
+
     // Utilities
     clearCache,
     clearError,
