@@ -49,7 +49,8 @@ export interface UseLocalStorageApi {
  */
 function detectAvailability(): boolean {
   try {
-    if (typeof window === 'undefined' || !('localStorage' in window)) return false;
+    if (typeof window === 'undefined' || !('localStorage' in window))
+      return false;
     const testKey = '__aqua_ls_test__';
     window.localStorage.setItem(testKey, '1');
     window.localStorage.removeItem(testKey);
@@ -99,7 +100,10 @@ export function useLocalStorage(prefix?: string): UseLocalStorageApi {
         } catch (error) {
           // Log minimal error to help debugging without being noisy
           // eslint-disable-next-line no-console
-          console.error('[useLocalStorage] get failed:', { key: fullKey, error });
+          console.error('[useLocalStorage] get failed:', {
+            key: fullKey,
+            error,
+          });
           return null;
         }
       },
@@ -110,9 +114,7 @@ export function useLocalStorage(prefix?: string): UseLocalStorageApi {
           let toStore: string;
           if (options?.forceJsonStringify) {
             toStore = JSON.stringify(value);
-          } else if (
-            value !== null && typeof value === 'object'
-          ) {
+          } else if (value !== null && typeof value === 'object') {
             // Objects/arrays are JSON stringified by default
             toStore = JSON.stringify(value);
           } else {
@@ -122,7 +124,10 @@ export function useLocalStorage(prefix?: string): UseLocalStorageApi {
           window.localStorage.setItem(fullKey, toStore);
         } catch (error) {
           // eslint-disable-next-line no-console
-          console.error('[useLocalStorage] set failed:', { key: fullKey, error });
+          console.error('[useLocalStorage] set failed:', {
+            key: fullKey,
+            error,
+          });
         }
       },
       remove: (key: string): void => {
@@ -132,7 +137,10 @@ export function useLocalStorage(prefix?: string): UseLocalStorageApi {
           window.localStorage.removeItem(fullKey);
         } catch (error) {
           // eslint-disable-next-line no-console
-          console.error('[useLocalStorage] remove failed:', { key: fullKey, error });
+          console.error('[useLocalStorage] remove failed:', {
+            key: fullKey,
+            error,
+          });
         }
       },
       clearNamespace: (): void => {
@@ -147,7 +155,10 @@ export function useLocalStorage(prefix?: string): UseLocalStorageApi {
           keys.forEach(k => window.localStorage.removeItem(k));
         } catch (error) {
           // eslint-disable-next-line no-console
-          console.error('[useLocalStorage] clearNamespace failed:', { prefix, error });
+          console.error('[useLocalStorage] clearNamespace failed:', {
+            prefix,
+            error,
+          });
         }
       },
     };
@@ -155,5 +166,3 @@ export function useLocalStorage(prefix?: string): UseLocalStorageApi {
     return api;
   }, [isAvailable, prefix]);
 }
-
-
