@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useAccount } from '@starknet-react/core';
-import { usePlayer } from '@/hooks/dojo/usePlayer';
-import { usePlayerValidation } from '@/hooks/usePlayerValidation';
+import { usePlayer } from '@/hooks';
+import { usePlayerValidation } from '@/hooks';
 import { PageHeader } from '@/components/layout/page-header';
 import { Footer } from '@/components/layout/footer';
 import { Input } from '@/components/ui/input';
@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { BubblesBackground } from '@/components/bubble-background';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 import { ErrorWithMessage } from '@/types/ui-types';
 
 export default function Start() {

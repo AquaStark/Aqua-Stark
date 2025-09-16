@@ -15,15 +15,14 @@ import { CartSidebar } from '@/components/store/cart-sidebar';
 import { CheckoutModal } from '@/components/store/checkout-modal';
 import { useCartStore } from '@/store/use-cart-store';
 import { BubblesBackground } from '@/components/bubble-background';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 import { FilterCategory, FilterPanel } from '@/components/store/filter-panel';
 import { SortDropdown } from '@/components/store/sort-dropdown';
 import { PageHeader } from '@/components/layout/page-header';
 import { Footer } from '@/components/layout/footer';
 import { SpecialBundles } from '@/components/store/special-bundles';
-import { specialFoodBundles } from '@/data/market-data';
-import { useStoreFilters } from '@/hooks/use-store-filters';
-import { useShopData } from '@/hooks/use-shop-data';
+import { foodData, specialFoodBundles } from '@/data/market-data';
+import { useStoreFilters } from '@/hooks';
 import { Button } from '@/components/ui/button';
 
 // Define types for our data model
