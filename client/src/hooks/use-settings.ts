@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useLocalStorage } from './use-local-storage';
 import { SettingsValue } from '@/types/player-types';
 
 export interface SettingsState {
@@ -13,36 +13,47 @@ export interface SettingsState {
 
 const SETTINGS_STORAGE_KEY = 'aqua-stark-settings';
 
+const defaultSettings: SettingsState = {
+  sound_enabled: true,
+  animations_enabled: true,
+  notifications_enabled: true,
+  preferred_language: 'english',
+  ui_theme: 'auto',
+  auto_feed_enabled: false,
+  tutorial_completed_steps: [],
+};
+
+/**
+ * Validates that the settings object has the correct structure
+ * @param value - The value to validate
+ * @returns {boolean} True if valid, false otherwise
+ */
+const validateSettings = (value: any): value is SettingsState => {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof value.sound_enabled === 'boolean' &&
+    typeof value.animations_enabled === 'boolean' &&
+    typeof value.notifications_enabled === 'boolean' &&
+    typeof value.preferred_language === 'string' &&
+    typeof value.ui_theme === 'string' &&
+    typeof value.auto_feed_enabled === 'boolean' &&
+    Array.isArray(value.tutorial_completed_steps)
+  );
+};
+
 export const useSettings = () => {
-  const [settings, setSettings] = useState<SettingsState>({
-    sound_enabled: true,
-    animations_enabled: true,
-    notifications_enabled: true,
-    preferred_language: 'english',
-    ui_theme: 'auto',
-    auto_feed_enabled: false,
-    tutorial_completed_steps: [],
+  const {
+    value: settings,
+    setValue: setSettings,
+    isLoading,
+    hasError,
+    error,
+  } = useLocalStorage<SettingsState>(SETTINGS_STORAGE_KEY, {
+    defaultValue: defaultSettings,
+    validator: validateSettings,
+    syncAcrossTabs: true,
   });
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    try {
-      const timeout = setTimeout(() => {
-        const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
-        if (storedSettings) {
-          const parsedSettings: SettingsState = JSON.parse(storedSettings);
-          setSettings(parsedSettings);
-        }
-        setIsLoading(false);
-      }, 500);
-
-      return () => clearTimeout(timeout);
-    } catch (error) {
-      console.error('Failed to load settings from localStorage:', error);
-      // Could add user notification for settings load failures
-      setIsLoading(false);
-    }
-  }, []);
 
   /**
    * Updates a specific setting and saves it to localStorage
@@ -50,23 +61,17 @@ export const useSettings = () => {
    * @param {SettingsValue} value - The new value for the setting
    */
   const updateSetting = (key: keyof SettingsState, value: SettingsValue) => {
-    setIsLoading(true);
-    try {
-      const newSettings = { ...settings, [key]: value };
-
-      const timeout = setTimeout(() => {
-        setSettings(newSettings);
-        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(newSettings));
-        setIsLoading(false);
-      }, 300);
-
-      return () => clearTimeout(timeout);
-    } catch (error) {
-      console.error('Failed to save settings to localStorage:', error);
-      // Could add user notification for settings save failures
-      setIsLoading(false);
-    }
+    setSettings(prevSettings => ({
+      ...prevSettings,
+      [key]: value,
+    }));
   };
 
-  return { settings, updateSetting, isLoading };
+  return { 
+    settings, 
+    updateSetting, 
+    isLoading,
+    hasError,
+    error,
+  };
 };

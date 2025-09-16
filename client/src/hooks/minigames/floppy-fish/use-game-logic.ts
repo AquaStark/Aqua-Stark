@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
+import { useLocalStorage } from '../../use-local-storage';
 
 // Game constants - wider screen for better gameplay
 const GAME_WIDTH = 600; // Increased from 400
@@ -27,25 +28,24 @@ export function useGameLogic(onGameOver?: (score: number) => void) {
   const [columns, setColumns] = useState<{ x: number; gapY: number }[]>([]);
   // Game state
   const [score, setScore] = useState(0);
-  const [bestScore, setBestScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [started, setStarted] = useState(false);
   const animationRef = useRef<number>();
   const lastColumnTime = useRef<number>(0);
 
-  // Load best score from localStorage
-  useEffect(() => {
-    const stored = localStorage.getItem('floppyFishBestScore');
-    if (stored) setBestScore(Number(stored));
-  }, []);
+  // Use localStorage hook for best score management
+  const { value: bestScore, setValue: setBestScore } = useLocalStorage<number>('floppyFishBestScore', {
+    defaultValue: 0,
+    validator: (value) => typeof value === 'number' && value >= 0,
+    syncAcrossTabs: false, // Best score is per-device, not per-session
+  });
 
-  // Save best score
+  // Update best score when current score exceeds it
   useEffect(() => {
     if (score > bestScore) {
       setBestScore(score);
-      localStorage.setItem('floppyFishBestScore', String(score));
     }
-  }, [score, bestScore]);
+  }, [score, bestScore, setBestScore]);
 
   // Reset game state
   const resetGame = useCallback(() => {

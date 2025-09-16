@@ -41,6 +41,7 @@ export { useLoadingNavigation } from './use-loading-navigation';
 export { useSettings } from './use-settings';
 export { useSimpleWalletConnection } from './use-simple-wallet-connection';
 export { useStoreFilters } from './use-store-filters';
+export { useLocalStorage } from './use-local-storage';
 export { useFishIndicators } from './useFishIndicators';
 export { useGameActions } from './useGameActions';
 export { usePlayerValidation } from './usePlayerValidation';
