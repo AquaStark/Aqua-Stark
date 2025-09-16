@@ -257,7 +257,8 @@ export function useApi(config: ApiConfig = {}) {
 
         // Handle non-2xx responses
         if (!response.ok) {
-          apiResponse.error = (responseData as any)?.message || response.statusText;
+          apiResponse.error =
+            (responseData as any)?.message || response.statusText;
           throw new Error(apiResponse.error);
         }
 
