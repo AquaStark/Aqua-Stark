@@ -115,7 +115,9 @@ export function useApi(config: ApiConfig = {}) {
    * Generate cache key from request options
    */
   const getCacheKey = useCallback((options: RequestOptions): string => {
-    return `${options.method}:${options.url}:${JSON.stringify(options.data || {})}`;
+    return `${options.method}:${options.url}:${JSON.stringify(
+      options.data || {}
+    )}`;
   }, []);
 
   /**
