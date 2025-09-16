@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
+import { useLocalStorage } from '@/hooks';
 
 // Game constants - wider screen for better gameplay
 const GAME_WIDTH = 600; // Increased from 400
@@ -20,6 +21,7 @@ function getRandomGapY() {
 }
 
 export function useGameLogic(onGameOver?: (score: number) => void) {
+  const { get, set } = useLocalStorage();
   // Fish state
   const [fishY, setFishY] = useState(GAME_HEIGHT / 2 - FISH_SIZE / 2);
   const [velocity, setVelocity] = useState(0);
@@ -33,17 +35,20 @@ export function useGameLogic(onGameOver?: (score: number) => void) {
   const animationRef = useRef<number>();
   const lastColumnTime = useRef<number>(0);
 
-  // Load best score from localStorage
+  // Load best score using unified localStorage hook
   useEffect(() => {
-    const stored = localStorage.getItem('floppyFishBestScore');
-    if (stored) setBestScore(Number(stored));
+    const stored = get<number>('floppyFishBestScore', {
+      parser: (raw: string) => Number(raw),
+      validate: (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v),
+    });
+    if (typeof stored === 'number') setBestScore(stored);
   }, []);
 
-  // Save best score
+  // Save best score using unified localStorage hook
   useEffect(() => {
     if (score > bestScore) {
       setBestScore(score);
-      localStorage.setItem('floppyFishBestScore', String(score));
+      set('floppyFishBestScore', score);
     }
   }, [score, bestScore]);
 
