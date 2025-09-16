@@ -87,7 +87,9 @@ export const useCommunity = () => {
   const filteredEvents = mockEvents.filter(event => {
     if (
       debouncedEventSearch &&
-      !event.name.toLowerCase().includes(debouncedEventSearch.toLowerCase()) &&
+      !event.name
+        .toLowerCase()
+        .includes(debouncedEventSearch.toLowerCase()) &&
       !event.description
         .toLowerCase()
         .includes(debouncedEventSearch.toLowerCase())
