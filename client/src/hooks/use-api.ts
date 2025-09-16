@@ -276,7 +276,7 @@ export function useApi(config: ApiConfig = {}) {
 
         // Retry logic
         if (attempt < (options.retries || apiConfig.retries)) {
-          await new Promise((resolve) =>
+          await new Promise(resolve =>
             setTimeout(resolve, apiConfig.retryDelay * attempt)
           );
           return makeRequest<T>(options, attempt + 1);
