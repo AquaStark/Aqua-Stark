@@ -14,7 +14,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -108,15 +108,20 @@ function extractJSDocComments(content) {
  * Extract method signatures from file content
  */
 function extractMethods(content) {
-  const methodRegex =
-    /static\s+async\s+(\w+)\s*\([^)]*\)\s*{|static\s+(\w+)\s*\([^)]*\)\s*{/g;
+  const methodRegex = /static\s+(?:async\s+)?(\w+)\s*\(([^)]*)\)\s*{/g;
   const methods = [];
   let match;
 
   while ((match = methodRegex.exec(content)) !== null) {
-    const methodName = match[1] || match[2];
+    const methodName = match[1];
+    const paramsRaw = (match[2] || '').trim();
+    const paramCount =
+      paramsRaw === ''
+        ? 0
+        : paramsRaw.split(',').filter(p => p.trim() !== '').length;
     methods.push({
       name: methodName,
+      paramCount,
       start: match.index,
       end: match.index + match[0].length,
     });
@@ -128,23 +133,23 @@ function extractMethods(content) {
 /**
  * Validate JSDoc comment structure
  */
-function validateJSDocComment(comment, methodName, results, fileName) {
+function validateJSDocComment(comment, method, results, fileName) {
   const content = comment.content;
 
   // Check for required tags
   for (const tag of REQUIRED_TAGS) {
     if (!content.includes(tag)) {
-      // Special case: methods with no parameters don't need @param
-      if (tag === '@param' && content.includes('()')) {
+      // Methods with no parameters don't need @param
+      if (tag === '@param' && method.paramCount === 0) {
         continue;
       }
-      results.addError(fileName, methodName, `Missing required tag: ${tag}`);
+      results.addError(fileName, method.name, `Missing required tag: ${tag}`);
     }
   }
 
   // Check for proper parameter documentation (optional warning)
   const paramMatches = content.match(
-    /@param\s+\{([^}]+)\}\s+(\w+)(?:\s+(.+))?/g
+    /@param\s+\{([^}]+)\}\s+([\w.\[\]]+)(?:\s+-?\s*(.+))?/g
   );
   if (paramMatches) {
     paramMatches.forEach(param => {
@@ -156,7 +161,7 @@ function validateJSDocComment(comment, methodName, results, fileName) {
       ) {
         results.addWarning(
           fileName,
-          methodName,
+          method.name,
           `Parameter description missing: ${param}`
         );
       }
@@ -169,7 +174,7 @@ function validateJSDocComment(comment, methodName, results, fileName) {
     if (!returnsMatch) {
       results.addError(
         fileName,
-        methodName,
+        method.name,
         'Missing return type in @returns tag'
       );
     }
@@ -177,23 +182,13 @@ function validateJSDocComment(comment, methodName, results, fileName) {
 
   // Check for example code (optional)
   if (content.includes('@example')) {
-    const exampleMatch = content.match(/@example\s*```[\s\S]*?```/);
-    if (
-      (!exampleMatch && !content.includes('@example')) ||
-      (content.includes('@example') &&
-        content.indexOf('@example') + 20 < content.length)
-    ) {
-      // Only warn if example is completely empty
-      if (
-        content.split('@example')[1] &&
-        content.split('@example')[1].trim().length < 10
-      ) {
-        results.addWarning(
-          fileName,
-          methodName,
-          'Example code block is empty or malformed'
-        );
-      }
+    const exampleMatch = content.match(/@example[\s\S]*?```[\s\S]+?```/);
+    if (!exampleMatch) {
+      results.addWarning(
+        fileName,
+        method.name,
+        'Example code block is empty or malformed'
+      );
     }
   }
 
@@ -205,7 +200,7 @@ function validateJSDocComment(comment, methodName, results, fileName) {
     ) {
       results.addWarning(
         fileName,
-        methodName,
+        method.name,
         'Class documentation missing description'
       );
     }
@@ -236,12 +231,12 @@ function validateServiceFile(filePath, results) {
 
       // Find corresponding JSDoc comment
       const comment = jsdocComments.find(
-        c => c.end < method.start && method.start - c.end < 50 // JSDoc should be close to method
+        c => c.end < method.start && method.start - c.end < 100 // allow reasonable spacing
       );
 
       if (comment) {
         results.incrementStats('documentedMethods');
-        validateJSDocComment(comment, method.name, results, fileName);
+        validateJSDocComment(comment, method, results, fileName);
       } else {
         results.incrementStats('missingDocumentation');
         results.addError(
@@ -352,11 +347,8 @@ function main() {
   process.exit(isValid ? 0 : 1);
 }
 
-// Run validation if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main();
-} else {
-  // Also run if called from command line
+// Run validation only when executed directly (cross-platform)
+if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
   main();
 }
 

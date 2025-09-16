@@ -14,7 +14,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,11 +38,7 @@ class DocumentationGenerator {
    */
   parseJSDocComment(comment) {
     const lines = comment.split('\n').map(line => line.trim());
-    const parsed = {
-      description: '',
-      tags: new Map(),
-      examples: [],
-    };
+    const parsed = { description: '', tags: new Map() };
 
     let currentTag = null;
     let currentContent = [];
@@ -61,14 +57,23 @@ class DocumentationGenerator {
       if (trimmedLine.startsWith('@')) {
         // Save previous tag content
         if (currentTag && currentContent.length > 0) {
-          parsed.tags.set(currentTag, currentContent.join('\n').trim());
+          const val = currentContent.join('\n').trim();
+          const existing = parsed.tags.get(currentTag);
+          parsed.tags.set(
+            currentTag,
+            existing
+              ? Array.isArray(existing)
+                ? [...existing, val]
+                : [existing, val]
+              : [val]
+          );
           currentContent = [];
         }
-
         // Parse new tag
         const tagMatch = trimmedLine.match(/^@(\w+)(?:\s+(.*))?$/);
         if (tagMatch) {
-          currentTag = tagMatch[1];
+          const raw = tagMatch[1];
+          currentTag = raw === 'return' ? 'returns' : raw; // normalize
           if (tagMatch[2]) {
             currentContent.push(tagMatch[2]);
           }
@@ -82,7 +87,16 @@ class DocumentationGenerator {
 
     // Save last tag content
     if (currentTag && currentContent.length > 0) {
-      parsed.tags.set(currentTag, currentContent.join('\n').trim());
+      const val = currentContent.join('\n').trim();
+      const existing = parsed.tags.get(currentTag);
+      parsed.tags.set(
+        currentTag,
+        existing
+          ? Array.isArray(existing)
+            ? [...existing, val]
+            : [existing, val]
+          : [val]
+      );
     }
 
     return parsed;
@@ -138,9 +152,11 @@ class DocumentationGenerator {
     const methods = this.extractMethods(content);
     const jsdocComments = this.extractJSDocComments(content);
 
+    const classMatch = content.match(/export\s+class\s+(\w+)/);
+    const className = classMatch ? classMatch[1] : fileName;
     const serviceInfo = {
       fileName,
-      className: fileName.replace('Service', 'Service'),
+      className,
       methods: new Map(),
       classDoc: null,
     };
@@ -242,10 +258,14 @@ class DocumentationGenerator {
           // Example
           if (doc.tags.has('example')) {
             markdown += '**Example:**\n';
-            markdown += `\`\`\`javascript\n${doc.tags
-              .get('example')
-              .replace(/```javascript\n?/g, '')
-              .replace(/```/g, '')}\n\`\`\`\n\n`;
+            const examples = doc.tags.get('example');
+            const exampleArray = Array.isArray(examples) ? examples : [examples];
+            exampleArray.forEach(example => {
+              const sanitized = String(example)
+                .replace(/```javascript\n?/g, '')
+                .replace(/```/g, '');
+              markdown += `\`\`\`javascript\n${sanitized}\n\`\`\`\n\n`;
+            });
           }
         } else {
           markdown += '*No documentation available*\n\n';
@@ -301,9 +321,10 @@ class DocumentationGenerator {
       if (classDoc && classDoc.tags.has('example')) {
         markdown += '### Basic Usage\n\n';
         markdown += '```javascript\n';
-        markdown += `import { ${serviceName} } from './services/index.js';\n\n`;
-        markdown += `${classDoc.tags
-          .get('example')
+        markdown += `import { ${serviceInfo.className} } from './services/index.js';\n\n`;
+        const example = classDoc.tags.get('example');
+        const exampleText = Array.isArray(example) ? example[0] : example;
+        markdown += `${exampleText
           .replace(/```javascript\n?/g, '')
           .replace(/```/g, '')}\n`;
         markdown += '```\n\n';
@@ -322,12 +343,13 @@ class DocumentationGenerator {
           }
 
           markdown += `#### ${methodName}\n\n`;
-          markdown += '```javascript\n';
-          markdown += `${methodInfo.documentation.tags
-            .get('example')
-            .replace(/```javascript\n?/g, '')
-            .replace(/```/g, '')}\n`;
-          markdown += '```\n\n';
+          const ex = methodInfo.documentation.tags.get('example');
+          const vals = Array.isArray(ex) ? ex : [ex];
+          vals.forEach(v => {
+            markdown += '```javascript\n';
+            markdown += `${v.replace(/```javascript\n?/g, '').replace(/```/g, '')}\n`;
+            markdown += '```\n\n';
+          });
         }
       }
     }
@@ -388,8 +410,8 @@ function main() {
   generator.generateAll();
 }
 
-// Run if called directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Run if called directly (cross-platform)
+if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
   main();
 }
 

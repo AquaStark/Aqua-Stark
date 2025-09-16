@@ -117,7 +117,7 @@ export class MinigameService {
    * @example
    * ```javascript
    * // Calculate XP for a high score
-   * const xp = MinigameService.calculateXP('flappy_fish', 2500);
+   * const xp = MinigameService.calculateXP('flappy_fish', 200);
    * console.log(`Earned ${xp} XP points`); // 30 XP (10 base * 3 multiplier)
    * ```
    */
