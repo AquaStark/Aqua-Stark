@@ -37,24 +37,23 @@ class DocumentationGenerator {
    * Parse JSDoc comment
    */
   parseJSDocComment(comment) {
-    const lines = comment.split('\n').map(line => line.trim());
+    const lines = comment.split('\n');
     const parsed = { description: '', tags: new Map() };
 
     let currentTag = null;
     let currentContent = [];
 
     for (const line of lines) {
-      if (
-        line.startsWith('/**') ||
-        line.startsWith('*') ||
-        line.startsWith('*/')
-      ) {
+      const trimmedLine = line.trim();
+
+      if (trimmedLine.startsWith('/**') || trimmedLine.startsWith('*/')) {
         continue;
       }
 
-      const trimmedLine = line.replace(/^\*\s?/, '');
+      // Remove leading * and spaces
+      const cleanLine = trimmedLine.replace(/^\*\s?/, '');
 
-      if (trimmedLine.startsWith('@')) {
+      if (cleanLine.startsWith('@')) {
         // Save previous tag content
         if (currentTag && currentContent.length > 0) {
           const val = currentContent.join('\n').trim();
@@ -70,18 +69,30 @@ class DocumentationGenerator {
           currentContent = [];
         }
         // Parse new tag
-        const tagMatch = trimmedLine.match(/^@(\w+)(?:\s+(.*))?$/);
+        const tagMatch = cleanLine.match(/^@(\w+)(?:\s+(.*))?$/);
         if (tagMatch) {
           const raw = tagMatch[1];
           currentTag = raw === 'return' ? 'returns' : raw; // normalize
           if (tagMatch[2]) {
             currentContent.push(tagMatch[2]);
+          } else {
+            // Tag with no content - save it immediately
+            const existing = parsed.tags.get(currentTag);
+            parsed.tags.set(
+              currentTag,
+              existing
+                ? Array.isArray(existing)
+                  ? [...existing, '']
+                  : [existing, '']
+                : ['']
+            );
+            currentTag = null; // Reset for next tag
           }
         }
       } else if (currentTag) {
-        currentContent.push(trimmedLine);
-      } else if (!currentTag && trimmedLine) {
-        parsed.description += (parsed.description ? '\n' : '') + trimmedLine;
+        currentContent.push(cleanLine);
+      } else if (!currentTag && cleanLine) {
+        parsed.description += (parsed.description ? '\n' : '') + cleanLine;
       }
     }
 
@@ -251,12 +262,17 @@ class DocumentationGenerator {
           // Return value
           if (doc.tags.has('returns')) {
             const returns = doc.tags.get('returns');
-            markdown += `**Returns:** ${returns}\n\n`;
+            const retStr = Array.isArray(returns)
+              ? returns.join('\n')
+              : returns;
+            markdown += `**Returns:** ${retStr}\n\n`;
           }
 
           // Throws
           if (doc.tags.has('throws')) {
-            markdown += `**Throws:** ${doc.tags.get('throws')}\n\n`;
+            const thr = doc.tags.get('throws');
+            const thrStr = Array.isArray(thr) ? thr.join('\n') : thr;
+            markdown += `**Throws:** ${thrStr}\n\n`;
           }
 
           // Example
