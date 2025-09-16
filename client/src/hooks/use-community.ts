@@ -34,7 +34,10 @@ export const useCommunity = () => {
       return false;
     }
     if (
-      !(aquarium.likes > filters.minLikes && aquarium.likes < filters.maxLikes)
+      !(
+        aquarium.likes > filters.minLikes &&
+        aquarium.likes < filters.maxLikes
+      )
     ) {
       return false;
     }
