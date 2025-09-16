@@ -2,10 +2,10 @@
 
 /**
  * Automatic Documentation Generation Script
- * 
+ *
  * This script generates comprehensive documentation from JSDoc comments
  * in service files, creating markdown files and API documentation.
- * 
+ *
  * @fileoverview Automatic documentation generation
  * @author Aqua Stark Team
  * @version 1.0.0
@@ -48,12 +48,16 @@ class DocumentationGenerator {
     let currentContent = [];
 
     for (const line of lines) {
-      if (line.startsWith('/**') || line.startsWith('*') || line.startsWith('*/')) {
+      if (
+        line.startsWith('/**') ||
+        line.startsWith('*') ||
+        line.startsWith('*/')
+      ) {
         continue;
       }
 
       const trimmedLine = line.replace(/^\*\s?/, '');
-      
+
       if (trimmedLine.startsWith('@')) {
         // Save previous tag content
         if (currentTag && currentContent.length > 0) {
@@ -88,7 +92,8 @@ class DocumentationGenerator {
    * Extract methods from file content
    */
   extractMethods(content) {
-    const methodRegex = /static\s+async\s+(\w+)\s*\([^)]*\)\s*{|static\s+(\w+)\s*\([^)]*\)\s*{/g;
+    const methodRegex =
+      /static\s+async\s+(\w+)\s*\([^)]*\)\s*{|static\s+(\w+)\s*\([^)]*\)\s*{/g;
     const methods = [];
     let match;
 
@@ -148,9 +153,8 @@ class DocumentationGenerator {
 
     // Process methods
     methods.forEach(method => {
-      const comment = jsdocComments.find(c => 
-        c.end < method.start && 
-        (method.start - c.end) < 50
+      const comment = jsdocComments.find(
+        c => c.end < method.start && method.start - c.end < 50
       );
 
       if (comment) {
@@ -175,13 +179,13 @@ class DocumentationGenerator {
    */
   generateServiceMarkdown(serviceName, serviceInfo) {
     const { classDoc, methods } = serviceInfo;
-    
+
     let markdown = `# ${serviceName}\n\n`;
 
     // Class description
     if (classDoc) {
       markdown += `${classDoc.description}\n\n`;
-      
+
       if (classDoc.tags.has('author')) {
         markdown += `**Author:** ${classDoc.tags.get('author')}\n\n`;
       }
@@ -199,10 +203,10 @@ class DocumentationGenerator {
 
       for (const [methodName, methodInfo] of methods) {
         markdown += `### ${methodName}\n\n`;
-        
+
         if (methodInfo.documentation) {
           const doc = methodInfo.documentation;
-          
+
           if (doc.description) {
             markdown += `${doc.description}\n\n`;
           }
@@ -213,7 +217,9 @@ class DocumentationGenerator {
             const paramContent = doc.tags.get('param');
             const params = paramContent.split('\n').filter(p => p.trim());
             params.forEach(param => {
-              const paramMatch = param.match(/^\{([^}]+)\}\s+(\w+)(?:\s+(.*))?$/);
+              const paramMatch = param.match(
+                /^\{([^}]+)\}\s+(\w+)(?:\s+(.*))?$/
+              );
               if (paramMatch) {
                 const [, type, name, description] = paramMatch;
                 markdown += `- \`${name}\` (${type})${description ? ` - ${description}` : ''}\n`;
@@ -236,7 +242,10 @@ class DocumentationGenerator {
           // Example
           if (doc.tags.has('example')) {
             markdown += '**Example:**\n';
-            markdown += `\`\`\`javascript\n${doc.tags.get('example').replace(/```javascript\n?/g, '').replace(/```/g, '')}\n\`\`\`\n\n`;
+            markdown += `\`\`\`javascript\n${doc.tags
+              .get('example')
+              .replace(/```javascript\n?/g, '')
+              .replace(/```/g, '')}\n\`\`\`\n\n`;
           }
         } else {
           markdown += '*No documentation available*\n\n';
@@ -252,7 +261,8 @@ class DocumentationGenerator {
    */
   generateAPIOverview() {
     let markdown = '# Aqua Stark Backend Services API\n\n';
-    markdown += 'This document provides comprehensive API documentation for all backend services.\n\n';
+    markdown +=
+      'This document provides comprehensive API documentation for all backend services.\n\n';
 
     markdown += '## Overview\n\n';
     markdown += `The Aqua Stark backend consists of ${this.services.size} main service classes:\n\n`;
@@ -260,11 +270,11 @@ class DocumentationGenerator {
     for (const [serviceName, serviceInfo] of this.services) {
       const { classDoc } = serviceInfo;
       markdown += `### ${serviceName}\n`;
-      
+
       if (classDoc && classDoc.description) {
         markdown += `${classDoc.description}\n\n`;
       }
-      
+
       markdown += `**Methods:** ${serviceInfo.methods.size}\n\n`;
     }
 
@@ -281,32 +291,42 @@ class DocumentationGenerator {
    */
   generateUsageExamples() {
     let markdown = '# Service Usage Examples\n\n';
-    markdown += 'This document provides practical examples of how to use each service.\n\n';
+    markdown +=
+      'This document provides practical examples of how to use each service.\n\n';
 
     for (const [serviceName, serviceInfo] of this.services) {
       markdown += `## ${serviceName}\n\n`;
-      
+
       const { classDoc, methods } = serviceInfo;
       if (classDoc && classDoc.tags.has('example')) {
         markdown += '### Basic Usage\n\n';
         markdown += '```javascript\n';
         markdown += `import { ${serviceName} } from './services/index.js';\n\n`;
-        markdown += `${classDoc.tags.get('example').replace(/```javascript\n?/g, '').replace(/```/g, '')}\n`;
+        markdown += `${classDoc.tags
+          .get('example')
+          .replace(/```javascript\n?/g, '')
+          .replace(/```/g, '')}\n`;
         markdown += '```\n\n';
       }
 
       // Method examples
       let hasMethodExamples = false;
       for (const [methodName, methodInfo] of methods) {
-        if (methodInfo.documentation && methodInfo.documentation.tags.has('example')) {
+        if (
+          methodInfo.documentation &&
+          methodInfo.documentation.tags.has('example')
+        ) {
           if (!hasMethodExamples) {
             markdown += '### Method Examples\n\n';
             hasMethodExamples = true;
           }
-          
+
           markdown += `#### ${methodName}\n\n`;
           markdown += '```javascript\n';
-          markdown += `${methodInfo.documentation.tags.get('example').replace(/```javascript\n?/g, '').replace(/```/g, '')}\n`;
+          markdown += `${methodInfo.documentation.tags
+            .get('example')
+            .replace(/```javascript\n?/g, '')
+            .replace(/```/g, '')}\n`;
           markdown += '```\n\n';
         }
       }
@@ -327,7 +347,8 @@ class DocumentationGenerator {
     }
 
     // Process all service files
-    const files = fs.readdirSync(SERVICES_DIR)
+    const files = fs
+      .readdirSync(SERVICES_DIR)
       .filter(file => file.endsWith('.js') && file !== 'index.js')
       .map(file => path.join(SERVICES_DIR, file));
 
@@ -362,7 +383,7 @@ class DocumentationGenerator {
  */
 function main() {
   console.log('Starting documentation generation...\n');
-  
+
   const generator = new DocumentationGenerator();
   generator.generateAll();
 }

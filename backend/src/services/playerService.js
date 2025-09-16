@@ -3,11 +3,11 @@ import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 
 /**
  * Player Service for managing player data and profile operations
- * 
+ *
  * This service handles all player-related operations including profile management,
  * experience tracking, currency management, statistics, and preferences.
  * It provides comprehensive player data management with caching for performance.
- * 
+ *
  * @class PlayerService
  * @author Aqua Stark Team
  * @version 1.0.0
@@ -16,16 +16,16 @@ import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 export class PlayerService {
   /**
    * Get player profile from cache or database
-   * 
+   *
    * Retrieves the complete player profile including stats, experience,
    * currency, and other player data. Uses Redis cache for performance.
-   * 
+   *
    * @static
    * @async
    * @param {string} playerId - The unique identifier of the player
    * @returns {Promise<Object|null>} Player profile object or null if not found
    * @throws {Error} When database query fails or player ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Get player profile
@@ -71,16 +71,16 @@ export class PlayerService {
 
   /**
    * Get player by wallet address
-   * 
+   *
    * Retrieves a player profile using their wallet address instead of player ID.
    * Useful for authentication and wallet-based lookups.
-   * 
+   *
    * @static
    * @async
    * @param {string} walletAddress - The player's wallet address
    * @returns {Promise<Object|null>} Player profile object or null if not found
    * @throws {Error} When database query fails or wallet address is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Get player by wallet address
@@ -110,10 +110,10 @@ export class PlayerService {
 
   /**
    * Create new player (called when player registers on-chain)
-   * 
+   *
    * Creates a new player profile with default values when a player registers
    * on the blockchain. Initializes all statistics and preferences.
-   * 
+   *
    * @static
    * @async
    * @param {string} playerId - The unique identifier of the player
@@ -121,7 +121,7 @@ export class PlayerService {
    * @param {string|null} [username=null] - Optional username for the player
    * @returns {Promise<Object>} Created player profile object
    * @throws {Error} When database insert fails or player ID already exists
-   * 
+   *
    * @example
    * ```javascript
    * // Create new player
@@ -174,17 +174,17 @@ export class PlayerService {
 
   /**
    * Update player experience and level
-   * 
+   *
    * Adds experience points to a player and automatically calculates level progression.
    * Level is calculated as floor(experience_total / 1000) + 1.
-   * 
+   *
    * @static
    * @async
    * @param {string} playerId - The unique identifier of the player
    * @param {number} experienceGained - The amount of experience to add
    * @returns {Promise<Object>} Updated player profile object
    * @throws {Error} When player not found or database update fails
-   * 
+   *
    * @example
    * ```javascript
    * // Award experience for completing a task
@@ -237,23 +237,23 @@ export class PlayerService {
 
   /**
    * Update player currency
-   * 
+   *
    * Modifies a player's currency balance. Can be positive (earning) or negative (spending).
    * Currency cannot go below 0.
-   * 
+   *
    * @static
    * @async
    * @param {string} playerId - The unique identifier of the player
    * @param {number} currencyChange - The amount to change (positive or negative)
    * @returns {Promise<Object>} Updated player profile object
    * @throws {Error} When player not found or database update fails
-   * 
+   *
    * @example
    * ```javascript
    * // Award currency for achievement
    * const updatedPlayer = await PlayerService.updatePlayerCurrency('player_123', 500);
    * console.log(`Player now has ${updatedPlayer.currency} currency`);
-   * 
+   *
    * // Spend currency on item
    * const updatedPlayer2 = await PlayerService.updatePlayerCurrency('player_123', -100);
    * ```
@@ -295,17 +295,17 @@ export class PlayerService {
 
   /**
    * Update player statistics
-   * 
+   *
    * Updates multiple player statistics at once. Useful for bulk updates
    * of various game metrics.
-   * 
+   *
    * @static
    * @async
    * @param {string} playerId - The unique identifier of the player
    * @param {Object} statsUpdate - Object containing statistics to update
    * @returns {Promise<Object>} Updated player profile object
    * @throws {Error} When player not found or database update fails
-   * 
+   *
    * @example
    * ```javascript
    * // Update multiple stats
@@ -348,15 +348,15 @@ export class PlayerService {
 
   /**
    * Update last login
-   * 
+   *
    * Updates the player's last login timestamp to the current time.
-   * 
+   *
    * @static
    * @async
    * @param {string} playerId - The unique identifier of the player
    * @returns {Promise<Object>} Updated player profile object
    * @throws {Error} When player not found or database update fails
-   * 
+   *
    * @example
    * ```javascript
    * // Update login time
@@ -393,15 +393,15 @@ export class PlayerService {
 
   /**
    * Get player preferences
-   * 
+   *
    * Retrieves the player's game preferences and settings.
-   * 
+   *
    * @static
    * @async
    * @param {string} playerId - The unique identifier of the player
    * @returns {Promise<Object|null>} Player preferences object or null if not found
    * @throws {Error} When database query fails or player ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Get player preferences
@@ -428,16 +428,16 @@ export class PlayerService {
 
   /**
    * Update player preferences
-   * 
+   *
    * Updates or creates player preferences and settings.
-   * 
+   *
    * @static
    * @async
    * @param {string} playerId - The unique identifier of the player
    * @param {Object} preferences - Object containing preference updates
    * @returns {Promise<Object>} Updated preferences object
    * @throws {Error} When database update fails or player ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Update player preferences

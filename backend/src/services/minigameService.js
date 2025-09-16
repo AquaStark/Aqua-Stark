@@ -3,11 +3,11 @@ import { supabase, supabaseAdmin, TABLES } from '../config/supabase.js';
 
 /**
  * Minigame Service for managing game sessions and XP rewards
- * 
+ *
  * This service handles all minigame-related operations including session management,
  * score tracking, XP calculation, leaderboards, and blockchain synchronization.
  * It supports multiple game types and provides comprehensive statistics.
- * 
+ *
  * @class MinigameService
  * @author Aqua Stark Team
  * @version 1.0.0
@@ -16,17 +16,17 @@ import { supabase, supabaseAdmin, TABLES } from '../config/supabase.js';
 export class MinigameService {
   /**
    * Create a new minigame session
-   * 
+   *
    * Initializes a new game session for a player with a specific game type.
    * Sessions track scores, XP earned, and synchronization status with blockchain.
-   * 
+   *
    * @static
    * @async
    * @param {string} playerWallet - The player's wallet address
    * @param {string} gameType - Type of minigame ('flappy_fish', 'angry_fish', 'fish_racing', 'bubble_pop', 'fish_memory')
    * @returns {Promise<Object>} Created game session object
    * @throws {Error} When database insert fails or invalid game type provided
-   * 
+   *
    * @example
    * ```javascript
    * // Start a new flappy fish game session
@@ -62,10 +62,10 @@ export class MinigameService {
 
   /**
    * Update game session with final score and XP
-   * 
+   *
    * Ends a game session by recording the final score and XP earned.
    * Marks the session as ready for blockchain synchronization.
-   * 
+   *
    * @static
    * @async
    * @param {string} sessionId - The unique identifier of the game session
@@ -73,7 +73,7 @@ export class MinigameService {
    * @param {number} xpEarned - The XP points earned from this session
    * @returns {Promise<Object>} Updated game session object
    * @throws {Error} When database update fails or session ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // End game session with score and XP
@@ -105,15 +105,15 @@ export class MinigameService {
 
   /**
    * Calculate XP based on game type and score
-   * 
+   *
    * Calculates XP points earned based on the game type and player's score.
    * Different games have different base XP values and multipliers.
-   * 
+   *
    * @static
    * @param {string} gameType - Type of minigame
    * @param {number} score - Player's score in the game
    * @returns {number} Calculated XP points
-   * 
+   *
    * @example
    * ```javascript
    * // Calculate XP for a high score
@@ -137,16 +137,16 @@ export class MinigameService {
 
   /**
    * Get player's game statistics
-   * 
+   *
    * Retrieves comprehensive statistics for a player including total games played,
    * XP earned, average scores, and best scores by game type.
-   * 
+   *
    * @static
    * @async
    * @param {string} playerWallet - The player's wallet address
    * @returns {Promise<Object>} Player statistics object
    * @throws {Error} When database query fails or wallet address is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Get player statistics
@@ -203,16 +203,16 @@ export class MinigameService {
 
   /**
    * Get leaderboard for a specific game type
-   * 
+   *
    * Retrieves the top players for a specific game type, sorted by score.
-   * 
+   *
    * @static
    * @async
    * @param {string} gameType - Type of minigame to get leaderboard for
    * @param {number} [limit=10] - Maximum number of players to return
    * @returns {Promise<Array>} Array of leaderboard entries
    * @throws {Error} When database query fails or game type is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Get top 5 flappy fish players
@@ -241,15 +241,15 @@ export class MinigameService {
 
   /**
    * Get global leaderboard across all games
-   * 
+   *
    * Retrieves the top players across all minigames, ranked by total XP earned.
-   * 
+   *
    * @static
    * @async
    * @param {number} [limit=20] - Maximum number of players to return
    * @returns {Promise<Array>} Array of global leaderboard entries
    * @throws {Error} When database query fails
-   * 
+   *
    * @example
    * ```javascript
    * // Get top 10 players globally
@@ -293,16 +293,16 @@ export class MinigameService {
 
   /**
    * Mark session as synced to blockchain
-   * 
+   *
    * Marks a game session as successfully synchronized with the blockchain,
    * updating the sync timestamp.
-   * 
+   *
    * @static
    * @async
    * @param {string} sessionId - The unique identifier of the game session
    * @returns {Promise<Object>} Updated session object
    * @throws {Error} When database update fails or session ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Mark session as synced
@@ -332,15 +332,15 @@ export class MinigameService {
 
   /**
    * Get unsynced sessions for blockchain sync
-   * 
+   *
    * Retrieves all completed game sessions that haven't been synchronized
    * with the blockchain yet.
-   * 
+   *
    * @static
    * @async
    * @returns {Promise<Array>} Array of unsynced session objects
    * @throws {Error} When database query fails
-   * 
+   *
    * @example
    * ```javascript
    * // Get sessions ready for blockchain sync
@@ -366,10 +366,10 @@ export class MinigameService {
 
   /**
    * Award bonus XP for achievements
-   * 
+   *
    * Creates a special session record for bonus XP earned through achievements
    * or special events.
-   * 
+   *
    * @static
    * @async
    * @param {string} playerWallet - The player's wallet address
@@ -377,7 +377,7 @@ export class MinigameService {
    * @param {number} bonusXP - The bonus XP amount to award
    * @returns {Promise<Object>} Created bonus XP session object
    * @throws {Error} When database insert fails or invalid parameters provided
-   * 
+   *
    * @example
    * ```javascript
    * // Award bonus XP for achievement

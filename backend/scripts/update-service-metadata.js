@@ -2,10 +2,10 @@
 
 /**
  * Service Metadata Update Script
- * 
+ *
  * This script updates version, date, and author information across all service files
  * from a central configuration file to maintain consistency.
- * 
+ *
  * @fileoverview Service metadata management
  * @author Aqua Stark Team
  * @version 1.0.0
@@ -31,7 +31,7 @@ const EXCLUDED_FILES = ['index.js'];
  */
 function updateServiceMetadata(filePath) {
   const fileName = path.basename(filePath);
-  
+
   if (EXCLUDED_FILES.includes(fileName)) {
     console.log(`Skipping ${fileName} (excluded)`);
     return;
@@ -39,7 +39,7 @@ function updateServiceMetadata(filePath) {
 
   try {
     let content = fs.readFileSync(filePath, 'utf8');
-    
+
     // Create the new JSDoc metadata
     const newMetadata = ` * @class ${fileName.replace('Service.js', 'Service')}
  * @author ${PACKAGE_INFO.author}
@@ -53,7 +53,7 @@ function updateServiceMetadata(filePath) {
         /@since\s+[\d-]+/g,
         `@since ${PACKAGE_INFO.since}`
       );
-      
+
       // Replace version if it exists
       if (content.includes('@version')) {
         content = content.replace(
@@ -61,7 +61,7 @@ function updateServiceMetadata(filePath) {
           `@version ${PACKAGE_INFO.version}`
         );
       }
-      
+
       // Replace author if it exists
       if (content.includes('@author')) {
         content = content.replace(
@@ -69,13 +69,12 @@ function updateServiceMetadata(filePath) {
           `@author ${PACKAGE_INFO.author}`
         );
       }
-      
+
       fs.writeFileSync(filePath, content, 'utf8');
       console.log(`Updated metadata in ${fileName}`);
     } else {
       console.log(`No @since tag found in ${fileName}`);
     }
-
   } catch (error) {
     console.error(`Error updating ${fileName}:`, error.message);
   }
@@ -86,7 +85,7 @@ function updateServiceMetadata(filePath) {
  */
 function main() {
   console.log('Updating service metadata from central configuration...\n');
-  
+
   console.log('Package Info:');
   console.log(`  Version: ${PACKAGE_INFO.version}`);
   console.log(`  Since: ${PACKAGE_INFO.since}`);
@@ -101,7 +100,8 @@ function main() {
     process.exit(1);
   }
 
-  const files = fs.readdirSync(SERVICES_DIR)
+  const files = fs
+    .readdirSync(SERVICES_DIR)
     .filter(file => file.endsWith('.js'))
     .map(file => path.join(SERVICES_DIR, file));
 

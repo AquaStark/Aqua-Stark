@@ -3,11 +3,11 @@ import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 
 /**
  * Decoration Service for managing decoration states and operations
- * 
+ *
  * This service handles all decoration-related operations including placement,
  * positioning, visibility management, and movement between aquariums.
  * Decorations enhance the visual appeal and functionality of aquariums.
- * 
+ *
  * @class DecorationService
  * @author Aqua Stark Team
  * @version 1.0.0
@@ -16,16 +16,16 @@ import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 export class DecorationService {
   /**
    * Get decoration state from cache or database
-   * 
+   *
    * Retrieves the current state of a decoration including its position,
    * visibility, and associated aquarium.
-   * 
+   *
    * @static
    * @async
    * @param {string} decorationId - The unique identifier of the decoration
    * @returns {Promise<Object|null>} Decoration state object or null if not found
    * @throws {Error} When database query fails or decoration ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Get decoration state
@@ -70,10 +70,10 @@ export class DecorationService {
 
   /**
    * Create new decoration state (called when decoration is created on-chain)
-   * 
+   *
    * Initializes a new decoration state in the database when a decoration
    * is minted or created on the blockchain.
-   * 
+   *
    * @static
    * @async
    * @param {string} decorationId - The unique identifier of the decoration
@@ -81,7 +81,7 @@ export class DecorationService {
    * @param {string|null} [aquariumId=null] - Optional aquarium ID if decoration is placed immediately
    * @returns {Promise<Object>} Created decoration state object
    * @throws {Error} When database insert fails or decoration ID already exists
-   * 
+   *
    * @example
    * ```javascript
    * // Create decoration state for newly minted decoration
@@ -128,16 +128,16 @@ export class DecorationService {
 
   /**
    * Get all decorations for a player
-   * 
+   *
    * Retrieves all decorations owned by a specific player, regardless of
    * their current placement status.
-   * 
+   *
    * @static
    * @async
    * @param {string} playerId - The unique identifier of the player
    * @returns {Promise<Array>} Array of decoration objects
    * @throws {Error} When database query fails or player ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Get all player decorations
@@ -162,15 +162,15 @@ export class DecorationService {
 
   /**
    * Get decorations in a specific aquarium
-   * 
+   *
    * Retrieves all visible decorations currently placed in a specific aquarium.
-   * 
+   *
    * @static
    * @async
    * @param {string} aquariumId - The unique identifier of the aquarium
    * @returns {Promise<Array>} Array of visible decoration objects in the aquarium
    * @throws {Error} When database query fails or aquarium ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Get all decorations in aquarium
@@ -196,10 +196,10 @@ export class DecorationService {
 
   /**
    * Place decoration in aquarium
-   * 
+   *
    * Places a decoration at a specific position within an aquarium with
    * optional rotation.
-   * 
+   *
    * @static
    * @async
    * @param {string} decorationId - The unique identifier of the decoration
@@ -209,7 +209,7 @@ export class DecorationService {
    * @param {number} [rotationDegrees=0] - Rotation angle in degrees (0-360)
    * @returns {Promise<Object>} Updated decoration state object
    * @throws {Error} When database update fails or decoration/aquarium ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Place decoration in aquarium at specific position
@@ -257,16 +257,16 @@ export class DecorationService {
 
   /**
    * Remove decoration from aquarium
-   * 
+   *
    * Removes a decoration from its current aquarium, making it unplaced
    * and invisible.
-   * 
+   *
    * @static
    * @async
    * @param {string} decorationId - The unique identifier of the decoration
    * @returns {Promise<Object>} Updated decoration state object
    * @throws {Error} When database update fails or decoration ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Remove decoration from aquarium
@@ -308,9 +308,9 @@ export class DecorationService {
 
   /**
    * Update decoration position
-   * 
+   *
    * Updates the position and rotation of a decoration within its current aquarium.
-   * 
+   *
    * @static
    * @async
    * @param {string} decorationId - The unique identifier of the decoration
@@ -319,7 +319,7 @@ export class DecorationService {
    * @param {number} rotationDegrees - New rotation angle in degrees (0-360)
    * @returns {Promise<Object>} Updated decoration state object
    * @throws {Error} When database update fails or decoration ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Move decoration to new position
@@ -364,15 +364,15 @@ export class DecorationService {
 
   /**
    * Toggle decoration visibility
-   * 
+   *
    * Toggles the visibility state of a decoration between visible and hidden.
-   * 
+   *
    * @static
    * @async
    * @param {string} decorationId - The unique identifier of the decoration
    * @returns {Promise<Object>} Updated decoration state object
    * @throws {Error} When decoration not found or database update fails
-   * 
+   *
    * @example
    * ```javascript
    * // Toggle decoration visibility
@@ -417,10 +417,10 @@ export class DecorationService {
 
   /**
    * Move decoration between aquariums
-   * 
+   *
    * Moves a decoration from one aquarium to another, resetting its position
    * in the new aquarium.
-   * 
+   *
    * @static
    * @async
    * @param {string} decorationId - The unique identifier of the decoration
@@ -428,7 +428,7 @@ export class DecorationService {
    * @param {string} toAquariumId - The unique identifier of the destination aquarium
    * @returns {Promise<Object>} Updated decoration state object
    * @throws {Error} When database update fails or aquarium/decoration ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Move decoration between aquariums
@@ -470,16 +470,16 @@ export class DecorationService {
 
   /**
    * Get decoration statistics for a player
-   * 
+   *
    * Calculates comprehensive decoration statistics including total count,
    * placement status, and visibility metrics.
-   * 
+   *
    * @static
    * @async
    * @param {string} playerId - The unique identifier of the player
    * @returns {Promise<Object>} Statistics object with decoration metrics
    * @throws {Error} When database query fails or player ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Get player decoration statistics

@@ -3,11 +3,11 @@ import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 
 /**
  * Aquarium Service for managing aquarium states and operations
- * 
+ *
  * This service handles all aquarium-related operations including state management,
  * environmental controls, fish capacity management, and health monitoring.
  * It uses Redis caching for performance optimization and Supabase for data persistence.
- * 
+ *
  * @class AquariumService
  * @author Aqua Stark Team
  * @version 1.0.0
@@ -16,17 +16,17 @@ import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 export class AquariumService {
   /**
    * Get aquarium state from cache or database
-   * 
+   *
    * Retrieves the current state of an aquarium, including environmental conditions,
    * fish count, and other aquarium metrics. Uses Redis cache for performance,
    * falling back to database if cache miss occurs.
-   * 
+   *
    * @static
    * @async
    * @param {string} aquariumId - The unique identifier of the aquarium
    * @returns {Promise<Object|null>} Aquarium state object or null if not found
    * @throws {Error} When database query fails or aquarium ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Get aquarium state
@@ -72,17 +72,17 @@ export class AquariumService {
 
   /**
    * Update aquarium water temperature
-   * 
+   *
    * Sets the water temperature for an aquarium and updates the cache.
    * Temperature changes affect fish happiness and health.
-   * 
+   *
    * @static
    * @async
    * @param {string} aquariumId - The unique identifier of the aquarium
    * @param {number} temperature - Temperature in Celsius (recommended: 20-30°C)
    * @returns {Promise<Object>} Updated aquarium state object
    * @throws {Error} When database update fails or aquarium ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Set optimal temperature for tropical fish
@@ -120,17 +120,17 @@ export class AquariumService {
 
   /**
    * Update aquarium lighting level
-   * 
+   *
    * Adjusts the lighting intensity for an aquarium. Proper lighting is essential
    * for fish health and plant growth.
-   * 
+   *
    * @static
    * @async
    * @param {string} aquariumId - The unique identifier of the aquarium
    * @param {number} lightingLevel - Lighting level (0-100, where 100 is maximum brightness)
    * @returns {Promise<Object>} Updated aquarium state object
    * @throws {Error} When database update fails or aquarium ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Set moderate lighting for the aquarium
@@ -168,16 +168,16 @@ export class AquariumService {
 
   /**
    * Clean aquarium and reduce pollution
-   * 
+   *
    * Performs a cleaning operation that reduces pollution level by 50 points.
    * Pollution affects fish health and overall aquarium environment.
-   * 
+   *
    * @static
    * @async
    * @param {string} aquariumId - The unique identifier of the aquarium
    * @returns {Promise<Object>} Updated aquarium state object with reduced pollution
    * @throws {Error} When database update fails or aquarium ID is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Clean the aquarium
@@ -222,16 +222,16 @@ export class AquariumService {
 
   /**
    * Get all aquariums for a player
-   * 
+   *
    * Retrieves all aquariums owned by a specific player, including their states.
    * Useful for displaying player's aquarium collection.
-   * 
+   *
    * @static
    * @async
    * @param {string} walletAddress - The player's wallet address
    * @returns {Promise<Array>} Array of aquarium objects with states
    * @throws {Error} When database query fails or wallet address is invalid
-   * 
+   *
    * @example
    * ```javascript
    * // Get all player aquariums
@@ -262,17 +262,17 @@ export class AquariumService {
 
   /**
    * Add fish to aquarium
-   * 
+   *
    * Increments the fish count in an aquarium. Checks capacity limits before
    * adding to prevent overcrowding.
-   * 
+   *
    * @static
    * @async
    * @param {string} aquariumId - The unique identifier of the aquarium
    * @param {string} _fishId - The fish ID (currently unused but reserved for future use)
    * @returns {Promise<Object>} Updated aquarium state object
    * @throws {Error} When aquarium is at maximum capacity or database update fails
-   * 
+   *
    * @example
    * ```javascript
    * // Add a fish to aquarium
@@ -320,16 +320,16 @@ export class AquariumService {
 
   /**
    * Remove fish from aquarium
-   * 
+   *
    * Decrements the fish count in an aquarium. Prevents negative fish counts.
-   * 
+   *
    * @static
    * @async
    * @param {string} aquariumId - The unique identifier of the aquarium
    * @param {string} _fishId - The fish ID (currently unused but reserved for future use)
    * @returns {Promise<Object>} Updated aquarium state object
    * @throws {Error} When no fish to remove or database update fails
-   * 
+   *
    * @example
    * ```javascript
    * // Remove a fish from aquarium
@@ -375,15 +375,15 @@ export class AquariumService {
 
   /**
    * Get aquarium health score based on various factors
-   * 
+   *
    * Calculates a comprehensive health score (0-100) based on environmental
    * conditions including temperature, pollution, lighting, and fish capacity.
-   * 
+   *
    * @static
    * @async
    * @param {string} aquariumId - The unique identifier of the aquarium
    * @returns {Promise<number>} Health score between 0-100 (100 being perfect)
-   * 
+   *
    * @example
    * ```javascript
    * // Check aquarium health
