@@ -4,6 +4,7 @@ import {
   defaultGalleryFilters,
   useCommunityStore,
 } from '@/store/community';
+import { useDebounce } from './use-debounce';
 
 export const useCommunity = () => {
   const {
@@ -15,10 +16,14 @@ export const useCommunity = () => {
     setEventFilters,
   } = useCommunityStore();
 
+  // Debounce search queries for better performance
+  const { debouncedValue: debouncedGallerySearch } = useDebounce(filters.search, { delay: 300 });
+  const { debouncedValue: debouncedEventSearch } = useDebounce(eventFilters.search, { delay: 300 });
+
   const filteredAquariums = mockAquariums.filter(aquarium => {
     if (
-      filters.search &&
-      !aquarium.name.toLowerCase().includes(filters.search.toLowerCase())
+      debouncedGallerySearch &&
+      !aquarium.name.toLowerCase().includes(debouncedGallerySearch.toLowerCase())
     ) {
       return false;
     }
@@ -64,11 +69,11 @@ export const useCommunity = () => {
 
   const filteredEvents = mockEvents.filter(event => {
     if (
-      eventFilters.search &&
-      !event.name.toLowerCase().includes(eventFilters.search.toLowerCase()) &&
+      debouncedEventSearch &&
+      !event.name.toLowerCase().includes(debouncedEventSearch.toLowerCase()) &&
       !event.description
         .toLowerCase()
-        .includes(eventFilters.search.toLowerCase())
+        .includes(debouncedEventSearch.toLowerCase())
     ) {
       return false;
     }

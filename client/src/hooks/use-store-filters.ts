@@ -47,7 +47,7 @@ export function useStoreFilters({ initialTab }: UseStoreFiltersProps) {
     initialTab || 'fish'
   );
   const [searchQuery, setSearchQuery] = useState('');
-  const debouncedSearch = useDebounce(searchQuery, 300);
+  const { debouncedValue: debouncedSearch } = useDebounce(searchQuery, { delay: 300 });
   const [selectedRarity, setSelectedRarity] = useState<Rarity | 'all'>('all');
   const [sortOption, setSortOption] = useState<SortOption>('price-asc');
 
