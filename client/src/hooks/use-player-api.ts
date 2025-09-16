@@ -91,7 +91,7 @@ export function usePlayerApi() {
   const getPlayerByWallet = useCallback(async (walletAddress: string): Promise<Player> => {
     try {
       const response = await get<PlayerApiResponse<Player>>(`/wallet/${walletAddress}`);
-      
+
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to fetch player');
       }
@@ -112,7 +112,7 @@ export function usePlayerApi() {
   }): Promise<Player> => {
     try {
       const response = await post<PlayerApiResponse<Player>>('/', playerData);
-      
+
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to create player');
       }
@@ -137,7 +137,7 @@ export function usePlayerApi() {
         `/${playerId}/experience`,
         { experience }
       );
-      
+
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to update experience');
       }
@@ -162,7 +162,7 @@ export function usePlayerApi() {
         `/${playerId}/currency`,
         { coins }
       );
-      
+
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to update currency');
       }
@@ -181,7 +181,7 @@ export function usePlayerApi() {
   const getPlayerStats = useCallback(async (playerId: string): Promise<PlayerStats> => {
     try {
       const response = await get<PlayerApiResponse<PlayerStats>>(`/${playerId}/stats`);
-      
+
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to fetch player stats');
       }
@@ -205,7 +205,7 @@ export function usePlayerApi() {
         `/${playerId}/stats`,
         stats
       );
-      
+
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to update player stats');
       }
@@ -227,7 +227,7 @@ export function usePlayerApi() {
         `/${playerId}/login`,
         { lastLogin: new Date().toISOString() }
       );
-      
+
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to update last login');
       }
