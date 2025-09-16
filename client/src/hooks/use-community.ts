@@ -36,10 +36,7 @@ export const useCommunity = () => {
       return false;
     }
     if (
-      !(
-        aquarium.likes > filters.minLikes &&
-        aquarium.likes < filters.maxLikes
-      )
+      !(aquarium.likes > filters.minLikes && aquarium.likes < filters.maxLikes)
     ) {
       return false;
     }
@@ -87,9 +84,7 @@ export const useCommunity = () => {
   const filteredEvents = mockEvents.filter(event => {
     if (
       debouncedEventSearch &&
-      !event.name
-        .toLowerCase()
-        .includes(debouncedEventSearch.toLowerCase()) &&
+      !event.name.toLowerCase().includes(debouncedEventSearch.toLowerCase()) &&
       !event.description
         .toLowerCase()
         .includes(debouncedEventSearch.toLowerCase())
@@ -104,10 +99,7 @@ export const useCommunity = () => {
     ) {
       return false;
     }
-    if (
-      eventFilters.status !== 'all' &&
-      event.status !== eventFilters.status
-    ) {
+    if (eventFilters.status !== 'all' && event.status !== eventFilters.status) {
       return false;
     }
     return true;
