@@ -1,10 +1,12 @@
 import { useAccount, useConnect, useDisconnect } from '@starknet-react/core';
 import { WalletConnector } from '@/types/connector-types';
+import { useNotifications } from '@/hooks';
 
 export function WalletConnection() {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
+  const { error } = useNotifications();
   const handleConnect = async (connector: WalletConnector) => {
     try {
       await connect({ connector });
@@ -15,10 +17,10 @@ export function WalletConnection() {
         expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
       };
       localStorage.setItem('aqua-stark-session', JSON.stringify(sessionData));
-    } catch (error) {
-      console.error('Wallet connection failed:', error);
+    } catch (err) {
+      console.error('Wallet connection failed:', err);
       // Add user-friendly error feedback
-      alert('Failed to connect wallet. Please try again.');
+      error('Failed to connect wallet. Please try again.');
     }
   };
 

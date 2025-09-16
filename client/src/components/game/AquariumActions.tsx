@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useAccount } from '@starknet-react/core';
-import { useGameActions } from '@/hooks';
-import { toast } from 'sonner';
+import { useGameActions, useNotifications } from '@/hooks';
 
 export function AquariumActions() {
   const { isConnected } = useAccount();
@@ -12,6 +11,7 @@ export function AquariumActions() {
     dailyMaintenance,
     upgradeAquarium,
   } = useGameActions();
+  const { success, error } = useNotifications();
 
   const [isLoading, setIsLoading] = useState(false);
   const [fishIds] = useState(['1', '2', '3']); // Example fish IDs
@@ -36,10 +36,10 @@ export function AquariumActions() {
     setIsLoading(true);
     try {
       await action();
-      toast.success(`${actionName} completed successfully!`);
-    } catch (error) {
-      console.error(`Error in ${actionName}:`, error);
-      toast.error(`Failed to ${actionName.toLowerCase()}`);
+      success(`${actionName} completed successfully!`);
+    } catch (err) {
+      console.error(`Error in ${actionName}:`, err);
+      error(`Failed to ${actionName.toLowerCase()}`);
     } finally {
       setIsLoading(false);
     }
