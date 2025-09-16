@@ -31,7 +31,9 @@ export const useEncyclopedia = () => {
   });
 
   // Debounce search query for better performance
-  const { debouncedValue: debouncedSearch } = useDebounce(filters.search, { delay: 300 });
+  const { debouncedValue: debouncedSearch } = useDebounce(filters.search, {
+    delay: 300,
+  });
 
   const filteredFish = fishSpecies.filter(fish => {
     if (

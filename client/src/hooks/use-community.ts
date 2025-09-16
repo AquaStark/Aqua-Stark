@@ -17,8 +17,14 @@ export const useCommunity = () => {
   } = useCommunityStore();
 
   // Debounce search queries for better performance
-  const { debouncedValue: debouncedGallerySearch } = useDebounce(filters.search, { delay: 300 });
-  const { debouncedValue: debouncedEventSearch } = useDebounce(eventFilters.search, { delay: 300 });
+  const { debouncedValue: debouncedGallerySearch } = useDebounce(
+    filters.search,
+    { delay: 300 }
+  );
+  const { debouncedValue: debouncedEventSearch } = useDebounce(
+    eventFilters.search,
+    { delay: 300 }
+  );
 
   const filteredAquariums = mockAquariums.filter(aquarium => {
     if (

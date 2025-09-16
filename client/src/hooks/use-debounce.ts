@@ -30,29 +30,29 @@ interface UseDebounceReturn<T> {
 
 /**
  * Custom hook for debouncing a value with advanced control options
- * 
+ *
  * @template T - The type of the value to debounce
  * @param value - The value to debounce
  * @param options - Configuration options for the debounce behavior
  * @returns Object containing the debounced value and control functions
- * 
+ *
  * @example
  * ```tsx
  * const { debouncedValue, cancel, reset, flush, isPending } = useDebounce(
- *   searchQuery, 
+ *   searchQuery,
  *   { delay: 300, immediate: false }
  * );
- * 
+ *
  * // Cancel current debounce
  * cancel();
- * 
+ *
  * // Reset to original value
  * reset();
- * 
+ *
  * // Flush immediately
  * flush();
  * ```
- * 
+ *
  * @example
  * ```tsx
  * // Simple usage with just delay
@@ -60,23 +60,24 @@ interface UseDebounceReturn<T> {
  * ```
  */
 export function useDebounce<T>(
-  value: T, 
+  value: T,
   options: UseDebounceOptions | number = {}
 ): UseDebounceReturn<T> {
   // Normalize options - support both object and number for backward compatibility
-  const normalizedOptions: Required<UseDebounceOptions> = typeof options === 'number' 
-    ? { delay: options, immediate: false, maxCalls: Infinity }
-    : {
-        delay: options.delay ?? 300,
-        immediate: options.immediate ?? false,
-        maxCalls: options.maxCalls ?? Infinity
-      };
+  const normalizedOptions: Required<UseDebounceOptions> =
+    typeof options === 'number'
+      ? { delay: options, immediate: false, maxCalls: Infinity }
+      : {
+          delay: options.delay ?? 300,
+          immediate: options.immediate ?? false,
+          maxCalls: options.maxCalls ?? Infinity,
+        };
 
   // Parameter validation
   if (normalizedOptions.delay < 0) {
     throw new Error('useDebounce: delay must be a non-negative number');
   }
-  
+
   if (normalizedOptions.maxCalls < 1) {
     throw new Error('useDebounce: maxCalls must be a positive number');
   }
@@ -169,6 +170,6 @@ export function useDebounce<T>(
     cancel,
     reset,
     flush,
-    isPending
+    isPending,
   };
 }
