@@ -123,9 +123,8 @@ export function useApi(config: ApiConfig = {}) {
   /**
    * Get cached response if available and valid
    */
-  const getCachedResponse = useCallback(<T>(
-    options: RequestOptions
-  ): T | null => {
+  const getCachedResponse = useCallback(
+    <T>(options: RequestOptions): T | null => {
     if (!options.cache) return null;
 
     clearExpiredCache();
@@ -142,10 +141,8 @@ export function useApi(config: ApiConfig = {}) {
   /**
    * Store response in cache
    */
-  const setCachedResponse = useCallback(<T>(
-    options: RequestOptions,
-    data: T
-  ): void => {
+  const setCachedResponse = useCallback(
+    <T>(options: RequestOptions, data: T): void => {
     if (!options.cache) return;
 
     const cacheKey = getCacheKey(options);
