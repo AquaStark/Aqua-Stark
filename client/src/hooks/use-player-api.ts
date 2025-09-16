@@ -44,14 +44,14 @@ export interface PlayerApiResponse<T> {
  *
  * @example
  * ```tsx
- * const { 
- *   getPlayer, 
- *   updatePlayerStats, 
+ * const {
+ *   getPlayer,
+ *   updatePlayerStats,
  *   getPlayerStats,
- *   loading, 
- *   error 
+ *   loading,
+ *   error
  * } = usePlayerApi();
- * 
+ *
  * // Fetch player data
  * const player = await getPlayer('player-id');
  *
@@ -73,7 +73,7 @@ export function usePlayerApi() {
   const getPlayer = useCallback(async (playerId: string): Promise<Player> => {
     try {
       const response = await get<PlayerApiResponse<Player>>(`/${playerId}`);
-      
+
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to fetch player');
       }
