@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useLocalStorage } from '@/hooks';
 import { toast } from 'sonner';
 
 /**
@@ -163,6 +164,7 @@ const MAX_STORED_NOTIFICATIONS = 50;
  * @returns {UseNotificationsReturn} Object containing notification methods and state
  */
 export function useNotifications(): UseNotificationsReturn {
+  const { get, set, remove } = useLocalStorage('aqua-');
   const [queue, setQueue] = useState<NotificationQueueItem[]>([]);
   const [storedNotifications, setStoredNotifications] = useState<
     StoredNotification[]
@@ -173,11 +175,11 @@ export function useNotifications(): UseNotificationsReturn {
    */
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored) as StoredNotification[];
-        setStoredNotifications(parsed);
-      }
+      const parsed = get<StoredNotification[]>(STORAGE_KEY, {
+        parser: (raw: string) => JSON.parse(raw) as StoredNotification[],
+        validate: (v: unknown): v is StoredNotification[] => Array.isArray(v),
+      });
+      if (parsed) setStoredNotifications(parsed);
     } catch (error) {
       console.error('Failed to load stored notifications:', error);
     }
@@ -190,7 +192,7 @@ export function useNotifications(): UseNotificationsReturn {
     try {
       // Keep only the most recent notifications
       const limited = notifications.slice(-MAX_STORED_NOTIFICATIONS);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(limited));
+      set(STORAGE_KEY, limited, { forceJsonStringify: true });
       setStoredNotifications(limited);
     } catch (error) {
       console.error('Failed to save notifications to storage:', error);
@@ -421,7 +423,7 @@ export function useNotifications(): UseNotificationsReturn {
    */
   const clearStored = useCallback(() => {
     setStoredNotifications([]);
-    localStorage.removeItem(STORAGE_KEY);
+    remove(STORAGE_KEY);
   }, []);
 
   /**
