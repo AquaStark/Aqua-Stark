@@ -7,10 +7,10 @@ import { useNotifications } from './use-notifications';
  * @description
  * Example implementation showing how to use the unified useApi hook
  * to replace duplicated API logic in player-related operations.
- * 
+ *
  * This demonstrates the integration of the new useApi hook with
  * existing functionality and shows how to centralize API calls.
- * 
+ *
  * @category Hooks
  */
 
@@ -41,7 +41,7 @@ export interface PlayerApiResponse<T> {
 
 /**
  * Hook for player-related API operations using the unified useApi hook
- * 
+ *
  * @example
  * ```tsx
  * const { 
@@ -54,7 +54,7 @@ export interface PlayerApiResponse<T> {
  * 
  * // Fetch player data
  * const player = await getPlayer('player-id');
- * 
+ *
  * // Update player stats
  * await updatePlayerStats('player-id', { experience: 100 });
  * ```
@@ -64,7 +64,7 @@ export function usePlayerApi() {
     baseURL: '/api/players', // Player-specific base URL
     cacheTTL: 2 * 60 * 1000, // 2 minutes cache for player data
   });
-  
+
   const { success, error: showError } = useNotifications();
 
   /**
@@ -77,7 +77,7 @@ export function usePlayerApi() {
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to fetch player');
       }
-      
+
       return response.data.data;
     } catch (err) {
       showError('Failed to fetch player data');
@@ -95,7 +95,7 @@ export function usePlayerApi() {
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to fetch player');
       }
-      
+
       return response.data.data;
     } catch (err) {
       showError('Failed to fetch player by wallet address');
@@ -116,7 +116,7 @@ export function usePlayerApi() {
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to create player');
       }
-      
+
       success('Player created successfully!');
       return response.data.data;
     } catch (err) {
@@ -129,7 +129,7 @@ export function usePlayerApi() {
    * Update player experience
    */
   const updatePlayerExperience = useCallback(async (
-    playerId: string, 
+    playerId: string,
     experience: number
   ): Promise<Player> => {
     try {
@@ -141,7 +141,7 @@ export function usePlayerApi() {
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to update experience');
       }
-      
+
       success('Experience updated successfully!');
       return response.data.data;
     } catch (err) {
@@ -154,7 +154,7 @@ export function usePlayerApi() {
    * Update player currency
    */
   const updatePlayerCurrency = useCallback(async (
-    playerId: string, 
+    playerId: string,
     coins: number
   ): Promise<Player> => {
     try {
@@ -166,7 +166,7 @@ export function usePlayerApi() {
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to update currency');
       }
-      
+
       success('Currency updated successfully!');
       return response.data.data;
     } catch (err) {
@@ -185,7 +185,7 @@ export function usePlayerApi() {
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to fetch player stats');
       }
-      
+
       return response.data.data;
     } catch (err) {
       showError('Failed to fetch player statistics');
@@ -197,7 +197,7 @@ export function usePlayerApi() {
    * Update player statistics
    */
   const updatePlayerStats = useCallback(async (
-    playerId: string, 
+    playerId: string,
     stats: Partial<PlayerStats>
   ): Promise<PlayerStats> => {
     try {
@@ -209,7 +209,7 @@ export function usePlayerApi() {
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to update player stats');
       }
-      
+
       success('Player statistics updated successfully!');
       return response.data.data;
     } catch (err) {
@@ -231,7 +231,7 @@ export function usePlayerApi() {
       if (!response.data.success) {
         throw new Error(response.data.message || 'Failed to update last login');
       }
-      
+
       return response.data.data;
     } catch (err) {
       showError('Failed to update last login time');
@@ -249,7 +249,7 @@ export function usePlayerApi() {
     getPlayerStats,
     updatePlayerStats,
     updateLastLogin,
-    
+
     // State from useApi
     loading,
     error,
