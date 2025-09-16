@@ -64,8 +64,12 @@ export const useCommunity = () => {
         return a.likes - b.likes;
       }
       case 'recent': {
-        if (!a.timeStamp) return 1;
-        if (!b.timeStamp) return -1;
+        if (!a.timeStamp) {
+          return 1;
+        }
+        if (!b.timeStamp) {
+          return -1;
+        }
         const aDate = new Date(a.timeStamp);
         const bDate = new Date(b.timeStamp);
         return bDate.getTime() - aDate.getTime();
@@ -108,8 +112,12 @@ export const useCommunity = () => {
         return b.participants - a.participants;
       }
       case 'recent': {
-        if (!a.endDate) return 1;
-        if (!b.endDate) return -1;
+        if (!a.endDate) {
+          return 1;
+        }
+        if (!b.endDate) {
+          return -1;
+        }
         const aDate = new Date(a.endDate);
         const bDate = new Date(b.endDate);
         return bDate.getTime() - aDate.getTime();
