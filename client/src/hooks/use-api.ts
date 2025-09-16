@@ -129,8 +129,8 @@ export function useApi(config: ApiConfig = {}) {
     clearExpiredCache();
     const cacheKey = getCacheKey(options);
     const cached = cacheRef.current.get(cacheKey);
-    
-    if (cached && Date.now() - cached.timestamp < cached.timestamp < cached.ttl) {
+
+    if (cached && Date.now() - cached.timestamp < cached.ttl) {
       return cached.data;
     }
 
