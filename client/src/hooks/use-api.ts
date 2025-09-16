@@ -123,7 +123,9 @@ export function useApi(config: ApiConfig = {}) {
   /**
    * Get cached response if available and valid
    */
-  const getCachedResponse = useCallback(<T>(options: RequestOptions): T | null => {
+  const getCachedResponse = useCallback(<T>(
+    options: RequestOptions
+  ): T | null => {
     if (!options.cache) return null;
 
     clearExpiredCache();
@@ -140,7 +142,10 @@ export function useApi(config: ApiConfig = {}) {
   /**
    * Store response in cache
    */
-  const setCachedResponse = useCallback(<T>(options: RequestOptions, data: T): void => {
+  const setCachedResponse = useCallback(<T>(
+    options: RequestOptions,
+    data: T
+  ): void => {
     if (!options.cache) return;
 
     const cacheKey = getCacheKey(options);
@@ -171,10 +176,11 @@ export function useApi(config: ApiConfig = {}) {
   /**
    * Make HTTP request with retry logic
    */
-  const makeRequest = useCallback(async <T>(
-    options: RequestOptions,
-    attempt: number = 1
-  ): Promise<ApiResponse<T>> => {
+  const makeRequest = useCallback(
+    async <T>(
+      options: RequestOptions,
+      attempt: number = 1
+    ): Promise<ApiResponse<T>> => {
     try {
       // Check cache first for GET requests
       if (options.method === 'GET' && attempt === 1) {
@@ -291,11 +297,12 @@ export function useApi(config: ApiConfig = {}) {
   /**
    * GET request
    */
-  const get = useCallback(async <T>(
-    url: string,
-    params?: Record<string, any>,
-    options: Partial<RequestOptions> = {}
-  ): Promise<ApiResponse<T>> => {
+  const get = useCallback(
+    async <T>(
+      url: string,
+      params?: Record<string, any>,
+      options: Partial<RequestOptions> = {}
+    ): Promise<ApiResponse<T>> => {
     setLoading(true);
     setError(null);
 
@@ -322,11 +329,12 @@ export function useApi(config: ApiConfig = {}) {
   /**
    * POST request
    */
-  const post = useCallback(async <T>(
-    url: string,
-    data?: any,
-    options: Partial<RequestOptions> = {}
-  ): Promise<ApiResponse<T>> => {
+  const post = useCallback(
+    async <T>(
+      url: string,
+      data?: any,
+      options: Partial<RequestOptions> = {}
+    ): Promise<ApiResponse<T>> => {
     setLoading(true);
     setError(null);
 
@@ -353,11 +361,12 @@ export function useApi(config: ApiConfig = {}) {
   /**
    * PUT request
    */
-  const put = useCallback(async <T>(
-    url: string,
-    data?: any,
-    options: Partial<RequestOptions> = {}
-  ): Promise<ApiResponse<T>> => {
+  const put = useCallback(
+    async <T>(
+      url: string,
+      data?: any,
+      options: Partial<RequestOptions> = {}
+    ): Promise<ApiResponse<T>> => {
     setLoading(true);
     setError(null);
 
@@ -384,10 +393,11 @@ export function useApi(config: ApiConfig = {}) {
   /**
    * DELETE request
    */
-  const del = useCallback(async <T>(
-    url: string,
-    options: Partial<RequestOptions> = {}
-  ): Promise<ApiResponse<T>> => {
+  const del = useCallback(
+    async <T>(
+      url: string,
+      options: Partial<RequestOptions> = {}
+    ): Promise<ApiResponse<T>> => {
     setLoading(true);
     setError(null);
 
