@@ -46,6 +46,7 @@ export { useStoreFilters } from './use-store-filters';
 export { useFishIndicators } from './useFishIndicators';
 export { useGameActions } from './useGameActions';
 export { usePlayerValidation } from './usePlayerValidation';
+export { useLocalStorage } from './use-local-storage';
 
 // dojo hooks
 export * from './dojo/index';
