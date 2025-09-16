@@ -70,7 +70,8 @@ export function usePlayerApi() {
   /**
    * Get player by ID
    */
-  const getPlayer = useCallback(async (playerId: string): Promise<Player> => {
+  const getPlayer = useCallback(
+    async (playerId: string): Promise<Player> => {
     try {
       const response = await get<PlayerApiResponse<Player>>(`/${playerId}`);
 
@@ -88,7 +89,8 @@ export function usePlayerApi() {
   /**
    * Get player by wallet address
    */
-  const getPlayerByWallet = useCallback(async (walletAddress: string): Promise<Player> => {
+  const getPlayerByWallet = useCallback(
+    async (walletAddress: string): Promise<Player> => {
     try {
       const response = await get<PlayerApiResponse<Player>>(`/wallet/${walletAddress}`);
 
@@ -106,10 +108,11 @@ export function usePlayerApi() {
   /**
    * Create a new player
    */
-  const createPlayer = useCallback(async (playerData: {
-    username: string;
-    walletAddress: string;
-  }): Promise<Player> => {
+  const createPlayer = useCallback(
+    async (playerData: {
+      username: string;
+      walletAddress: string;
+    }): Promise<Player> => {
     try {
       const response = await post<PlayerApiResponse<Player>>('/', playerData);
 
@@ -128,10 +131,11 @@ export function usePlayerApi() {
   /**
    * Update player experience
    */
-  const updatePlayerExperience = useCallback(async (
-    playerId: string,
-    experience: number
-  ): Promise<Player> => {
+  const updatePlayerExperience = useCallback(
+    async (
+      playerId: string,
+      experience: number
+    ): Promise<Player> => {
     try {
       const response = await put<PlayerApiResponse<Player>>(
         `/${playerId}/experience`,
@@ -153,10 +157,11 @@ export function usePlayerApi() {
   /**
    * Update player currency
    */
-  const updatePlayerCurrency = useCallback(async (
-    playerId: string,
-    coins: number
-  ): Promise<Player> => {
+  const updatePlayerCurrency = useCallback(
+    async (
+      playerId: string,
+      coins: number
+    ): Promise<Player> => {
     try {
       const response = await put<PlayerApiResponse<Player>>(
         `/${playerId}/currency`,
@@ -178,7 +183,8 @@ export function usePlayerApi() {
   /**
    * Get player statistics
    */
-  const getPlayerStats = useCallback(async (playerId: string): Promise<PlayerStats> => {
+  const getPlayerStats = useCallback(
+    async (playerId: string): Promise<PlayerStats> => {
     try {
       const response = await get<PlayerApiResponse<PlayerStats>>(`/${playerId}/stats`);
 
@@ -196,10 +202,11 @@ export function usePlayerApi() {
   /**
    * Update player statistics
    */
-  const updatePlayerStats = useCallback(async (
-    playerId: string,
-    stats: Partial<PlayerStats>
-  ): Promise<PlayerStats> => {
+  const updatePlayerStats = useCallback(
+    async (
+      playerId: string,
+      stats: Partial<PlayerStats>
+    ): Promise<PlayerStats> => {
     try {
       const response = await put<PlayerApiResponse<PlayerStats>>(
         `/${playerId}/stats`,
@@ -221,7 +228,8 @@ export function usePlayerApi() {
   /**
    * Update last login time
    */
-  const updateLastLogin = useCallback(async (playerId: string): Promise<Player> => {
+  const updateLastLogin = useCallback(
+    async (playerId: string): Promise<Player> => {
     try {
       const response = await put<PlayerApiResponse<Player>>(
         `/${playerId}/login`,
