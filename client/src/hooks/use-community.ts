@@ -35,15 +35,17 @@ export const useCommunity = () => {
     }
     if (
       !(aquarium.likes > filters.minLikes && aquarium.likes < filters.maxLikes)
-    )
+    ) {
       return false;
+    }
     if (
       !(
         aquarium.comments > filters.minComments &&
         aquarium.comments < filters.maxComments
       )
-    )
+    ) {
       return false;
+    }
     return true;
   });
 
@@ -88,10 +90,12 @@ export const useCommunity = () => {
         event.participants > eventFilters.minParticipants &&
         event.participants < eventFilters.maxParticipants
       )
-    )
+    ) {
       return false;
-    if (eventFilters.status !== 'all' && event.status !== eventFilters.status)
+    }
+    if (eventFilters.status !== 'all' && event.status !== eventFilters.status) {
       return false;
+    }
     return true;
   });
 

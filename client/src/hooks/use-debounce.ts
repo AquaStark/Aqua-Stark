@@ -154,7 +154,12 @@ export function useDebounce<T>(
       }
       setIsPending(false);
     };
-  }, [value, normalizedOptions.delay, normalizedOptions.immediate, normalizedOptions.maxCalls]);
+  }, [
+    value,
+    normalizedOptions.delay,
+    normalizedOptions.immediate,
+    normalizedOptions.maxCalls,
+  ]);
 
   // Cleanup on unmount
   useEffect(() => {
