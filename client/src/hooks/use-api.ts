@@ -125,33 +125,37 @@ export function useApi(config: ApiConfig = {}) {
    */
   const getCachedResponse = useCallback(
     <T>(options: RequestOptions): T | null => {
-    if (!options.cache) return null;
+      if (!options.cache) return null;
 
-    clearExpiredCache();
-    const cacheKey = getCacheKey(options);
-    const cached = cacheRef.current.get(cacheKey);
+      clearExpiredCache();
+      const cacheKey = getCacheKey(options);
+      const cached = cacheRef.current.get(cacheKey);
 
-    if (cached && Date.now() - cached.timestamp < cached.ttl) {
-      return cached.data;
-    }
+      if (cached && Date.now() - cached.timestamp < cached.ttl) {
+        return cached.data;
+      }
 
-    return null;
-  }, [clearExpiredCache, getCacheKey]);
+      return null;
+    },
+    [clearExpiredCache, getCacheKey]
+  );
 
   /**
    * Store response in cache
    */
   const setCachedResponse = useCallback(
     <T>(options: RequestOptions, data: T): void => {
-    if (!options.cache) return;
+      if (!options.cache) return;
 
-    const cacheKey = getCacheKey(options);
-    cacheRef.current.set(cacheKey, {
-      data,
-      timestamp: Date.now(),
-      ttl: apiConfig.cacheTTL,
-    });
-  }, [getCacheKey, apiConfig.cacheTTL]);
+      const cacheKey = getCacheKey(options);
+      cacheRef.current.set(cacheKey, {
+        data,
+        timestamp: Date.now(),
+        ttl: apiConfig.cacheTTL,
+      });
+    },
+    [getCacheKey, apiConfig.cacheTTL]
+  );
 
   /**
    * Validate response data
@@ -178,118 +182,119 @@ export function useApi(config: ApiConfig = {}) {
       options: RequestOptions,
       attempt: number = 1
     ): Promise<ApiResponse<T>> => {
-    try {
-      // Check cache first for GET requests
-      if (options.method === 'GET' && attempt === 1) {
-        const cached = getCachedResponse<T>(options);
-        if (cached) {
-          return {
-            data: cached,
-            status: 200,
-            statusText: 'OK',
-            headers: {},
-            success: true,
-          };
+      try {
+        // Check cache first for GET requests
+        if (options.method === 'GET' && attempt === 1) {
+          const cached = getCachedResponse<T>(options);
+          if (cached) {
+            return {
+              data: cached,
+              status: 200,
+              statusText: 'OK',
+              headers: {},
+              success: true,
+            };
+          }
         }
+
+        // Create abort controller for this request
+        const abortController = new AbortController();
+        abortControllerRef.current = abortController;
+
+        // Build request URL
+        const url = options.url.startsWith('http')
+          ? options.url
+          : `${apiConfig.baseURL}${options.url}`;
+
+        // Build request options
+        const requestOptions: RequestInit = {
+          method: options.method,
+          headers: {
+            ...apiConfig.headers,
+            ...options.headers,
+          },
+          signal: abortController.signal,
+        };
+
+        // Add body for non-GET requests
+        if (options.data && options.method !== 'GET') {
+          requestOptions.body = JSON.stringify(options.data);
+        }
+
+        // Add query parameters for GET requests
+        let finalUrl = url;
+        if (options.data && options.method === 'GET') {
+          const params = new URLSearchParams(options.data);
+          finalUrl = `${url}?${params}`;
+        }
+
+        // Make the request
+        const response = await fetch(finalUrl, requestOptions);
+
+        // Parse response
+        let responseData: T;
+        const contentType = response.headers.get('content-type');
+
+        if (contentType && contentType.includes('application/json')) {
+          responseData = await response.json();
+        } else {
+          responseData = (await response.text()) as unknown as T;
+        }
+
+        // Validate response
+        if (!validateResponse(responseData)) {
+          throw new Error('Invalid response data received');
+        }
+
+        // Create response object
+        const apiResponse: ApiResponse<T> = {
+          data: responseData,
+          status: response.status,
+          statusText: response.statusText,
+          headers: Object.fromEntries(response.headers.entries()),
+          success: response.ok,
+        };
+
+        // Handle non-2xx responses
+        if (!response.ok) {
+          apiResponse.error = responseData?.message || response.statusText;
+          throw new Error(apiResponse.error);
+        }
+
+        // Cache successful GET responses
+        if (options.method === 'GET' && options.cache !== false) {
+          setCachedResponse(options, responseData);
+        }
+
+        return apiResponse;
+      } catch (error) {
+        // Handle abort errors
+        if (error instanceof Error && error.name === 'AbortError') {
+          throw new Error('Request was cancelled');
+        }
+
+        // Retry logic
+        if (attempt < (options.retries || apiConfig.retries)) {
+          await new Promise(resolve =>
+            setTimeout(resolve, apiConfig.retryDelay * attempt)
+          );
+          return makeRequest<T>(options, attempt + 1);
+        }
+
+        // Create error object
+        const apiError: ApiError = {
+          message:
+            error instanceof Error ? error.message : 'Unknown error occurred',
+          status: error instanceof Response ? error.status : undefined,
+          code: error instanceof Error ? error.name : undefined,
+          details: error,
+        };
+
+        throw apiError;
       }
-
-      // Create abort controller for this request
-      const abortController = new AbortController();
-      abortControllerRef.current = abortController;
-
-      // Build request URL
-      const url = options.url.startsWith('http')
-        ? options.url
-        : `${apiConfig.baseURL}${options.url}`;
-
-      // Build request options
-      const requestOptions: RequestInit = {
-        method: options.method,
-        headers: {
-          ...apiConfig.headers,
-          ...options.headers,
-        },
-        signal: abortController.signal,
-      };
-
-      // Add body for non-GET requests
-      if (options.data && options.method !== 'GET') {
-        requestOptions.body = JSON.stringify(options.data);
-      }
-
-      // Add query parameters for GET requests
-      let finalUrl = url;
-      if (options.data && options.method === 'GET') {
-        const params = new URLSearchParams(options.data);
-        finalUrl = `${url}?${params}`;
-      }
-
-      // Make the request
-      const response = await fetch(finalUrl, requestOptions);
-
-      // Parse response
-      let responseData: T;
-      const contentType = response.headers.get('content-type');
-
-      if (contentType && contentType.includes('application/json')) {
-        responseData = await response.json();
-      } else {
-        responseData = (await response.text()) as unknown as T;
-      }
-
-      // Validate response
-      if (!validateResponse(responseData)) {
-        throw new Error('Invalid response data received');
-      }
-
-      // Create response object
-      const apiResponse: ApiResponse<T> = {
-        data: responseData,
-        status: response.status,
-        statusText: response.statusText,
-        headers: Object.fromEntries(response.headers.entries()),
-        success: response.ok,
-      };
-
-      // Handle non-2xx responses
-      if (!response.ok) {
-        apiResponse.error = responseData?.message || response.statusText;
-        throw new Error(apiResponse.error);
-      }
-
-      // Cache successful GET responses
-      if (options.method === 'GET' && options.cache !== false) {
-        setCachedResponse(options, responseData);
-      }
-
-      return apiResponse;
-
-    } catch (error) {
-      // Handle abort errors
-      if (error instanceof Error && error.name === 'AbortError') {
-        throw new Error('Request was cancelled');
-      }
-
-      // Retry logic
-      if (attempt < (options.retries || apiConfig.retries)) {
-        await new Promise((resolve) =>
-          setTimeout(resolve, apiConfig.retryDelay * attempt)
-        );
-        return makeRequest<T>(options, attempt + 1);
-      }
-
-      // Create error object
-      const apiError: ApiError = {
-        message:
-          error instanceof Error ? error.message : 'Unknown error occurred',
-        status: error instanceof Response ? error.status : undefined,
-        code: error instanceof Error ? error.name : undefined,
-        details: error,
-      };
-
-      throw apiError;
-    }
-  }, [apiConfig, getCachedResponse, setCachedResponse, validateResponse]);
+    },
+    [apiConfig, getCachedResponse, setCachedResponse, validateResponse]
+  );
 
   /**
    * GET request
@@ -300,28 +305,30 @@ export function useApi(config: ApiConfig = {}) {
       params?: Record<string, any>,
       options: Partial<RequestOptions> = {}
     ): Promise<ApiResponse<T>> => {
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
 
-    try {
-      const requestOptions: RequestOptions = {
-        method: 'GET',
-        url,
-        data: params,
-        cache: true,
-        ...options,
-      };
+      try {
+        const requestOptions: RequestOptions = {
+          method: 'GET',
+          url,
+          data: params,
+          cache: true,
+          ...options,
+        };
 
-      const response = await makeRequest<T>(requestOptions);
-      return response;
-    } catch (err) {
-      const apiError = err as ApiError;
-      setError(apiError);
-      throw apiError;
-    } finally {
-      setLoading(false);
-    }
-  }, [makeRequest]);
+        const response = await makeRequest<T>(requestOptions);
+        return response;
+      } catch (err) {
+        const apiError = err as ApiError;
+        setError(apiError);
+        throw apiError;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [makeRequest]
+  );
 
   /**
    * POST request
@@ -332,28 +339,30 @@ export function useApi(config: ApiConfig = {}) {
       data?: any,
       options: Partial<RequestOptions> = {}
     ): Promise<ApiResponse<T>> => {
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
 
-    try {
-      const requestOptions: RequestOptions = {
-        method: 'POST',
-        url,
-        data,
-        cache: false,
-        ...options,
-      };
+      try {
+        const requestOptions: RequestOptions = {
+          method: 'POST',
+          url,
+          data,
+          cache: false,
+          ...options,
+        };
 
-      const response = await makeRequest<T>(requestOptions);
-      return response;
-    } catch (err) {
-      const apiError = err as ApiError;
-      setError(apiError);
-      throw apiError;
-    } finally {
-      setLoading(false);
-    }
-  }, [makeRequest]);
+        const response = await makeRequest<T>(requestOptions);
+        return response;
+      } catch (err) {
+        const apiError = err as ApiError;
+        setError(apiError);
+        throw apiError;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [makeRequest]
+  );
 
   /**
    * PUT request
@@ -364,28 +373,30 @@ export function useApi(config: ApiConfig = {}) {
       data?: any,
       options: Partial<RequestOptions> = {}
     ): Promise<ApiResponse<T>> => {
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
 
-    try {
-      const requestOptions: RequestOptions = {
-        method: 'PUT',
-        url,
-        data,
-        cache: false,
-        ...options,
-      };
+      try {
+        const requestOptions: RequestOptions = {
+          method: 'PUT',
+          url,
+          data,
+          cache: false,
+          ...options,
+        };
 
-      const response = await makeRequest<T>(requestOptions);
-      return response;
-    } catch (err) {
-      const apiError = err as ApiError;
-      setError(apiError);
-      throw apiError;
-    } finally {
-      setLoading(false);
-    }
-  }, [makeRequest]);
+        const response = await makeRequest<T>(requestOptions);
+        return response;
+      } catch (err) {
+        const apiError = err as ApiError;
+        setError(apiError);
+        throw apiError;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [makeRequest]
+  );
 
   /**
    * DELETE request
@@ -395,27 +406,29 @@ export function useApi(config: ApiConfig = {}) {
       url: string,
       options: Partial<RequestOptions> = {}
     ): Promise<ApiResponse<T>> => {
-    setLoading(true);
-    setError(null);
+      setLoading(true);
+      setError(null);
 
-    try {
-      const requestOptions: RequestOptions = {
-        method: 'DELETE',
-        url,
-        cache: false,
-        ...options,
-      };
+      try {
+        const requestOptions: RequestOptions = {
+          method: 'DELETE',
+          url,
+          cache: false,
+          ...options,
+        };
 
-      const response = await makeRequest<T>(requestOptions);
-      return response;
-    } catch (err) {
-      const apiError = err as ApiError;
-      setError(apiError);
-      throw apiError;
-    } finally {
-      setLoading(false);
-    }
-  }, [makeRequest]);
+        const response = await makeRequest<T>(requestOptions);
+        return response;
+      } catch (err) {
+        const apiError = err as ApiError;
+        setError(apiError);
+        throw apiError;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [makeRequest]
+  );
 
   /**
    * Clear all cached data
