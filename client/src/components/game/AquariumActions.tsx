@@ -14,7 +14,7 @@ export function AquariumActions() {
   const { success, error } = useNotifications();
 
   // Use the unified API hook instead of local loading state
-  const { loading: apiLoading, error: apiError } = useApi();
+  const { loading: apiLoading } = useApi();
 
   const [fishIds] = useState(['1', '2', '3']); // Example fish IDs
 
