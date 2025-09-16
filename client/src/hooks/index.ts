@@ -39,6 +39,7 @@ export { useGames } from './use-games';
 export { useHelpCenter } from './use-help-center';
 export { useLoadingNavigation } from './use-loading-navigation';
 export { useSettings } from './use-settings';
+export { useShopData } from './use-shop-data';
 export { useSimpleWalletConnection } from './use-simple-wallet-connection';
 export { useStoreFilters } from './use-store-filters';
 export { useFishIndicators } from './useFishIndicators';
