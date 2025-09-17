@@ -29,6 +29,7 @@ export { useDebounce } from './use-debounce';
 export { useDevConsoleHandlers } from './use-dev-console-handlers';
 export { useDirtSystemFixed } from './use-dirt-system-fixed';
 export { useDirtSystem } from './use-dirt-system';
+export { useDirtSystemRealistic } from './use-dirt-system-realistic';
 export { useEncyclopedia } from './use-encyclopedia';
 export { useEventsCalendar } from './use-events-calendar';
 export { useExperience } from './use-experience';
