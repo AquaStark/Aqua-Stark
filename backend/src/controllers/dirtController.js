@@ -16,31 +16,34 @@ export class DirtController {
 
       // Validate input
       if (!aquariumId) {
-        return res.status(400).json({ 
-          success: false, 
-          error: 'Aquarium ID is required' 
+        return res.status(400).json({
+          success: false,
+          error: 'Aquarium ID is required',
         });
       }
 
-      const dirtStatus = await DirtService.getAquariumDirtStatus(aquariumId, playerId);
+      const dirtStatus = await DirtService.getAquariumDirtStatus(
+        aquariumId,
+        playerId
+      );
 
       res.json({
         success: true,
-        data: dirtStatus
+        data: dirtStatus,
       });
     } catch (error) {
       console.error('Error in getAquariumDirtStatus:', error);
-      
+
       if (error.message === 'Aquarium not found or access denied') {
         return res.status(404).json({
           success: false,
-          error: 'Aquarium not found or access denied'
+          error: 'Aquarium not found or access denied',
         });
       }
 
       res.status(500).json({
         success: false,
-        error: 'Internal server error'
+        error: 'Internal server error',
       });
     }
   }
@@ -59,47 +62,47 @@ export class DirtController {
       if (!aquariumId) {
         return res.status(400).json({
           success: false,
-          error: 'Aquarium ID is required'
+          error: 'Aquarium ID is required',
         });
       }
 
       if (!['partial', 'complete'].includes(cleaning_type)) {
         return res.status(400).json({
           success: false,
-          error: 'Invalid cleaning type. Must be "partial" or "complete"'
+          error: 'Invalid cleaning type. Must be "partial" or "complete"',
         });
       }
 
       const cleaningResult = await DirtService.cleanAquarium(
-        aquariumId, 
-        playerId, 
+        aquariumId,
+        playerId,
         cleaning_type
       );
 
       if (!cleaningResult.success) {
         return res.status(400).json({
           success: false,
-          error: cleaningResult.error
+          error: cleaningResult.error,
         });
       }
 
       res.json({
         success: true,
-        data: cleaningResult
+        data: cleaningResult,
       });
     } catch (error) {
       console.error('Error in cleanAquarium:', error);
-      
+
       if (error.message === 'Aquarium not found or access denied') {
         return res.status(404).json({
           success: false,
-          error: 'Aquarium not found or access denied'
+          error: 'Aquarium not found or access denied',
         });
       }
 
       res.status(500).json({
         success: false,
-        error: 'Internal server error'
+        error: 'Internal server error',
       });
     }
   }
@@ -111,27 +114,32 @@ export class DirtController {
   static async getPlayerAquariumDirtStatuses(req, res) {
     try {
       const { playerId } = req.params;
-      const authenticatedPlayerId = req.user?.playerId || req.user?.id || 'demo-player';
+      const authenticatedPlayerId =
+        req.user?.playerId || req.user?.id || 'demo-player';
 
       // Ensure player can only access their own data (skip in development)
-      if (process.env.NODE_ENV === 'production' && playerId !== authenticatedPlayerId) {
+      if (
+        process.env.NODE_ENV === 'production' &&
+        playerId !== authenticatedPlayerId
+      ) {
         return res.status(403).json({
           success: false,
-          error: 'Access denied'
+          error: 'Access denied',
         });
       }
 
-      const dirtStatuses = await DirtService.getPlayerAquariumDirtStatuses(playerId);
+      const dirtStatuses =
+        await DirtService.getPlayerAquariumDirtStatuses(playerId);
 
       res.json({
         success: true,
-        data: dirtStatuses
+        data: dirtStatuses,
       });
     } catch (error) {
       console.error('Error in getPlayerAquariumDirtStatuses:', error);
       res.status(500).json({
         success: false,
-        error: 'Internal server error'
+        error: 'Internal server error',
       });
     }
   }
@@ -150,34 +158,34 @@ export class DirtController {
       if (!aquariumId) {
         return res.status(400).json({
           success: false,
-          error: 'Aquarium ID is required'
+          error: 'Aquarium ID is required',
         });
       }
 
       if (!spot_id) {
         return res.status(400).json({
           success: false,
-          error: 'Spot ID is required'
+          error: 'Spot ID is required',
         });
       }
 
       // For now, just clean a small amount of dirt
       const cleaningResult = await DirtService.cleanAquarium(
-        aquariumId, 
-        playerId, 
+        aquariumId,
+        playerId,
         'partial'
       );
 
       res.json({
         success: true,
-        data: cleaningResult
+        data: cleaningResult,
       });
     } catch (error) {
       console.error('Error in cleanDirtSpot:', error);
-      
+
       res.status(500).json({
         success: false,
-        error: 'Internal server error'
+        error: 'Internal server error',
       });
     }
   }
@@ -196,7 +204,7 @@ export class DirtController {
       if (!aquariumId) {
         return res.status(400).json({
           success: false,
-          error: 'Aquarium ID is required'
+          error: 'Aquarium ID is required',
         });
       }
 
@@ -208,13 +216,13 @@ export class DirtController {
 
       res.json({
         success: true,
-        data: initResult
+        data: initResult,
       });
     } catch (error) {
       console.error('Error in initializeAquariumDirtSystem:', error);
       res.status(500).json({
         success: false,
-        error: 'Internal server error'
+        error: 'Internal server error',
       });
     }
   }
@@ -233,24 +241,24 @@ export class DirtController {
       if (!aquariumId) {
         return res.status(400).json({
           success: false,
-          error: 'Aquarium ID is required'
+          error: 'Aquarium ID is required',
         });
       }
 
       if (!config || typeof config !== 'object') {
         return res.status(400).json({
           success: false,
-          error: 'Valid configuration object is required'
+          error: 'Valid configuration object is required',
         });
       }
 
       // Validate config fields
       const validFields = [
         'grace_period_hours',
-        'dirt_multiplier', 
+        'dirt_multiplier',
         'max_dirt_level',
         'log_base',
-        'cleaning_threshold'
+        'cleaning_threshold',
       ];
 
       const invalidFields = Object.keys(config).filter(
@@ -260,7 +268,7 @@ export class DirtController {
       if (invalidFields.length > 0) {
         return res.status(400).json({
           success: false,
-          error: `Invalid configuration fields: ${invalidFields.join(', ')}`
+          error: `Invalid configuration fields: ${invalidFields.join(', ')}`,
         });
       }
 
@@ -270,7 +278,7 @@ export class DirtController {
         .from(TABLES.AQUARIUM_STATES)
         .update({
           dirt_config: config,
-          last_updated: new Date().toISOString()
+          last_updated: new Date().toISOString(),
         })
         .eq('aquarium_id', aquariumId)
         .eq('player_id', playerId);
@@ -282,14 +290,14 @@ export class DirtController {
         data: {
           aquarium_id: aquariumId,
           updated_config: config,
-          updated_at: new Date().toISOString()
-        }
+          updated_at: new Date().toISOString(),
+        },
       });
     } catch (error) {
       console.error('Error in updateAquariumDirtConfig:', error);
       res.status(500).json({
         success: false,
-        error: 'Internal server error'
+        error: 'Internal server error',
       });
     }
   }
@@ -301,48 +309,67 @@ export class DirtController {
   static async getPlayerDirtStats(req, res) {
     try {
       const { playerId } = req.params;
-      const authenticatedPlayerId = req.user?.playerId || req.user?.id || 'demo-player';
+      const authenticatedPlayerId =
+        req.user?.playerId || req.user?.id || 'demo-player';
 
       // Ensure player can only access their own data (skip in development)
-      if (process.env.NODE_ENV === 'production' && playerId !== authenticatedPlayerId) {
+      if (
+        process.env.NODE_ENV === 'production' &&
+        playerId !== authenticatedPlayerId
+      ) {
         return res.status(403).json({
           success: false,
-          error: 'Access denied'
+          error: 'Access denied',
         });
       }
 
-      const dirtStatuses = await DirtService.getPlayerAquariumDirtStatuses(playerId);
+      const dirtStatuses =
+        await DirtService.getPlayerAquariumDirtStatuses(playerId);
 
       // Calculate statistics
       const stats = {
         total_aquariums: dirtStatuses.length,
-        dirty_aquariums: dirtStatuses.filter(a => a.current_dirt_level > 10).length,
-        needs_cleaning: dirtStatuses.filter(a => a.current_dirt_level > 30).length,
-        average_dirt_level: dirtStatuses.length > 0 
-          ? dirtStatuses.reduce((sum, a) => sum + a.current_dirt_level, 0) / dirtStatuses.length 
-          : 0,
-        total_cleanings: dirtStatuses.reduce((sum, a) => sum + a.total_cleanings, 0),
-        longest_cleaning_streak: dirtStatuses.length > 0 
-          ? Math.max(...dirtStatuses.map(a => a.cleaning_streak))
-          : 0,
+        dirty_aquariums: dirtStatuses.filter(a => a.current_dirt_level > 10)
+          .length,
+        needs_cleaning: dirtStatuses.filter(a => a.current_dirt_level > 30)
+          .length,
+        average_dirt_level:
+          dirtStatuses.length > 0
+            ? dirtStatuses.reduce((sum, a) => sum + a.current_dirt_level, 0) /
+              dirtStatuses.length
+            : 0,
+        total_cleanings: dirtStatuses.reduce(
+          (sum, a) => sum + a.total_cleanings,
+          0
+        ),
+        longest_cleaning_streak:
+          dirtStatuses.length > 0
+            ? Math.max(...dirtStatuses.map(a => a.cleaning_streak))
+            : 0,
         dirt_distribution: {
           clean: dirtStatuses.filter(a => a.current_dirt_level <= 10).length,
-          light: dirtStatuses.filter(a => a.current_dirt_level > 10 && a.current_dirt_level <= 30).length,
-          moderate: dirtStatuses.filter(a => a.current_dirt_level > 30 && a.current_dirt_level <= 50).length,
-          high: dirtStatuses.filter(a => a.current_dirt_level > 50 && a.current_dirt_level <= 70).length,
-          critical: dirtStatuses.filter(a => a.current_dirt_level > 70).length
-        }
+          light: dirtStatuses.filter(
+            a => a.current_dirt_level > 10 && a.current_dirt_level <= 30
+          ).length,
+          moderate: dirtStatuses.filter(
+            a => a.current_dirt_level > 30 && a.current_dirt_level <= 50
+          ).length,
+          high: dirtStatuses.filter(
+            a => a.current_dirt_level > 50 && a.current_dirt_level <= 70
+          ).length,
+          critical: dirtStatuses.filter(a => a.current_dirt_level > 70).length,
+        },
       };
 
       res.json({
         success: true,
-        data: stats
+        data: stats,
       });
     } catch (error) {
       console.error('Error in getPlayerDirtStats:', error);
       res.status(500).json({
         success: false,
-        error: 'Internal server error'
+        error: 'Internal server error',
       });
     }
   }
