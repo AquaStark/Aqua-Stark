@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { DirtSpot, DirtType } from '@/types/dirt';
 
 // API base URL - adjust based on your backend configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
 
 interface DirtSystemState {
   spots: DirtSpot[];
@@ -124,73 +125,76 @@ export function useDirtSystemRealistic({
 
   // Toggle sponge mode
   const toggleSpongeMode = useCallback(() => {
-    setState(prev => ({ 
-      ...prev, 
-      isSpongeMode: !prev.isSpongeMode 
+    setState(prev => ({
+      ...prev,
+      isSpongeMode: !prev.isSpongeMode,
     }));
   }, []);
 
   // Clean individual dirt spot (interactive cleaning)
-  const cleanDirtSpot = useCallback(async (spotId: number) => {
-    if (!aquariumId || !playerId) return;
+  const cleanDirtSpot = useCallback(
+    async (spotId: number) => {
+      if (!aquariumId || !playerId) return;
 
-    try {
-      setState(prev => ({ ...prev, isLoading: true, error: null }));
+      try {
+        setState(prev => ({ ...prev, isLoading: true, error: null }));
 
-      const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-      };
+        const headers: HeadersInit = {
+          'Content-Type': 'application/json',
+        };
 
-      if (authToken) {
-        headers.Authorization = `Bearer ${authToken}`;
-      }
-
-      const response = await fetch(
-        `${API_BASE_URL}/dirt/aquarium/${aquariumId}/clean-spot`,
-        {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ spot_id: spotId }),
+        if (authToken) {
+          headers.Authorization = `Bearer ${authToken}`;
         }
-      );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const response = await fetch(
+          `${API_BASE_URL}/dirt/aquarium/${aquariumId}/clean-spot`,
+          {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ spot_id: spotId }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to clean spot');
+        }
+
+        const cleaningData = result.data;
+
+        // Update state with cleaning results
+        setState(prev => ({
+          ...prev,
+          dirtLevel: cleaningData.new_dirt_level,
+          spots: generateDirtSpotsFromLevel(cleaningData.new_dirt_level),
+          isDirty: cleaningData.new_dirt_level > 10,
+          needsCleaning: cleaningData.new_dirt_level > 30,
+          cleanlinessStatus: getCleanlinessStatus(cleaningData.new_dirt_level),
+          cleaningStreak: cleaningData.cleaning_streak || prev.cleaningStreak,
+          totalCleanings: prev.totalCleanings + 1,
+          isLoading: false,
+          error: null,
+        }));
+
+        return cleaningData;
+      } catch (error) {
+        console.error('Error cleaning spot:', error);
+        setState(prev => ({
+          ...prev,
+          isLoading: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        }));
+        throw error;
       }
-
-      const result = await response.json();
-
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to clean spot');
-      }
-
-      const cleaningData = result.data;
-
-      // Update state with cleaning results
-      setState(prev => ({
-        ...prev,
-        dirtLevel: cleaningData.new_dirt_level,
-        spots: generateDirtSpotsFromLevel(cleaningData.new_dirt_level),
-        isDirty: cleaningData.new_dirt_level > 10,
-        needsCleaning: cleaningData.new_dirt_level > 30,
-        cleanlinessStatus: getCleanlinessStatus(cleaningData.new_dirt_level),
-        cleaningStreak: cleaningData.cleaning_streak || prev.cleaningStreak,
-        totalCleanings: prev.totalCleanings + 1,
-        isLoading: false,
-        error: null,
-      }));
-
-      return cleaningData;
-    } catch (error) {
-      console.error('Error cleaning spot:', error);
-      setState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      }));
-      throw error;
-    }
-  }, [aquariumId, playerId, authToken]);
+    },
+    [aquariumId, playerId, authToken]
+  );
 
   // Remove individual dirt spot (for visual feedback)
   const removeDirtSpot = useCallback((spotId: number) => {
@@ -201,46 +205,49 @@ export function useDirtSystemRealistic({
   }, []);
 
   // Initialize dirt system for new aquarium
-  const initializeDirtSystem = useCallback(async (config?: any) => {
-    if (!aquariumId || !playerId) return;
+  const initializeDirtSystem = useCallback(
+    async (config?: any) => {
+      if (!aquariumId || !playerId) return;
 
-    try {
-      const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-      };
+      try {
+        const headers: HeadersInit = {
+          'Content-Type': 'application/json',
+        };
 
-      if (authToken) {
-        headers.Authorization = `Bearer ${authToken}`;
-      }
-
-      const response = await fetch(
-        `${API_BASE_URL}/dirt/aquarium/${aquariumId}/initialize`,
-        {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ config }),
+        if (authToken) {
+          headers.Authorization = `Bearer ${authToken}`;
         }
-      );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const response = await fetch(
+          `${API_BASE_URL}/dirt/aquarium/${aquariumId}/initialize`,
+          {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ config }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to initialize dirt system');
+        }
+
+        // Refresh dirt status after initialization
+        await fetchDirtStatus();
+
+        return result.data;
+      } catch (error) {
+        console.error('Error initializing dirt system:', error);
+        throw error;
       }
-
-      const result = await response.json();
-
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to initialize dirt system');
-      }
-
-      // Refresh dirt status after initialization
-      await fetchDirtStatus();
-
-      return result.data;
-    } catch (error) {
-      console.error('Error initializing dirt system:', error);
-      throw error;
-    }
-  }, [aquariumId, playerId, authToken, fetchDirtStatus]);
+    },
+    [aquariumId, playerId, authToken, fetchDirtStatus]
+  );
 
   // Auto-refresh effect
   useEffect(() => {
@@ -258,14 +265,14 @@ export function useDirtSystemRealistic({
   return {
     // State
     ...state,
-    
+
     // Actions
     fetchDirtStatus,
     toggleSpongeMode,
     cleanDirtSpot,
     removeDirtSpot,
     initializeDirtSystem,
-    
+
     // Utilities
     refresh: fetchDirtStatus,
   };
@@ -306,7 +313,7 @@ function generateDirtSpotsFromLevel(dirtLevel: number): DirtSpot[] {
  */
 function getRandomDirtType(dirtLevel: number): DirtType {
   const types = Object.values(DirtType);
-  
+
   if (dirtLevel < 30) {
     // Light dirt - mostly basic and algae
     return Math.random() < 0.7 ? DirtType.BASIC : DirtType.ALGAE;
@@ -315,7 +322,7 @@ function getRandomDirtType(dirtLevel: number): DirtType {
     const weights = [0.4, 0.3, 0.2, 0.1]; // basic, algae, waste, debris
     const random = Math.random();
     let cumulative = 0;
-    
+
     for (let i = 0; i < weights.length; i++) {
       cumulative += weights[i];
       if (random < cumulative) {
@@ -328,7 +335,7 @@ function getRandomDirtType(dirtLevel: number): DirtType {
     const weights = [0.2, 0.2, 0.3, 0.2, 0.1]; // basic, algae, waste, debris, grime
     const random = Math.random();
     let cumulative = 0;
-    
+
     for (let i = 0; i < weights.length; i++) {
       cumulative += weights[i];
       if (random < cumulative) {
@@ -353,10 +360,15 @@ function getRandomSpotSize(dirtLevel: number): number {
  * Get cleanliness status based on dirt level
  */
 function getCleanlinessStatus(dirtLevel: number) {
-  if (dirtLevel >= 90) return { level: 'critical', label: 'Very Dirty', color: 'red' };
-  if (dirtLevel >= 70) return { level: 'high', label: 'Dirty', color: 'orange' };
-  if (dirtLevel >= 50) return { level: 'moderate', label: 'Needs Attention', color: 'yellow' };
-  if (dirtLevel >= 30) return { level: 'light', label: 'Slightly Dirty', color: 'light-yellow' };
-  if (dirtLevel >= 10) return { level: 'minimal', label: 'Almost Clean', color: 'light-green' };
+  if (dirtLevel >= 90)
+    return { level: 'critical', label: 'Very Dirty', color: 'red' };
+  if (dirtLevel >= 70)
+    return { level: 'high', label: 'Dirty', color: 'orange' };
+  if (dirtLevel >= 50)
+    return { level: 'moderate', label: 'Needs Attention', color: 'yellow' };
+  if (dirtLevel >= 30)
+    return { level: 'light', label: 'Slightly Dirty', color: 'light-yellow' };
+  if (dirtLevel >= 10)
+    return { level: 'minimal', label: 'Almost Clean', color: 'light-green' };
   return { level: 'clean', label: 'Clean', color: 'green' };
 }
