@@ -33,12 +33,12 @@ interface DirtDebuggerProps {
     hoursSinceCleaning: number;
     isLoading: boolean;
     error: string | null;
-    
+
     // Actions
     cleanAquarium: (type: 'partial' | 'complete') => Promise<void>;
     removeDirtSpot: (spotId: number) => void;
     fetchDirtStatus: () => Promise<void>;
-    
+
     // Legacy properties for backward compatibility (optional)
     isSpawnerActive?: boolean;
     config?: { maxSpots: number };
@@ -87,7 +87,7 @@ export function DirtDebugger({ dirtSystem }: DirtDebuggerProps) {
 
   // Helper functions for the new system
   const getCleanlinessScore = () => {
-    return dirtSystem.cleanlinessScore ?? (100 - dirtSystem.dirtLevel);
+    return dirtSystem.cleanlinessScore ?? 100 - dirtSystem.dirtLevel;
   };
 
   const getMaxSpots = () => {
