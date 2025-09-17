@@ -17,3 +17,71 @@
  *
  * @category Components
  */
+
+// achievement components
+export * from './achievements';
+
+// aquarium components
+export * from './aquarium';
+
+// community components
+export * from './community';
+
+// dirt components
+export * from './dirt';
+
+// encyclopedia components
+export * from './encyclopedia';
+
+// events-calender components
+export * from './events-calendar';
+
+// food components
+export * from './food';
+
+// game components
+export * from './game';
+
+// genetics components
+export * from './genetics';
+
+// help-center components
+export * from './help-center';
+
+// laboratory components
+export * from './laboratory';
+
+// landing components
+export * from './landing';
+
+// layout components
+export * from './layout';
+
+// loading components
+export * from './loading';
+
+// market components
+export * from './market';
+
+// mini-games components
+export * from './mini-games';
+
+// modal components
+export * from './modal';
+
+// profile components
+export * from './profile';
+
+// store components
+export * from './store';
+
+// ui component (not literally)
+export * from './ui';
+
+// ungrouped components
+export { BubblesBackground } from './bubble-background';
+export { FishTank } from './fish-tank';
+export { FishStatus } from './FishStatus';
+export { GameStatusBar } from './game-status-bar';
+export { GeneticCombinationsPage } from './genetics';
+export { WalletConnection } from './WalletConnection';

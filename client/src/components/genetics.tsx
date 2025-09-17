@@ -8,7 +8,7 @@ import Rarity from './genetics/traits';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 
-const GeneticCombinationsPage: React.FC = () => {
+export const GeneticCombinationsPage: React.FC = () => {
   const [selectedPair] = useState<string | null>(null);
 
   return (
@@ -96,5 +96,3 @@ const GeneticCombinationsPage: React.FC = () => {
     </div>
   );
 };
-
-export default GeneticCombinationsPage;

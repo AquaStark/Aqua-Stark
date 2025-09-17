@@ -2,7 +2,7 @@ export * from '@/components/profile/profile-header';
 export * from '@/components/profile/profile-card';
 export * from '@/components/profile/profile-tabs';
 export * from '@/components/profile/fish-collection';
-export * from '@/components/profile/achievements';
+export { Achievements as ProfileAchievements } from '@/components/profile/achievements';
 export * from '@/components/profile/purchase-history';
 export * from '@/components/profile/player-statistics';
 export * from '@/components/bubble-background';
