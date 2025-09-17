@@ -26,7 +26,6 @@ import { FeedingDebugPanel } from '@/components/game/feeding-debug-panel';
 import { fishCollection as fullFishList } from '@/data/fish-data';
 import {
   Utensils,
-  Sparkles,
   ShoppingBag,
   Package,
   Gamepad2,

@@ -296,7 +296,7 @@ function generateDirtSpotsFromLevel(dirtLevel: number): DirtSpot[] {
         y: Math.random() * 800 + 100,
       },
       type: getRandomDirtType(dirtLevel),
-      size: getRandomSpotSize(dirtLevel),
+      size: getRandomSpotSize(),
       opacity: Math.min(1, dirtLevel / 100 + 0.3),
       createdAt: Date.now() - Math.random() * 3600000, // Random age up to 1 hour
       intensity: Math.min(1, dirtLevel / 100),
@@ -349,7 +349,7 @@ function getRandomDirtType(dirtLevel: number): DirtType {
 /**
  * Get random spot size based on dirt level
  */
-function getRandomSpotSize(dirtLevel: number): number {
+function getRandomSpotSize(): number {
   // MUCHOS TAMAÑOS GRANDES Y VARIADOS
   const sizes = [120, 150, 180, 200, 220, 250, 280, 300];
   const randomIndex = Math.floor(Math.random() * sizes.length);
