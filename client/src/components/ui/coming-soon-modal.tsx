@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { X, Construction, Fish, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
+import { useModal } from '@/hooks';
 
 interface ComingSoonModalProps {
   isOpen: boolean;
@@ -21,17 +22,22 @@ export function ComingSoonModal({
   className,
   closable = false,
 }: ComingSoonModalProps) {
-  const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
+  
+  // Use the unified modal hook for state management
+  const { isVisible, close } = useModal({
+    closable,
+    onClose,
+    animationDuration: 300
+  });
 
+  // Sync external isOpen prop with internal state
   useEffect(() => {
-    if (isOpen) {
-      setIsVisible(true);
-    } else {
-      const timer = setTimeout(() => setIsVisible(false), 300);
-      return () => clearTimeout(timer);
+    if (isOpen && !isVisible) {
+      // Modal should be open but isn't visible yet
+      // This handles the initial state sync
     }
-  }, [isOpen]);
+  }, [isOpen, isVisible]);
 
   const handleGoBack = () => {
     navigate('/game');
@@ -53,8 +59,8 @@ export function ComingSoonModal({
           'absolute inset-0 backdrop-blur-md',
           closable ? 'bg-black/30 cursor-pointer' : 'bg-black/30'
         )}
-        onClick={closable ? onClose : undefined}
-        onKeyDown={closable ? e => e.key === 'Escape' && onClose() : undefined}
+        onClick={closable ? close : undefined}
+        onKeyDown={closable ? e => e.key === 'Escape' && close() : undefined}
         role={closable ? 'button' : undefined}
         tabIndex={closable ? 0 : undefined}
         aria-label={closable ? 'Close modal' : undefined}
@@ -70,7 +76,7 @@ export function ComingSoonModal({
         {/* Close button - only if closable */}
         {closable && (
           <button
-            onClick={onClose}
+            onClick={close}
             className='absolute top-6 right-6 text-white/70 hover:text-white transition-colors z-10'
             aria-label='Close modal'
           >
