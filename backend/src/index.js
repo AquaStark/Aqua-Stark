@@ -14,6 +14,7 @@ import fishRoutes from './routes/fishRoutes.js';
 import minigameRoutes from './routes/minigameRoutes.js';
 import playerRoutes from './routes/playerRoutes.js';
 import decorationRoutes from './routes/decorationRoutes.js';
+import dirtRoutes from './routes/dirtRoutes.js';
 
 // Import WebSocket
 import { GameWebSocket } from './websocket/gameWebSocket.js';
@@ -71,6 +72,7 @@ app.get('/api/v1', (req, res) => {
       fish: '/api/v1/fish',
       decorations: '/api/v1/decorations',
       minigames: '/api/v1/minigames',
+      dirt: '/api/v1/dirt',
       websocket: '/ws',
     },
   });
@@ -81,6 +83,7 @@ app.use('/api/v1/fish', fishRoutes);
 app.use('/api/v1/minigames', minigameRoutes);
 app.use('/api/v1/players', playerRoutes);
 app.use('/api/v1/decorations', decorationRoutes);
+app.use('/api/v1/dirt', dirtRoutes);
 
 // WebSocket endpoint info
 app.get('/ws', (req, res) => {
