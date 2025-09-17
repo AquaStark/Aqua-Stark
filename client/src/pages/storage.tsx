@@ -3,14 +3,9 @@
 import { useState } from 'react';
 import { Filter, Search, SlidersHorizontal, ShoppingCart } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
-import { fishData, type ItemType } from '@/data/mock-game';
+import { type ItemType } from '@/data/mock-game';
 
-import {
-  miscItems,
-  bundles,
-  decorationBundles,
-  decorationItems,
-} from '@/data/mock-store';
+import { bundles, decorationBundles } from '@/data/mock-store';
 import { StoreTabs } from '@/components/store/store-tabs';
 import { StoreCategories } from '@/components/store/store-categories';
 import { StoreGrid } from '@/components/store/store-grid';
@@ -26,8 +21,8 @@ import { SortDropdown } from '@/components/store/sort-dropdown';
 import { PageHeader } from '@/components/layout/page-header';
 import { Footer } from '@/components/layout/footer';
 import { SpecialBundles } from '@/components/store/special-bundles';
-import { foodData, specialFoodBundles } from '@/data/market-data';
-import { useStoreFilters } from '@/hooks';
+import { specialFoodBundles } from '@/data/market-data';
+import { useStoreFilters, useShopData } from '@/hooks';
 import { Button } from '@/components/ui/button';
 
 // Define types for our data model
@@ -60,19 +55,6 @@ interface Bundle {
 }
 
 // Type guards for data validation
-const isStoreItem = (item: any): item is StoreItem => {
-  return (
-    typeof item === 'object' &&
-    item !== null &&
-    typeof item.name === 'string' &&
-    typeof item.image === 'string' &&
-    typeof item.price === 'number' &&
-    typeof item.rarity === 'string' &&
-    typeof item.description === 'string' &&
-    typeof item.rating === 'number' &&
-    typeof item.id === 'string'
-  );
-};
 
 const isBundle = (bundle: any): bundle is Bundle => {
   return (
@@ -90,10 +72,6 @@ const isBundle = (bundle: any): bundle is Bundle => {
     bundle.items.every((item: any) => typeof item === 'string') &&
     typeof bundle.description === 'string'
   );
-};
-
-const isStoreItemArray = (data: any): data is StoreItem[] => {
-  return Array.isArray(data) && data.every(isStoreItem);
 };
 
 const isBundleArray = (data: any): data is Bundle[] => {
@@ -119,25 +97,27 @@ export default function StorePage() {
   } = useStoreFilters({ initialTab: 'fish' });
 
   const bubbles = useBubbles();
-  const { items, toggleCart } = useCartStore();
-  const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
+  const { toggleCart } = useCartStore();
+  const { cartSummary } = useShopData();
+
+  const { getShopItems } = useShopData();
 
   // Get the correct items based on the active tab
   const getTabItems = (): StoreItem[] => {
-    switch (activeTab) {
-      case 'fish':
-        return isStoreItemArray(fishData) ? fishData : [];
-      case 'food':
-        // In a real implementation, these would come from their own data files
-        return isStoreItemArray(foodData) ? foodData : [];
-      case 'decorations':
-        // In a real implementation, these would come from their own data files
-        return decorationItems;
-      case 'others':
-        return isStoreItemArray(miscItems) ? miscItems : [];
-      default:
-        return isStoreItemArray(fishData) ? fishData : [];
-    }
+    const shopItems = getShopItems(activeTab);
+    return shopItems.map((item: any) => ({
+      name: item.name,
+      image: item.image,
+      price: item.price,
+      rarity: item.rarity,
+      description: item.description,
+      rating: item.rating,
+      category: item.category,
+      discounted: item.discounted,
+      popularity: item.popularity,
+      createdAt: item.createdAt,
+      id: item.id,
+    }));
   };
 
   // Filter items based on all filters
@@ -269,9 +249,9 @@ export default function StorePage() {
               onClick={toggleCart}
             >
               <ShoppingCart className='mr-2' />
-              {itemCount > 0 && (
+              {cartSummary.itemCount > 0 && (
                 <span className='absolute flex items-center justify-center w-5 h-5 text-xs text-white bg-red-500 rounded-full -top-1 -right-1'>
-                  {itemCount}
+                  {cartSummary.itemCount}
                 </span>
               )}
             </Button>

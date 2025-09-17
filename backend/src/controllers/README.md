@@ -7,7 +7,7 @@ This directory contains all the HTTP request controllers for the Aqua Stark back
 ```
 controllers/
 ├── decorationController.js    # Decoration management operations
-├── fishController.js         # Fish state and care operations  
+├── fishController.js         # Fish state and care operations
 ├── minigameController.js     # Minigame sessions and leaderboards
 ├── playerController.js       # Player profile and preferences
 └── README.md                # This documentation file
@@ -16,9 +16,11 @@ controllers/
 ## 🎯 Controller Responsibilities
 
 ### **DecorationController** (`decorationController.js`)
+
 Manages decoration placement, positioning, and visibility within aquariums.
 
 **Key Features:**
+
 - Decoration state management
 - Position and rotation updates
 - Bulk operations for drag & drop
@@ -26,6 +28,7 @@ Manages decoration placement, positioning, and visibility within aquariums.
 - Player decoration statistics
 
 **Main Methods:**
+
 - `getDecorationState()` - Retrieve decoration details
 - `createDecorationState()` - Create new decoration instance
 - `placeDecoration()` - Position decoration in aquarium
@@ -33,15 +36,18 @@ Manages decoration placement, positioning, and visibility within aquariums.
 - `bulkUpdatePositions()` - Update multiple decorations at once
 
 ### **FishController** (`fishController.js`)
+
 Handles fish care, feeding, and state management operations.
 
 **Key Features:**
+
 - Fish happiness and health tracking
 - Feeding mechanics
 - Fish statistics and breeding (future)
 - Player fish collection management
 
 **Main Methods:**
+
 - `getFishState()` - Get current fish status
 - `updateFishHappiness()` - Modify fish happiness level
 - `feedFish()` - Feed fish with different food types
@@ -49,9 +55,11 @@ Handles fish care, feeding, and state management operations.
 - `breedFish()` - Fish breeding (placeholder for future)
 
 ### **MinigameController** (`minigameController.js`)
+
 Manages minigame sessions, scoring, and leaderboard functionality.
 
 **Key Features:**
+
 - Game session lifecycle management
 - Score tracking and XP calculation
 - Leaderboard generation
@@ -59,6 +67,7 @@ Manages minigame sessions, scoring, and leaderboard functionality.
 - Multiple game type support
 
 **Main Methods:**
+
 - `createGameSession()` - Start new game session
 - `endGameSession()` - Complete session with final score
 - `getGameLeaderboard()` - Get game-specific rankings
@@ -66,9 +75,11 @@ Manages minigame sessions, scoring, and leaderboard functionality.
 - `awardBonusXP()` - Grant achievement bonuses
 
 ### **PlayerController** (`playerController.js`)
+
 Manages player profiles, preferences, and account operations.
 
 **Key Features:**
+
 - Player profile management
 - Experience and currency tracking
 - User preferences storage
@@ -76,6 +87,7 @@ Manages player profiles, preferences, and account operations.
 - Authentication and authorization
 
 **Main Methods:**
+
 - `getPlayerProfile()` - Retrieve player information
 - `createPlayer()` - Register new player account
 - `updatePlayerExperience()` - Modify player XP
@@ -85,6 +97,7 @@ Manages player profiles, preferences, and account operations.
 ## 🛣️ Route Mapping
 
 ### Decoration Routes (`/api/v1/decorations`)
+
 ```javascript
 GET    /:decorationId                    # Get decoration state
 POST   /create                          # Create decoration state
@@ -100,6 +113,7 @@ PUT    /bulk/positions                  # Bulk position updates
 ```
 
 ### Fish Routes (`/api/v1/fish`)
+
 ```javascript
 GET    /:fishId                         # Get fish state
 GET    /:fishId/stats                   # Get fish statistics
@@ -110,6 +124,7 @@ GET    /player/:playerId                # Get player fish collection
 ```
 
 ### Minigame Routes (`/api/v1/minigames`)
+
 ```javascript
 POST   /sessions                        # Create game session
 GET    /sessions/:sessionId             # Get session details
@@ -122,6 +137,7 @@ GET    /types                           # Get available game types
 ```
 
 ### Player Routes (`/api/v1/players`)
+
 ```javascript
 GET    /profile/:playerId               # Get player profile
 GET    /wallet/:walletAddress           # Get player by wallet
@@ -138,12 +154,14 @@ GET    /:playerId/dashboard             # Get dashboard data
 ## 🔐 Authentication & Authorization
 
 ### Middleware Usage
+
 - **`simpleAuth`** - Basic JWT token validation
 - **`validateOwnership`** - Ensures resource ownership
 - **`AuthMiddleware.verifyToken`** - Full token verification
 - **`AuthMiddleware.rateLimit`** - Request rate limiting
 
 ### Security Features
+
 - JWT-based authentication
 - Resource ownership validation
 - Rate limiting protection
@@ -153,6 +171,7 @@ GET    /:playerId/dashboard             # Get dashboard data
 ## 📝 Usage Examples
 
 ### Creating a New Decoration
+
 ```javascript
 // POST /api/v1/decorations/create
 {
@@ -162,6 +181,7 @@ GET    /:playerId/dashboard             # Get dashboard data
 ```
 
 ### Feeding a Fish
+
 ```javascript
 // POST /api/v1/fish/fish_789/feed
 {
@@ -170,6 +190,7 @@ GET    /:playerId/dashboard             # Get dashboard data
 ```
 
 ### Starting a Minigame Session
+
 ```javascript
 // POST /api/v1/minigames/sessions
 {
@@ -178,6 +199,7 @@ GET    /:playerId/dashboard             # Get dashboard data
 ```
 
 ### Updating Player Experience
+
 ```javascript
 // PUT /api/v1/players/player_123/experience
 {
@@ -190,16 +212,18 @@ GET    /:playerId/dashboard             # Get dashboard data
 ### Testing Controller Functionality
 
 1. **Authentication Test**
+
    ```bash
    # Test without token (should fail)
    curl -X GET http://localhost:3001/api/v1/players/profile/player_123
-   
+
    # Test with valid token (should succeed)
    curl -X GET http://localhost:3001/api/v1/players/profile/player_123 \
         -H "Authorization: Bearer YOUR_JWT_TOKEN"
    ```
 
 2. **Ownership Validation Test**
+
    ```bash
    # Test accessing another player's resource (should fail)
    curl -X GET http://localhost:3001/api/v1/fish/fish_456 \
@@ -207,6 +231,7 @@ GET    /:playerId/dashboard             # Get dashboard data
    ```
 
 3. **Input Validation Test**
+
    ```bash
    # Test with invalid happiness level (should fail)
    curl -X PUT http://localhost:3001/api/v1/fish/fish_123/happiness \
@@ -228,10 +253,11 @@ GET    /:playerId/dashboard             # Get dashboard data
 ### Adding New Controllers
 
 1. **Create Controller File**
+
    ```javascript
    // controllers/newController.js
    import { NewService } from '../services/newService.js';
-   
+
    export class NewController {
      static async newMethod(req, res) {
        try {
@@ -246,12 +272,13 @@ GET    /:playerId/dashboard             # Get dashboard data
    ```
 
 2. **Create Corresponding Routes**
+
    ```javascript
    // routes/newRoutes.js
    import express from 'express';
    import { NewController } from '../controllers/newController.js';
    import { simpleAuth } from '../middleware/auth.js';
-   
+
    const router = express.Router();
    router.get('/endpoint', simpleAuth, NewController.newMethod);
    export default router;
@@ -325,6 +352,7 @@ GET    /:playerId/dashboard             # Get dashboard data
 ### Debug Mode
 
 Enable debug logging by setting environment variable:
+
 ```bash
 DEBUG=controllers:* npm run dev
 ```

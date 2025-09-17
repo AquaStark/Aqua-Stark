@@ -4,6 +4,7 @@ import {
   defaultGalleryFilters,
   useCommunityStore,
 } from '@/store/community';
+import { useDebounce } from './use-debounce';
 
 export const useCommunity = () => {
   const {
@@ -15,24 +16,38 @@ export const useCommunity = () => {
     setEventFilters,
   } = useCommunityStore();
 
+  // Debounce search queries for better performance
+  const { debouncedValue: debouncedGallerySearch } = useDebounce(
+    filters.search,
+    { delay: 300 }
+  );
+  const { debouncedValue: debouncedEventSearch } = useDebounce(
+    eventFilters.search,
+    { delay: 300 }
+  );
+
   const filteredAquariums = mockAquariums.filter(aquarium => {
     if (
-      filters.search &&
-      !aquarium.name.toLowerCase().includes(filters.search.toLowerCase())
+      debouncedGallerySearch &&
+      !aquarium.name
+        .toLowerCase()
+        .includes(debouncedGallerySearch.toLowerCase())
     ) {
       return false;
     }
     if (
       !(aquarium.likes > filters.minLikes && aquarium.likes < filters.maxLikes)
-    )
+    ) {
       return false;
+    }
     if (
       !(
         aquarium.comments > filters.minComments &&
         aquarium.comments < filters.maxComments
       )
-    )
+    ) {
       return false;
+    }
     return true;
   });
 
@@ -51,8 +66,12 @@ export const useCommunity = () => {
         return a.likes - b.likes;
       }
       case 'recent': {
-        if (!a.timeStamp) return 1;
-        if (!b.timeStamp) return -1;
+        if (!a.timeStamp) {
+          return 1;
+        }
+        if (!b.timeStamp) {
+          return -1;
+        }
         const aDate = new Date(a.timeStamp);
         const bDate = new Date(b.timeStamp);
         return bDate.getTime() - aDate.getTime();
@@ -64,11 +83,11 @@ export const useCommunity = () => {
 
   const filteredEvents = mockEvents.filter(event => {
     if (
-      eventFilters.search &&
-      !event.name.toLowerCase().includes(eventFilters.search.toLowerCase()) &&
+      debouncedEventSearch &&
+      !event.name.toLowerCase().includes(debouncedEventSearch.toLowerCase()) &&
       !event.description
         .toLowerCase()
-        .includes(eventFilters.search.toLowerCase())
+        .includes(debouncedEventSearch.toLowerCase())
     ) {
       return false;
     }
@@ -77,10 +96,12 @@ export const useCommunity = () => {
         event.participants > eventFilters.minParticipants &&
         event.participants < eventFilters.maxParticipants
       )
-    )
+    ) {
       return false;
-    if (eventFilters.status !== 'all' && event.status !== eventFilters.status)
+    }
+    if (eventFilters.status !== 'all' && event.status !== eventFilters.status) {
       return false;
+    }
     return true;
   });
 
@@ -93,8 +114,12 @@ export const useCommunity = () => {
         return b.participants - a.participants;
       }
       case 'recent': {
-        if (!a.endDate) return 1;
-        if (!b.endDate) return -1;
+        if (!a.endDate) {
+          return 1;
+        }
+        if (!b.endDate) {
+          return -1;
+        }
         const aDate = new Date(a.endDate);
         const bDate = new Date(b.endDate);
         return bDate.getTime() - aDate.getTime();

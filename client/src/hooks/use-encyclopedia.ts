@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { fishSpecies } from '@/data/encyclopedia-data';
 import type { FishSpecies } from '@/data/encyclopedia-data';
+import { useDebounce } from './use-debounce';
 
 export interface EncyclopediaFilters {
   search: string;
@@ -29,11 +30,16 @@ export const useEncyclopedia = () => {
     sort: 'name',
   });
 
+  // Debounce search query for better performance
+  const { debouncedValue: debouncedSearch } = useDebounce(filters.search, {
+    delay: 300,
+  });
+
   const filteredFish = fishSpecies.filter(fish => {
     if (
-      filters.search &&
-      !fish.name.toLowerCase().includes(filters.search.toLowerCase()) &&
-      !fish.scientificName.toLowerCase().includes(filters.search.toLowerCase())
+      debouncedSearch &&
+      !fish.name.toLowerCase().includes(debouncedSearch.toLowerCase()) &&
+      !fish.scientificName.toLowerCase().includes(debouncedSearch.toLowerCase())
     ) {
       return false;
     }

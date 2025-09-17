@@ -7,12 +7,14 @@ This document describes the CI/CD workflow implemented for the Aqua Stark backen
 ## Workflow File
 
 The workflow is defined in `.github/workflows/backend.yml` and is triggered on:
+
 - Push to `main` branch with changes in `backend/**`
 - Pull requests to `main` branch with changes in `backend/**`
 
 ## Workflow Steps
 
 ### 1. Environment Setup
+
 - **Node.js 20**: Latest LTS version for optimal performance and security
 - **Working Directory**: `./backend` for all operations
 - **Cache**: npm cache for faster dependency installation
@@ -20,11 +22,13 @@ The workflow is defined in `.github/workflows/backend.yml` and is triggered on:
 ### 2. Code Quality Checks
 
 #### Formatting Check
+
 - Uses Prettier to ensure consistent code formatting
 - Command: `npm run format:check`
 - Validates that all code follows the project's formatting standards
 
 #### Linting
+
 - Uses ESLint to check code quality and potential issues
 - Command: `npm run lint`
 - Enforces coding standards and catches common errors
@@ -32,11 +36,13 @@ The workflow is defined in `.github/workflows/backend.yml` and is triggered on:
 ### 3. Security Analysis
 
 #### Dependency Audit
+
 - Runs `npm audit --audit-level=moderate`
 - Identifies known vulnerabilities in dependencies
 - Fails the build for moderate and higher severity issues
 
 #### High Severity Vulnerability Check
+
 - Additional check for high severity vulnerabilities
 - Provides warnings without failing the build
 - Allows for manual review and decision making
@@ -44,11 +50,13 @@ The workflow is defined in `.github/workflows/backend.yml` and is triggered on:
 ### 4. Testing
 
 #### Unit Tests
+
 - Runs Jest test suite
 - Command: `npm test`
 - Ensures all functionality works as expected
 
 #### Coverage Report
+
 - Generates test coverage reports
 - Command: `npm run test:coverage`
 - Uploads coverage data to Codecov for tracking
@@ -56,6 +64,7 @@ The workflow is defined in `.github/workflows/backend.yml` and is triggered on:
 ### 5. Database Migration Validation
 
 #### Migration Files Check
+
 - Validates Supabase migration files
 - Checks for proper SQL syntax
 - Ensures migrations contain standard SQL operations
@@ -64,10 +73,12 @@ The workflow is defined in `.github/workflows/backend.yml` and is triggered on:
 ### 6. Build Verification
 
 #### Entry Point Validation
+
 - Verifies that `src/index.js` exists
 - Ensures the main application entry point is present
 
 #### Dependency Validation
+
 - Checks that all required dependencies are present in `package.json`
 - Required dependencies:
   - express
@@ -84,6 +95,7 @@ The workflow is defined in `.github/workflows/backend.yml` and is triggered on:
 ### 7. Environment Configuration
 
 #### Environment Variables Documentation
+
 - Validates that `env.example` file exists
 - Checks for documentation of required environment variables:
   - DATABASE_URL
@@ -94,6 +106,7 @@ The workflow is defined in `.github/workflows/backend.yml` and is triggered on:
 ### 8. Code Quality Analysis
 
 #### TODO/FIXME Detection
+
 - Scans for TODO, FIXME, and HACK comments
 - Provides warnings for incomplete work
 - Helps maintain code quality standards
@@ -117,20 +130,24 @@ The following npm scripts were added to support the CI/CD workflow:
 ## Configuration Files
 
 ### .prettierrc
+
 - Prettier configuration for consistent code formatting
 - Matches the project's coding standards
 
 ### .prettierignore
+
 - Excludes unnecessary files from formatting
 - Improves workflow performance
 
 ### .eslintrc.cjs
+
 - ESLint configuration for code quality enforcement
 - Customized for Node.js backend development
 
 ## Success Criteria
 
 The workflow is considered successful when:
+
 - ✅ All code quality checks pass
 - ✅ Security audits show no critical vulnerabilities
 - ✅ All tests pass with coverage
@@ -171,6 +188,7 @@ npm run audit
 ## Integration with Existing Workflows
 
 This backend workflow complements the existing workflows:
+
 - **frontend.yml**: Frontend-specific CI/CD
 - **contracts.yml**: Smart contract validation
 - **general.yml**: General project checks
@@ -188,6 +206,7 @@ The backend workflow is designed to run independently and efficiently, only trig
 ## Future Enhancements
 
 Potential improvements for the workflow:
+
 1. Integration with Supabase CLI for migration validation
 2. Docker image building and testing
 3. Performance testing
