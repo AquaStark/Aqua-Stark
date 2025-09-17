@@ -23,12 +23,12 @@ export function ComingSoonModal({
   closable = false,
 }: ComingSoonModalProps) {
   const navigate = useNavigate();
-  
+
   // Use the unified modal hook for state management
   const { isVisible, close } = useModal({
     closable,
     onClose,
-    animationDuration: 300
+    animationDuration: 300,
   });
 
   // Sync external isOpen prop with internal state

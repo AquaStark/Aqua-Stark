@@ -28,7 +28,7 @@ export function BidModal() {
   // Use the unified modal hook
   const { open, close, isOpen, data } = useModal({
     closable: true,
-    onOpen: (data) => {
+    onOpen: data => {
       // Handle modal opening
       console.log('Bid modal opened with data:', data);
     },
@@ -36,7 +36,7 @@ export function BidModal() {
       // Handle modal closing
       setShowBidModal(false);
       setError('');
-    }
+    },
   });
 
   // Sync with store state
@@ -159,11 +159,7 @@ export function BidModal() {
         </div>
 
         <DialogFooter>
-          <Button
-            variant='outline'
-            onClick={close}
-            className='text-black'
-          >
+          <Button variant='outline' onClick={close} className='text-black'>
             Cancel
           </Button>
           <Button

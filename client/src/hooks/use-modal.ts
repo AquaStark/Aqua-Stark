@@ -5,7 +5,7 @@ import { useState, useCallback, useEffect } from 'react';
  * @description
  * Unified hook for managing modal state and behavior across the application.
  * Provides consistent modal management with validation, persistence, and accessibility features.
- * 
+ *
  * @category Hooks
  */
 
@@ -51,15 +51,15 @@ export interface UseModalReturn {
 
 /**
  * Unified hook for managing modal state and behavior
- * 
+ *
  * @param config - Modal configuration options
  * @returns Modal state and control functions
- * 
+ *
  * @example
  * ```tsx
  * // Basic usage
  * const { open, close, isOpen } = useModal();
- * 
+ *
  * // With validation and persistence
  * const { open, close, isOpen, data } = useModal({
  *   closable: true,
@@ -69,7 +69,7 @@ export interface UseModalReturn {
  *   onOpen: (data) => console.log('Modal opened with:', data),
  *   onClose: () => console.log('Modal closed')
  * });
- * 
+ *
  * // Usage in component
  * return (
  *   <div>
@@ -87,7 +87,7 @@ export function useModal(config: ModalConfig = {}): UseModalReturn {
     validator,
     onOpen,
     onClose,
-    animationDuration = 300
+    animationDuration = 300,
   } = config;
 
   // Validate configuration
@@ -105,7 +105,7 @@ export function useModal(config: ModalConfig = {}): UseModalReturn {
           return {
             isOpen: parsed.isOpen || false,
             isVisible: parsed.isVisible || false,
-            data: parsed.data
+            data: parsed.data,
           };
         }
       } catch (error) {
@@ -115,7 +115,7 @@ export function useModal(config: ModalConfig = {}): UseModalReturn {
     return {
       isOpen: false,
       isVisible: false,
-      data: undefined
+      data: undefined,
     };
   });
 
@@ -160,22 +160,25 @@ export function useModal(config: ModalConfig = {}): UseModalReturn {
   /**
    * Open the modal with optional data
    */
-  const open = useCallback((data?: any) => {
-    // Run validation if provided
-    if (validator && !validator(data)) {
-      console.warn('useModal: Validation failed, modal not opened');
-      return;
-    }
+  const open = useCallback(
+    (data?: any) => {
+      // Run validation if provided
+      if (validator && !validator(data)) {
+        console.warn('useModal: Validation failed, modal not opened');
+        return;
+      }
 
-    setState(prev => ({
-      ...prev,
-      isOpen: true,
-      isVisible: true,
-      data
-    }));
+      setState(prev => ({
+        ...prev,
+        isOpen: true,
+        isVisible: true,
+        data,
+      }));
 
-    onOpen?.(data);
-  }, [validator, onOpen]);
+      onOpen?.(data);
+    },
+    [validator, onOpen]
+  );
 
   /**
    * Close the modal
@@ -183,7 +186,7 @@ export function useModal(config: ModalConfig = {}): UseModalReturn {
   const close = useCallback(() => {
     setState(prev => ({
       ...prev,
-      isOpen: false
+      isOpen: false,
     }));
 
     // Handle animation timing
@@ -191,7 +194,7 @@ export function useModal(config: ModalConfig = {}): UseModalReturn {
       setState(prev => ({
         ...prev,
         isVisible: false,
-        data: undefined
+        data: undefined,
       }));
     }, animationDuration);
 
@@ -201,13 +204,16 @@ export function useModal(config: ModalConfig = {}): UseModalReturn {
   /**
    * Toggle modal state
    */
-  const toggle = useCallback((data?: any) => {
-    if (state.isOpen) {
-      close();
-    } else {
-      open(data);
-    }
-  }, [state.isOpen, open, close]);
+  const toggle = useCallback(
+    (data?: any) => {
+      if (state.isOpen) {
+        close();
+      } else {
+        open(data);
+      }
+    },
+    [state.isOpen, open, close]
+  );
 
   return {
     state,
@@ -216,24 +222,24 @@ export function useModal(config: ModalConfig = {}): UseModalReturn {
     toggle,
     isOpen: state.isOpen,
     isVisible: state.isVisible,
-    data: state.data
+    data: state.data,
   };
 }
 
 /**
  * Hook for managing multiple modals
- * 
+ *
  * @param modalIds - Array of modal identifiers
  * @param config - Default configuration for all modals
  * @returns Object with modal controls for each ID
- * 
+ *
  * @example
  * ```tsx
  * const modals = useMultipleModals(['user', 'settings', 'help'], {
  *   closable: true,
  *   persistent: true
  * });
- * 
+ *
  * // Usage
  * modals.user.open({ userId: 123 });
  * modals.settings.close();
@@ -250,7 +256,9 @@ export function useMultipleModals(
     // eslint-disable-next-line react-hooks/rules-of-hooks
     modals[id] = useModal({
       ...config,
-      storageKey: config.persistent ? `${config.storageKey || 'modal'}-${id}` : undefined
+      storageKey: config.persistent
+        ? `${config.storageKey || 'modal'}-${id}`
+        : undefined,
     });
   });
 
@@ -259,10 +267,10 @@ export function useMultipleModals(
 
 /**
  * Hook for managing modal with confirmation
- * 
+ *
  * @param config - Modal configuration
  * @returns Modal controls with confirmation methods
- * 
+ *
  * @example
  * ```tsx
  * const { open, close, confirm, isOpen } = useConfirmModal({
@@ -271,17 +279,22 @@ export function useMultipleModals(
  * });
  * ```
  */
-export function useConfirmModal(config: ModalConfig & {
-  onConfirm?: (data?: any) => void;
-  onCancel?: () => void;
-} = {}) {
+export function useConfirmModal(
+  config: ModalConfig & {
+    onConfirm?: (data?: any) => void;
+    onCancel?: () => void;
+  } = {}
+) {
   const { onConfirm, onCancel, ...modalConfig } = config;
   const modal = useModal(modalConfig);
 
-  const confirm = useCallback((data?: any) => {
-    onConfirm?.(data);
-    modal.close();
-  }, [onConfirm, modal]);
+  const confirm = useCallback(
+    (data?: any) => {
+      onConfirm?.(data);
+      modal.close();
+    },
+    [onConfirm, modal]
+  );
 
   const cancel = useCallback(() => {
     onCancel?.();
@@ -291,6 +304,6 @@ export function useConfirmModal(config: ModalConfig & {
   return {
     ...modal,
     confirm,
-    cancel
+    cancel,
   };
 }

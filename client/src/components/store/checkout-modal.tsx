@@ -11,7 +11,7 @@ export function CheckoutModal() {
   // Use the unified modal hook
   const { isVisible } = useModal({
     closable: false,
-    animationDuration: 300
+    animationDuration: 300,
   });
 
   const subtotal = items.reduce(

@@ -21,7 +21,7 @@ export function OfferModal() {
   // Use the unified modal hook
   const { open, close, isOpen, data } = useModal({
     closable: true,
-    onOpen: (data) => {
+    onOpen: data => {
       // Handle modal opening
       console.log('Offer modal opened with data:', data);
     },
@@ -29,7 +29,7 @@ export function OfferModal() {
       // Handle modal closing
       setShowOfferModal(false);
       setSelectedOffer(null);
-    }
+    },
   });
 
   // Sync with store state
@@ -154,11 +154,7 @@ export function OfferModal() {
         </div>
 
         <DialogFooter>
-          <Button
-            variant='outline'
-            onClick={close}
-            className='text-black'
-          >
+          <Button variant='outline' onClick={close} className='text-black'>
             Cancel
           </Button>
           <Button
