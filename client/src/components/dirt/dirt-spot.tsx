@@ -198,9 +198,7 @@ export function DirtSpot({
       ref={spotRef}
       className={`absolute transform-gpu transition-all duration-300 select-none ${
         isSpongeMode ? 'cursor-pointer' : 'cursor-default'
-      } ${
-        isRemoving ? 'animate-pulse' : isHovered ? 'scale-105' : ''
-      } ${
+      } ${isRemoving ? 'animate-pulse' : isHovered ? 'scale-105' : ''} ${
         isSpongeMode && isHovered ? 'ring-2 ring-blue-400 ring-opacity-50' : ''
       } ${className}`}
       style={{
