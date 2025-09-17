@@ -9,7 +9,7 @@ export function CheckoutModal() {
     useCartStore();
 
   // Use the unified modal hook
-  const { isVisible } = useModal({
+  useModal({
     closable: false,
     animationDuration: 300,
   });
