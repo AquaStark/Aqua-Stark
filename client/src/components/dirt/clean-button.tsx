@@ -1,7 +1,4 @@
-import { 
-  Sparkles, 
-  Loader2
-} from 'lucide-react';
+import { Sparkles, Loader2 } from 'lucide-react';
 
 interface CleanButtonProps {
   dirtLevel: number;
@@ -38,8 +35,8 @@ export function CleanButton({
   };
 
   const getButtonIcon = () => {
-    if (isLoading) return <Loader2 className="h-5 w-5 animate-spin" />;
-    return <Sparkles className="h-5 w-5" />;
+    if (isLoading) return <Loader2 className='h-5 w-5 animate-spin' />;
+    return <Sparkles className='h-5 w-5' />;
   };
 
   return (
@@ -51,13 +48,18 @@ export function CleanButton({
       <div className='flex items-center justify-center gap-2 w-full h-full'>
         {getButtonIcon()}
       </div>
-      
+
       {/* Tooltip */}
       <div className='absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50'>
-        {isLoading ? 'Loading...' : 
-         isCleaningMode ? 'Sponge Mode Active' : 
-         needsCleaning ? 'Needs Cleaning' : 
-         isDirty ? 'Clean Aquarium' : 'Clean'}
+        {isLoading
+          ? 'Loading...'
+          : isCleaningMode
+            ? 'Sponge Mode Active'
+            : needsCleaning
+              ? 'Needs Cleaning'
+              : isDirty
+                ? 'Clean Aquarium'
+                : 'Clean'}
         {dirtLevel > 0 && ` (${Math.round(dirtLevel)}%)`}
       </div>
     </button>
