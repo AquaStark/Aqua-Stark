@@ -2,10 +2,17 @@ import { motion } from 'framer-motion';
 import { Loader2, CheckCircle, ArrowRight, Coins } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCartStore } from '@/store/use-cart-store';
+import { useModal } from '@/hooks';
 
 export function CheckoutModal() {
   const { checkoutStep, setCheckoutStep, processCheckout, items } =
     useCartStore();
+
+  // Use the unified modal hook
+  const { isVisible } = useModal({
+    closable: false,
+    animationDuration: 300
+  });
 
   const subtotal = items.reduce(
     (acc, item) => acc + item.price * item.quantity,
