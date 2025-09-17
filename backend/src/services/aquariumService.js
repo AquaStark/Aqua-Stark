@@ -1,9 +1,40 @@
 import { supabase, supabaseAdmin, TABLES } from '../config/supabase.js';
 import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 
-// Aquarium service for managing aquarium states and operations
+/**
+ * Aquarium Service for managing aquarium states and operations
+ *
+ * This service handles all aquarium-related operations including state management,
+ * environmental controls, fish capacity management, and health monitoring.
+ * It uses Redis caching for performance optimization and Supabase for data persistence.
+ *
+ * @class AquariumService
+ * @author Aqua Stark Team
+ * @version 1.0.0
+ * @since 2025-09-16
+ */
 export class AquariumService {
-  // Get aquarium state from cache or database
+  /**
+   * Get aquarium state from cache or database
+   *
+   * Retrieves the current state of an aquarium, including environmental conditions,
+   * fish count, and other aquarium metrics. Uses Redis cache for performance,
+   * falling back to database if cache miss occurs.
+   *
+   * @static
+   * @async
+   * @param {string} aquariumId - The unique identifier of the aquarium
+   * @returns {Promise<Object|null>} Aquarium state object or null if not found
+   * @throws {Error} When database query fails or aquarium ID is invalid
+   *
+   * @example
+   * ```javascript
+   * // Get aquarium state
+   * const aquariumState = await AquariumService.getAquariumState('aqua_123');
+   * console.log(aquariumState.water_temperature); // 25.5
+   * console.log(aquariumState.fish_count); // 3
+   * ```
+   */
   static async getAquariumState(aquariumId) {
     try {
       // Try to get from cache first
@@ -39,7 +70,26 @@ export class AquariumService {
     }
   }
 
-  // Update aquarium water temperature
+  /**
+   * Update aquarium water temperature
+   *
+   * Sets the water temperature for an aquarium and updates the cache.
+   * Temperature changes affect fish happiness and health.
+   *
+   * @static
+   * @async
+   * @param {string} aquariumId - The unique identifier of the aquarium
+   * @param {number} temperature - Temperature in Celsius (recommended: 20-30°C)
+   * @returns {Promise<Object>} Updated aquarium state object
+   * @throws {Error} When database update fails or aquarium ID is invalid
+   *
+   * @example
+   * ```javascript
+   * // Set optimal temperature for tropical fish
+   * const updatedAquarium = await AquariumService.updateWaterTemperature('aqua_123', 26.5);
+   * console.log(`Temperature set to ${updatedAquarium.water_temperature}°C`);
+   * ```
+   */
   static async updateWaterTemperature(aquariumId, temperature) {
     try {
       const { data, error } = await supabaseAdmin
@@ -68,7 +118,26 @@ export class AquariumService {
     }
   }
 
-  // Update aquarium lighting level
+  /**
+   * Update aquarium lighting level
+   *
+   * Adjusts the lighting intensity for an aquarium. Proper lighting is essential
+   * for fish health and plant growth.
+   *
+   * @static
+   * @async
+   * @param {string} aquariumId - The unique identifier of the aquarium
+   * @param {number} lightingLevel - Lighting level (0-100, where 100 is maximum brightness)
+   * @returns {Promise<Object>} Updated aquarium state object
+   * @throws {Error} When database update fails or aquarium ID is invalid
+   *
+   * @example
+   * ```javascript
+   * // Set moderate lighting for the aquarium
+   * const updatedAquarium = await AquariumService.updateLightingLevel('aqua_123', 75);
+   * console.log(`Lighting set to ${updatedAquarium.lighting_level}%`);
+   * ```
+   */
   static async updateLightingLevel(aquariumId, lightingLevel) {
     try {
       const { data, error } = await supabaseAdmin
@@ -97,7 +166,25 @@ export class AquariumService {
     }
   }
 
-  // Clean aquarium and reduce pollution
+  /**
+   * Clean aquarium and reduce pollution
+   *
+   * Performs a cleaning operation that reduces pollution level by 50 points.
+   * Pollution affects fish health and overall aquarium environment.
+   *
+   * @static
+   * @async
+   * @param {string} aquariumId - The unique identifier of the aquarium
+   * @returns {Promise<Object>} Updated aquarium state object with reduced pollution
+   * @throws {Error} When database update fails or aquarium ID is invalid
+   *
+   * @example
+   * ```javascript
+   * // Clean the aquarium
+   * const cleanedAquarium = await AquariumService.cleanAquarium('aqua_123');
+   * console.log(`Pollution reduced to ${cleanedAquarium.pollution_level}%`);
+   * ```
+   */
   static async cleanAquarium(aquariumId) {
     try {
       const currentState = await this.getAquariumState(aquariumId);
@@ -133,7 +220,26 @@ export class AquariumService {
     }
   }
 
-  // Get all aquariums for a player
+  /**
+   * Get all aquariums for a player
+   *
+   * Retrieves all aquariums owned by a specific player, including their states.
+   * Useful for displaying player's aquarium collection.
+   *
+   * @static
+   * @async
+   * @param {string} walletAddress - The player's wallet address
+   * @returns {Promise<Array>} Array of aquarium objects with states
+   * @throws {Error} When database query fails or wallet address is invalid
+   *
+   * @example
+   * ```javascript
+   * // Get all player aquariums
+   * const aquariums = await AquariumService.getPlayerAquariums('0x123...');
+   * console.log(`Player has ${aquariums.length} aquariums`);
+   * aquariums.forEach(aqua => console.log(`Aquarium ${aqua.aquarium_id} has ${aqua.fish_count} fish`));
+   * ```
+   */
   static async getPlayerAquariums(walletAddress) {
     try {
       const { data, error } = await supabase
@@ -154,7 +260,26 @@ export class AquariumService {
     }
   }
 
-  // Add fish to aquarium
+  /**
+   * Add fish to aquarium
+   *
+   * Increments the fish count in an aquarium. Checks capacity limits before
+   * adding to prevent overcrowding.
+   *
+   * @static
+   * @async
+   * @param {string} aquariumId - The unique identifier of the aquarium
+   * @param {string} _fishId - The fish ID (currently unused but reserved for future use)
+   * @returns {Promise<Object>} Updated aquarium state object
+   * @throws {Error} When aquarium is at maximum capacity or database update fails
+   *
+   * @example
+   * ```javascript
+   * // Add a fish to aquarium
+   * const updatedAquarium = await AquariumService.addFishToAquarium('aqua_123', 'fish_456');
+   * console.log(`Aquarium now has ${updatedAquarium.fish_count} fish`);
+   * ```
+   */
   static async addFishToAquarium(aquariumId, _fishId) {
     try {
       // Check aquarium capacity
@@ -193,7 +318,25 @@ export class AquariumService {
     }
   }
 
-  // Remove fish from aquarium
+  /**
+   * Remove fish from aquarium
+   *
+   * Decrements the fish count in an aquarium. Prevents negative fish counts.
+   *
+   * @static
+   * @async
+   * @param {string} aquariumId - The unique identifier of the aquarium
+   * @param {string} _fishId - The fish ID (currently unused but reserved for future use)
+   * @returns {Promise<Object>} Updated aquarium state object
+   * @throws {Error} When no fish to remove or database update fails
+   *
+   * @example
+   * ```javascript
+   * // Remove a fish from aquarium
+   * const updatedAquarium = await AquariumService.removeFishFromAquarium('aqua_123', 'fish_456');
+   * console.log(`Aquarium now has ${updatedAquarium.fish_count} fish`);
+   * ```
+   */
   static async removeFishFromAquarium(aquariumId, _fishId) {
     try {
       const aquarium = await this.getAquariumState(aquariumId);
@@ -230,7 +373,26 @@ export class AquariumService {
     }
   }
 
-  // Get aquarium health score based on various factors
+  /**
+   * Get aquarium health score based on various factors
+   *
+   * Calculates a comprehensive health score (0-100) based on environmental
+   * conditions including temperature, pollution, lighting, and fish capacity.
+   *
+   * @static
+   * @async
+   * @param {string} aquariumId - The unique identifier of the aquarium
+   * @returns {Promise<number>} Health score between 0-100 (100 being perfect)
+   *
+   * @example
+   * ```javascript
+   * // Check aquarium health
+   * const healthScore = await AquariumService.getAquariumHealthScore('aqua_123');
+   * if (healthScore < 50) {
+   *   console.log('Aquarium needs attention!');
+   * }
+   * ```
+   */
   static async getAquariumHealthScore(aquariumId) {
     try {
       const state = await this.getAquariumState(aquariumId);
