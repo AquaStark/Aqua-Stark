@@ -291,12 +291,12 @@ export default function GamePage() {
             ? (cairoSpecies as keyof typeof speciesToFishData)
             : null;
       }
-        if (!speciesKey) {
-          // Use different species based on fish ID (1-11)
-          const fishId = mockFish.id ? bigIntToNumber(mockFish.id) : index;
-          const speciesNumber = (fishId % 11) + 1; // Cycle through Fish1 to Fish11
-          speciesKey = `Fish${speciesNumber}` as keyof typeof speciesToFishData;
-        }
+      if (!speciesKey) {
+        // Use different species based on fish ID (1-11)
+        const fishId = mockFish.id ? bigIntToNumber(mockFish.id) : index;
+        const speciesNumber = (fishId % 11) + 1; // Cycle through Fish1 to Fish11
+        speciesKey = `Fish${speciesNumber}` as keyof typeof speciesToFishData;
+      }
 
       const data = speciesKey ? speciesToFishData[speciesKey] : null;
       if (!data) return null;
@@ -457,7 +457,7 @@ export default function GamePage() {
                 needsCleaning={dirtSystem.needsCleaning}
                 onToggleCleaningMode={handleToggleCleaningMode}
                 isCleaningMode={isCleaningMode}
-                className="w-12 h-12"
+                className='w-12 h-12'
               />
             </div>
 
@@ -553,7 +553,6 @@ export default function GamePage() {
         </motion.button>
       )}
 
-
       {/* Dirt Overlay */}
       <DirtOverlay
         spots={dirtSystem.spots}
@@ -562,7 +561,6 @@ export default function GamePage() {
         isSpongeMode={isCleaningMode}
         isDebugMode={false}
       />
-
     </div>
   );
 }
