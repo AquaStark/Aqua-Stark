@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAccount } from '@starknet-react/core';
-import { useGameActions, useNotifications } from '@/hooks';
+import { useGameActions, useNotifications, useApi } from '@/hooks';
 
 export function AquariumActions() {
   const { isConnected } = useAccount();
@@ -13,7 +13,9 @@ export function AquariumActions() {
   } = useGameActions();
   const { success, error } = useNotifications();
 
-  const [isLoading, setIsLoading] = useState(false);
+  // Use the unified API hook instead of local loading state
+  const { loading: apiLoading } = useApi();
+
   const [fishIds] = useState(['1', '2', '3']); // Example fish IDs
 
   if (!isConnected) {
@@ -33,15 +35,12 @@ export function AquariumActions() {
     action: () => Promise<any>,
     actionName: string
   ) => {
-    setIsLoading(true);
     try {
       await action();
       success(`${actionName} completed successfully!`);
     } catch (err) {
       console.error(`Error in ${actionName}:`, err);
       error(`Failed to ${actionName.toLowerCase()}`);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -61,7 +60,7 @@ export function AquariumActions() {
 
           <button
             onClick={() => handleAction(() => feedFish('1'), 'Feed Fish')}
-            disabled={isLoading}
+            disabled={apiLoading}
             className='w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors disabled:opacity-50'
           >
             🐟 Feed Fish
@@ -71,7 +70,7 @@ export function AquariumActions() {
             onClick={() =>
               handleAction(() => cleanAquarium(), 'Clean Aquarium')
             }
-            disabled={isLoading}
+            disabled={apiLoading}
             className='w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors disabled:opacity-50'
           >
             🧹 Clean Aquarium
@@ -81,7 +80,7 @@ export function AquariumActions() {
             onClick={() =>
               handleAction(() => collectRewards(), 'Collect Rewards')
             }
-            disabled={isLoading}
+            disabled={apiLoading}
             className='w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg transition-colors disabled:opacity-50'
           >
             💰 Collect Rewards
@@ -96,7 +95,7 @@ export function AquariumActions() {
             onClick={() =>
               handleAction(() => dailyMaintenance(fishIds), 'Daily Maintenance')
             }
-            disabled={isLoading}
+            disabled={apiLoading}
             className='w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-2 px-4 rounded-lg transition-colors disabled:opacity-50'
           >
             ⚡ Daily Maintenance (Batch)
@@ -106,7 +105,7 @@ export function AquariumActions() {
             onClick={() =>
               handleAction(() => upgradeAquarium('filter'), 'Upgrade Filter')
             }
-            disabled={isLoading}
+            disabled={apiLoading}
             className='w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition-colors disabled:opacity-50'
           >
             🔧 Upgrade Filter
@@ -116,7 +115,7 @@ export function AquariumActions() {
             onClick={() =>
               handleAction(() => upgradeAquarium('size'), 'Upgrade Size')
             }
-            disabled={isLoading}
+            disabled={apiLoading}
             className='w-full bg-teal-600 hover:bg-teal-700 text-white py-2 px-4 rounded-lg transition-colors disabled:opacity-50'
           >
             📏 Upgrade Size
@@ -136,7 +135,7 @@ export function AquariumActions() {
       </div>
 
       {/* Estado de carga */}
-      {isLoading && (
+      {apiLoading && (
         <div className='mt-4 flex items-center justify-center'>
           <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-white'></div>
           <span className='ml-2 text-white'>Processing transaction...</span>
