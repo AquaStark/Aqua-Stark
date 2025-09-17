@@ -360,7 +360,7 @@ export default function GamePage() {
           fish={displayFish}
           fullFishList={fullFishList}
           feedingSystem={feedingSystem}
-          cleanlinessScore={dirtSystem.cleanlinessScore}
+          cleanlinessScore={dirtSystem.dirtLevel}
         />
       </motion.div>
 
