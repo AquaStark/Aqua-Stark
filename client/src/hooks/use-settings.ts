@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocalStorage } from '@/hooks';
 import { SettingsValue } from '@/types/player-types';
 
 export interface SettingsState {
@@ -14,6 +15,7 @@ export interface SettingsState {
 const SETTINGS_STORAGE_KEY = 'aqua-stark-settings';
 
 export const useSettings = () => {
+  const { get, set } = useLocalStorage('aqua-');
   const [settings, setSettings] = useState<SettingsState>({
     sound_enabled: true,
     animations_enabled: true,
@@ -28,11 +30,14 @@ export const useSettings = () => {
   useEffect(() => {
     try {
       const timeout = setTimeout(() => {
-        const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
-        if (storedSettings) {
-          const parsedSettings: SettingsState = JSON.parse(storedSettings);
-          setSettings(parsedSettings);
-        }
+        const parsedSettings = get<SettingsState>(SETTINGS_STORAGE_KEY, {
+          parser: (raw: string) => JSON.parse(raw) as SettingsState,
+          validate: (v: unknown): v is SettingsState =>
+            !!v &&
+            typeof v === 'object' &&
+            Array.isArray((v as SettingsState).tutorial_completed_steps),
+        });
+        if (parsedSettings) setSettings(parsedSettings);
         setIsLoading(false);
       }, 500);
 
@@ -56,7 +61,7 @@ export const useSettings = () => {
 
       const timeout = setTimeout(() => {
         setSettings(newSettings);
-        localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(newSettings));
+        set(SETTINGS_STORAGE_KEY, newSettings, { forceJsonStringify: true });
         setIsLoading(false);
       }, 300);
 
