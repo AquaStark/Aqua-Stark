@@ -4,7 +4,7 @@ import BreakdownSection from '@/components/encyclopedia/collection-stats/breakdo
 import RecentDiscoveries from '@/components/encyclopedia/collection-stats/recent-discoveries';
 import CollectionAchievements from '@/components/encyclopedia/collection-stats/collection-achievements';
 
-export default function EncyclopediaStats() {
+export function EncyclopediaStats() {
   const { totalSpecies, discoveredSpecies } = useEncyclopedia();
 
   const progressData = {

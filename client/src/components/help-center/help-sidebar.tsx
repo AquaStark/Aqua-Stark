@@ -10,7 +10,7 @@ interface HelpCenterSidebarProps {
   onFeaturedTopicClick: (categoryId: string, topicId: string) => void;
 }
 
-export default function HelpCenterSidebar({
+export function HelpCenterSidebar({
   categories,
   featuredTopics,
   activeCategory,

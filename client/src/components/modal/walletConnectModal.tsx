@@ -8,7 +8,7 @@ interface WalletModalProps {
   onClose: () => void;
 }
 
-const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
+export const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -117,5 +117,3 @@ const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
     </div>
   );
 };
-
-export default WalletModal;

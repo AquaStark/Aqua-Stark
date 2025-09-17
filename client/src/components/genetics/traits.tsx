@@ -1,7 +1,7 @@
 import { Card } from '@/components/ui/card';
 import { specialTraits } from '@/data/genetic-combination-data';
 
-const Traits = () => {
+export const Traits = () => {
   return (
     <Card>
       <div className='flex items-center mb-4'>
@@ -36,5 +36,3 @@ const Traits = () => {
     </Card>
   );
 };
-
-export default Traits;

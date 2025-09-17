@@ -9,7 +9,7 @@ interface HelpCategoriesProps {
   onCategoryClick: (categoryId: string) => void;
 }
 
-export default function HelpCategories({
+export function HelpCategories({
   categories,
   activeCategory,
   onCategoryClick,

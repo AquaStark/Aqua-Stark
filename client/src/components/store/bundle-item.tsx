@@ -14,7 +14,7 @@ interface BundleItemProps {
   description: string;
 }
 
-export default function BundleItem({
+export function BundleItem({
   id,
   name,
   image,

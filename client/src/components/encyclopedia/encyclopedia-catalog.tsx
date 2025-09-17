@@ -21,7 +21,7 @@ interface EncyclopediaCatalogProps {
   resetFilters: () => void;
 }
 
-export default function EncyclopediaCatalog({
+export function EncyclopediaCatalog({
   filters,
   setFilters,
   showFilters,

@@ -5,7 +5,7 @@ import EncyclopediaCatalog from '@/components/encyclopedia/encyclopedia-catalog'
 import EncyclopediaHabitats from '@/components/encyclopedia/encyclopedia-habitats';
 import EncyclopediaStats from '@/components/encyclopedia/encyclopedia-stats';
 
-export default function EncyclopediaTabs() {
+export function EncyclopediaTabs() {
   const encyclopediaState = useEncyclopedia();
 
   return (

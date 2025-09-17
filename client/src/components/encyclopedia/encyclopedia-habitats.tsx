@@ -4,7 +4,7 @@ import CompatabilityGuide from '@/components/ui/CompatabilityGuide';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 
-export default function EncyclopediaHabitats() {
+export function EncyclopediaHabitats() {
   const [expandedSections, setExpandedSections] = useState({
     habitats: true,
     compatibility: false,

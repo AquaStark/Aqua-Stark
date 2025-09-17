@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { AiOutlineHome } from 'react-icons/ai';
 
-export default function BackToHomeButton() {
+export function BackToHomeButton() {
   return (
     <Link to={'/'}>
       <button
