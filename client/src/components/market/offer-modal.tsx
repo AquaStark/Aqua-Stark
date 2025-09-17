@@ -125,13 +125,13 @@ export function OfferModal() {
                     : 'bg-blue-800/50 border border-blue-700/50 hover:bg-blue-700/50'
                 }`}
                 onClick={() => setSelectedOffer(fish.id)}
-                onKeyDown={(e) => {
+                onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     setSelectedOffer(fish.id);
                   }
                 }}
-                role="button"
+                role='button'
                 tabIndex={0}
                 aria-pressed={selectedOffer === fish.id}
               >
