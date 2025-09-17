@@ -12,9 +12,9 @@ import { BubblesBackground } from '@/components/bubble-background';
 import { motion } from 'framer-motion';
 import { useActiveAquarium } from '../store/active-aquarium';
 import { initialAquariums } from '@/data/mock-aquarium';
-import { DirtDebugger } from '@/components/dirt/dirt-debugger';
-import { useDirtSystemFixed as useDirtSystem } from '@/hooks';
+import { useDirtSystemRealistic } from '@/hooks';
 import { DirtOverlay } from '@/components/dirt/dirt-overlay';
+import { CleanButton } from '@/components/dirt/clean-button';
 import { useFeedingSystem } from '@/systems/feeding-system';
 import { FeedingAquarium } from '@/components/game/feeding-aquarium';
 import { FishSpecies } from '@/types/game';
@@ -46,19 +46,19 @@ export default function GamePage() {
   const [showMenu, setShowMenu] = useState(false);
   const [showTips, setShowTips] = useState(false);
   const [isWallpaperMode, setIsWallpaperMode] = useState(false);
+  const [isCleaningMode, setIsCleaningMode] = useState(false);
   const navigate = useNavigate();
 
-  // Initialize dirt system
-  const dirtSystem = useDirtSystem({
-    spawnInterval: 5000, // 5 seconds
-    maxSpots: 5,
-    aquariumBounds: {
-      x: 0,
-      y: 0,
-      width: 2000,
-      height: 1000,
-    },
-    spawnChance: 0.7, // 70% chance
+  // Get account info first
+  const { account } = useAccount();
+
+  // Initialize realistic dirt system
+  const dirtSystem = useDirtSystemRealistic({
+    aquariumId: activeAquariumId || '1',
+    playerId: account?.address || 'demo-player',
+    authToken: undefined, // Add auth token when available
+    autoRefresh: true,
+    refreshInterval: 5000, // 5 seconds for testing
   });
 
   const bubbles = useBubbles({
@@ -90,15 +90,18 @@ export default function GamePage() {
       setShowMenu(false);
     }
   };
+
+  const handleToggleCleaningMode = () => {
+    setIsCleaningMode(!isCleaningMode);
+  };
   const [playerFishes, setPlayerFishes] = useState<unknown[]>([]);
-  const { account } = useAccount();
   const { getPlayerFishes } = useFish();
 
   useEffect(() => {
     const fetchFishes = async () => {
       try {
-        // For testing/demo purposes, use mock fishes
-        const mockFishes = aquarium.fishes.map(fish => ({
+        // For testing/demo purposes, use mock fishes (limited to 8)
+        const mockFishes = aquarium.fishes.slice(0, 8).map(fish => ({
           id: fish.id,
           species: `Fish${fish.id}`,
           generation: fish.generation,
@@ -288,10 +291,12 @@ export default function GamePage() {
             ? (cairoSpecies as keyof typeof speciesToFishData)
             : null;
       }
-      if (!speciesKey) {
-        // Default to first species for now
-        speciesKey = 'Fish1';
-      }
+        if (!speciesKey) {
+          // Use different species based on fish ID (1-11)
+          const fishId = mockFish.id ? bigIntToNumber(mockFish.id) : index;
+          const speciesNumber = (fishId % 11) + 1; // Cycle through Fish1 to Fish11
+          speciesKey = `Fish${speciesNumber}` as keyof typeof speciesToFishData;
+        }
 
       const data = speciesKey ? speciesToFishData[speciesKey] : null;
       if (!data) return null;
@@ -363,6 +368,8 @@ export default function GamePage() {
       <DirtOverlay
         spots={dirtSystem.spots}
         onRemoveSpot={dirtSystem.removeDirtSpot}
+        onCleanSpot={dirtSystem.cleanDirtSpot}
+        isSpongeMode={isCleaningMode}
         className='absolute inset-0 z-50'
       />
 
@@ -373,6 +380,7 @@ export default function GamePage() {
           food={food}
           energy={energy}
           onMenuToggle={() => setShowMenu(!showMenu)}
+          isCleaningMode={isCleaningMode}
         />
       )}
 
@@ -391,9 +399,6 @@ export default function GamePage() {
           isFeeding={feedingSystem.isFeeding}
           onValidateState={feedingSystem.validateFeedingState}
         />
-      </div>
-      <div className='hidden' data-dirt-debug>
-        <DirtDebugger dirtSystem={dirtSystem} />
       </div>
 
       {/* Tips and Action Menu */}
@@ -444,14 +449,20 @@ export default function GamePage() {
                 )}
             </div>
 
+            {/* Clean Button */}
+            <div className='relative group'>
+              <CleanButton
+                dirtLevel={dirtSystem.dirtLevel}
+                isDirty={dirtSystem.isDirty}
+                needsCleaning={dirtSystem.needsCleaning}
+                onToggleCleaningMode={handleToggleCleaningMode}
+                isCleaningMode={isCleaningMode}
+                className="w-12 h-12"
+              />
+            </div>
+
             {/* Other action items with tooltips */}
             {[
-              {
-                id: 'clean',
-                label: 'Clean',
-                icon: <Sparkles className='h-5 w-5' />,
-                color: 'from-purple-400 to-purple-600',
-              },
               {
                 id: 'shop',
                 label: 'Shop',
@@ -482,8 +493,6 @@ export default function GamePage() {
                   onClick={() => {
                     // Handle different actions
                     switch (item.id) {
-                      case 'clean':
-                        break;
                       case 'shop':
                         break;
                       case 'collection':
@@ -543,6 +552,17 @@ export default function GamePage() {
           <Monitor className='h-5 w-5' />
         </motion.button>
       )}
+
+
+      {/* Dirt Overlay */}
+      <DirtOverlay
+        spots={dirtSystem.spots}
+        onRemoveSpot={dirtSystem.removeDirtSpot}
+        onCleanSpot={dirtSystem.cleanDirtSpot}
+        isSpongeMode={isCleaningMode}
+        isDebugMode={false}
+      />
+
     </div>
   );
 }
