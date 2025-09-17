@@ -19,7 +19,7 @@ export function OfferModal() {
   const [selectedOffer, setSelectedOffer] = useState<number | null>(null);
 
   // Use the unified modal hook
-  const { open, close, isOpen, data } = useModal({
+  const { open, close, isOpen } = useModal({
     closable: true,
     onOpen: data => {
       // Handle modal opening
@@ -125,6 +125,15 @@ export function OfferModal() {
                     : 'bg-blue-800/50 border border-blue-700/50 hover:bg-blue-700/50'
                 }`}
                 onClick={() => setSelectedOffer(fish.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedOffer(fish.id);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-pressed={selectedOffer === fish.id}
               >
                 <div className='w-12 h-12 bg-blue-900/50 rounded overflow-hidden flex items-center justify-center mr-3'>
                   <img
