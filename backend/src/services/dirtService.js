@@ -12,7 +12,7 @@ export class DirtService {
     dirt_multiplier: 30,
     max_dirt_level: 95,
     log_base: 10,
-    cleaning_threshold: 10
+    cleaning_threshold: 10,
   };
 
   /**
@@ -33,7 +33,8 @@ export class DirtService {
       // Get aquarium state from database
       const { data, error } = await supabase
         .from(TABLES.AQUARIUM_STATES)
-        .select(`
+        .select(
+          `
           aquarium_id,
           player_id,
           last_cleaning_time,
@@ -42,7 +43,8 @@ export class DirtService {
           cleaning_streak,
           total_cleanings,
           dirt_config
-        `)
+        `
+        )
         .eq('aquarium_id', aquariumId)
         .eq('player_id', playerId)
         .single();
@@ -72,11 +74,13 @@ export class DirtService {
         last_cleaning_time: data.last_cleaning_time,
         cleaning_streak: data.cleaning_streak,
         total_cleanings: data.total_cleanings,
-        hours_since_cleaning: this.calculateHoursSinceCleaning(data.last_cleaning_time),
+        hours_since_cleaning: this.calculateHoursSinceCleaning(
+          data.last_cleaning_time
+        ),
         dirt_config: data.dirt_config,
         is_dirty: currentDirtLevel > 10,
         needs_cleaning: currentDirtLevel > 30,
-        cleanliness_status: this.getCleanlinessStatus(currentDirtLevel)
+        cleanliness_status: this.getCleanlinessStatus(currentDirtLevel),
       };
 
       // Cache the result for 5 minutes
@@ -102,11 +106,11 @@ export class DirtService {
   static async calculateCurrentDirtLevel(lastCleaningTime, config = null) {
     try {
       const dirtConfig = config || this.DEFAULT_CONFIG;
-      
+
       // Use the database function for calculation
       const { data, error } = await supabaseAdmin.rpc('calculate_dirt_level', {
         last_cleaning_time: lastCleaningTime,
-        config: dirtConfig
+        config: dirtConfig,
       });
 
       if (error) throw error;
@@ -137,8 +141,9 @@ export class DirtService {
     }
 
     // Logarithmic calculation (adjusted for seconds)
-    const adjustedSeconds = secondsSinceCleaning - dirtConfig.grace_period_hours;
-    const logValue = Math.log10((adjustedSeconds / 2) + 1);
+    const adjustedSeconds =
+      secondsSinceCleaning - dirtConfig.grace_period_hours;
+    const logValue = Math.log10(adjustedSeconds / 2 + 1);
     const calculatedDirt = dirtConfig.dirt_multiplier * logValue;
 
     return Math.min(dirtConfig.max_dirt_level, Math.max(0, calculatedDirt));
@@ -162,11 +167,16 @@ export class DirtService {
    * @returns {Object} Status information
    */
   static getCleanlinessStatus(dirtLevel) {
-    if (dirtLevel >= 90) return { level: 'critical', label: 'Very Dirty', color: 'red' };
-    if (dirtLevel >= 70) return { level: 'high', label: 'Dirty', color: 'orange' };
-    if (dirtLevel >= 50) return { level: 'moderate', label: 'Needs Attention', color: 'yellow' };
-    if (dirtLevel >= 30) return { level: 'light', label: 'Slightly Dirty', color: 'light-yellow' };
-    if (dirtLevel >= 10) return { level: 'minimal', label: 'Almost Clean', color: 'light-green' };
+    if (dirtLevel >= 90)
+      return { level: 'critical', label: 'Very Dirty', color: 'red' };
+    if (dirtLevel >= 70)
+      return { level: 'high', label: 'Dirty', color: 'orange' };
+    if (dirtLevel >= 50)
+      return { level: 'moderate', label: 'Needs Attention', color: 'yellow' };
+    if (dirtLevel >= 30)
+      return { level: 'light', label: 'Slightly Dirty', color: 'light-yellow' };
+    if (dirtLevel >= 10)
+      return { level: 'minimal', label: 'Almost Clean', color: 'light-green' };
     return { level: 'clean', label: 'Clean', color: 'green' };
   }
 
@@ -194,7 +204,7 @@ export class DirtService {
       // Use database function for cleaning
       const { data, error } = await supabaseAdmin.rpc('clean_aquarium', {
         aquarium_id_param: aquariumId,
-        cleaning_type: cleaningType
+        cleaning_type: cleaningType,
       });
 
       if (error) throw error;
@@ -208,7 +218,7 @@ export class DirtService {
         aquarium_id: aquariumId,
         player_id: playerId,
         cleaning_type: cleaningType,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
 
       return result;
@@ -230,7 +240,7 @@ export class DirtService {
         .update({
           dirt_level: newDirtLevel,
           partial_dirt_level: newDirtLevel,
-          last_updated: new Date().toISOString()
+          last_updated: new Date().toISOString(),
         })
         .eq('aquarium_id', aquariumId);
 
@@ -253,7 +263,8 @@ export class DirtService {
     try {
       const { data, error } = await supabase
         .from(TABLES.AQUARIUM_STATES)
-        .select(`
+        .select(
+          `
           aquarium_id,
           last_cleaning_time,
           dirt_level,
@@ -261,14 +272,15 @@ export class DirtService {
           cleaning_streak,
           total_cleanings,
           dirt_config
-        `)
+        `
+        )
         .eq('player_id', playerId);
 
       if (error) throw error;
 
       // Calculate current dirt levels for all aquariums
       const dirtStatuses = await Promise.all(
-        data.map(async (aquarium) => {
+        data.map(async aquarium => {
           const currentDirtLevel = await this.calculateCurrentDirtLevel(
             aquarium.last_cleaning_time,
             aquarium.dirt_config
@@ -281,8 +293,10 @@ export class DirtService {
             last_cleaning_time: aquarium.last_cleaning_time,
             cleaning_streak: aquarium.cleaning_streak,
             total_cleanings: aquarium.total_cleanings,
-            hours_since_cleaning: this.calculateHoursSinceCleaning(aquarium.last_cleaning_time),
-            cleanliness_status: this.getCleanlinessStatus(currentDirtLevel)
+            hours_since_cleaning: this.calculateHoursSinceCleaning(
+              aquarium.last_cleaning_time
+            ),
+            cleanliness_status: this.getCleanlinessStatus(currentDirtLevel),
           };
         })
       );
@@ -300,7 +314,11 @@ export class DirtService {
    * @param {string} playerId - Player ID
    * @param {Object} config - Optional custom config
    */
-  static async initializeAquariumDirtSystem(aquariumId, playerId, config = null) {
+  static async initializeAquariumDirtSystem(
+    aquariumId,
+    playerId,
+    config = null
+  ) {
     try {
       const dirtConfig = { ...this.DEFAULT_CONFIG, ...config };
       const now = new Date().toISOString();
@@ -314,7 +332,7 @@ export class DirtService {
           cleaning_streak: 0,
           total_cleanings: 0,
           dirt_config: dirtConfig,
-          last_updated: now
+          last_updated: now,
         })
         .eq('aquarium_id', aquariumId)
         .eq('player_id', playerId);
@@ -328,7 +346,7 @@ export class DirtService {
         success: true,
         aquarium_id: aquariumId,
         initialized_at: now,
-        dirt_config: dirtConfig
+        dirt_config: dirtConfig,
       };
     } catch (error) {
       console.error('Error initializing aquarium dirt system:', error);
