@@ -26,7 +26,7 @@ export function BidModal() {
   const [error, setError] = useState('');
 
   // Use the unified modal hook
-  const { open, close, isOpen, data } = useModal({
+  const { open, close, isOpen } = useModal({
     closable: true,
     onOpen: data => {
       // Handle modal opening
