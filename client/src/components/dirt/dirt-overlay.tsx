@@ -31,11 +31,10 @@ export const DirtOverlay = memo(function DirtOverlay({
       role='application'
       aria-label={`Dirt overlay with ${spots.length} dirt spot${spots.length === 1 ? '' : 's'}${isSpongeMode ? ' - Sponge mode active' : ''}`}
       data-testid='dirt-overlay'
-      style={{ 
-        pointerEvents: 'none'
+      style={{
+        pointerEvents: 'none',
       }}
     >
-
       {/* Render spots grouped by layers for better visual depth */}
       {spots.map(spot => (
         <DirtSpot
