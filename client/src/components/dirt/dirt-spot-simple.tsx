@@ -24,13 +24,13 @@ export function DirtSpot({
   // Function to get dirt image based on spot properties
   const getDirtImage = () => {
     const id = spot.id || 0;
-    
+
     // Convert ID to integer to avoid decimal issues
     const intId = Math.floor(Math.abs(id));
-    
+
     // Use ID to create variation in image selection (1, 2, or 3)
     const imageIndex = (intId % 3) + 1;
-    
+
     // RUTA CORRECTA: las imágenes están en /public/dirt/
     return `/dirt/dirt${imageIndex}.png`;
   };
@@ -78,7 +78,7 @@ export function DirtSpot({
     size: spot.size,
     left: `${spot.position.x}px`,
     top: `${spot.position.y}px`,
-    transform: 'translate(-50%, -50%)'
+    transform: 'translate(-50%, -50%)',
   });
 
   return (
@@ -107,7 +107,7 @@ export function DirtSpot({
       {/* Dirt image - FORZAR USO DE IMÁGENES */}
       <img
         src={getDirtImage()}
-        alt="Dirt spot"
+        alt='Dirt spot'
         className={`transition-all duration-300 ${
           isRemoving ? 'scale-0 opacity-0' : ''
         }`}
@@ -119,7 +119,7 @@ export function DirtSpot({
           filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
           display: 'block',
         }}
-        onError={(e) => {
+        onError={e => {
           // Fallback visual inmediato
           const target = e.target as HTMLImageElement;
           target.style.display = 'none';
@@ -139,7 +139,7 @@ export function DirtSpot({
 
       {/* Debug info */}
       {isDebugMode && (
-        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/70 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+        <div className='absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/70 text-white text-xs px-2 py-1 rounded whitespace-nowrap'>
           ID: {spot.id} | Size: {Math.round(spot.size || 150)}px
         </div>
       )}
