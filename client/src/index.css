@@ -95,24 +95,6 @@
       0 2px 0 rgba(0, 0, 0, 0.2),
       0 -1px 0 rgba(255, 255, 255, 0.2) inset,
       0 1px 0 rgba(255, 255, 255, 0.2) inset;
-    box-shadow:
-      0 4px 0 rgba(0, 0, 0, 0.2),
-      0 -2px 0 rgba(255, 255, 255, 0.2) inset,
-      0 2px 0 rgba(255, 255, 255, 0.2) inset;
-  }
-
-  .game-button:hover {
-    box-shadow:
-      0 6px 0 rgba(0, 0, 0, 0.2),
-      0 -2px 0 rgba(255, 255, 255, 0.3) inset,
-      0 2px 0 rgba(255, 255, 255, 0.3) inset;
-  }
-
-  .game-button:active {
-    box-shadow:
-      0 2px 0 rgba(0, 0, 0, 0.2),
-      0 -1px 0 rgba(255, 255, 255, 0.2) inset,
-      0 1px 0 rgba(255, 255, 255, 0.2) inset;
   }
 
   /* Contenedor de juego con efecto de cristal */
@@ -539,21 +521,6 @@
     animation: flip-transition 0.4s ease-in-out;
   }
 
-  @keyframes flip-transition {
-    0% {
-      opacity: 1;
-      transform: scaleX(1);
-    }
-    50% {
-      opacity: 0.7;
-      transform: scaleX(0.8);
-    }
-    100% {
-      opacity: 1;
-      transform: scaleX(1);
-    }
-  }
-
   .food-item {
     animation: foodBob 1.5s ease-in-out infinite;
   }
@@ -760,4 +727,81 @@
   position: absolute !important;
   top: 0 !important;
   left: 0 !important;
+}
+
+/* Sponge cursor for cleaning mode */
+.cursor-sponge {
+  cursor:
+    url('/dirt/sponge.png') 8 8,
+    auto !important;
+}
+
+.cursor-sponge * {
+  cursor:
+    url('/dirt/sponge.png') 8 8,
+    auto !important;
+}
+
+/* Alternative sponge cursor with different sizes */
+.cursor-sponge-alt {
+  cursor:
+    url('/dirt/sponge.png') 12 12,
+    pointer !important;
+}
+
+.cursor-sponge-alt * {
+  cursor:
+    url('/dirt/sponge.png') 12 12,
+    pointer !important;
+}
+
+/* Simple sponge cursor with smaller hotspot */
+.cursor-sponge-simple {
+  cursor:
+    url('/dirt/sponge.png') 16 16,
+    crosshair !important;
+}
+
+.cursor-sponge-simple * {
+  cursor:
+    url('/dirt/sponge.png') 16 16,
+    crosshair !important;
+}
+
+/* Try different cursor sizes */
+.cursor-sponge-32 {
+  cursor:
+    url('/dirt/sponge.png') 32 32,
+    crosshair !important;
+}
+
+.cursor-sponge-32 * {
+  cursor:
+    url('/dirt/sponge.png') 32 32,
+    crosshair !important;
+}
+
+/* Try with auto hotspot */
+.cursor-sponge-auto {
+  cursor: url('/dirt/sponge.png'), crosshair !important;
+}
+
+.cursor-sponge-auto * {
+  cursor: url('/dirt/sponge.png'), crosshair !important;
+}
+
+/* Fallback sponge cursor using CSS */
+.cursor-sponge-css {
+  cursor: crosshair !important;
+}
+
+.cursor-sponge-css::before {
+  content: '🧽';
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  font-size: 20px;
+  transform: translate(-50%, -50%);
 }

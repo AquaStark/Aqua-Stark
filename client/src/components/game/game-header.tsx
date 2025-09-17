@@ -6,6 +6,7 @@ interface GameHeaderProps {
   food: number;
   energy: number;
   onMenuToggle: () => void;
+  isCleaningMode?: boolean;
 }
 
 export function GameHeader({
@@ -13,6 +14,7 @@ export function GameHeader({
   food,
   energy,
   onMenuToggle,
+  isCleaningMode = false,
 }: GameHeaderProps) {
   return (
     <div className='absolute top-0 left-0 right-0 flex justify-between items-center p-4 z-50'>
@@ -51,6 +53,20 @@ export function GameHeader({
           label='Energy'
         />
       </div>
+
+      {/* Sponge Mode Text */}
+      {isCleaningMode && (
+        <div className='absolute top-full left-1/2 transform -translate-x-1/2 mt-3 flex items-center gap-3 bg-blue-900/60 backdrop-blur-sm px-6 py-3 rounded-xl border border-blue-400/40 shadow-lg'>
+          <img
+            src='/dirt/sponge.png'
+            alt='Sponge'
+            className='w-8 h-8 drop-shadow-lg'
+          />
+          <span className='text-white text-3xl font-bold font-nunito drop-shadow-lg'>
+            Sponge Mode
+          </span>
+        </div>
+      )}
 
       <div className='flex items-center gap-2 mr-8'>
         <button

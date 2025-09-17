@@ -1,10 +1,12 @@
 import { memo } from 'react';
-import { DirtSpot } from './dirt-spot';
+import { DirtSpot } from './dirt-spot-simple';
 import { DirtSpot as DirtSpotType } from '@/types/dirt';
 
 interface DirtOverlayProps {
   spots: DirtSpotType[];
   onRemoveSpot: (spotId: number) => void;
+  onCleanSpot?: (spotId: number) => void;
+  isSpongeMode?: boolean;
   className?: string;
   isDebugMode?: boolean;
 }
@@ -13,6 +15,8 @@ interface DirtOverlayProps {
 export const DirtOverlay = memo(function DirtOverlay({
   spots,
   onRemoveSpot,
+  onCleanSpot,
+  isSpongeMode = false,
   className = '',
   isDebugMode = false,
 }: DirtOverlayProps) {
@@ -23,10 +27,13 @@ export const DirtOverlay = memo(function DirtOverlay({
 
   return (
     <div
-      className={`absolute inset-0 pointer-events-none ${className}`}
+      className={`absolute inset-0 ${className}`}
       role='application'
-      aria-label={`Dirt overlay with ${spots.length} dirt spot${spots.length === 1 ? '' : 's'}`}
+      aria-label={`Dirt overlay with ${spots.length} dirt spot${spots.length === 1 ? '' : 's'}${isSpongeMode ? ' - Sponge mode active' : ''}`}
       data-testid='dirt-overlay'
+      style={{
+        pointerEvents: 'none',
+      }}
     >
       {/* Render spots grouped by layers for better visual depth */}
       {spots.map(spot => (
@@ -34,8 +41,10 @@ export const DirtOverlay = memo(function DirtOverlay({
           key={spot.id}
           spot={spot}
           onRemove={onRemoveSpot}
+          onClean={onCleanSpot}
+          isSpongeMode={isSpongeMode}
           isDebugMode={isDebugMode}
-          className='pointer-events-auto'
+          className=''
         />
       ))}
 

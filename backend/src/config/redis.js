@@ -35,6 +35,7 @@ export const initRedis = async () => {
 export const CACHE_KEYS = {
   FISH_HAPPINESS: fishId => `fish:happiness:${fishId}`,
   AQUARIUM_STATE: aquariumId => `aquarium:state:${aquariumId}`,
+  AQUARIUM_DIRT: aquariumId => `aquarium:dirt:${aquariumId}`,
   PLAYER_SESSION: playerId => `player:session:${playerId}`,
   PLAYER_PROFILE: playerId => `player:profile:${playerId}`,
   DECORATION_STATE: decorationId => `decoration:state:${decorationId}`,
@@ -46,6 +47,7 @@ export const CACHE_KEYS = {
 export const CACHE_TTL = {
   FISH_STATE: 300, // 5 minutes
   AQUARIUM_STATE: 600, // 10 minutes
+  AQUARIUM_DIRT: 300, // 5 minutes
   PLAYER_SESSION: 3600, // 1 hour
   LEADERBOARD: 1800, // 30 minutes
 };

@@ -9,6 +9,8 @@ import {
 interface DirtSpotProps {
   spot: DirtSpotType;
   onRemove: (spotId: number) => void;
+  onClean?: (spotId: number) => void;
+  isSpongeMode?: boolean;
   className?: string;
   isDebugMode?: boolean;
 }
@@ -16,6 +18,8 @@ interface DirtSpotProps {
 export function DirtSpot({
   spot,
   onRemove,
+  onClean,
+  isSpongeMode = false,
   className = '',
   isDebugMode = false,
 }: DirtSpotProps) {
@@ -62,6 +66,9 @@ export function DirtSpot({
     e.stopPropagation();
 
     if (isRemoving) return;
+
+    // Only allow cleaning in sponge mode
+    if (!isSpongeMode) return;
 
     const rect = spotRef.current?.getBoundingClientRect();
     if (rect) {
@@ -140,6 +147,15 @@ export function DirtSpot({
 
     const particleInterval = setInterval(animateParticles, 16);
 
+    // Call the clean function if provided, otherwise just remove
+    if (onClean) {
+      try {
+        await onClean(spot.id);
+      } catch (error) {
+        console.error('Error cleaning spot:', error);
+      }
+    }
+
     // Remove spot after cleaning animation
     setTimeout(() => {
       clearInterval(particleInterval);
@@ -180,8 +196,10 @@ export function DirtSpot({
   return (
     <div
       ref={spotRef}
-      className={`absolute cursor-pointer transform-gpu transition-all duration-300 select-none ${
-        isRemoving ? 'animate-pulse' : isHovered ? 'scale-105' : ''
+      className={`absolute transform-gpu transition-all duration-300 select-none ${
+        isSpongeMode ? 'cursor-pointer' : 'cursor-default'
+      } ${isRemoving ? 'animate-pulse' : isHovered ? 'scale-105' : ''} ${
+        isSpongeMode && isHovered ? 'ring-2 ring-blue-400 ring-opacity-50' : ''
       } ${className}`}
       style={{
         left: `${spot.position.x}px`,
