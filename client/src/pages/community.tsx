@@ -7,7 +7,7 @@ import { BubblesBackground } from '@/components/bubble-background';
 import { useBubbles } from '@/hooks';
 import { PageHeader } from '@/components/layout/page-header';
 import { Footer } from '@/components/layout/footer';
-import { CommunityTabs } from '@/components/community/community-tabs';
+import { CommunityTabs } from '@/components';
 import { ComingSoonModal } from '@/components/ui/coming-soon-modal';
 
 export default function CommunityPage() {

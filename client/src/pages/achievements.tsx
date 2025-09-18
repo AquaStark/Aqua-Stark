@@ -4,7 +4,7 @@ import { useBubbles } from '@/hooks';
 import { PageHeader } from '@/components/layout/page-header';
 import { Footer } from '@/components/layout/footer';
 import { Trophy } from 'lucide-react';
-import { AchievementsTabs } from '@/components/achievements/achievements-tabs';
+import { AchievementsTabs } from '@/components';
 import { ComingSoonModal } from '@/components/ui/coming-soon-modal';
 
 export default function AchievementsPage() {

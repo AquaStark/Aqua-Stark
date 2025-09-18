@@ -5,7 +5,7 @@ import { BubblesBackground } from '@/components/bubble-background';
 import { Footer } from '@/components/layout/footer';
 import { PageHeader } from '@/components/layout/page-header';
 import { useBubbles } from '@/hooks';
-import EventTabs from '@/components/events-calendar/event-tabs';
+import { EventTabs } from '@/components';
 import { ComingSoonModal } from '@/components/ui/coming-soon-modal';
 
 export default function EventsCalendarPage() {

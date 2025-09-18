@@ -5,7 +5,7 @@ import { ChevronDown, ChevronUp, Filter, Lock, Search, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { FishTank } from '@/components/fish-tank';
-import EncyclopediaFilters from './encyclopedia-filters';
+import { EncyclopediaFilters } from '@/components';
 import type { EncyclopediaFilters as EncyclopediaFiltersState } from '@/hooks/use-encyclopedia';
 import type { FishSpecies } from '@/data/encyclopedia-data';
 
