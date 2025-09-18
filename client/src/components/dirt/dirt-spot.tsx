@@ -53,7 +53,7 @@ export function DirtSpot({
     return shapes;
   };
 
-  const organicShapes = useMemo(generateOrganicShape, [spot.id, spot.size]);
+  const organicShapes = useMemo(generateOrganicShape, [spot.size]);
 
   // Calculate spot age and intensity
   const age = spot.createdAt ? (Date.now() - spot.createdAt) / 1000 : 0;

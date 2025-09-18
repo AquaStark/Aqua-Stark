@@ -39,6 +39,7 @@ export { useFoodSystem } from './use-food-system';
 export { useGames } from './use-games';
 export { useHelpCenter } from './use-help-center';
 export { useLoadingNavigation } from './use-loading-navigation';
+export { useModal, useMultipleModals, useConfirmModal } from './use-modal';
 export { useNotifications } from './use-notifications';
 export { useSettings } from './use-settings';
 export { useShopData } from './use-shop-data';
