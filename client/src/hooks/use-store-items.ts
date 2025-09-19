@@ -43,7 +43,7 @@ export interface StoreStats {
 export interface StoreResponse {
   success: boolean;
   data: StoreItem[];
-  count: number;
+  count?: number;
   filters?: StoreFilters;
 }
 
@@ -92,10 +92,10 @@ export function useStoreItems() {
         const response = await get<StoreResponse>('/store/items', params);
 
         if (response.success && response.data) {
-          setItems(response.data);
+          setItems(response.data as unknown as StoreItem[]);
           setLastFilters(filters);
           setIsInitialized(true);
-          return response.data;
+          return response.data as unknown as StoreItem[];
         }
 
         throw new Error('Failed to fetch store items');
@@ -116,7 +116,7 @@ export function useStoreItems() {
         const response = await get<StoreItemResponse>(`/store/items/${itemId}`);
 
         if (response.success && response.data) {
-          return response.data;
+          return response.data as unknown as StoreItem;
         }
 
         throw new Error('Failed to fetch store item');
@@ -137,7 +137,7 @@ export function useStoreItems() {
         const response = await get<StoreResponse>(`/store/items/type/${type}`);
 
         if (response.success && response.data) {
-          return response.data;
+          return response.data as unknown as StoreItem[];
         }
 
         throw new Error('Failed to fetch store items by type');
@@ -157,8 +157,8 @@ export function useStoreItems() {
       const response = await get<StoreStatsResponse>('/store/items/stats');
 
       if (response.success && response.data) {
-        setStats(response.data);
-        return response.data;
+        setStats(response.data as unknown as StoreStats);
+        return response.data as unknown as StoreStats;
       }
 
       throw new Error('Failed to fetch store statistics');
@@ -359,8 +359,8 @@ export function useStoreItem(itemId: string) {
       const response = await get<StoreItemResponse>(`/store/items/${itemId}`);
 
       if (response.success && response.data) {
-        setItem(response.data);
-        return response.data;
+        setItem(response.data as unknown as StoreItem);
+        return response.data as unknown as StoreItem;
       }
 
       throw new Error('Failed to fetch store item');
