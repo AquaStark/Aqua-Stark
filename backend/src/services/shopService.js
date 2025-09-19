@@ -2,7 +2,6 @@ import { purchaseSchema, shopItemSchema } from '../../utils/validators.js';
 import { supabase, supabaseAdmin, TABLES } from '../config/supabase.js';
 import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 import { logger } from '../../utils/logger.js';
-import { json } from 'zod';
 
 class ShopService {
   /**
@@ -66,8 +65,7 @@ class ShopService {
       const { data, error, count } = await query;
 
       if (error) {
-        console.error(` Error fetching shop items:`, error);
-        logger.error(` Error fetching shop items:`, error);
+        logger.error(` Error fetching shop items:${error}`);
         throw new Error(`Failed to fetch shop items: ${error.message}`);
       }
 
@@ -92,7 +90,7 @@ class ShopService {
 
       return result;
     } catch (error) {
-      console.error(`[ShopService] Error in getShopItems:`, error);
+      logger.error(`[ShopService] Error in getShopItems:${error}`);
       throw error;
     }
   }
@@ -153,7 +151,7 @@ class ShopService {
 
       return data;
     } catch (error) {
-      console.error(`[ShopService] Error in getShopItem:`, error);
+      logger.error(`[ShopService] Error in getShopItem:${error}`);
       throw error;
     }
   }
@@ -281,7 +279,7 @@ class ShopService {
       logger.info(`[ShopService] Successfully updated shop item: ${itemId}`);
       return data[0];
     } catch (error) {
-      logger.error(`[ShopService] Error in updateShopItem:`, error);
+      logger.error(`[ShopService] Error in updateShopItem:${error}`);
       throw error;
     }
   }
@@ -406,9 +404,8 @@ class ShopService {
       );
 
       if (transactionError) {
-        console.error(
-          `[ShopService] Purchase transaction failed:`,
-          transactionError
+        logger.error(
+          `[ShopService] Purchase transaction failed:${transactionError}`
         );
         throw new Error(`Purchase failed: ${transactionError.message}`);
       }
@@ -432,7 +429,7 @@ class ShopService {
       );
       return result;
     } catch (error) {
-      console.error(`[ShopService] Error in purchaseItem:`, error);
+      logger.error(`[ShopService] Error in purchaseItem:${error}`);
       throw error;
     }
   }
@@ -510,7 +507,7 @@ class ShopService {
       const cached = await redisClient.get(cacheKey);
 
       if (cached) {
-        logger.info(` Cache hit for shop categories`);
+        logger.info('Cache hit for shop categories');
         return JSON.parse(cached);
       }
 
@@ -572,7 +569,7 @@ class ShopService {
       const cached = await redisClient.get(cacheKey);
 
       if (cached) {
-        logger.info(`[ShopService] Cache hit for limited time offers`);
+        logger.info('[ShopService] Cache hit for limited time offers');
         return JSON.parse(cached);
       }
 
@@ -585,7 +582,7 @@ class ShopService {
         .order('available_until', { ascending: true });
 
       if (error) {
-        logger.error(`[ShopService] Error fetching limited offers:`, error);
+        logger.error(`[ShopService] Error fetching limited offers:${error}`);
         throw new Error(
           `Failed to fetch limited time offers: ${error.message}`
         );
@@ -602,7 +599,7 @@ class ShopService {
 
       return data || [];
     } catch (error) {
-      logger.info(`[ShopService]::Error in getLimitedTimeOffers:`, error);
+      logger.info(`[ShopService]::Error in getLimitedTimeOffers:${error}`);
       throw error;
     }
   }
@@ -624,11 +621,11 @@ class ShopService {
       const keys = await redisClient.keys(pattern);
 
       if (keys.length > 0) {
-        await redis.del(...keys);
+        await redisClient.del(...keys);
         logger.info(`[ShopService] Invalidated ${keys.length} cache entries`);
       }
     } catch (error) {
-      logger.error(`[ShopService] Error invalidating caches:`, error);
+      logger.error(`[ShopService] Error invalidating caches:${error}`);
     }
   }
 }
