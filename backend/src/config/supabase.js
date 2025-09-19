@@ -24,6 +24,7 @@ export const TABLES = {
   PLAYER_PREFERENCES: 'player_preferences',
   MINIGAME_SESSIONS: 'minigame_sessions',
   GAME_ANALYTICS: 'game_analytics',
+  STORE_ITEMS: 'store_items',
 };
 
 // Real-time subscription channels
@@ -33,4 +34,5 @@ export const CHANNELS = {
   AQUARIUM_UPDATES: 'aquarium_updates',
   DECORATION_UPDATES: 'decoration_updates',
   GAME_EVENTS: 'game_events',
+  STORE_UPDATES: 'store_updates',
 };
