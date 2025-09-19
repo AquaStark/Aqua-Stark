@@ -3,7 +3,7 @@
 /**
  * Test Store API
  * Script para probar todos los endpoints de la API de tienda
- * 
+ *
  * @author Aqua Stark Team
  * @version 1.0.0
  * @since 2025-01-XX
@@ -30,7 +30,7 @@ const API_BASE_URL = process.env.API_URL || 'http://localhost:3001/api/v1';
  */
 async function makeRequest(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
-  
+
   try {
     const response = await fetch(url, {
       headers: {
@@ -39,9 +39,9 @@ async function makeRequest(endpoint, options = {}) {
       },
       ...options,
     });
-    
+
     const data = await response.json();
-    
+
     return {
       status: response.status,
       ok: response.ok,
@@ -121,30 +121,38 @@ async function testStoreAPI() {
 
   for (const test of tests) {
     console.log(`🔍 ${test.name}`);
-    
+
     const result = await makeRequest(test.endpoint, { method: test.method });
-    
+
     if (result.ok && result.data.success) {
       console.log(`   ✅ Status: ${result.status}`);
-      console.log(`   📊 Data: ${JSON.stringify(result.data).substring(0, 100)}...`);
+      console.log(
+        `   📊 Data: ${JSON.stringify(result.data).substring(0, 100)}...`
+      );
       passedTests++;
     } else {
       console.log(`   ❌ Status: ${result.status}`);
-      console.log(`   🚨 Error: ${result.error || result.data?.error || 'Unknown error'}`);
+      console.log(
+        `   🚨 Error: ${result.error || result.data?.error || 'Unknown error'}`
+      );
       failedTests++;
     }
-    
+
     console.log('');
   }
 
   // Test individual item fetch (if items exist)
   console.log('🔍 Testing individual item fetch...');
   const allItemsResult = await makeRequest('/store/items?limit=1');
-  
-  if (allItemsResult.ok && allItemsResult.data.success && allItemsResult.data.data.length > 0) {
+
+  if (
+    allItemsResult.ok &&
+    allItemsResult.data.success &&
+    allItemsResult.data.data.length > 0
+  ) {
     const firstItem = allItemsResult.data.data[0];
     const itemResult = await makeRequest(`/store/items/${firstItem.id}`);
-    
+
     if (itemResult.ok && itemResult.data.success) {
       console.log(`   ✅ Individual item fetch successful`);
       console.log(`   📦 Item: ${itemResult.data.data.name}`);
@@ -186,7 +194,7 @@ async function testStoreAPI() {
  */
 async function testWithSampleData() {
   console.log('\n🧪 Testing with sample data creation...');
-  
+
   const sampleItem = {
     name: 'Test Fish',
     description: 'A test fish for API testing',
@@ -204,12 +212,15 @@ async function testWithSampleData() {
   if (result.ok && result.data.success) {
     console.log('   ✅ Sample item created successfully');
     console.log(`   🆔 Item ID: ${result.data.data.id}`);
-    
+
     // Clean up - delete the test item
-    const deleteResult = await makeRequest(`/store/items/${result.data.data.id}`, {
-      method: 'DELETE',
-    });
-    
+    const deleteResult = await makeRequest(
+      `/store/items/${result.data.data.id}`,
+      {
+        method: 'DELETE',
+      }
+    );
+
     if (deleteResult.ok && deleteResult.data.success) {
       console.log('   🧹 Test item cleaned up successfully');
     } else {
@@ -227,10 +238,9 @@ async function testWithSampleData() {
 async function main() {
   try {
     await testStoreAPI();
-    
+
     // Uncomment to test with sample data creation
     // await testWithSampleData();
-    
   } catch (error) {
     console.error('❌ Test execution failed:', error.message);
     process.exit(1);

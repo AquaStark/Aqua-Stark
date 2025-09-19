@@ -24,7 +24,7 @@ export class StoreService {
       // Check cache first
       const cacheKey = CACHE_KEYS.STORE_ITEMS(JSON.stringify(filters));
       const cachedItems = await redisClient.get(cacheKey);
-      
+
       if (cachedItems) {
         logger.debug('Cache hit for store items');
         return JSON.parse(cachedItems);
@@ -52,7 +52,9 @@ export class StoreService {
       }
 
       if (filters.search) {
-        query = query.or(`name.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
+        query = query.or(
+          `name.ilike.%${filters.search}%,description.ilike.%${filters.search}%`
+        );
       }
 
       if (filters.limit) {
@@ -63,11 +65,19 @@ export class StoreService {
 
       if (error) {
         logger.error({ filters, error }, 'Error fetching store items');
-        throw new ServiceError('FETCH_FAILED', 'Failed to fetch store items', 500);
+        throw new ServiceError(
+          'FETCH_FAILED',
+          'Failed to fetch store items',
+          500
+        );
       }
 
       // Cache the results
-      await redisClient.setEx(cacheKey, CACHE_TTL.STORE_ITEMS, JSON.stringify(data));
+      await redisClient.setEx(
+        cacheKey,
+        CACHE_TTL.STORE_ITEMS,
+        JSON.stringify(data)
+      );
 
       logger.debug({ count: data.length }, 'Store items fetched successfully');
       return data;
@@ -118,16 +128,30 @@ export class StoreService {
       logger.info({ itemData }, 'Creating store item');
 
       // Validate required fields
-      const requiredFields = ['name', 'description', 'price', 'type', 'image_url'];
+      const requiredFields = [
+        'name',
+        'description',
+        'price',
+        'type',
+        'image_url',
+      ];
       for (const field of requiredFields) {
         if (!itemData[field]) {
-          throw new ServiceError('VALIDATION_ERROR', `${field} is required`, 400);
+          throw new ServiceError(
+            'VALIDATION_ERROR',
+            `${field} is required`,
+            400
+          );
         }
       }
 
       // Validate price
       if (itemData.price < 0) {
-        throw new ServiceError('VALIDATION_ERROR', 'Price must be non-negative', 400);
+        throw new ServiceError(
+          'VALIDATION_ERROR',
+          'Price must be non-negative',
+          400
+        );
       }
 
       // Validate type
@@ -145,14 +169,19 @@ export class StoreService {
           type: itemData.type,
           stock: itemData.stock || 0,
           image_url: itemData.image_url,
-          is_active: itemData.is_active !== undefined ? itemData.is_active : true,
+          is_active:
+            itemData.is_active !== undefined ? itemData.is_active : true,
         })
         .select()
         .single();
 
       if (error) {
         logger.error({ itemData, error }, 'Error creating store item');
-        throw new ServiceError('CREATE_FAILED', 'Failed to create store item', 500);
+        throw new ServiceError(
+          'CREATE_FAILED',
+          'Failed to create store item',
+          500
+        );
       }
 
       // Clear cache
@@ -163,7 +192,11 @@ export class StoreService {
     } catch (error) {
       logger.error({ itemData, error }, 'Error creating store item');
       if (error instanceof ServiceError) throw error;
-      throw new ServiceError('CREATE_ERROR', 'Failed to create store item', 500);
+      throw new ServiceError(
+        'CREATE_ERROR',
+        'Failed to create store item',
+        500
+      );
     }
   }
 
@@ -179,7 +212,11 @@ export class StoreService {
 
       // Validate price if provided
       if (updateData.price !== undefined && updateData.price < 0) {
-        throw new ServiceError('VALIDATION_ERROR', 'Price must be non-negative', 400);
+        throw new ServiceError(
+          'VALIDATION_ERROR',
+          'Price must be non-negative',
+          400
+        );
       }
 
       // Validate type if provided
@@ -201,8 +238,15 @@ export class StoreService {
         .single();
 
       if (error) {
-        logger.error({ itemId, updateData, error }, 'Error updating store item');
-        throw new ServiceError('UPDATE_FAILED', 'Failed to update store item', 500);
+        logger.error(
+          { itemId, updateData, error },
+          'Error updating store item'
+        );
+        throw new ServiceError(
+          'UPDATE_FAILED',
+          'Failed to update store item',
+          500
+        );
       }
 
       if (!data) {
@@ -217,7 +261,11 @@ export class StoreService {
     } catch (error) {
       logger.error({ itemId, updateData, error }, 'Error updating store item');
       if (error instanceof ServiceError) throw error;
-      throw new ServiceError('UPDATE_ERROR', 'Failed to update store item', 500);
+      throw new ServiceError(
+        'UPDATE_ERROR',
+        'Failed to update store item',
+        500
+      );
     }
   }
 
@@ -242,7 +290,11 @@ export class StoreService {
 
       if (error) {
         logger.error({ itemId, error }, 'Error deleting store item');
-        throw new ServiceError('DELETE_FAILED', 'Failed to delete store item', 500);
+        throw new ServiceError(
+          'DELETE_FAILED',
+          'Failed to delete store item',
+          500
+        );
       }
 
       if (!data) {
@@ -257,7 +309,11 @@ export class StoreService {
     } catch (error) {
       logger.error({ itemId, error }, 'Error deleting store item');
       if (error instanceof ServiceError) throw error;
-      throw new ServiceError('DELETE_ERROR', 'Failed to delete store item', 500);
+      throw new ServiceError(
+        'DELETE_ERROR',
+        'Failed to delete store item',
+        500
+      );
     }
   }
 
@@ -272,7 +328,11 @@ export class StoreService {
       logger.info({ itemId, newStock }, 'Updating item stock');
 
       if (newStock < 0) {
-        throw new ServiceError('VALIDATION_ERROR', 'Stock cannot be negative', 400);
+        throw new ServiceError(
+          'VALIDATION_ERROR',
+          'Stock cannot be negative',
+          400
+        );
       }
 
       const { data, error } = await supabaseAdmin
@@ -287,7 +347,11 @@ export class StoreService {
 
       if (error) {
         logger.error({ itemId, newStock, error }, 'Error updating item stock');
-        throw new ServiceError('UPDATE_FAILED', 'Failed to update item stock', 500);
+        throw new ServiceError(
+          'UPDATE_FAILED',
+          'Failed to update item stock',
+          500
+        );
       }
 
       if (!data) {
@@ -302,7 +366,11 @@ export class StoreService {
     } catch (error) {
       logger.error({ itemId, newStock, error }, 'Error updating item stock');
       if (error instanceof ServiceError) throw error;
-      throw new ServiceError('UPDATE_ERROR', 'Failed to update item stock', 500);
+      throw new ServiceError(
+        'UPDATE_ERROR',
+        'Failed to update item stock',
+        500
+      );
     }
   }
 
@@ -320,13 +388,20 @@ export class StoreService {
 
       if (error) {
         logger.error({ error }, 'Error fetching store statistics');
-        throw new ServiceError('STATS_FETCH_FAILED', 'Failed to fetch store statistics', 500);
+        throw new ServiceError(
+          'STATS_FETCH_FAILED',
+          'Failed to fetch store statistics',
+          500
+        );
       }
 
       const stats = {
         totalItems: data.length,
         activeItems: data.filter(item => item.is_active).length,
-        totalValue: data.reduce((sum, item) => sum + (item.price * item.stock), 0),
+        totalValue: data.reduce(
+          (sum, item) => sum + item.price * item.stock,
+          0
+        ),
         typeDistribution: data.reduce((acc, item) => {
           acc[item.type] = (acc[item.type] || 0) + 1;
           return acc;
@@ -334,9 +409,11 @@ export class StoreService {
         priceRange: {
           min: Math.min(...data.map(item => item.price)),
           max: Math.max(...data.map(item => item.price)),
-          average: data.reduce((sum, item) => sum + item.price, 0) / data.length || 0,
+          average:
+            data.reduce((sum, item) => sum + item.price, 0) / data.length || 0,
         },
-        lowStockItems: data.filter(item => item.stock < 10 && item.is_active).length,
+        lowStockItems: data.filter(item => item.stock < 10 && item.is_active)
+          .length,
       };
 
       logger.debug({ stats }, 'Store statistics calculated');
@@ -344,7 +421,11 @@ export class StoreService {
     } catch (error) {
       logger.error({ error }, 'Error getting store statistics');
       if (error instanceof ServiceError) throw error;
-      throw new ServiceError('STATS_ERROR', 'Failed to get store statistics', 500);
+      throw new ServiceError(
+        'STATS_ERROR',
+        'Failed to get store statistics',
+        500
+      );
     }
   }
 
@@ -356,7 +437,7 @@ export class StoreService {
     try {
       const pattern = CACHE_KEYS.STORE_ITEMS('*');
       const keys = await redisClient.keys(pattern);
-      
+
       if (keys.length > 0) {
         await redisClient.del(...keys);
         logger.debug({ keysCount: keys.length }, 'Store items cache cleared');

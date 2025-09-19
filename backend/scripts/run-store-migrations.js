@@ -3,7 +3,7 @@
 /**
  * Run Store Migrations
  * Executes the store system migrations for Aqua Stark
- * 
+ *
  * @author Aqua Stark Team
  * @version 1.0.0
  * @since 2025-01-XX
@@ -44,25 +44,37 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 async function runMigration(migrationFile) {
   try {
     console.log(`📄 Reading migration: ${migrationFile}`);
-    
-    const migrationPath = join(__dirname, '..', 'supabase', 'migrations', migrationFile);
+
+    const migrationPath = join(
+      __dirname,
+      '..',
+      'supabase',
+      'migrations',
+      migrationFile
+    );
     const migrationSQL = readFileSync(migrationPath, 'utf8');
-    
+
     console.log(`🚀 Executing migration: ${migrationFile}`);
-    
+
     const { data, error } = await supabase.rpc('exec_sql', {
-      sql: migrationSQL
+      sql: migrationSQL,
     });
-    
+
     if (error) {
-      console.error(`❌ Error executing migration ${migrationFile}:`, error.message);
+      console.error(
+        `❌ Error executing migration ${migrationFile}:`,
+        error.message
+      );
       return false;
     }
-    
+
     console.log(`✅ Migration ${migrationFile} executed successfully`);
     return true;
   } catch (error) {
-    console.error(`❌ Error reading migration ${migrationFile}:`, error.message);
+    console.error(
+      `❌ Error reading migration ${migrationFile}:`,
+      error.message
+    );
     return false;
   }
 }
@@ -76,7 +88,7 @@ async function runStoreMigrations() {
 
     const migrations = [
       '005_create_store_system.sql',
-      '006_store_items_seeds.sql'
+      '006_store_items_seeds.sql',
     ];
 
     let successCount = 0;
@@ -105,10 +117,11 @@ async function runStoreMigrations() {
       console.log('   3. Update image URLs in the database');
       console.log('   4. Test the store API endpoints');
     } else {
-      console.log('\n⚠️  Some migrations failed. Please check the errors above.');
+      console.log(
+        '\n⚠️  Some migrations failed. Please check the errors above.'
+      );
       process.exit(1);
     }
-
   } catch (error) {
     console.error('❌ Unexpected error:', error.message);
     process.exit(1);
@@ -121,9 +134,9 @@ async function runStoreMigrations() {
 async function main() {
   console.log('🚀 Aqua Stark Store Migration Runner');
   console.log('====================================\n');
-  
+
   await runStoreMigrations();
-  
+
   console.log('\n✨ Migration process complete!');
 }
 

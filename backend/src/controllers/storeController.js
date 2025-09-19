@@ -2,7 +2,7 @@ import { StoreService } from '../services/storeService.js';
 
 /**
  * Store Controller for handling HTTP requests related to store operations
- * 
+ *
  * @class StoreController
  * @author Aqua Stark Team
  * @version 1.0.0
@@ -18,8 +18,12 @@ export class StoreController {
     try {
       const filters = {
         type: req.query.type,
-        minPrice: req.query.minPrice ? parseFloat(req.query.minPrice) : undefined,
-        maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
+        minPrice: req.query.minPrice
+          ? parseFloat(req.query.minPrice)
+          : undefined,
+        maxPrice: req.query.maxPrice
+          ? parseFloat(req.query.maxPrice)
+          : undefined,
         search: req.query.search,
         limit: req.query.limit ? parseInt(req.query.limit) : undefined,
       };
@@ -41,14 +45,14 @@ export class StoreController {
       });
     } catch (error) {
       console.error('Error in getStoreItems:', error);
-      
+
       if (error.code === 'FETCH_FAILED' || error.code === 'FETCH_ERROR') {
-        return res.status(500).json({ 
+        return res.status(500).json({
           error: 'Failed to fetch store items',
-          message: error.message 
+          message: error.message,
         });
       }
-      
+
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -74,21 +78,21 @@ export class StoreController {
       });
     } catch (error) {
       console.error('Error in getStoreItem:', error);
-      
+
       if (error.code === 'ITEM_NOT_FOUND') {
-        return res.status(404).json({ 
+        return res.status(404).json({
           error: 'Store item not found',
-          message: error.message 
+          message: error.message,
         });
       }
-      
+
       if (error.code === 'FETCH_ERROR') {
-        return res.status(500).json({ 
+        return res.status(500).json({
           error: 'Failed to fetch store item',
-          message: error.message 
+          message: error.message,
         });
       }
-      
+
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -103,9 +107,15 @@ export class StoreController {
       const itemData = req.body;
 
       // Validate required fields
-      const requiredFields = ['name', 'description', 'price', 'type', 'image_url'];
+      const requiredFields = [
+        'name',
+        'description',
+        'price',
+        'type',
+        'image_url',
+      ];
       const missingFields = requiredFields.filter(field => !itemData[field]);
-      
+
       if (missingFields.length > 0) {
         return res.status(400).json({
           error: 'Missing required fields',
@@ -122,21 +132,21 @@ export class StoreController {
       });
     } catch (error) {
       console.error('Error in createStoreItem:', error);
-      
+
       if (error.code === 'VALIDATION_ERROR') {
-        return res.status(400).json({ 
+        return res.status(400).json({
           error: 'Validation error',
-          message: error.message 
+          message: error.message,
         });
       }
-      
+
       if (error.code === 'CREATE_FAILED' || error.code === 'CREATE_ERROR') {
-        return res.status(500).json({ 
+        return res.status(500).json({
           error: 'Failed to create store item',
-          message: error.message 
+          message: error.message,
         });
       }
-      
+
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -168,28 +178,28 @@ export class StoreController {
       });
     } catch (error) {
       console.error('Error in updateStoreItem:', error);
-      
+
       if (error.code === 'VALIDATION_ERROR') {
-        return res.status(400).json({ 
+        return res.status(400).json({
           error: 'Validation error',
-          message: error.message 
+          message: error.message,
         });
       }
-      
+
       if (error.code === 'ITEM_NOT_FOUND') {
-        return res.status(404).json({ 
+        return res.status(404).json({
           error: 'Store item not found',
-          message: error.message 
+          message: error.message,
         });
       }
-      
+
       if (error.code === 'UPDATE_FAILED' || error.code === 'UPDATE_ERROR') {
-        return res.status(500).json({ 
+        return res.status(500).json({
           error: 'Failed to update store item',
-          message: error.message 
+          message: error.message,
         });
       }
-      
+
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -216,21 +226,21 @@ export class StoreController {
       });
     } catch (error) {
       console.error('Error in deleteStoreItem:', error);
-      
+
       if (error.code === 'ITEM_NOT_FOUND') {
-        return res.status(404).json({ 
+        return res.status(404).json({
           error: 'Store item not found',
-          message: error.message 
+          message: error.message,
         });
       }
-      
+
       if (error.code === 'DELETE_FAILED' || error.code === 'DELETE_ERROR') {
-        return res.status(500).json({ 
+        return res.status(500).json({
           error: 'Failed to delete store item',
-          message: error.message 
+          message: error.message,
         });
       }
-      
+
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -254,7 +264,9 @@ export class StoreController {
       }
 
       if (typeof stock !== 'number' || stock < 0) {
-        return res.status(400).json({ error: 'Stock must be a non-negative number' });
+        return res
+          .status(400)
+          .json({ error: 'Stock must be a non-negative number' });
       }
 
       const updatedItem = await StoreService.updateItemStock(id, stock);
@@ -266,28 +278,28 @@ export class StoreController {
       });
     } catch (error) {
       console.error('Error in updateItemStock:', error);
-      
+
       if (error.code === 'VALIDATION_ERROR') {
-        return res.status(400).json({ 
+        return res.status(400).json({
           error: 'Validation error',
-          message: error.message 
+          message: error.message,
         });
       }
-      
+
       if (error.code === 'ITEM_NOT_FOUND') {
-        return res.status(404).json({ 
+        return res.status(404).json({
           error: 'Store item not found',
-          message: error.message 
+          message: error.message,
         });
       }
-      
+
       if (error.code === 'UPDATE_FAILED' || error.code === 'UPDATE_ERROR') {
-        return res.status(500).json({ 
+        return res.status(500).json({
           error: 'Failed to update item stock',
-          message: error.message 
+          message: error.message,
         });
       }
-      
+
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -307,14 +319,14 @@ export class StoreController {
       });
     } catch (error) {
       console.error('Error in getStoreStats:', error);
-      
+
       if (error.code === 'STATS_FETCH_FAILED' || error.code === 'STATS_ERROR') {
-        return res.status(500).json({ 
+        return res.status(500).json({
           error: 'Failed to fetch store statistics',
-          message: error.message 
+          message: error.message,
         });
       }
-      
+
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -334,9 +346,9 @@ export class StoreController {
 
       const validTypes = ['fish', 'decoration', 'food', 'other'];
       if (!validTypes.includes(type)) {
-        return res.status(400).json({ 
+        return res.status(400).json({
           error: 'Invalid item type',
-          validTypes: validTypes 
+          validTypes: validTypes,
         });
       }
 
@@ -350,14 +362,14 @@ export class StoreController {
       });
     } catch (error) {
       console.error('Error in getStoreItemsByType:', error);
-      
+
       if (error.code === 'FETCH_FAILED' || error.code === 'FETCH_ERROR') {
-        return res.status(500).json({ 
+        return res.status(500).json({
           error: 'Failed to fetch store items',
-          message: error.message 
+          message: error.message,
         });
       }
-      
+
       res.status(500).json({ error: 'Internal server error' });
     }
   }
