@@ -79,7 +79,6 @@ export function useStoreFilters({ initialTab }: UseStoreFiltersProps) {
       case 'food':
         // In a real implementation, these would come from their own data files
         return foodData;
-        return [];
       case 'decorations':
         return decorationItems;
       case 'others':
@@ -146,5 +145,8 @@ export function useStoreFilters({ initialTab }: UseStoreFiltersProps) {
     setSelectedRarity,
     sortOption,
     setSortOption,
+    priceRange: filters.priceRange,
+    categories: filters.categories,
+    onSale: filters.onSale,
   };
 }
