@@ -59,14 +59,14 @@ export interface StoreStatsResponse {
 
 /**
  * Hook for managing store items from the backend API
- * 
+ *
  * @author Aqua Stark Team
  * @version 1.0.0
  * @since 2025-01-XX
  */
 export function useStoreItems() {
   const { get, loading, error } = useApi();
-  
+
   // State for store items
   const [items, setItems] = useState<StoreItem[]>([]);
   const [stats, setStats] = useState<StoreStats | null>(null);
@@ -76,67 +76,78 @@ export function useStoreItems() {
   /**
    * Fetch store items with optional filters
    */
-  const fetchStoreItems = useCallback(async (filters: StoreFilters = {}) => {
-    try {
-      const params: Record<string, string> = {};
-      
-      if (filters.type) params.type = filters.type;
-      if (filters.minPrice !== undefined) params.minPrice = filters.minPrice.toString();
-      if (filters.maxPrice !== undefined) params.maxPrice = filters.maxPrice.toString();
-      if (filters.search) params.search = filters.search;
-      if (filters.limit) params.limit = filters.limit.toString();
+  const fetchStoreItems = useCallback(
+    async (filters: StoreFilters = {}) => {
+      try {
+        const params: Record<string, string> = {};
 
-      const response = await get<StoreResponse>('/store/items', params);
-      
-      if (response.success && response.data) {
-        setItems(response.data);
-        setLastFilters(filters);
-        setIsInitialized(true);
-        return response.data;
+        if (filters.type) params.type = filters.type;
+        if (filters.minPrice !== undefined)
+          params.minPrice = filters.minPrice.toString();
+        if (filters.maxPrice !== undefined)
+          params.maxPrice = filters.maxPrice.toString();
+        if (filters.search) params.search = filters.search;
+        if (filters.limit) params.limit = filters.limit.toString();
+
+        const response = await get<StoreResponse>('/store/items', params);
+
+        if (response.success && response.data) {
+          setItems(response.data);
+          setLastFilters(filters);
+          setIsInitialized(true);
+          return response.data;
+        }
+
+        throw new Error('Failed to fetch store items');
+      } catch (err) {
+        console.error('Error fetching store items:', err);
+        throw err;
       }
-      
-      throw new Error('Failed to fetch store items');
-    } catch (err) {
-      console.error('Error fetching store items:', err);
-      throw err;
-    }
-  }, [get]);
+    },
+    [get]
+  );
 
   /**
    * Fetch a specific store item by ID
    */
-  const fetchStoreItem = useCallback(async (itemId: string): Promise<StoreItem> => {
-    try {
-      const response = await get<StoreItemResponse>(`/store/items/${itemId}`);
-      
-      if (response.success && response.data) {
-        return response.data;
+  const fetchStoreItem = useCallback(
+    async (itemId: string): Promise<StoreItem> => {
+      try {
+        const response = await get<StoreItemResponse>(`/store/items/${itemId}`);
+
+        if (response.success && response.data) {
+          return response.data;
+        }
+
+        throw new Error('Failed to fetch store item');
+      } catch (err) {
+        console.error('Error fetching store item:', err);
+        throw err;
       }
-      
-      throw new Error('Failed to fetch store item');
-    } catch (err) {
-      console.error('Error fetching store item:', err);
-      throw err;
-    }
-  }, [get]);
+    },
+    [get]
+  );
 
   /**
    * Fetch store items by type
    */
-  const fetchStoreItemsByType = useCallback(async (type: StoreItemType): Promise<StoreItem[]> => {
-    try {
-      const response = await get<StoreResponse>(`/store/items/type/${type}`);
-      
-      if (response.success && response.data) {
-        return response.data;
+  const fetchStoreItemsByType = useCallback(
+    async (type: StoreItemType): Promise<StoreItem[]> => {
+      try {
+        const response = await get<StoreResponse>(`/store/items/type/${type}`);
+
+        if (response.success && response.data) {
+          return response.data;
+        }
+
+        throw new Error('Failed to fetch store items by type');
+      } catch (err) {
+        console.error('Error fetching store items by type:', err);
+        throw err;
       }
-      
-      throw new Error('Failed to fetch store items by type');
-    } catch (err) {
-      console.error('Error fetching store items by type:', err);
-      throw err;
-    }
-  }, [get]);
+    },
+    [get]
+  );
 
   /**
    * Fetch store statistics
@@ -144,12 +155,12 @@ export function useStoreItems() {
   const fetchStoreStats = useCallback(async (): Promise<StoreStats> => {
     try {
       const response = await get<StoreStatsResponse>('/store/items/stats');
-      
+
       if (response.success && response.data) {
         setStats(response.data);
         return response.data;
       }
-      
+
       throw new Error('Failed to fetch store statistics');
     } catch (err) {
       console.error('Error fetching store statistics:', err);
@@ -160,38 +171,51 @@ export function useStoreItems() {
   /**
    * Get items by type from current items state
    */
-  const getItemsByType = useCallback((type: StoreItemType): StoreItem[] => {
-    return items.filter(item => item.type === type);
-  }, [items]);
+  const getItemsByType = useCallback(
+    (type: StoreItemType): StoreItem[] => {
+      return items.filter(item => item.type === type);
+    },
+    [items]
+  );
 
   /**
    * Search items by name or description
    */
-  const searchItems = useCallback((query: string): StoreItem[] => {
-    if (!query.trim()) return items;
-    
-    const lowercaseQuery = query.toLowerCase();
-    return items.filter(item => 
-      item.name.toLowerCase().includes(lowercaseQuery) ||
-      item.description.toLowerCase().includes(lowercaseQuery)
-    );
-  }, [items]);
+  const searchItems = useCallback(
+    (query: string): StoreItem[] => {
+      if (!query.trim()) return items;
+
+      const lowercaseQuery = query.toLowerCase();
+      return items.filter(
+        item =>
+          item.name.toLowerCase().includes(lowercaseQuery) ||
+          item.description.toLowerCase().includes(lowercaseQuery)
+      );
+    },
+    [items]
+  );
 
   /**
    * Filter items by price range
    */
-  const filterItemsByPrice = useCallback((minPrice: number, maxPrice: number): StoreItem[] => {
-    return items.filter(item => 
-      item.price >= minPrice && item.price <= maxPrice
-    );
-  }, [items]);
+  const filterItemsByPrice = useCallback(
+    (minPrice: number, maxPrice: number): StoreItem[] => {
+      return items.filter(
+        item => item.price >= minPrice && item.price <= maxPrice
+      );
+    },
+    [items]
+  );
 
   /**
    * Get items with low stock
    */
-  const getLowStockItems = useCallback((threshold: number = 10): StoreItem[] => {
-    return items.filter(item => item.stock <= threshold && item.stock > 0);
-  }, [items]);
+  const getLowStockItems = useCallback(
+    (threshold: number = 10): StoreItem[] => {
+      return items.filter(item => item.stock <= threshold && item.stock > 0);
+    },
+    [items]
+  );
 
   /**
    * Get out of stock items
@@ -210,47 +234,59 @@ export function useStoreItems() {
   /**
    * Get items sorted by price
    */
-  const getItemsSortedByPrice = useCallback((ascending: boolean = true): StoreItem[] => {
-    return [...items].sort((a, b) => 
-      ascending ? a.price - b.price : b.price - a.price
-    );
-  }, [items]);
+  const getItemsSortedByPrice = useCallback(
+    (ascending: boolean = true): StoreItem[] => {
+      return [...items].sort((a, b) =>
+        ascending ? a.price - b.price : b.price - a.price
+      );
+    },
+    [items]
+  );
 
   /**
    * Get items sorted by name
    */
-  const getItemsSortedByName = useCallback((ascending: boolean = true): StoreItem[] => {
-    return [...items].sort((a, b) => 
-      ascending ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)
-    );
-  }, [items]);
+  const getItemsSortedByName = useCallback(
+    (ascending: boolean = true): StoreItem[] => {
+      return [...items].sort((a, b) =>
+        ascending ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)
+      );
+    },
+    [items]
+  );
 
   /**
    * Get items sorted by creation date
    */
-  const getItemsSortedByDate = useCallback((ascending: boolean = true): StoreItem[] => {
-    return [...items].sort((a, b) => {
-      const dateA = new Date(a.created_at).getTime();
-      const dateB = new Date(b.created_at).getTime();
-      return ascending ? dateA - dateB : dateB - dateA;
-    });
-  }, [items]);
+  const getItemsSortedByDate = useCallback(
+    (ascending: boolean = true): StoreItem[] => {
+      return [...items].sort((a, b) => {
+        const dateA = new Date(a.created_at).getTime();
+        const dateB = new Date(b.created_at).getTime();
+        return ascending ? dateA - dateB : dateB - dateA;
+      });
+    },
+    [items]
+  );
 
   /**
    * Get total value of all items
    */
   const getTotalValue = useCallback((): number => {
-    return items.reduce((total, item) => total + (item.price * item.stock), 0);
+    return items.reduce((total, item) => total + item.price * item.stock, 0);
   }, [items]);
 
   /**
    * Get type distribution
    */
   const getTypeDistribution = useCallback((): Record<StoreItemType, number> => {
-    return items.reduce((distribution, item) => {
-      distribution[item.type] = (distribution[item.type] || 0) + 1;
-      return distribution;
-    }, {} as Record<StoreItemType, number>);
+    return items.reduce(
+      (distribution, item) => {
+        distribution[item.type] = (distribution[item.type] || 0) + 1;
+        return distribution;
+      },
+      {} as Record<StoreItemType, number>
+    );
   }, [items]);
 
   /**
@@ -279,17 +315,17 @@ export function useStoreItems() {
     stats,
     lastFilters,
     isInitialized,
-    
+
     // Loading and error states
     loading,
     error,
-    
+
     // Fetch functions
     fetchStoreItems,
     fetchStoreItem,
     fetchStoreItemsByType,
     fetchStoreStats,
-    
+
     // Utility functions
     getItemsByType,
     searchItems,
@@ -302,7 +338,7 @@ export function useStoreItems() {
     getItemsSortedByDate,
     getTotalValue,
     getTypeDistribution,
-    
+
     // State management
     refreshItems,
     clearItems,
@@ -318,15 +354,15 @@ export function useStoreItem(itemId: string) {
 
   const fetchItem = useCallback(async () => {
     if (!itemId) return;
-    
+
     try {
       const response = await get<StoreItemResponse>(`/store/items/${itemId}`);
-      
+
       if (response.success && response.data) {
         setItem(response.data);
         return response.data;
       }
-      
+
       throw new Error('Failed to fetch store item');
     } catch (err) {
       console.error('Error fetching store item:', err);
