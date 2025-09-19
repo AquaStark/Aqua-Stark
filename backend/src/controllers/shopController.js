@@ -166,8 +166,9 @@ export class ShopController {
    */
   static async getPlayerCurrency(req, res) {
     try {
-
-      const currency = await ShopService.getPlayerCurrency(playerWallet);
+      const currency = await ShopService.getPlayerCurrency(
+        req.body.playerWallet
+      );
 
       res.status(200).json({
         success: true,
