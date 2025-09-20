@@ -24,35 +24,11 @@ import { SpecialBundles } from '@/components/store/special-bundles';
 import { specialFoodBundles } from '@/data/market-data';
 import { useStoreFilters, useShopData } from '@/hooks';
 import { Button } from '@/components/ui/button';
+import { ShopItem, ShopBundle } from '@/types/shop-types';
 
-// Define types for our data model
-interface StoreItem {
-  name: string;
-  image: string;
-  price: number;
-  rarity: string;
-  description: string;
-  rating: number;
-  // Add missing properties that were causing errors
-  category?: string;
-  discounted?: boolean;
-  popularity?: number;
-  createdAt?: Date;
-  id: string; // Required for recentlyViewed
-}
-
-interface Bundle {
-  id: string;
-  name: string;
-  image: string;
-  price: number;
-  originalPrice: number;
-  discount: string;
-  tag: string;
-  rarity: string;
-  items: string[];
-  description: string;
-}
+// Use centralized types
+type StoreItem = ShopItem;
+type Bundle = ShopBundle;
 
 // Type guards for data validation
 
