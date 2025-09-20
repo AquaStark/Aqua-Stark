@@ -9,55 +9,12 @@ import {
 } from '@/data/mock-store';
 import { foodData, specialFoodBundles } from '@/data/market-data';
 import { ItemType } from '@/data/mock-game';
-
-// Types for shop data
-export interface ShopItem {
-  id: string;
-  name: string;
-  image: string;
-  price: number;
-  originalPrice?: number;
-  rarity: string;
-  category?: string;
-  description: string;
-  rating: number;
-  isNew?: boolean;
-  stock?: number;
-  isLimited?: boolean;
-  discounted?: boolean;
-  popularity?: number;
-  createdAt?: Date;
-}
-
-export interface ShopBundle {
-  id: string;
-  name: string;
-  image: string;
-  price: number;
-  originalPrice?: number;
-  discount?: string;
-  tag?: string;
-  rarity: string;
-  items: string[];
-  description: string;
-  savingsPercentage?: number;
-  type?: ItemType;
-}
-
-export interface TransactionResult {
-  success: boolean;
-  message: string;
-  transactionId?: string;
-  error?: string;
-}
-
-export interface ShopFilters {
-  searchQuery: string;
-  priceRange: [number, number];
-  categories: string[];
-  onSale: boolean;
-  sort: 'name' | 'price' | 'rating' | 'newest' | 'popularity';
-}
+import { 
+  ShopItem, 
+  ShopBundle, 
+  TransactionResult, 
+  ShopFilters 
+} from '@/types/shop-types';
 
 // Cache interface for shop data
 interface ShopCache {
