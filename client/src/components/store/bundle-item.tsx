@@ -3,7 +3,7 @@ import { useCartStore } from '@/store/use-cart-store';
 
 import { ShopBundle } from '@/types/shop-types';
 
-interface BundleItemProps extends ShopBundle {}
+type BundleItemProps = ShopBundle;
 
 export default function BundleItem({
   id,
