@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useCallback, useEffect } from 'react';
-import type { FishType, FoodItem } from '@/types';
+import type { FishType, FoodItem, Fish } from '@/types';
 import { useFishMovement } from '@/hooks';
 import { FishDisplay } from './fish-display';
 import { Food } from '@/components/food/Food';

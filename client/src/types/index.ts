@@ -52,7 +52,6 @@ export type {
 export type {
   DirtSpot,
   DirtSubShape,
-  DirtType,
   DirtTypeProperties,
   DirtSystemConfig,
   DirtSystemState,
@@ -63,6 +62,9 @@ export type {
   DirtSystemEvent,
   DirtSystemHook,
 } from './dirt';
+
+// Export DirtType as value (enum) since it's used as a value in code
+export { DirtType } from './dirt';
 
 export {
   DIRT_TYPE_CONFIG,
