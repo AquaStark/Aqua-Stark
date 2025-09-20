@@ -15,10 +15,10 @@ export * from './api-types';
 export * from './player-types';
 
 // Laboratory and breeding types (excluding conflicting types from fish.ts)
-export type { 
+export type {
   FishStateType,
   BreedingPair as FishBreedingPair,
-  BreedingResult as FishBreedingResult 
+  BreedingResult as FishBreedingResult,
 } from './fish';
 
 // Food system types
@@ -29,9 +29,7 @@ export * from './events';
 export * from './community';
 
 // Wallet and connector types (excluding conflicting types)
-export type { 
-  WalletConnector as WalletConnectorType
-} from './wallet-types';
+export type { WalletConnector as WalletConnectorType } from './wallet-types';
 
 export * from './connector-types';
 

@@ -342,6 +342,13 @@ export const ShopTypeValidators = {
    * Validates if a string is a valid rarity
    */
   isRarity: (rarity: string): rarity is ShopItem['rarity'] => {
-    return ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Special'].includes(rarity);
+    return [
+      'Common',
+      'Uncommon',
+      'Rare',
+      'Epic',
+      'Legendary',
+      'Special',
+    ].includes(rarity);
   },
 };
