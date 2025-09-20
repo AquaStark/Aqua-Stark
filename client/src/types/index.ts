@@ -1,10 +1,10 @@
 /**
  * @fileoverview Centralized type exports for Aqua-Stark game client
- * 
+ *
  * This file serves as the main entry point for all TypeScript types used throughout
  * the application. It organizes types by categories for better maintainability and
  * provides a single import location for components and hooks.
- * 
+ *
  * @author Aqua-Stark Team
  * @version 1.0.0
  * @since 2025-01-27
@@ -73,10 +73,7 @@ export {
 } from './dirt';
 
 // Food system for fish feeding mechanics
-export type {
-  FoodItem,
-  FoodSystemState,
-} from './food';
+export type { FoodItem, FoodSystemState } from './food';
 
 // Fish breeding laboratory types
 export type {
@@ -154,9 +151,7 @@ export type {
 } from './cartridge';
 
 // Dojo framework integration
-export type {
-  DojoClient,
-} from './dojo';
+export type { DojoClient } from './dojo';
 
 // =============================================================================
 // API & BACKEND
@@ -204,11 +199,7 @@ export type {
 // =============================================================================
 
 // Calendar events and community activities
-export type {
-  CalendarEvent,
-  EventFilters,
-  EventClickHandler,
-} from './events';
+export type { CalendarEvent, EventFilters, EventClickHandler } from './events';
 
 // Community features and social interactions
 export type {
@@ -228,9 +219,7 @@ export type {
 } from './fish';
 
 // Re-export dirt system types with common naming
-export type {
-  DirtSpot as DirtSpotType,
-} from './dirt';
+export type { DirtSpot as DirtSpotType } from './dirt';
 
 // =============================================================================
 // TYPE VALIDATION
@@ -245,20 +234,20 @@ export const TYPE_VALIDATION = {
   FISH_TYPES: ['FishType', 'AquariumData', 'ContractAquarium', 'ContractFish'],
   FISH_SYSTEM: ['Fish', 'FishStateType', 'BreedingPair', 'BreedingResult'],
   FISH_INDICATORS: ['FishIndicatorState', 'FishIndicatorOptions'],
-  
+
   // Game Systems
   DIRT_SYSTEM: ['DirtSpot', 'DirtType', 'DirtSystemConfig', 'DirtSystemState'],
   FOOD_SYSTEM: ['FoodItem', 'FoodSystemState'],
-  
+
   // UI Types
   UI_COMPONENTS: ['ModalProps', 'FormField', 'LoadingState', 'ErrorState'],
-  
+
   // Wallet Types
   WALLET_TYPES: ['WalletAccount', 'WalletState', 'TransactionRequest'],
-  
+
   // API Types
   API_TYPES: ['ApiResponse', 'ApiError', 'PlayerCreateRequest'],
-  
+
   // Market Types
   MARKET_TYPES: ['MarketFish', 'MarketFilters', 'Transaction'],
 } as const;
@@ -269,7 +258,7 @@ export const TYPE_VALIDATION = {
 
 /**
  * EXPORT ORGANIZATION:
- * 
+ *
  * 1. Core Game Types - Fundamental game entities and blockchain interfaces
  * 2. Game Systems - Specialized game mechanics (dirt, food, breeding)
  * 3. UI & Interface Types - Component props, forms, animations
@@ -279,7 +268,7 @@ export const TYPE_VALIDATION = {
  * 7. Events & Community - Calendar events and social features
  * 8. Common Re-exports - Frequently used type aliases
  * 9. Type Validation - Development-time validation helpers
- * 
+ *
  * MAINTENANCE NOTES:
  * - When adding new types, place them in the appropriate category section
  * - Update TYPE_VALIDATION object with new type names
