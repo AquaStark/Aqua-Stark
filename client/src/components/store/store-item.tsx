@@ -33,6 +33,7 @@ export default function StoreItem({
   const { addItem, addToRecentlyViewed } = useCartStore();
 
   const getRarityColor = () => {
+    if (!rarity) return 'bg-gray-500';
     switch (rarity.toLowerCase()) {
       case 'common':
         return 'bg-gray-500';
@@ -47,7 +48,7 @@ export default function StoreItem({
     }
   };
 
-  const hasDiscount = originalPrice && originalPrice > price;
+  const hasDiscount = originalPrice && price && originalPrice > price;
   const discountPercentage = hasDiscount
     ? Math.round(((originalPrice - price) / originalPrice) * 100)
     : 0;
@@ -56,12 +57,16 @@ export default function StoreItem({
     const newFavoriteState = !isFavorite;
     setIsFavorite(newFavoriteState);
 
-    if (onAddToWishlist) {
+    if (onAddToWishlist && name) {
       onAddToWishlist(name, newFavoriteState);
     }
   };
 
   const handleAddToCart = () => {
+    if (!id || !name || !image || !price || !rarity || !description) {
+      return; // Don't add incomplete items to cart
+    }
+
     setIsAddingToCart(true);
 
     // Create item object for cart

@@ -20,7 +20,7 @@ export interface ShopItem {
   /** Original price before any discounts */
   originalPrice?: number;
   /** Rarity classification of the item */
-  rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
+  rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary' | 'Special';
   /** Category classification for grouping items */
   category?: string;
   /** Detailed description of the item */
@@ -80,7 +80,7 @@ export interface ShopBundle {
   /** Special tag for the bundle (e.g., "Limited", "Sale") */
   tag?: string;
   /** Rarity classification of the bundle */
-  rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
+  rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary' | 'Special';
   /** Array of item IDs included in this bundle */
   items: string[];
   /** Detailed description of the bundle */
@@ -88,7 +88,7 @@ export interface ShopBundle {
   /** Percentage saved compared to buying items individually */
   savingsPercentage?: number;
   /** Type of items in the bundle */
-  type?: 'fish' | 'decorations' | 'food' | 'misc';
+  type?: 'fish' | 'decorations' | 'food' | 'misc' | 'others';
 }
 
 /**
@@ -175,44 +175,42 @@ export interface TransactionResponse {
  * Represents filters for shop item searches
  */
 export interface ShopFilters {
-  /** Filter by rarity */
-  rarity?: string[];
+  /** Search query */
+  searchQuery: string;
   /** Filter by price range */
-  priceRange?: {
-    min: number;
-    max: number;
-  };
-  /** Filter by category */
-  category?: string;
-  /** Search term */
-  search?: string;
+  priceRange: [number, number];
+  /** Filter by categories */
+  categories: string[];
+  /** Show only items on sale */
+  onSale: boolean;
   /** Sort order */
-  sortBy?: 'name' | 'price' | 'rating' | 'popularity' | 'date';
-  /** Sort direction */
-  sortOrder?: 'asc' | 'desc';
-  /** Show only discounted items */
-  showDiscountedOnly?: boolean;
-  /** Show only new items */
-  showNewOnly?: boolean;
-  /** Show only limited items */
-  showLimitedOnly?: boolean;
+  sort: 'name' | 'price' | 'rating' | 'newest' | 'popularity';
 }
 
 /**
  * Represents market-specific filters extending shop filters
  */
-export interface MarketFilters extends ShopFilters {
+export interface MarketFilters {
   /** Type of listing */
   listingType: 'all' | 'buy' | 'sell' | 'auction' | 'exchange';
   /** Filter by traits */
   traits: string[];
   /** Sort options specific to market */
   sort: 'newest' | 'price-low' | 'price-high' | 'rarity' | 'level';
+  /** Price range filter */
+  priceRange: {
+    min: number;
+    max: number;
+  };
+  /** Filter by rarity */
+  rarity: string[];
   /** Level range filter */
   level: {
     min: number;
     max: number;
   };
+  /** Search term */
+  search?: string;
 }
 
 /**
@@ -258,7 +256,7 @@ export interface MarketplaceFish {
   /** Fish image */
   image: string;
   /** Fish rarity */
-  rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
+  rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary' | 'Special';
   /** Generation number */
   generation: number;
   /** Level */
@@ -344,6 +342,6 @@ export const ShopTypeValidators = {
    * Validates if a string is a valid rarity
    */
   isRarity: (rarity: string): rarity is ShopItem['rarity'] => {
-    return ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'].includes(rarity);
+    return ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Special'].includes(rarity);
   },
 };

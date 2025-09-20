@@ -3,23 +3,23 @@
  * This file exports all types from the types directory for easy importing
  */
 
-// Shop and marketplace types
+// Shop and marketplace types (exported first to take precedence)
 export * from './shop-types';
 
 // Core game types
 export * from './game';
-export * from './fish';
 export * from './fishIndicators';
 
 // API and backend types
 export * from './api-types';
 export * from './player-types';
 
-// Market and trading types
-export * from './market';
-
-// Laboratory and breeding types
-export * from './laboratory';
+// Laboratory and breeding types (excluding conflicting types from fish.ts)
+export type { 
+  FishStateType,
+  BreedingPair as FishBreedingPair,
+  BreedingResult as FishBreedingResult 
+} from './fish';
 
 // Food system types
 export * from './food';
@@ -28,8 +28,11 @@ export * from './food';
 export * from './events';
 export * from './community';
 
-// Wallet and connector types
-export * from './wallet-types';
+// Wallet and connector types (excluding conflicting types)
+export type { 
+  WalletConnector as WalletConnectorType
+} from './wallet-types';
+
 export * from './connector-types';
 
 // UI and component types
