@@ -7,18 +7,9 @@ import { Heart, Plus, Star, Check } from 'lucide-react';
 import { FishTank } from '@/components/fish-tank';
 import { useCartStore } from '@/store/use-cart-store';
 
-interface StoreItemProps {
-  id?: string;
-  name: string;
-  image: string;
-  price: number;
-  rarity: string;
-  description?: string;
-  rating?: number;
-  originalPrice?: number;
-  isNew?: boolean;
-  stock?: number;
-  isLimited?: boolean;
+import { ShopItem } from '@/types/shop-types';
+
+interface StoreItemProps extends Partial<ShopItem> {
   onAddToWishlist?: (itemName: string, isFavorite: boolean) => void;
 }
 
@@ -42,6 +33,7 @@ export default function StoreItem({
   const { addItem, addToRecentlyViewed } = useCartStore();
 
   const getRarityColor = () => {
+    if (!rarity) return 'bg-gray-500';
     switch (rarity.toLowerCase()) {
       case 'common':
         return 'bg-gray-500';
@@ -56,7 +48,7 @@ export default function StoreItem({
     }
   };
 
-  const hasDiscount = originalPrice && originalPrice > price;
+  const hasDiscount = originalPrice && price && originalPrice > price;
   const discountPercentage = hasDiscount
     ? Math.round(((originalPrice - price) / originalPrice) * 100)
     : 0;
@@ -65,12 +57,16 @@ export default function StoreItem({
     const newFavoriteState = !isFavorite;
     setIsFavorite(newFavoriteState);
 
-    if (onAddToWishlist) {
+    if (onAddToWishlist && name) {
       onAddToWishlist(name, newFavoriteState);
     }
   };
 
   const handleAddToCart = () => {
+    if (!id || !name || !image || !price || !rarity || !description) {
+      return; // Don't add incomplete items to cart
+    }
+
     setIsAddingToCart(true);
 
     // Create item object for cart
