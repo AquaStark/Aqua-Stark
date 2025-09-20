@@ -380,33 +380,33 @@ export interface GameActionResult {
 
 /**
  * @deprecated Use UserProfile instead
- * Legacy player data interface for backward compatibility
+ * Legacy player data type for backward compatibility
  */
-export interface PlayerData extends UserProfile {}
+export type PlayerData = UserProfile;
 
 /**
  * @deprecated Use BackendUserData instead
- * Legacy backend player data interface for backward compatibility
+ * Legacy backend player data type for backward compatibility
  */
-export interface BackendPlayerData extends BackendUserData {}
+export type BackendPlayerData = BackendUserData;
 
 /**
  * @deprecated Use OnChainUserData instead
- * Legacy on-chain player data interface for backward compatibility
+ * Legacy on-chain player data type for backward compatibility
  */
-export interface OnChainPlayerData extends OnChainUserData {}
+export type OnChainPlayerData = OnChainUserData;
 
 /**
  * @deprecated Use User instead
- * Legacy cartridge account interface for backward compatibility
+ * Legacy cartridge account type for backward compatibility
  */
-export interface CartridgeAccount extends User {}
+export type CartridgeAccount = User;
 
 /**
  * @deprecated Use UserSession instead
- * Legacy cartridge session interface for backward compatibility
+ * Legacy cartridge session type for backward compatibility
  */
-export interface CartridgeSession extends UserSession {}
+export type CartridgeSession = UserSession;
 
 /**
  * @deprecated Use UserSession instead
