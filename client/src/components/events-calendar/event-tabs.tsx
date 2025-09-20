@@ -19,11 +19,10 @@ import { ListEventView } from './list-event-view';
 import { CalendarView } from './calendar-view';
 import { EventDetailsModal } from './event-details-modal';
 import { mockEvents } from '@/data/event-calendar-data';
+import { CalendarEvent } from '@/types';
 
 type TabType = 'all' | 'special' | 'seasons' | 'tournaments' | 'offers';
 type ViewType = 'list' | 'calendar';
-
-import { CalendarEvent } from '@/types/events';
 
 export default function EventTabs() {
   const [activeTab, setActiveTab] = useState<TabType>('all');

@@ -1,4 +1,4 @@
-import { FishType } from '@/types/game';
+import { FishType } from '@/types';
 
 // Tipos
 export interface GameState {

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { mockEvents } from '@/data/event-calendar-data';
-import { CalendarEvent } from '@/types/events';
+import { CalendarEvent } from '@/types';
 
 export type TabType = 'all' | 'special' | 'seasons' | 'tournaments' | 'offers';
 export type ViewType = 'list' | 'calendar';

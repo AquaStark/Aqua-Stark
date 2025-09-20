@@ -17,7 +17,7 @@ import { DirtOverlay } from '@/components/dirt/dirt-overlay';
 import { CleanButton } from '@/components/dirt/clean-button';
 import { useFeedingSystem } from '@/systems/feeding-system';
 import { FeedingAquarium } from '@/components/game/feeding-aquarium';
-import { FishSpecies } from '@/types/game';
+import { FishSpecies } from '@/types';
 import { useAccount } from '@starknet-react/core';
 // import { toast } from 'sonner';
 import { useFish } from '@/hooks';

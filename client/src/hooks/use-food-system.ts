@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import type { FoodItem, FoodSystemState } from '@/types/food';
-import type { Fish } from '@/types/fish';
+import type { FoodItem, FoodSystemState, Fish } from '@/types';
 interface UseFoodSystemOptions {
   aquariumBounds: { width: number; height: number };
   maxFoodsPerSecond?: number;

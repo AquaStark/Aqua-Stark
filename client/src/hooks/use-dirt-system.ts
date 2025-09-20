@@ -4,7 +4,7 @@ import {
   DirtType,
   DirtSystemConfig,
   DirtSystemState,
-} from '@/types/dirt';
+} from '@/types';
 
 const DEFAULT_CONFIG: DirtSystemConfig = {
   spawnInterval: 5000, // 5 seconds

@@ -1,5 +1,5 @@
 import { Edit, Trash2, Eye } from 'lucide-react';
-import type { Fish } from '@/types/fish';
+import type { Fish } from '@/types';
 
 export interface Aquarium {
   id: number;
