@@ -7,18 +7,9 @@ import { Heart, Plus, Star, Check } from 'lucide-react';
 import { FishTank } from '@/components/fish-tank';
 import { useCartStore } from '@/store/use-cart-store';
 
-interface StoreItemProps {
-  id?: string;
-  name: string;
-  image: string;
-  price: number;
-  rarity: string;
-  description?: string;
-  rating?: number;
-  originalPrice?: number;
-  isNew?: boolean;
-  stock?: number;
-  isLimited?: boolean;
+import { ShopItem } from '@/types/shop-types';
+
+interface StoreItemProps extends Partial<ShopItem> {
   onAddToWishlist?: (itemName: string, isFavorite: boolean) => void;
 }
 
