@@ -9,11 +9,11 @@ import {
 } from '@/data/mock-store';
 import { foodData, specialFoodBundles } from '@/data/market-data';
 import { ItemType } from '@/data/mock-game';
-import { 
-  ShopItem, 
-  ShopBundle, 
-  TransactionResult, 
-  ShopFilters 
+import {
+  ShopItem,
+  ShopBundle,
+  TransactionResult,
+  ShopFilters,
 } from '@/types/shop-types';
 
 // Cache interface for shop data

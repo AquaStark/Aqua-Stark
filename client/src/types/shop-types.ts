@@ -136,12 +136,12 @@ export interface TransactionResult {
 /**
  * Represents different states a transaction can be in
  */
-export type TransactionState = 
-  | 'pending'    // Transaction is being processed
-  | 'confirmed'  // Transaction has been confirmed on blockchain
-  | 'failed'     // Transaction failed
-  | 'cancelled'  // Transaction was cancelled
-  | 'refunded';  // Transaction was refunded
+export type TransactionState =
+  | 'pending' // Transaction is being processed
+  | 'confirmed' // Transaction has been confirmed on blockchain
+  | 'failed' // Transaction failed
+  | 'cancelled' // Transaction was cancelled
+  | 'refunded'; // Transaction was refunded
 
 /**
  * Represents a transaction request for blockchain operations
@@ -335,7 +335,9 @@ export const ShopTypeValidators = {
    * Validates if a string is a valid transaction state
    */
   isTransactionState: (state: string): state is TransactionState => {
-    return ['pending', 'confirmed', 'failed', 'cancelled', 'refunded'].includes(state);
+    return ['pending', 'confirmed', 'failed', 'cancelled', 'refunded'].includes(
+      state
+    );
   },
 
   /**
@@ -343,5 +345,5 @@ export const ShopTypeValidators = {
    */
   isRarity: (rarity: string): rarity is ShopItem['rarity'] => {
     return ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'].includes(rarity);
-  }
+  },
 };
