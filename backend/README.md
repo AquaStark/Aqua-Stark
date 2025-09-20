@@ -365,7 +365,146 @@ GET    /api/v1/minigames/leaderboard
 WS /ws
 ```
 
-## 🔐 Autenticación
+## � Controllers Documentation
+
+The backend uses a modular controller architecture with comprehensive JSDoc documentation. All controllers follow consistent patterns for request/response handling and error management.
+
+### Available Controllers
+
+#### **PlayerController** (`src/controllers/playerController.js`)
+Handles player-related operations including profile management, experience tracking, and preferences.
+
+**Key Methods:**
+- `getPlayerProfile()` - Get authenticated player's profile
+- `getPlayerByWallet()` - Get player by wallet address (public)
+- `createPlayer()` - Create new player account (public)
+- `updatePlayerExperience()` - Update player XP
+- `updatePlayerCurrency()` - Update player currency balance
+- `updatePlayerStats()` - Update player statistics
+- `getPlayerPreferences()` - Get player preferences
+- `updatePlayerPreferences()` - Update player preferences
+- `getPlayerDashboard()` - Get comprehensive dashboard data
+
+#### **FishController** (`src/controllers/fishController.js`)
+Manages fish-related operations including state management, feeding, and breeding.
+
+**Key Methods:**
+- `getFishState()` - Get current fish state
+- `updateFishHappiness()` - Update fish happiness level
+- `feedFish()` - Feed fish with specified food type
+- `getFishStats()` - Get detailed fish statistics
+- `getPlayerFish()` - Get all fish for a player
+- `breedFish()` - Breed fish (placeholder for future implementation)
+
+#### **DecorationController** (`src/controllers/decorationController.js`)
+Handles aquarium decoration operations including placement, positioning, and management.
+
+**Key Methods:**
+- `getDecorationState()` - Get decoration state
+- `createDecorationState()` - Create new decoration state
+- `getPlayerDecorations()` - Get all player decorations
+- `getAquariumDecorations()` - Get decorations in specific aquarium
+- `placeDecoration()` - Place decoration in aquarium
+- `removeDecoration()` - Remove decoration from aquarium
+- `updateDecorationPosition()` - Update decoration position/rotation
+- `toggleDecorationVisibility()` - Toggle decoration visibility
+- `moveDecoration()` - Move decoration between aquariums
+- `bulkUpdatePositions()` - Bulk update multiple decoration positions
+
+#### **MinigameController** (`src/controllers/minigameController.js`)
+Manages minigame sessions, scoring, leaderboards, and achievements.
+
+**Supported Game Types:**
+- `flappy_fish` - Navigate fish through obstacles
+- `angry_fish` - Launch fish to hit targets
+- `fish_racing` - Race fish against others
+- `bubble_pop` - Pop bubbles to earn points
+- `fish_memory` - Match fish pairs in memory game
+
+**Key Methods:**
+- `createGameSession()` - Create new game session
+- `endGameSession()` - End session with final score
+- `getPlayerStats()` - Get player statistics
+- `getGameLeaderboard()` - Get leaderboard for specific game
+- `getGlobalLeaderboard()` - Get global leaderboard
+- `awardBonusXP()` - Award bonus XP for achievements
+- `getGameTypes()` - Get available game types
+
+### Controller Exports
+
+All controllers are exported through `src/controllers/index.js`:
+
+```javascript
+import { controllers } from './src/controllers/index.js';
+// or
+import { PlayerController, FishController } from './src/controllers/index.js';
+```
+
+### Documentation Generation
+
+To generate HTML documentation from JSDoc comments:
+
+```bash
+# Generate documentation
+npm run docs
+
+# Validate documentation quality
+npm run docs:validate
+
+# Generate and serve documentation locally
+npm run docs:auto
+
+# Serve existing documentation
+npm run docs:serve
+```
+
+### Automatic Documentation
+
+The project includes automatic documentation validation and generation:
+
+- **Pre-commit hooks**: Automatically validate documentation on commits
+- **CI/CD Pipeline**: GitHub Actions workflow generates docs on pushes to main
+- **Lint-staged**: Validates controller files before commits
+- **GitHub Pages**: Documentation is automatically deployed
+
+### Documentation Standards
+
+All controller methods must include:
+- Class-level JSDoc with `@class` tag
+- Method-level JSDoc with `@static`, `@async` tags
+- `@param` tags for all parameters
+- `@returns` tag describing return value
+- `@example` for complex methods
+- Consistent error/success response patterns
+
+### Response Format
+
+All controllers follow a consistent response format:
+
+**Success Response:**
+```json
+{
+  "success": true,
+  "data": { /* result data */ },
+  "message": "Optional success message"
+}
+```
+
+**Error Response:**
+```json
+{
+  "error": "Error message description"
+}
+```
+
+### Authentication & Authorization
+
+- **Public endpoints**: No authentication required (marked in JSDoc)
+- **Protected endpoints**: Require JWT token with `walletAddress`
+- **Ownership validation**: Controllers validate resource ownership
+- **Middleware integration**: Uses ownership middleware for pre-validation
+
+## �🔐 Autenticación
 
 El backend usa JWT para autenticación basada en wallet:
 
