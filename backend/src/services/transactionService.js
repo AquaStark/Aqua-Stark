@@ -144,7 +144,7 @@ export class TransactionService {
       }
 
       // Cache result for future lookups
-      logger.info(`[TrnxService]:: Storing Player Trnx in Cache !`);
+      logger.info('[TrnxService]:: Storing Player Trnx in Cache !');
       await redisClient.setEx(
         cacheKey,
         CACHE_TTL.PLAYER_TRANSACTIONS,
