@@ -122,7 +122,7 @@ export interface UserSession {
  * User authentication states
  * @type UserAuthState
  */
-export type UserAuthState = 
+export type UserAuthState =
   | 'disconnected'
   | 'connecting'
   | 'connected'
@@ -134,7 +134,7 @@ export type UserAuthState =
  * User connection states
  * @type UserConnectionState
  */
-export type UserConnectionState = 
+export type UserConnectionState =
   | 'idle'
   | 'connecting'
   | 'connected'
@@ -184,44 +184,54 @@ export interface UserStatsUpdate {
  */
 export function validateUser(obj: unknown): UserValidationResult {
   const errors: string[] = [];
-  
+
   if (!obj || typeof obj !== 'object') {
     return { isValid: false, errors: ['User must be an object'] };
   }
-  
+
   const user = obj as Record<string, unknown>;
-  
+
   if (!user.id || typeof user.id !== 'string') {
     errors.push('User id is required and must be a string');
   }
-  
+
   if (!user.walletAddress || typeof user.walletAddress !== 'string') {
     errors.push('User walletAddress is required and must be a string');
   }
-  
+
   if (!user.username || typeof user.username !== 'string') {
     errors.push('User username is required and must be a string');
   }
-  
+
   if (user.email && typeof user.email !== 'string') {
     errors.push('User email must be a string if provided');
   }
-  
+
   if (user.avatar && typeof user.avatar !== 'string') {
     errors.push('User avatar must be a string if provided');
   }
-  
-  if (user.sessionType && !['social', 'wallet', 'passkey'].includes(user.sessionType as string)) {
+
+  if (
+    user.sessionType &&
+    !['social', 'wallet', 'passkey'].includes(user.sessionType as string)
+  ) {
     errors.push('User sessionType must be one of: social, wallet, passkey');
   }
-  
-  if (user.provider && !['google', 'discord', 'walletconnect', 'native'].includes(user.provider as string)) {
-    errors.push('User provider must be one of: google, discord, walletconnect, native');
+
+  if (
+    user.provider &&
+    !['google', 'discord', 'walletconnect', 'native'].includes(
+      user.provider as string
+    )
+  ) {
+    errors.push(
+      'User provider must be one of: google, discord, walletconnect, native'
+    );
   }
-  
+
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 }
 
@@ -235,30 +245,30 @@ export function validateUserProfile(obj: unknown): UserValidationResult {
   if (!userValidation.isValid) {
     return userValidation;
   }
-  
+
   const errors: string[] = [...userValidation.errors];
   const profile = obj as Record<string, unknown>;
-  
+
   if (typeof profile.experience !== 'number' || profile.experience < 0) {
     errors.push('UserProfile experience must be a non-negative number');
   }
-  
+
   if (typeof profile.level !== 'number' || profile.level < 1) {
     errors.push('UserProfile level must be a positive number');
   }
-  
+
   if (typeof profile.currency !== 'number' || profile.currency < 0) {
     errors.push('UserProfile currency must be a non-negative number');
   }
-  
+
   if (!profile.lastLogin || typeof profile.lastLogin !== 'string') {
     errors.push('UserProfile lastLogin is required and must be a string');
   }
-  
+
   if (!profile.preferences || typeof profile.preferences !== 'object') {
     errors.push('UserProfile preferences must be an object');
   }
-  
+
   if (!profile.stats || typeof profile.stats !== 'object') {
     errors.push('UserProfile stats is required and must be an object');
   } else {
@@ -267,10 +277,10 @@ export function validateUserProfile(obj: unknown): UserValidationResult {
       errors.push(...statsValidation.errors.map(error => `stats.${error}`));
     }
   }
-  
+
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 }
 
@@ -281,40 +291,53 @@ export function validateUserProfile(obj: unknown): UserValidationResult {
  */
 export function validateUserStats(obj: unknown): UserValidationResult {
   const errors: string[] = [];
-  
+
   if (!obj || typeof obj !== 'object') {
     return { isValid: false, errors: ['UserStats must be an object'] };
   }
-  
+
   const stats = obj as Record<string, unknown>;
-  
+
   if (typeof stats.totalFish !== 'number' || stats.totalFish < 0) {
     errors.push('UserStats totalFish must be a non-negative number');
   }
-  
+
   if (typeof stats.totalAquariums !== 'number' || stats.totalAquariums < 0) {
     errors.push('UserStats totalAquariums must be a non-negative number');
   }
-  
+
   if (typeof stats.achievements !== 'number' || stats.achievements < 0) {
     errors.push('UserStats achievements must be a non-negative number');
   }
-  
-  if (stats.totalPlaytime !== undefined && (typeof stats.totalPlaytime !== 'number' || stats.totalPlaytime < 0)) {
-    errors.push('UserStats totalPlaytime must be a non-negative number if provided');
+
+  if (
+    stats.totalPlaytime !== undefined &&
+    (typeof stats.totalPlaytime !== 'number' || stats.totalPlaytime < 0)
+  ) {
+    errors.push(
+      'UserStats totalPlaytime must be a non-negative number if provided'
+    );
   }
-  
-  if (stats.fishBred !== undefined && (typeof stats.fishBred !== 'number' || stats.fishBred < 0)) {
+
+  if (
+    stats.fishBred !== undefined &&
+    (typeof stats.fishBred !== 'number' || stats.fishBred < 0)
+  ) {
     errors.push('UserStats fishBred must be a non-negative number if provided');
   }
-  
-  if (stats.tradesCompleted !== undefined && (typeof stats.tradesCompleted !== 'number' || stats.tradesCompleted < 0)) {
-    errors.push('UserStats tradesCompleted must be a non-negative number if provided');
+
+  if (
+    stats.tradesCompleted !== undefined &&
+    (typeof stats.tradesCompleted !== 'number' || stats.tradesCompleted < 0)
+  ) {
+    errors.push(
+      'UserStats tradesCompleted must be a non-negative number if provided'
+    );
   }
-  
+
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 }
 

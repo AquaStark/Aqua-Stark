@@ -58,5 +58,5 @@ export type {
   CartridgeErrorType,
   ConnectButtonProps,
   CartridgeModalProps,
-  GameSessionPolicies
+  GameSessionPolicies,
 } from './cartridge';
