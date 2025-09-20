@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocalStorage } from '@/hooks';
-import { SettingsValue } from '@/types/player-types';
+import { SettingsValue } from '@/types';
 
 export interface SettingsState {
   sound_enabled: boolean;

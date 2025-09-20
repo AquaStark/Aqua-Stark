@@ -12,7 +12,9 @@ export * from './fishIndicators';
 
 // API and backend types
 export * from './api-types';
-export * from './player-types';
+
+// User types (centralized user-related types)
+export * from './user-types';
 
 // Laboratory and breeding types (excluding conflicting types from fish.ts)
 export type {
@@ -45,5 +47,16 @@ export * from './dirt';
 // Dojo blockchain types
 export * from './dojo';
 
-// Cartridge types
-export * from './cartridge';
+// Cartridge types (legacy - use user-types instead)
+// Exclude types that are now centralized in user-types.ts
+export type {
+  CartridgeConfig,
+  CartridgeLoginOptions,
+  CartridgeSessionPolicies,
+  CartridgeEvent,
+  CartridgeError,
+  CartridgeErrorType,
+  ConnectButtonProps,
+  CartridgeModalProps,
+  GameSessionPolicies
+} from './cartridge';
