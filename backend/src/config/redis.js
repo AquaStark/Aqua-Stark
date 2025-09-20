@@ -41,6 +41,7 @@ export const CACHE_KEYS = {
   DECORATION_STATE: decorationId => `decoration:state:${decorationId}`,
   GAME_LEADERBOARD: 'game:leaderboard',
   ACTIVE_PLAYERS: 'game:active_players',
+  STORE_ITEMS: filters => `store:items:${filters}`,
 };
 
 // Cache TTL (Time To Live) in seconds
@@ -50,4 +51,5 @@ export const CACHE_TTL = {
   AQUARIUM_DIRT: 300, // 5 minutes
   PLAYER_SESSION: 3600, // 1 hour
   LEADERBOARD: 1800, // 30 minutes
+  STORE_ITEMS: 900, // 15 minutes
 };

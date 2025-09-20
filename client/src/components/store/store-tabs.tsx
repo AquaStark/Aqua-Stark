@@ -1,4 +1,3 @@
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ItemType } from '@/data/mock-game';
 
 interface StoreTabsProps {
@@ -8,49 +7,33 @@ interface StoreTabsProps {
 
 export function StoreTabs({ activeTab, onTabChange }: StoreTabsProps) {
   return (
-    <Tabs
-      value={activeTab}
-      onValueChange={value => onTabChange(value as ItemType)}
-      className='w-full'
-    >
-      <TabsList className='flex items-center justify-start w-full gap-0.5 p-0 bg-transparent md:w-fit'>
-        <TabsTrigger
-          value='fish'
-          className='font-bold rounded-none rounded-tl-3xl py-4 md:py-3 md:pl-6 md:pr-4 md:rounded-none text-white uppercase data-[state=active]:bg-blue-700 data-[state=active]:border-b-2 data-[state=active]:border-b-orange-500 data-[state=inactive]:border-none data-[state=active]:text-white data-[state=inactive]:text-white'
+    <div className='flex items-center justify-center gap-4 mb-8'>
+      {(['fish', 'food', 'decorations', 'others'] as ItemType[]).map(tab => (
+        <button
+          key={tab}
+          onClick={() => onTabChange(tab)}
+          className={`
+            relative px-6 py-2 rounded-full font-bold text-sm uppercase transition-all duration-300 transform
+            ${
+              activeTab === tab
+                ? 'bg-blue-500 text-white shadow-lg scale-105 border border-blue-300'
+                : 'bg-blue-600/20 text-blue-200 hover:bg-blue-500/30 hover:text-white hover:scale-102 border border-blue-500/30'
+            }
+            hover:shadow-md
+            active:scale-95
+          `}
           role='tab'
-          aria-controls='fish-panel'
-          aria-selected={activeTab === 'fish'}
+          aria-selected={activeTab === tab}
         >
-          Fish
-        </TabsTrigger>
-        <TabsTrigger
-          value='food'
-          className='font-bold rounded-none py-4 md:py-3 md:px-4 md:rounded-none text-white uppercase data-[state=active]:bg-blue-700 data-[state=active]:border-b-2 data-[state=active]:border-b-orange-500 data-[state=inactive]:border-none data-[state=active]:text-white data-[state=inactive]:text-white'
-          role='tab'
-          aria-controls='food-panel'
-          aria-selected={activeTab === 'food'}
-        >
-          Food
-        </TabsTrigger>
-        <TabsTrigger
-          value='decorations'
-          className='font-bold rounded-none py-4 md:py-3 md:px-4 md:rounded-none text-white uppercase data-[state=active]:bg-blue-700 data-[state=active]:border-b-2 data-[state=active]:border-b-orange-500 data-[state=inactive]:border-none data-[state=active]:text-white data-[state=inactive]:text-white'
-          role='tab'
-          aria-controls='decorations-panel'
-          aria-selected={activeTab === 'decorations'}
-        >
-          Decorations
-        </TabsTrigger>
-        <TabsTrigger
-          value='others'
-          className='font-bold rounded-none rounded-tr-3xl py-4 md:py-3 md:px-4 md:rounded-none text-white uppercase data-[state=active]:bg-blue-700 data-[state=active]:border-b-2 data-[state=active]:border-b-orange-500 data-[state=inactive]:border-none data-[state=active]:text-white data-[state=inactive]:text-white'
-          role='tab'
-          aria-controls='others-panel'
-          aria-selected={activeTab === 'others'}
-        >
-          Others
-        </TabsTrigger>
-      </TabsList>
-    </Tabs>
+          <span className='relative z-10 drop-shadow-lg'>
+            {tab === 'decorations'
+              ? 'Decorations'
+              : tab === 'others'
+                ? 'Others'
+                : tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </span>
+        </button>
+      ))}
+    </div>
   );
 }
