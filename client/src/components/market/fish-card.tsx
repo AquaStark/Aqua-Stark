@@ -5,12 +5,12 @@ import { Clock, Check, Coins } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { RarityBadge } from '@/components/market/rarity-badge';
 import { ListingTypeBadge } from '@/components/market/listing-type-badge';
-import type { Fish } from '@/types/market';
+import type { MarketplaceFish } from '@/types/shop-types';
 import { useMarketStore } from '@/store/market-store';
 import type React from 'react';
 
 interface FishCardProps {
-  fish: Fish;
+  fish: MarketplaceFish;
   onClick?: () => void;
 }
 
