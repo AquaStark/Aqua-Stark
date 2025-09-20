@@ -196,6 +196,9 @@ export type {
   Transaction,
 } from './market';
 
+// Shop and marketplace types
+export * from './shop-types';
+
 // =============================================================================
 // EVENTS & COMMUNITY
 // =============================================================================

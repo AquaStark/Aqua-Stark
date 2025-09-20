@@ -9,55 +9,12 @@ import {
 } from '@/data/mock-store';
 import { foodData, specialFoodBundles } from '@/data/market-data';
 import { ItemType } from '@/data/mock-game';
-
-// Types for shop data
-export interface ShopItem {
-  id: string;
-  name: string;
-  image: string;
-  price: number;
-  originalPrice?: number;
-  rarity: string;
-  category?: string;
-  description: string;
-  rating: number;
-  isNew?: boolean;
-  stock?: number;
-  isLimited?: boolean;
-  discounted?: boolean;
-  popularity?: number;
-  createdAt?: Date;
-}
-
-export interface ShopBundle {
-  id: string;
-  name: string;
-  image: string;
-  price: number;
-  originalPrice?: number;
-  discount?: string;
-  tag?: string;
-  rarity: string;
-  items: string[];
-  description: string;
-  savingsPercentage?: number;
-  type?: ItemType;
-}
-
-export interface TransactionResult {
-  success: boolean;
-  message: string;
-  transactionId?: string;
-  error?: string;
-}
-
-export interface ShopFilters {
-  searchQuery: string;
-  priceRange: [number, number];
-  categories: string[];
-  onSale: boolean;
-  sort: 'name' | 'price' | 'rating' | 'newest' | 'popularity';
-}
+import {
+  ShopItem,
+  ShopBundle,
+  TransactionResult,
+  ShopFilters,
+} from '@/types/shop-types';
 
 // Cache interface for shop data
 interface ShopCache {
@@ -121,7 +78,7 @@ export function useShopData() {
           image: food.image,
           price: food.price,
           originalPrice: food.originalPrice,
-          rarity: food.rarity,
+          rarity: food.rarity as ShopItem['rarity'],
           category: 'Food',
           description: food.description,
           rating: food.rating,
@@ -139,7 +96,7 @@ export function useShopData() {
           image: item.image,
           price: item.price,
           originalPrice: (item as any).originalPrice,
-          rarity: item.rarity,
+          rarity: item.rarity as ShopItem['rarity'],
           category: item.category,
           description: item.description,
           rating: item.rating,
@@ -157,7 +114,7 @@ export function useShopData() {
           image: item.image,
           price: item.price,
           originalPrice: (item as any).originalPrice,
-          rarity: item.rarity,
+          rarity: item.rarity as ShopItem['rarity'],
           category: item.category,
           description: item.description,
           rating: item.rating,
@@ -218,7 +175,7 @@ export function useShopData() {
           originalPrice: bundle.originalPrice,
           discount: bundle.discount,
           tag: bundle.tag,
-          rarity: bundle.rarity,
+          rarity: bundle.rarity as ShopBundle['rarity'],
           items: bundle.items,
           description: bundle.description,
         }));
