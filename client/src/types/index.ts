@@ -14,7 +14,15 @@
 // CORE GAME TYPES
 // =============================================================================
 
-// Core game entities and contract interfaces
+// Core game types
+export * from './game';
+export * from './fishIndicators';
+
+// API and backend types
+export * from './api-types';
+
+// User types (centralized user-related types)
+export * from './user-types';
 export type {
   FishType,
   AquariumData,
@@ -87,6 +95,7 @@ export type {
 // UI & INTERFACE TYPES
 // =============================================================================
 
+<<<<<<< HEAD
 // Common UI component types, animations, and form structures
 export type {
   UIAnimationProps,
@@ -140,17 +149,26 @@ export type {
 export type {
   CartridgeAccount,
   CartridgeSession,
+=======
+// Cartridge types (legacy - use user-types instead)
+// Exclude types that are now centralized in user-types.ts
+export type {
+>>>>>>> main
   CartridgeConfig,
   CartridgeLoginOptions,
   CartridgeSessionPolicies,
   CartridgeEvent,
+<<<<<<< HEAD
   UseCartridgeSessionReturn,
+=======
+>>>>>>> main
   CartridgeError,
   CartridgeErrorType,
   ConnectButtonProps,
   CartridgeModalProps,
   GameSessionPolicies,
 } from './cartridge';
+<<<<<<< HEAD
 
 // Dojo framework integration
 export type { DojoClient } from './dojo';
@@ -281,3 +299,5 @@ export const TYPE_VALIDATION = {
  * - Use type-only imports where appropriate
  * - Keep exports organized by functional domain
  */
+=======
+>>>>>>> main
