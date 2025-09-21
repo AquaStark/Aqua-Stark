@@ -1,4 +1,4 @@
-import { GameActionParams, GameActionResult } from '@/types/player-types';
+import { GameActionParams, GameActionResult } from '@/types';
 
 const GAME_CONTRACT =
   '0x0000000000000000000000000000000000000000000000000000000000000001';
