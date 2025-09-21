@@ -5,7 +5,7 @@ import {
   MessageSquare,
   ShareIcon,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components';
 import { useCommunity } from '@/hooks';
 import { FilterPanel } from './filter-panels/gallery';
 

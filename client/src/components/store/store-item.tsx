@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components';
 import { Heart, Plus, Star, Check } from 'lucide-react';
-import { FishTank } from '@/components/fish-tank';
+import { FishTank } from '@/components';
 import { useCartStore } from '@/store/use-cart-store';
 
 interface StoreItemProps {

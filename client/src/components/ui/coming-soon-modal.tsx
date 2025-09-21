@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { X, Construction, Fish, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 

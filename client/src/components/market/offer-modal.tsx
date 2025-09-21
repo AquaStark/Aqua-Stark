@@ -8,9 +8,9 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components';
 import { useMarketStore } from '@/store/market-store';
-import { RarityBadge } from '@/components/market/rarity-badge';
+import { RarityBadge } from '@/components';
 import { mockFishData } from '@/data/market-data';
 
 export function OfferModal() {

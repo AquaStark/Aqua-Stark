@@ -2,8 +2,8 @@
 
 import { ChevronRight, X } from 'lucide-react';
 import type { Category, Topic } from '@/types/help-types';
-import { RenderTopicContent } from '@/components/help-center/content-renderer';
-import { getIcon } from '@/components/help-center/icon-mapper';
+import { RenderTopicContent } from '@/components';
+import { getIcon } from '@/components';
 
 interface HelpMainContentProps {
   currentCategory: Category | undefined;

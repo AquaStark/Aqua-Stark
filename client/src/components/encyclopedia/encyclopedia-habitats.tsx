@@ -1,6 +1,6 @@
 import { aquaticEnvironments } from '@/data/encyclopedia-habitat';
-import HabitatCard from '@/components/ui/HabitatCard';
-import CompatabilityGuide from '@/components/ui/CompatabilityGuide';
+import { HabitatCard } from '@/components';
+import { CompatabilityGuide } from '@/components';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 

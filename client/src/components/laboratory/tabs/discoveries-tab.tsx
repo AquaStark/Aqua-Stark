@@ -1,6 +1,6 @@
 'use client';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components';
+import { Input } from '@/components';
 import { Search, Filter, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

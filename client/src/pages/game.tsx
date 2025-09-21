@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { GameHeader } from '@/components/game/game-header';
-import { AquariumTabs } from '@/components/game/aquarium-tabs';
-import { TipsPopup } from '@/components/game/tips-popup';
+import { GameHeader } from '@/components';
+import { AquariumTabs } from '@/components';
+import { TipsPopup } from '@/components';
 import { INITIAL_GAME_STATE } from '@/data/game-data';
 import { useFishStats } from '@/hooks';
-import { GameMenu } from '@/components/game/game-menu';
+import { GameMenu } from '@/components';
 import { useBubbles } from '@/hooks';
-import { BubblesBackground } from '@/components/bubble-background';
+import { BubblesBackground } from '@/components';
 import { motion } from 'framer-motion';
 import { useActiveAquarium } from '../store/active-aquarium';
 import { initialAquariums } from '@/data/mock-aquarium';
@@ -16,13 +16,13 @@ import { DirtDebugger } from '@/components';
 import { useDirtSystemFixed as useDirtSystem } from '@/hooks';
 import { DirtOverlay } from '@/components';
 import { useFeedingSystem } from '@/systems/feeding-system';
-import { FeedingAquarium } from '@/components/game/feeding-aquarium';
+import { FeedingAquarium } from '@/components';
 import { FishSpecies } from '@/types/game';
 import { useAccount } from '@starknet-react/core';
 // import { toast } from 'sonner';
 import { useFish } from '@/hooks';
 import { useNavigate } from 'react-router-dom';
-import { FeedingDebugPanel } from '@/components/game/feeding-debug-panel';
+import { FeedingDebugPanel } from '@/components';
 import { fishCollection as fullFishList } from '@/data/fish-data';
 import {
   Utensils,

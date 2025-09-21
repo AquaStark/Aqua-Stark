@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { BubblesBackground } from '@/components/bubble-background';
 import { useBubbles } from '@/hooks';
-import { PageHeader } from '@/components/layout/page-header';
-import { Footer } from '@/components/layout/footer';
+import { PageHeader } from '@/components';
+import { LayoutFooter } from '@/components';
 import { Trophy } from 'lucide-react';
 import { AchievementsTabs } from '@/components';
-import { ComingSoonModal } from '@/components/ui/coming-soon-modal';
+import { ComingSoonModal } from '@/components';
 
 export default function AchievementsPage() {
   const bubbles = useBubbles();
@@ -49,7 +49,7 @@ export default function AchievementsPage() {
         </div>
       </main>
 
-      <Footer className='bg-blue-900/60 backdrop-blur-md border-t border-blue-400/30' />
+      <LayoutFooter className='bg-blue-900/60 backdrop-blur-md border-t border-blue-400/30' />
 
       {/* Modal Coming Soon */}
       <ComingSoonModal

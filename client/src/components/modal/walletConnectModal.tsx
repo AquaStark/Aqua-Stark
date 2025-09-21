@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ConnectButton } from '@/components/ui/connect-button';
+import { ConnectButton } from '@/components';
 
 interface WalletModalProps {
   isOpen: boolean;

@@ -1,4 +1,4 @@
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components';
 import { patternInheritance } from '@/data/genetic-combination-data';
 
 export const Inheritance = () => {

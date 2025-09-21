@@ -1,7 +1,7 @@
 'use client';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components';
 import { cn } from '@/lib/utils';
-import { FishTank } from '@/components/fish-tank';
+import { FishTank } from '@/components';
 import { FishIcon } from 'lucide-react';
 import type { Fish } from '@/types/fish';
 import { fishCollection } from '@/data/fish-data';

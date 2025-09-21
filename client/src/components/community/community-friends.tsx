@@ -1,9 +1,9 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components';
 import { Search, UserPlus } from 'lucide-react';
 import { mockFriends, mockSuggestions } from '@/data/mock-community';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components';
 import { useState } from 'react';
 
 export function CommunityFriends() {

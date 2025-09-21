@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components';
+import { Input } from '@/components';
 import { Filter, Plus, Search, X, ChevronDown, ChevronUp } from 'lucide-react';
-import { FishSelection } from '@/components/laboratory/fish-selection';
-import { BreedingTank } from '@/components/laboratory/breeding-tank';
-import { FishDetails } from '@/components/laboratory/fish-details';
+import { FishSelection } from '@/components';
+import { BreedingTank } from '@/components';
+import { FishDetails } from '@/components';
 import type { Fish } from '@/types/fish';
 import { breedingResults } from '@/data/fish-data';
 import { cn } from '@/lib/utils';

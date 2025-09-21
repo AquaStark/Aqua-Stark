@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
 import { useAccount } from '@starknet-react/core';
 import { usePlayer } from '@/hooks';
 import { usePlayerValidation } from '@/hooks';
-import { PageHeader } from '@/components/layout/page-header';
-import { Footer } from '@/components/layout/footer';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components';
+import { LayoutFooter } from '@/components';
+import { Input } from '@/components';
+import { Button } from '@/components';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { BubblesBackground } from '@/components/bubble-background';
+import { BubblesBackground } from '@/components';
 import { useBubbles } from '@/hooks';
 import { ErrorWithMessage } from '@/types/ui-types';
 
@@ -287,7 +287,7 @@ export default function Start() {
       </main>
 
       {/* Sticky, blurred footer */}
-      <Footer className='bg-blue-900/60 backdrop-blur-md border-t border-blue-400/30 fixed bottom-0 left-0 w-full z-40' />
+      <LayoutFooter className='bg-blue-900/60 backdrop-blur-md border-t border-blue-400/30 fixed bottom-0 left-0 w-full z-40' />
     </div>
   );
 }

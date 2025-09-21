@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import { StarknetProvider } from './providers/StarknetProvider';
-import { ErrorBoundary } from './components/ui/error-boundary';
+import { ErrorBoundary } from './components';
 
 // Landing & Onboarding Pages
 import LandingPage from './pages/landing';

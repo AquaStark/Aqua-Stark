@@ -2,7 +2,7 @@
 
 import { X } from 'lucide-react';
 import type { Category, Topic } from '@/types/help-types';
-import { RenderTopicContent } from '@/components/help-center/content-renderer';
+import { RenderTopicContent } from '@/components';
 
 interface TopicContentProps {
   category?: Category;

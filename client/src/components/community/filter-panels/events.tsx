@@ -1,12 +1,12 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Slider } from '@/components/ui/slider';
+import { Button } from '@/components';
+import { Slider } from '@/components';
 import { RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CommunityEventFilters } from '@/types/community';
 import { useCommunity } from '@/hooks';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components';
 
 export function FilterPanel() {
   const { eventFilters, setEventFilters, resetFilters } = useCommunity();

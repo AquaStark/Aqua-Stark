@@ -1,6 +1,6 @@
 export { BidModal } from './bid-modal';
-export { FilterPanel as MarketFilterPanel } from './filter-panel';
-export { FishCard as MarketFishCard } from './fish-card';
+export { MarketFilterPanel } from './filter-panel';
+export { MarketFishCard } from './fish-card';
 export { ListingModal } from './listing-modal';
 export { ListingTypeBadge } from './listing-type-badge';
 export { MarketFooter } from './market-footer';

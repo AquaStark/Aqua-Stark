@@ -2,9 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { Clock, Check, Coins } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { RarityBadge } from '@/components/market/rarity-badge';
-import { ListingTypeBadge } from '@/components/market/listing-type-badge';
+import { Button } from '@/components';
+import { RarityBadge } from '@/components';
+import { ListingTypeBadge } from '@/components';
 import type { Fish } from '@/types/market';
 import { useMarketStore } from '@/store/market-store';
 import type React from 'react';
@@ -14,7 +14,7 @@ interface FishCardProps {
   onClick?: () => void;
 }
 
-export function FishCard({ fish, onClick }: FishCardProps) {
+export function MarketFishCard({ fish, onClick }: FishCardProps) {
   const { setSelectedFish, setShowBidModal, setShowOfferModal } =
     useMarketStore();
 

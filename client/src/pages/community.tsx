@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { BubblesBackground } from '@/components/bubble-background';
+import { Button } from '@/components';
+import { BubblesBackground } from '@/components';
 import { useBubbles } from '@/hooks';
-import { PageHeader } from '@/components/layout/page-header';
-import { Footer } from '@/components/layout/footer';
+import { PageHeader } from '@/components';
+import { LayoutFooter } from '@/components';
 import { CommunityTabs } from '@/components';
-import { ComingSoonModal } from '@/components/ui/coming-soon-modal';
+import { ComingSoonModal } from '@/components';
 
 export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState('gallery');
@@ -42,7 +42,7 @@ export default function CommunityPage() {
         <CommunityTabs activeTab={activeTab} setActiveTab={setActiveTab} />
       </main>
 
-      <Footer />
+      <LayoutFooter />
 
       {/* Modal Coming Soon */}
       <ComingSoonModal

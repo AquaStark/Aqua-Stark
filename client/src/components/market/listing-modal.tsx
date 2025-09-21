@@ -7,13 +7,13 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Input } from '@/components';
+import { Label } from '@/components';
 import { Coins, Clock, RefreshCw, Plus } from 'lucide-react';
 import { useMarketStore } from '@/store/market-store';
-import { RarityBadge } from '@/components/market/rarity-badge';
+import { RarityBadge } from '@/components';
 import { useState } from 'react';
 
 export function ListingModal() {

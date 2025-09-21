@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ConnectButton } from '@/components/ui/connect-button';
+import { ConnectButton } from '@/components';
 import { LogOut } from 'lucide-react';
 import { useAccount, useDisconnect } from '@starknet-react/core';
 import { toast } from 'sonner';

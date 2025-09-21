@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { List, Grid } from 'lucide-react';
 import type { Fish } from '@/types/fish';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components';
 
 interface FishSelectionProps {
   filteredFish: Fish[];

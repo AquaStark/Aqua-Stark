@@ -11,24 +11,27 @@ import {
   decorationBundles,
   decorationItems,
 } from '@/data/mock-store';
-import { StoreTabs } from '@/components/store/store-tabs';
-import { StoreCategories } from '@/components/store/store-categories';
-import { StoreGrid } from '@/components/store/store-grid';
-import { BundleGrid } from '@/components/store/bundle-grid';
-import { PaginationControls } from '@/components/store/pagination-controls';
-import { CartSidebar } from '@/components/store/cart-sidebar';
-import { CheckoutModal } from '@/components/store/checkout-modal';
+import { StoreTabs } from '@/components';
+import { StoreCategories } from '@/components';
+import { StoreGrid } from '@/components';
+import { BundleGrid } from '@/components';
+import { PaginationControls } from '@/components';
+import { CartSidebar } from '@/components';
+import { CheckoutModal } from '@/components';
 import { useCartStore } from '@/store/use-cart-store';
-import { BubblesBackground } from '@/components/bubble-background';
+import { BubblesBackground } from '@/components';
 import { useBubbles } from '@/hooks';
-import { FilterCategory, FilterPanel } from '@/components/store/filter-panel';
-import { SortDropdown } from '@/components/store/sort-dropdown';
-import { PageHeader } from '@/components/layout/page-header';
-import { Footer } from '@/components/layout/footer';
-import { SpecialBundles } from '@/components/store/special-bundles';
+import {
+  FilterCategory,
+  StoreFilterPanel,
+} from '@/components/store/filter-panel';
+import { SortDropdown } from '@/components';
+import { PageHeader } from '@/components';
+import { LayoutFooter } from '@/components';
+import { SpecialBundles } from '@/components';
 import { foodData, specialFoodBundles } from '@/data/market-data';
 import { useStoreFilters } from '@/hooks';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components';
 
 // Define types for our data model
 interface StoreItem {
@@ -358,7 +361,7 @@ export default function StorePage() {
                 {/* Filter Panel */}
                 <AnimatePresence>
                   {isFilterPanelOpen && (
-                    <FilterPanel
+                    <StoreFilterPanel
                       priceRange={filters.priceRange}
                       categories={filters.categories}
                       onSale={filters.onSale}
@@ -395,7 +398,7 @@ export default function StorePage() {
         </div>
       </main>
 
-      <Footer />
+      <LayoutFooter />
     </div>
   );
 }

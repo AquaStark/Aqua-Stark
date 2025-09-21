@@ -3,7 +3,7 @@ export { BundleItem } from './bundle-item';
 export { CartSidebar } from './cart-sidebar';
 export { CheckoutModal } from './checkout-modal';
 export { CountdownTimer } from './countdown-timer';
-export { FilterPanel as StoreFilterPanel } from './filter-panel';
+export { StoreFilterPanel } from './filter-panel';
 export { PaginationControls } from './pagination-controls';
 export { SortDropdown } from './sort-dropdown';
 export { SpecialBundles } from './special-bundles';

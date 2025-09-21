@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { BubblesBackground } from '@/components/bubble-background';
-import { Footer } from '@/components/layout/footer';
-import { PageHeader } from '@/components/layout/page-header';
+import { BubblesBackground } from '@/components';
+import { LayoutFooter } from '@/components';
+import { PageHeader } from '@/components';
 import { useBubbles } from '@/hooks';
 import { EventTabs } from '@/components';
-import { ComingSoonModal } from '@/components/ui/coming-soon-modal';
+import { ComingSoonModal } from '@/components';
 
 export default function EventsCalendarPage() {
   const [showComingSoon, setShowComingSoon] = useState(false);
@@ -31,7 +31,7 @@ export default function EventsCalendarPage() {
         <EventTabs />
       </main>
 
-      <Footer />
+      <LayoutFooter />
 
       {/* Modal Coming Soon */}
       <ComingSoonModal

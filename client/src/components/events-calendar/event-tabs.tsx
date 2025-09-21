@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components';
 import {
   Calendar,
   CalendarRange,

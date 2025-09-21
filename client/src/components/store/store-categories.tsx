@@ -1,4 +1,4 @@
-import { CategoryButton } from '@/components/ui/category-button';
+import { CategoryButton } from '@/components';
 
 interface StoreCategoriesProps {
   activeCategory: string;

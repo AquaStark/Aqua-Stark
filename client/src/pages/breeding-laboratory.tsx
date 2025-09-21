@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 import { LaboratoryTabs } from '@/components/laboratory/laboratory-tabs';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components';
+import { Input } from '@/components';
 import { Beaker, Search } from 'lucide-react';
-import { BubblesBackground } from '@/components/bubble-background';
+import { BubblesBackground } from '@/components';
 import { fishCollection } from '@/data/fish-data';
 import '@/styles/laboratory.css';
-import { Footer } from '@/components/layout/footer';
-import { PageHeader } from '@/components/layout/page-header';
+import { LayoutFooter } from '@/components';
+import { PageHeader } from '@/components';
 import { useBubbles } from '@/hooks';
 
 export default function LaboratoryPage() {
@@ -64,7 +64,7 @@ export default function LaboratoryPage() {
       </main>
 
       <div className='relative z-10 mt-auto'>
-        <Footer />
+        <LayoutFooter />
       </div>
     </div>
   );

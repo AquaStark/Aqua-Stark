@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { BubblesBackground } from '@/components/bubble-background';
+import { Button } from '@/components';
+import { BubblesBackground } from '@/components';
 import { useBubbles } from '@/hooks';
 import { creditsData } from '@/data/mock-credits';
 
