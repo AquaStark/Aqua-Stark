@@ -95,7 +95,6 @@ export type {
 // UI & INTERFACE TYPES
 // =============================================================================
 
-<<<<<<< HEAD
 // Common UI component types, animations, and form structures
 export type {
   UIAnimationProps,
@@ -145,30 +144,22 @@ export type {
   SupportedConnector,
 } from './connector-types';
 
-// Cartridge Controller integration types
+// Cartridge Controller integration types (legacy - use user-types instead)
+// Exclude types that are now centralized in user-types.ts
 export type {
   CartridgeAccount,
   CartridgeSession,
-=======
-// Cartridge types (legacy - use user-types instead)
-// Exclude types that are now centralized in user-types.ts
-export type {
->>>>>>> main
   CartridgeConfig,
   CartridgeLoginOptions,
   CartridgeSessionPolicies,
   CartridgeEvent,
-<<<<<<< HEAD
   UseCartridgeSessionReturn,
-=======
->>>>>>> main
   CartridgeError,
   CartridgeErrorType,
   ConnectButtonProps,
   CartridgeModalProps,
   GameSessionPolicies,
 } from './cartridge';
-<<<<<<< HEAD
 
 // Dojo framework integration
 export type { DojoClient } from './dojo';
@@ -299,5 +290,3 @@ export const TYPE_VALIDATION = {
  * - Use type-only imports where appropriate
  * - Keep exports organized by functional domain
  */
-=======
->>>>>>> main
