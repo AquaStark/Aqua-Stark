@@ -24,8 +24,6 @@ import { CalendarEvent } from '@/types';
 type TabType = 'all' | 'special' | 'seasons' | 'tournaments' | 'offers';
 type ViewType = 'list' | 'calendar';
 
-import { CalendarEvent } from '@/types/events';
-
 export function EventTabs() {
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const [viewType, setViewType] = useState<ViewType>('list');

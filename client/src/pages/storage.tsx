@@ -6,7 +6,7 @@ import { useBubbles } from '@/hooks';
 import { PageHeader } from '@/components';
 import { LayoutFooter } from '@/components';
 import { CartSidebar } from '@/components';
-import { CheckoutModal } from '@/component';
+import { CheckoutModal } from '@/components';
 import { useCartStore } from '@/store/use-cart-store';
 import { Button } from '@/components';
 import { ShoppingCart } from 'lucide-react';

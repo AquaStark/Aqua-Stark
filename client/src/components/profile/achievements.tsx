@@ -9,7 +9,7 @@ interface AchievementsProps {
   };
 }
 
-export function Achievements({ stats }: AchievementsProps) {
+export function ProfileAchievements({ stats }: AchievementsProps) {
   return (
     <div className='mb-6'>
       <div className='flex justify-between items-center mb-2'>

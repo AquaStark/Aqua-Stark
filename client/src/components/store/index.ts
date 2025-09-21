@@ -15,3 +15,4 @@ export { StoreHeader } from './store-header';
 export { StoreItem } from './store-item';
 export { StoreSearchFilters } from './store-search-filters';
 export { StoreTabs } from './store-tabs';
+export { StoreOriginal } from './store-original';

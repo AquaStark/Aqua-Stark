@@ -6,8 +6,6 @@ import { useFishMovement } from '@/hooks';
 import { FishDisplay } from './fish-display';
 import { Food } from '@/components';
 import { FoodParticles } from '@/components';
-import type { FoodItem } from '@/types/food';
-import { Fish } from '@/types/fish';
 import { useFoodSystem } from '@/hooks';
 
 interface FeedingSystemProps {

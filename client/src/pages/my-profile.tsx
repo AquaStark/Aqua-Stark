@@ -7,7 +7,7 @@ import {
   ProfileCard,
   ProfileTabs,
   FishCollection,
-  Achievements,
+  ProfileAchievements,
   PurchaseHistory,
   PlayerStatistics,
   BubblesBackground,
@@ -73,7 +73,9 @@ export default function MyProfile() {
           {activeTab === 'collection' && (
             <FishCollection fishCollection={fishCollection} />
           )}
-          {activeTab === 'achievements' && <Achievements stats={stats} />}
+          {activeTab === 'achievements' && (
+            <ProfileAchievements stats={stats} />
+          )}
           {activeTab === 'purchase' && <PurchaseHistory />}
           <PlayerStatistics playerStats={playerStats} />
         </div>
