@@ -16,7 +16,7 @@
 
 // Core game types
 export * from './game';
-export * from './fishIndicators';
+export * from './fishIndicators.d';
 
 // API and backend types
 export * from './api-types';
@@ -50,7 +50,7 @@ export type {
   FishIndicatorOptions,
   UseFishIndicatorsParams,
   UseFishIndicatorsReturn,
-} from './fishIndicators';
+} from './fishIndicators.d';
 
 // =============================================================================
 // GAME SYSTEMS
