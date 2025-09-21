@@ -99,7 +99,7 @@ export function useLocalStorage(prefix?: string): UseLocalStorageApi {
           return parsed as T;
         } catch (error) {
           // Log minimal error to help debugging without being noisy
-           
+
           console.error('[useLocalStorage] get failed:', {
             key: fullKey,
             error,
@@ -123,7 +123,6 @@ export function useLocalStorage(prefix?: string): UseLocalStorageApi {
           }
           window.localStorage.setItem(fullKey, toStore);
         } catch (error) {
-           
           console.error('[useLocalStorage] set failed:', {
             key: fullKey,
             error,
@@ -136,7 +135,6 @@ export function useLocalStorage(prefix?: string): UseLocalStorageApi {
         try {
           window.localStorage.removeItem(fullKey);
         } catch (error) {
-           
           console.error('[useLocalStorage] remove failed:', {
             key: fullKey,
             error,
@@ -154,7 +152,6 @@ export function useLocalStorage(prefix?: string): UseLocalStorageApi {
           }
           keys.forEach(k => window.localStorage.removeItem(k));
         } catch (error) {
-           
           console.error('[useLocalStorage] clearNamespace failed:', {
             prefix,
             error,
