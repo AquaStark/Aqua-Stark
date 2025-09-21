@@ -7,7 +7,7 @@ import { Filter, Plus, Search, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { FishSelection } from '@/components';
 import { BreedingTank } from '@/components';
 import { FishDetails } from '@/components';
-import type { Fish } from '@/types/fish';
+import type { Fish } from '@/types';
 import { breedingResults } from '@/data/fish-data';
 import { cn } from '@/lib/utils';
 

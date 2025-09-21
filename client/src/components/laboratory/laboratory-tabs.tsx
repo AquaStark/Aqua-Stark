@@ -6,7 +6,7 @@ import { BreedingTab } from '@/components';
 import { GeneticsTab } from '@/components';
 import { DiscoveriesTab } from '@/components';
 import { GenealogyTab } from '@/components';
-import type { Fish } from '@/types/fish';
+import type { Fish } from '@/types';
 
 interface LaboratoryTabsProps {
   activeTab: string;

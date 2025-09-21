@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { BubblesBackground } from '@/components';
 import { useBubbles } from '@/hooks';
-import { ErrorWithMessage } from '@/types/ui-types';
+import { ErrorWithMessage } from '@/types';
 
 export default function Start() {
   const { account } = useAccount();

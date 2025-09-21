@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -12,10 +12,34 @@ import { Button } from '@/components';
 import { useMarketStore } from '@/store/market-store';
 import { RarityBadge } from '@/components';
 import { mockFishData } from '@/data/market-data';
+import { useModal } from '@/hooks';
 
 export function OfferModal() {
   const { selectedFish, showOfferModal, setShowOfferModal } = useMarketStore();
   const [selectedOffer, setSelectedOffer] = useState<number | null>(null);
+
+  // Use the unified modal hook
+  const { open, close, isOpen } = useModal({
+    closable: true,
+    onOpen: data => {
+      // Handle modal opening
+      console.log('Offer modal opened with data:', data);
+    },
+    onClose: () => {
+      // Handle modal closing
+      setShowOfferModal(false);
+      setSelectedOffer(null);
+    },
+  });
+
+  // Sync with store state
+  useEffect(() => {
+    if (showOfferModal && !isOpen) {
+      open(selectedFish);
+    } else if (!showOfferModal && isOpen) {
+      close();
+    }
+  }, [showOfferModal, isOpen, open, close, selectedFish]);
 
   if (!selectedFish || !selectedFish.exchange) return null;
 
@@ -30,11 +54,11 @@ export function OfferModal() {
 
     // TODO: Implement actual offer submission
     alert(`Offer sent for ${selectedFish.name}!`);
-    setShowOfferModal(false);
+    close();
   };
 
   return (
-    <Dialog open={showOfferModal} onOpenChange={setShowOfferModal}>
+    <Dialog open={isOpen} onOpenChange={close}>
       <DialogContent
         className='bg-blue-900/95 border-blue-700 text-white max-w-md'
         role='dialog'
@@ -101,6 +125,15 @@ export function OfferModal() {
                     : 'bg-blue-800/50 border border-blue-700/50 hover:bg-blue-700/50'
                 }`}
                 onClick={() => setSelectedOffer(fish.id)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setSelectedOffer(fish.id);
+                  }
+                }}
+                role='button'
+                tabIndex={0}
+                aria-pressed={selectedOffer === fish.id}
               >
                 <div className='w-12 h-12 bg-blue-900/50 rounded overflow-hidden flex items-center justify-center mr-3'>
                   <img
@@ -130,11 +163,7 @@ export function OfferModal() {
         </div>
 
         <DialogFooter>
-          <Button
-            variant='outline'
-            onClick={() => setShowOfferModal(false)}
-            className='text-black'
-          >
+          <Button variant='outline' onClick={close} className='text-black'>
             Cancel
           </Button>
           <Button

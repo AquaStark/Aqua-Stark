@@ -1,4 +1,4 @@
-import type { ContentSection, Topic } from '@/types/help-types';
+import type { ContentSection, Topic } from '@/types';
 import { UtensilsCrossed } from 'lucide-react';
 import { getIcon } from '@/components';
 

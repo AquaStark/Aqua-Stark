@@ -1,6 +1,6 @@
 'use client';
 
-import type { DirtSpot as DirtSpotType } from '@/types/dirt';
+import type { DirtSpotType } from '@/types';
 import { useState } from 'react';
 import {
   ChevronDown,
@@ -10,19 +10,44 @@ import {
   Pause,
   Plus,
   Trash2,
+  RefreshCw,
+  Droplets,
+  Sparkles,
 } from 'lucide-react';
 
 interface DirtDebuggerProps {
   dirtSystem: {
-    isSpawnerActive: boolean;
+    // New realistic system properties
     spots: DirtSpotType[];
-    config: { maxSpots: number };
-    totalSpotsCreated: number;
-    totalSpotsRemoved: number;
-    cleanlinessScore: number;
-    toggleSpawner: () => void;
-    forceSpawnSpot: () => void;
-    clearAllSpots: () => void;
+    dirtLevel: number;
+    isDirty: boolean;
+    needsCleaning: boolean;
+    cleanlinessStatus: {
+      level: string;
+      label: string;
+      color: string;
+    };
+    lastCleaningTime: string | null;
+    cleaningStreak: number;
+    totalCleanings: number;
+    hoursSinceCleaning: number;
+    isLoading: boolean;
+    error: string | null;
+
+    // Actions
+    cleanAquarium: (type: 'partial' | 'complete') => Promise<void>;
+    removeDirtSpot: (spotId: number) => void;
+    fetchDirtStatus: () => Promise<void>;
+
+    // Legacy properties for backward compatibility (optional)
+    isSpawnerActive?: boolean;
+    config?: { maxSpots: number };
+    totalSpotsCreated?: number;
+    totalSpotsRemoved?: number;
+    cleanlinessScore?: number;
+    toggleSpawner?: () => void;
+    forceSpawnSpot?: () => void;
+    clearAllSpots?: () => void;
   };
 }
 
@@ -58,6 +83,27 @@ export function DirtDebugger({ dirtSystem }: DirtDebuggerProps) {
     if (score >= 50) return 'Needs Attention';
     if (score >= 30) return 'Dirty';
     return 'Very Dirty';
+  };
+
+  // Helper functions for the new system
+  const getCleanlinessScore = () => {
+    return dirtSystem.cleanlinessScore ?? 100 - dirtSystem.dirtLevel;
+  };
+
+  const getMaxSpots = () => {
+    return dirtSystem.config?.maxSpots ?? 15;
+  };
+
+  const getTotalSpotsCreated = () => {
+    return dirtSystem.totalSpotsCreated ?? dirtSystem.totalCleanings;
+  };
+
+  const getTotalSpotsRemoved = () => {
+    return dirtSystem.totalSpotsRemoved ?? dirtSystem.totalCleanings;
+  };
+
+  const getIsSpawnerActive = () => {
+    return dirtSystem.isSpawnerActive ?? true;
   };
 
   return (
@@ -108,15 +154,15 @@ export function DirtDebugger({ dirtSystem }: DirtDebuggerProps) {
                 System Status
               </h3>
               <div
-                className={`flex items-center gap-1 ${dirtSystem.isSpawnerActive ? 'text-green-400' : 'text-red-400'}`}
+                className={`flex items-center gap-1 ${getIsSpawnerActive() ? 'text-green-400' : 'text-red-400'}`}
               >
-                {dirtSystem.isSpawnerActive ? (
+                {getIsSpawnerActive() ? (
                   <Play className='w-3 h-3' />
                 ) : (
                   <Pause className='w-3 h-3' />
                 )}
                 <span className='text-xs'>
-                  {dirtSystem.isSpawnerActive ? 'Active' : 'Paused'}
+                  {getIsSpawnerActive() ? 'Active' : 'Paused'}
                 </span>
               </div>
             </div>
@@ -126,29 +172,29 @@ export function DirtDebugger({ dirtSystem }: DirtDebuggerProps) {
               <div className='flex items-center justify-between mb-1'>
                 <span className='text-gray-300 text-xs'>Cleanliness</span>
                 <span
-                  className={`text-sm font-bold ${getCleanlinessColor(dirtSystem.cleanlinessScore)}`}
+                  className={`text-sm font-bold ${getCleanlinessColor(getCleanlinessScore())}`}
                 >
-                  {dirtSystem.cleanlinessScore}%
+                  {getCleanlinessScore()}%
                 </span>
               </div>
               <div className='w-full bg-gray-700 rounded-full h-2 mb-1'>
                 <div
                   className={`h-2 rounded-full transition-all duration-300 ${
-                    dirtSystem.cleanlinessScore >= 80
+                    getCleanlinessScore() >= 80
                       ? 'bg-green-400'
-                      : dirtSystem.cleanlinessScore >= 60
+                      : getCleanlinessScore() >= 60
                         ? 'bg-yellow-400'
-                        : dirtSystem.cleanlinessScore >= 40
+                        : getCleanlinessScore() >= 40
                           ? 'bg-orange-400'
                           : 'bg-red-400'
                   }`}
-                  style={{ width: `${dirtSystem.cleanlinessScore}%` }}
+                  style={{ width: `${getCleanlinessScore()}%` }}
                 />
               </div>
               <span
-                className={`text-xs ${getCleanlinessColor(dirtSystem.cleanlinessScore)}`}
+                className={`text-xs ${getCleanlinessColor(getCleanlinessScore())}`}
               >
-                {getCleanlinessLabel(dirtSystem.cleanlinessScore)}
+                {getCleanlinessLabel(getCleanlinessScore())}
               </span>
             </div>
           </div>
@@ -160,29 +206,27 @@ export function DirtDebugger({ dirtSystem }: DirtDebuggerProps) {
               <div className='bg-gray-800/60 rounded p-2'>
                 <div className='text-gray-400'>Current</div>
                 <div className='text-white font-bold'>
-                  {dirtSystem.spots.length}/{dirtSystem.config.maxSpots}
+                  {dirtSystem.spots.length}/{getMaxSpots()}
                 </div>
               </div>
               <div className='bg-gray-800/60 rounded p-2'>
                 <div className='text-gray-400'>Created</div>
                 <div className='text-green-400 font-bold'>
-                  {dirtSystem.totalSpotsCreated}
+                  {getTotalSpotsCreated()}
                 </div>
               </div>
               <div className='bg-gray-800/60 rounded p-2'>
                 <div className='text-gray-400'>Removed</div>
                 <div className='text-blue-400 font-bold'>
-                  {dirtSystem.totalSpotsRemoved}
+                  {getTotalSpotsRemoved()}
                 </div>
               </div>
               <div className='bg-gray-800/60 rounded p-2'>
                 <div className='text-gray-400'>Efficiency</div>
                 <div className='text-purple-400 font-bold'>
-                  {dirtSystem.totalSpotsCreated > 0
+                  {getTotalSpotsCreated() > 0
                     ? Math.round(
-                        (dirtSystem.totalSpotsRemoved /
-                          dirtSystem.totalSpotsCreated) *
-                          100
+                        (getTotalSpotsRemoved() / getTotalSpotsCreated()) * 100
                       )
                     : 0}
                   %
@@ -193,60 +237,109 @@ export function DirtDebugger({ dirtSystem }: DirtDebuggerProps) {
 
           {/* Control Buttons */}
           <div className='space-y-2'>
+            {dirtSystem.toggleSpawner && (
+              <button
+                onClick={dirtSystem.toggleSpawner}
+                className={`
+                  w-full flex items-center justify-center gap-2 px-3 py-2 rounded text-xs font-medium
+                  transition-all duration-150 hover:scale-[1.02]
+                  ${
+                    getIsSpawnerActive()
+                      ? 'bg-red-600 hover:bg-red-700 text-white'
+                      : 'bg-green-600 hover:bg-green-700 text-white'
+                  }
+                `}
+                aria-checked={getIsSpawnerActive()}
+                role='switch'
+                aria-label={`Dirt spawner is currently ${getIsSpawnerActive() ? 'active' : 'inactive'}`}
+              >
+                {getIsSpawnerActive() ? (
+                  <>
+                    <Pause className='w-3 h-3' />
+                    Stop Spawner
+                  </>
+                ) : (
+                  <>
+                    <Play className='w-3 h-3' />
+                    Start Spawner
+                  </>
+                )}
+              </button>
+            )}
+
+            {dirtSystem.forceSpawnSpot && (
+              <button
+                onClick={dirtSystem.forceSpawnSpot}
+                disabled={dirtSystem.spots.length >= getMaxSpots()}
+                className='
+                  w-full flex items-center justify-center gap-2 px-3 py-2 rounded text-xs font-medium
+                  bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed
+                  text-white transition-all duration-150 hover:scale-[1.02] disabled:hover:scale-100
+                '
+                aria-label={`Force spawn dirt spot (${dirtSystem.spots.length}/${getMaxSpots()} spots)`}
+              >
+                <Plus className='w-3 h-3' />
+                Force Spawn
+              </button>
+            )}
+
+            {dirtSystem.clearAllSpots && (
+              <button
+                onClick={dirtSystem.clearAllSpots}
+                disabled={dirtSystem.spots.length === 0}
+                className='
+                  w-full flex items-center justify-center gap-2 px-3 py-2 rounded text-xs font-medium
+                  bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed
+                  text-white transition-all duration-150 hover:scale-[1.02] disabled:hover:scale-100
+                '
+                aria-label={`Clear all ${dirtSystem.spots.length} dirt spots`}
+              >
+                <Trash2 className='w-3 h-3' />
+                Clear All
+              </button>
+            )}
+
+            {/* New realistic system buttons */}
             <button
-              onClick={dirtSystem.toggleSpawner}
-              className={`
+              onClick={() => dirtSystem.cleanAquarium('partial')}
+              disabled={dirtSystem.isLoading || !dirtSystem.isDirty}
+              className='
                 w-full flex items-center justify-center gap-2 px-3 py-2 rounded text-xs font-medium
-                transition-all duration-150 hover:scale-[1.02]
-                ${
-                  dirtSystem.isSpawnerActive
-                    ? 'bg-red-600 hover:bg-red-700 text-white'
-                    : 'bg-green-600 hover:bg-green-700 text-white'
-                }
-              `}
-              aria-checked={dirtSystem.isSpawnerActive}
-              role='switch'
-              aria-label={`Dirt spawner is currently ${dirtSystem.isSpawnerActive ? 'active' : 'inactive'}`}
+                bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-600 disabled:cursor-not-allowed
+                text-white transition-all duration-150 hover:scale-[1.02] disabled:hover:scale-100
+              '
+              aria-label='Partial cleaning'
             >
-              {dirtSystem.isSpawnerActive ? (
-                <>
-                  <Pause className='w-3 h-3' />
-                  Stop Spawner
-                </>
-              ) : (
-                <>
-                  <Play className='w-3 h-3' />
-                  Start Spawner
-                </>
-              )}
+              <Droplets className='w-3 h-3' />
+              Partial Clean
             </button>
 
             <button
-              onClick={dirtSystem.forceSpawnSpot}
-              disabled={dirtSystem.spots.length >= dirtSystem.config.maxSpots}
+              onClick={() => dirtSystem.cleanAquarium('complete')}
+              disabled={dirtSystem.isLoading}
               className='
                 w-full flex items-center justify-center gap-2 px-3 py-2 rounded text-xs font-medium
-                bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed
+                bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed
                 text-white transition-all duration-150 hover:scale-[1.02] disabled:hover:scale-100
               '
-              aria-label={`Force spawn dirt spot (${dirtSystem.spots.length}/${dirtSystem.config.maxSpots} spots)`}
+              aria-label='Complete cleaning'
             >
-              <Plus className='w-3 h-3' />
-              Force Spawn
+              <Sparkles className='w-3 h-3' />
+              Complete Clean
             </button>
 
             <button
-              onClick={dirtSystem.clearAllSpots}
-              disabled={dirtSystem.spots.length === 0}
+              onClick={dirtSystem.fetchDirtStatus}
+              disabled={dirtSystem.isLoading}
               className='
                 w-full flex items-center justify-center gap-2 px-3 py-2 rounded text-xs font-medium
-                bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed
+                bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed
                 text-white transition-all duration-150 hover:scale-[1.02] disabled:hover:scale-100
               '
-              aria-label={`Clear all ${dirtSystem.spots.length} dirt spots`}
+              aria-label='Refresh dirt status'
             >
-              <Trash2 className='w-3 h-3' />
-              Clear All
+              <RefreshCw className='w-3 h-3' />
+              Refresh
             </button>
           </div>
         </div>

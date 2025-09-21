@@ -1,6 +1,6 @@
 'use client';
 
-import type { FeaturedTopic } from '@/types/help-types';
+import type { FeaturedTopic } from '@/types';
 import { getIcon } from '@/components';
 
 interface FeaturedTopicsProps {

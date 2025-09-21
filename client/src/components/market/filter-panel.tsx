@@ -4,7 +4,7 @@ import { Button } from '@/components';
 import { Slider } from '@/components';
 import { RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { MarketFilters } from '@/types/market';
+import { MarketFilters } from '@/types/shop-types';
 import { useMarketStore } from '@/store/market-store';
 
 export function MarketFilterPanel() {

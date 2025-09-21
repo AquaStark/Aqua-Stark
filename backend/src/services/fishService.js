@@ -11,6 +11,11 @@ import { ServiceError } from '../../utils/errors.js';
 
 /**
  * Enhanced Fish Service for managing fish states and operations
+ *
+ * @class FishService
+ * @author Aqua Stark Team
+ * @version 1.0.0
+ * @since 2025-09-16
  */
 export class FishService {
   /**

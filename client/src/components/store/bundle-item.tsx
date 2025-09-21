@@ -1,18 +1,9 @@
 import { motion } from 'framer-motion';
 import { useCartStore } from '@/store/use-cart-store';
 
-interface BundleItemProps {
-  id: string;
-  name: string;
-  image: string;
-  price: number;
-  originalPrice: number;
-  discount: string;
-  tag: string;
-  rarity: string;
-  items: string[];
-  description: string;
-}
+import { ShopBundle } from '@/types/shop-types';
+
+type BundleItemProps = ShopBundle;
 
 export function BundleItem({
   id,

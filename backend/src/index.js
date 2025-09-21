@@ -14,6 +14,8 @@ import fishRoutes from './routes/fishRoutes.js';
 import minigameRoutes from './routes/minigameRoutes.js';
 import playerRoutes from './routes/playerRoutes.js';
 import decorationRoutes from './routes/decorationRoutes.js';
+import dirtRoutes from './routes/dirtRoutes.js';
+import storeRoutes from './routes/storeRoutes.js';
 
 // Import WebSocket
 import { GameWebSocket } from './websocket/gameWebSocket.js';
@@ -71,6 +73,8 @@ app.get('/api/v1', (req, res) => {
       fish: '/api/v1/fish',
       decorations: '/api/v1/decorations',
       minigames: '/api/v1/minigames',
+      dirt: '/api/v1/dirt',
+      store: '/api/v1/store',
       websocket: '/ws',
     },
   });
@@ -81,6 +85,8 @@ app.use('/api/v1/fish', fishRoutes);
 app.use('/api/v1/minigames', minigameRoutes);
 app.use('/api/v1/players', playerRoutes);
 app.use('/api/v1/decorations', decorationRoutes);
+app.use('/api/v1/dirt', dirtRoutes);
+app.use('/api/v1/store', storeRoutes);
 
 // WebSocket endpoint info
 app.get('/ws', (req, res) => {
@@ -165,6 +171,7 @@ async function startServer() {
       console.log('   🐟 Fish Management API');
       console.log('   🏠 Aquarium States');
       console.log('   🎯 Minigame Sessions');
+      console.log('   🏪 Store System');
       console.log('   ⚡ Real-time Updates');
       console.log('');
       console.log('🌊 Ready to dive into the aquatic world! 🐠');

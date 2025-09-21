@@ -75,6 +75,7 @@ export default function MarketPage() {
         Rare: 3,
         Epic: 4,
         Legendary: 5,
+        Special: 6,
       };
       return rarityOrder[b.rarity] - rarityOrder[a.rarity];
     }

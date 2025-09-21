@@ -7,7 +7,7 @@ export const initialAquariums = [
     type: 'Tropical',
     health: 85,
     lastVisited: '2 hours ago',
-    fishCount: '14/15',
+    fishCount: '8/15',
     rating: 3,
     fishes: [
       {

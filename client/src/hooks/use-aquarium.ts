@@ -1,5 +1,5 @@
 import { MOCK_AQUARIUMS } from '@/data/game-data';
-import { AquariumData } from '@/types/game';
+import { AquariumData } from '@/types';
 import { useDojoSDK } from '@dojoengine/sdk/react';
 import { useState } from 'react';
 import { Account, AccountInterface } from 'starknet';

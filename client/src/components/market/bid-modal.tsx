@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,7 @@ import { Input } from '@/components';
 import { Coins, Clock, Plus, Minus } from 'lucide-react';
 import { useMarketStore } from '@/store/market-store';
 import { RarityBadge } from '@/components';
+import { useModal } from '@/hooks';
 
 export function BidModal() {
   const {
@@ -23,6 +24,29 @@ export function BidModal() {
     setBidAmount,
   } = useMarketStore();
   const [error, setError] = useState('');
+
+  // Use the unified modal hook
+  const { open, close, isOpen } = useModal({
+    closable: true,
+    onOpen: data => {
+      // Handle modal opening
+      console.log('Bid modal opened with data:', data);
+    },
+    onClose: () => {
+      // Handle modal closing
+      setShowBidModal(false);
+      setError('');
+    },
+  });
+
+  // Sync with store state
+  useEffect(() => {
+    if (showBidModal && !isOpen) {
+      open(selectedFish);
+    } else if (!showBidModal && isOpen) {
+      close();
+    }
+  }, [showBidModal, isOpen, open, close, selectedFish]);
 
   if (!selectedFish || !selectedFish.auction) return null;
 
@@ -45,11 +69,11 @@ export function BidModal() {
 
     // In a real app, this would submit the bid to an API
     alert(`Bid of ${bidAmount} coins placed on ${selectedFish.name}!`);
-    setShowBidModal(false);
+    close();
   };
 
   return (
-    <Dialog open={showBidModal} onOpenChange={setShowBidModal}>
+    <Dialog open={isOpen} onOpenChange={close}>
       <DialogContent
         className='bg-blue-900/95 border-blue-700 text-white max-w-md'
         role='dialog'
@@ -135,11 +159,7 @@ export function BidModal() {
         </div>
 
         <DialogFooter>
-          <Button
-            variant='outline'
-            onClick={() => setShowBidModal(false)}
-            className='text-black'
-          >
+          <Button variant='outline' onClick={close} className='text-black'>
             Cancel
           </Button>
           <Button

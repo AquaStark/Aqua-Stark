@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { useEffect, useState } from 'react';
-import type { FoodItem } from '@/types/food';
+import type { FoodItem } from '@/types';
 
 interface FoodProps {
   food: FoodItem;

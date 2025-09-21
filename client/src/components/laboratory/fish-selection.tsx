@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { List, Grid } from 'lucide-react';
-import type { Fish } from '@/types/fish';
+import type { Fish } from '@/types';
 import { Button } from '@/components';
 
 interface FishSelectionProps {

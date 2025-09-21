@@ -4,7 +4,7 @@ import { Button } from '@/components';
 import { Slider } from '@/components';
 import { RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { CommunityEventFilters } from '@/types/community';
+import { CommunityEventFilters } from '@/types';
 import { useCommunity } from '@/hooks';
 import { Input } from '@/components';
 

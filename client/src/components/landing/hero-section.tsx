@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAccount } from '@starknet-react/core';
 import { Button } from '@/components';
 import { toast } from 'sonner';
-import { usePlayerValidation } from '@/hooks';
+import { usePlayerValidation, useNotifications } from '@/hooks';
 import { useState } from 'react';
 
 export function HeroSection() {
@@ -11,11 +11,12 @@ export function HeroSection() {
   const navigate = useNavigate();
   const { validatePlayer, syncPlayerToBackend, isValidating } =
     usePlayerValidation();
+  const { success, error, info } = useNotifications();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleStartGame = async () => {
     if (!account) {
-      toast.error('Connect your wallet before playing.');
+      error('Connect your wallet before playing.');
       return;
     }
 
@@ -32,13 +33,13 @@ export function HeroSection() {
             if (validation.playerData) {
               await syncPlayerToBackend(validation.playerData, account.address);
             }
-            toast.success('Welcome back! Your data has been synced.');
-          } catch (error) {
-            console.error('Error syncing player to backend:', error);
+            success('Welcome back! Your data has been synced.');
+          } catch (err) {
+            console.error('Error syncing player to backend:', err);
             // Continue anyway, user can still play
           }
         } else {
-          toast.success('Welcome back!');
+          success('Welcome back!');
         }
 
         // Navigate to game
@@ -47,10 +48,10 @@ export function HeroSection() {
         // New user - go to registration
         navigate('/start');
       }
-    } catch (error) {
-      console.error('Error validating player:', error);
+    } catch (err) {
+      console.error('Error validating player:', err);
       // On error, default to registration flow
-      toast.info('Starting registration process...');
+      info('Starting registration process...');
       navigate('/start');
     } finally {
       setIsProcessing(false);

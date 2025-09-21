@@ -6,7 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { FishTank } from '@/components';
 import { X, Heart, Clock, AlertTriangle, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { BreedingPair, BreedingResult } from '@/types/fish';
+import type { BreedingPair, BreedingResult } from '@/types';
 
 interface BreedingTankProps {
   breedingPair: BreedingPair;

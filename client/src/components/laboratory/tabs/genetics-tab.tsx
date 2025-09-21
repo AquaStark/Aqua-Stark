@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Button } from '@/components';
 import { Dna, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { Fish, GeneticCombination } from '@/types/fish';
+import type { Fish, GeneticCombination } from '@/types';
 
 interface GeneticsTabProps {
   setActiveTab: (tab: string) => void;

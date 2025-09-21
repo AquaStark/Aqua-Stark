@@ -1,22 +1,9 @@
 import { StoreItem } from '@/components';
 
-interface StoreItemData {
-  id?: string;
-  name: string;
-  image: string;
-  price: number;
-  rarity: string;
-  description?: string;
-  rating?: number;
-  originalPrice?: number;
-  isNew?: boolean;
-  stock?: number;
-  isLimited?: boolean;
-  category?: string;
-}
+import { ShopItem } from '@/types/shop-types';
 
 interface StoreGridProps {
-  items: StoreItemData[];
+  items: ShopItem[];
 }
 
 export function StoreGrid({ items }: StoreGridProps) {

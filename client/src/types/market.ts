@@ -10,7 +10,7 @@ export interface Fish {
   id: number;
   name: string;
   image: string;
-  rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
+  rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary' | 'Special';
   generation: number;
   level: number;
   traits: {

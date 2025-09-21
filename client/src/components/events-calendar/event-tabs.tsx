@@ -19,6 +19,7 @@ import { ListEventView } from '@/components';
 import { CalendarView } from '@/components';
 import { EventDetailsModal } from '@/components';
 import { mockEvents } from '@/data/event-calendar-data';
+import { CalendarEvent } from '@/types';
 
 type TabType = 'all' | 'special' | 'seasons' | 'tournaments' | 'offers';
 type ViewType = 'list' | 'calendar';
