@@ -2,7 +2,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from '@starknet-react/core';
 import { Button } from '@/components';
-import { toast } from 'sonner';
 import { usePlayerValidation, useNotifications } from '@/hooks';
 import { useState } from 'react';
 
