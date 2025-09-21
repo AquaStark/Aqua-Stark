@@ -2,11 +2,11 @@
 
 import type React from 'react';
 import { motion } from 'framer-motion';
-import type { FishType } from '@/types/game';
+import type { FishType } from '@/types';
 import { useEffect, useState, useRef } from 'react';
 import { useFishIndicators } from '@/hooks';
 import { FishStatus } from '@/components/FishStatus';
-import { MotionAnimationProps } from '@/types/ui-types';
+import { MotionAnimationProps } from '@/types';
 
 interface FishProps {
   fish: FishType;

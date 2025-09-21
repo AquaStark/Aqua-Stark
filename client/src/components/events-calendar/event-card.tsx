@@ -11,6 +11,7 @@ import {
   Trophy,
   Users,
 } from 'lucide-react';
+import { CalendarEvent } from '@/types';
 
 // Moved utility functions directly into component
 function formatDate(dateString: string): string {
@@ -46,8 +47,6 @@ function formatTimeLeft(dateString: string): string {
     }
   }
 }
-
-import { CalendarEvent } from '@/types/events';
 
 interface EventCardProps {
   event: CalendarEvent;

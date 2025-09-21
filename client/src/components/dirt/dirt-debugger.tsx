@@ -1,6 +1,6 @@
 'use client';
 
-import type { DirtSpot as DirtSpotType } from '@/types/dirt';
+import type { DirtSpotType } from '@/types';
 import { useState } from 'react';
 import {
   ChevronDown,

@@ -3,7 +3,7 @@
 import { useDojoSDK } from '@dojoengine/sdk/react';
 import React, { createContext, useContext, useMemo } from 'react';
 import { useSystemCalls } from './useSystemCalls';
-import { DojoClient } from '@/types/dojo';
+import { DojoClient } from '@/types';
 
 interface DojoContextValue {
   client: DojoClient;

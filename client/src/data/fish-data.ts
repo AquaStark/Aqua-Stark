@@ -1,4 +1,4 @@
-import type { Fish, BreedingResult } from '@/types/fish';
+import type { Fish, BreedingResult } from '@/types';
 
 // Sample fish data
 export const fishCollection: Fish[] = [

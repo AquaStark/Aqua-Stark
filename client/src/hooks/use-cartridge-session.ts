@@ -7,7 +7,7 @@ import {
   CartridgeAccount,
   CartridgeError,
   CartridgeErrorType,
-} from '@/types/cartridge';
+} from '@/types';
 
 export function useCartridgeSession(): UseCartridgeSessionReturn {
   const { connect, connectors } = useConnect();
