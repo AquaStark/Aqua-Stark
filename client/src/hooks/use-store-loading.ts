@@ -42,7 +42,7 @@ export function useStoreLoading() {
       setImagesLoaded(0);
       setCurrentStep(`Loading item images... (0/${imageUrls.length})`);
 
-      const imagePromises = imageUrls.map((url) => {
+      const imagePromises = imageUrls.map(url => {
         return new Promise<void>(resolve => {
           if (!url || url === '/placeholder.svg') {
             resolve();

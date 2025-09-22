@@ -40,7 +40,10 @@ export function StoreGrid({ items }: StoreGridProps) {
   // Reset to first page when items change (only if items actually change)
   useEffect(() => {
     // Only reset if the number of items actually changed and we're not on page 0
-    if (processedItems.length !== previousItemsLength.current && currentPage > 0) {
+    if (
+      processedItems.length !== previousItemsLength.current &&
+      currentPage > 0
+    ) {
       setCurrentPage(0);
     }
     previousItemsLength.current = processedItems.length;
