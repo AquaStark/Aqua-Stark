@@ -254,7 +254,15 @@ export const TYPE_VALIDATION = {
   FISH_INDICATORS: ['FishIndicatorState', 'FishIndicatorOptions'],
 
   // Aquarium Types
-  AQUARIUM_TYPES: ['Aquarium', 'AquariumStats', 'AquariumType', 'AquariumState', 'AquariumHealthStatus', 'AquariumConfig', 'AquariumMetrics'],
+  AQUARIUM_TYPES: [
+    'Aquarium',
+    'AquariumStats',
+    'AquariumType',
+    'AquariumState',
+    'AquariumHealthStatus',
+    'AquariumConfig',
+    'AquariumMetrics',
+  ],
 
   // Game Systems
   DIRT_SYSTEM: ['DirtSpot', 'DirtType', 'DirtSystemConfig', 'DirtSystemState'],

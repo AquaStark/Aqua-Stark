@@ -93,23 +93,23 @@ export interface AquariumData {
  * Aquarium state enumeration
  * Defines the different states an aquarium can be in
  */
-export type AquariumState = 
-  | 'active'      // Aquarium is active and being used
-  | 'inactive'    // Aquarium is not currently active
+export type AquariumState =
+  | 'active' // Aquarium is active and being used
+  | 'inactive' // Aquarium is not currently active
   | 'maintenance' // Aquarium is under maintenance
-  | 'locked'      // Aquarium is locked and cannot be accessed
-  | 'upgrading';  // Aquarium is being upgraded
+  | 'locked' // Aquarium is locked and cannot be accessed
+  | 'upgrading'; // Aquarium is being upgraded
 
 /**
  * Aquarium health status enumeration
  * Based on health percentage ranges
  */
-export type AquariumHealthStatus = 
-  | 'excellent'  // 90-100%
-  | 'good'       // 70-89%
-  | 'fair'       // 50-69%
-  | 'poor'       // 30-49%
-  | 'critical';  // 0-29%
+export type AquariumHealthStatus =
+  | 'excellent' // 90-100%
+  | 'good' // 70-89%
+  | 'fair' // 50-69%
+  | 'poor' // 30-49%
+  | 'critical'; // 0-29%
 
 /**
  * Aquarium configuration interface
@@ -164,13 +164,21 @@ export const AquariumTypeValidation = {
    * Validates if a value is a valid aquarium state
    */
   isValidAquariumState: (value: string): value is AquariumState => {
-    return ['active', 'inactive', 'maintenance', 'locked', 'upgrading'].includes(value);
+    return [
+      'active',
+      'inactive',
+      'maintenance',
+      'locked',
+      'upgrading',
+    ].includes(value);
   },
 
   /**
    * Validates if a value is a valid aquarium health status
    */
-  isValidAquariumHealthStatus: (value: string): value is AquariumHealthStatus => {
+  isValidAquariumHealthStatus: (
+    value: string
+  ): value is AquariumHealthStatus => {
     return ['excellent', 'good', 'fair', 'poor', 'critical'].includes(value);
   },
 
@@ -190,23 +198,29 @@ export const AquariumTypeValidation = {
    */
   validateAquarium: (aquarium: Partial<Aquarium>): string[] => {
     const errors: string[] = [];
-    
+
     if (!aquarium.id || typeof aquarium.id !== 'number') {
       errors.push('Aquarium ID must be a valid number');
     }
-    
+
     if (!aquarium.name || typeof aquarium.name !== 'string') {
       errors.push('Aquarium name must be a valid string');
     }
-    
-    if (aquarium.health !== undefined && (aquarium.health < 0 || aquarium.health > 100)) {
+
+    if (
+      aquarium.health !== undefined &&
+      (aquarium.health < 0 || aquarium.health > 100)
+    ) {
       errors.push('Aquarium health must be between 0 and 100');
     }
-    
-    if (aquarium.rating !== undefined && (aquarium.rating < 1 || aquarium.rating > 5)) {
+
+    if (
+      aquarium.rating !== undefined &&
+      (aquarium.rating < 1 || aquarium.rating > 5)
+    ) {
       errors.push('Aquarium rating must be between 1 and 5');
     }
-    
+
     return errors;
-  }
+  },
 };
