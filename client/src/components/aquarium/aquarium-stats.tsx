@@ -1,6 +1,6 @@
 import type { AquariumStats } from '@/types';
 
-interface AquariumStatsProps extends AquariumStats {}
+type AquariumStatsProps = AquariumStats;
 
 export function AquariumStats({
   totalAquariums,

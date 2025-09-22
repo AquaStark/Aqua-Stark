@@ -1,5 +1,5 @@
 import { Edit, Trash2, Eye } from 'lucide-react';
-import type { Aquarium, Fish } from '@/types';
+import type { Aquarium } from '@/types';
 
 interface AquariumCardProps {
   aquarium: Aquarium;
