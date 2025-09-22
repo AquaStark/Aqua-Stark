@@ -23,6 +23,10 @@ export * from './api-types';
 
 // User types (centralized user-related types)
 export * from './user-types';
+
+// Aquarium types (centralized aquarium-related types)
+export * from './aquarium-types';
+
 export type {
   FishType,
   AquariumData,
@@ -248,6 +252,9 @@ export const TYPE_VALIDATION = {
   FISH_TYPES: ['FishType', 'AquariumData', 'ContractAquarium', 'ContractFish'],
   FISH_SYSTEM: ['Fish', 'FishStateType', 'BreedingPair', 'BreedingResult'],
   FISH_INDICATORS: ['FishIndicatorState', 'FishIndicatorOptions'],
+
+  // Aquarium Types
+  AQUARIUM_TYPES: ['Aquarium', 'AquariumStats', 'AquariumType', 'AquariumState', 'AquariumHealthStatus', 'AquariumConfig', 'AquariumMetrics'],
 
   // Game Systems
   DIRT_SYSTEM: ['DirtSpot', 'DirtType', 'DirtSystemConfig', 'DirtSystemState'],
