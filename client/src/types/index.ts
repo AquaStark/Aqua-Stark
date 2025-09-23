@@ -50,7 +50,12 @@ export type {
 } from './fish';
 
 // New unified fish exports (preferred)
-export type { UIFish as Fish, FishStats, FishRarity, FishState } from './fish-types';
+export type {
+  UIFish as Fish,
+  FishStats,
+  FishRarity,
+  FishState,
+} from './fish-types';
 
 // Fish health and status indicator system
 export type {

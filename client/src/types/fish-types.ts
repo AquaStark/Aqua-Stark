@@ -9,13 +9,21 @@
  * Rarity classification for fish shown in the UI and market.
  * Keep values capitalized to match existing usage across the app.
  */
-export type FishRarity = 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary' | 'Special';
+export type FishRarity =
+  | 'Common'
+  | 'Uncommon'
+  | 'Rare'
+  | 'Epic'
+  | 'Legendary'
+  | 'Special';
 
 /**
  * Lowercase rarity variant used by some UI elements.
  * Provided for compatibility with components that expect lowercase strings.
  */
-export type FishRarityLower = Lowercase<Exclude<FishRarity, 'Special'>> | 'exotic';
+export type FishRarityLower =
+  | Lowercase<Exclude<FishRarity, 'Special'>>
+  | 'exotic';
 
 /**
  * Fish behavior/state as used by animations and systems.
@@ -115,7 +123,9 @@ export type UIFish = FishBase & FishRequiredProps & FishOptionalProps;
 export function isFishRarity(value: unknown): value is FishRarity {
   return (
     typeof value === 'string' &&
-    ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Special'].includes(value)
+    ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Special'].includes(
+      value
+    )
   );
 }
 
@@ -148,5 +158,3 @@ export function isUIFish(value: unknown): value is UIFish {
     typeof (v.traits as any).size === 'string'
   );
 }
-
-
