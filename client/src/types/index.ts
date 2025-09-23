@@ -17,6 +17,8 @@
 // Core game types
 export * from './game';
 export * from './fishIndicators.d';
+// Centralized fish types
+export * from './fish-types';
 
 // API and backend types
 export * from './api-types';
@@ -39,12 +41,16 @@ export type {
 
 // Fish-specific types for breeding, genetics, and states
 export type {
-  Fish,
-  FishStateType,
+  // legacy fish types from fish.ts (kept temporarily)
+  Fish as LegacyFish,
+  FishStateType as LegacyFishStateType,
   BreedingPair,
   BreedingResult,
   GeneticCombination,
 } from './fish';
+
+// New unified fish exports (preferred)
+export type { UIFish as Fish, FishStats, FishRarity, FishState } from './fish-types';
 
 // Fish health and status indicator system
 export type {
@@ -230,8 +236,9 @@ export type {
 // =============================================================================
 
 // Re-export commonly used types for convenience
+// common aliases from their sources
+export type { UIFish as CommonFish } from './fish-types';
 export type {
-  Fish as CommonFish,
   BreedingPair as CommonBreedingPair,
   BreedingResult as CommonBreedingResult,
 } from './fish';

@@ -6,11 +6,13 @@ export interface Bubble {
   delay: number;
 }
 
-export interface Fish {
+import type { UIFish } from './fish-types';
+
+export interface Fish extends Pick<UIFish, 'id' | 'name' | 'image' | 'rarity' | 'generation' | 'traits'> {
   id: number;
   name: string;
   image: string;
-  rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary' | 'Special';
+  rarity: UIFish['rarity'];
   generation: number;
   level: number;
   traits: {
