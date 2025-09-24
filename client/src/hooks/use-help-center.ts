@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { categories } from '@/data/help-center-data';
+import { categories } from '@/constants';
 
 export function useHelpCenter() {
   const [activeCategory, setActiveCategory] = useState('getting-started');

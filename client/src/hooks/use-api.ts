@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { ENV_CONFIG } from '@/config/environment';
+import { ENV_CONFIG } from '@/constants';
 
 /**
  * @file use-api.ts

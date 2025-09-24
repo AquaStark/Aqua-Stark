@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { MOCK_AQUARIUMS } from '@/data/game-data';
+import { MOCK_AQUARIUMS } from '@/constants';
 
 interface AquariumTabProps {
   name: string;
