@@ -30,7 +30,7 @@ export class StoreController {
       };
 
       // Remove undefined values
-      Object.keys(filters).forEach(key => {
+      Object.keys(filters).forEach((key) => {
         if (filters[key] === undefined) {
           delete filters[key];
         }
@@ -45,9 +45,14 @@ export class StoreController {
         filters: filters,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('StoreController', 'getStoreItems', error, {
-        filters: req.query
-      });
+      loggingMiddleware.logControllerError(
+        'StoreController',
+        'getStoreItems',
+        error,
+        {
+          filters: req.query,
+        }
+      );
 
       if (error.code === 'FETCH_FAILED' || error.code === 'FETCH_ERROR') {
         return res.status(500).json({
@@ -80,9 +85,14 @@ export class StoreController {
         data: item,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('StoreController', 'getStoreItem', error, {
-        itemId: req.params?.id
-      });
+      loggingMiddleware.logControllerError(
+        'StoreController',
+        'getStoreItem',
+        error,
+        {
+          itemId: req.params?.id,
+        }
+      );
 
       if (error.code === 'ITEM_NOT_FOUND') {
         return res.status(404).json({
@@ -119,7 +129,7 @@ export class StoreController {
         'type',
         'image_url',
       ];
-      const missingFields = requiredFields.filter(field => !itemData[field]);
+      const missingFields = requiredFields.filter((field) => !itemData[field]);
 
       if (missingFields.length > 0) {
         return res.status(400).json({
@@ -136,9 +146,14 @@ export class StoreController {
         message: 'Store item created successfully',
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('StoreController', 'createStoreItem', error, {
-        itemData: req.body
-      });
+      loggingMiddleware.logControllerError(
+        'StoreController',
+        'createStoreItem',
+        error,
+        {
+          itemData: req.body,
+        }
+      );
 
       if (error.code === 'VALIDATION_ERROR') {
         return res.status(400).json({
@@ -184,10 +199,15 @@ export class StoreController {
         message: 'Store item updated successfully',
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('StoreController', 'updateStoreItem', error, {
-        itemId: req.params?.id,
-        updateData: req.body
-      });
+      loggingMiddleware.logControllerError(
+        'StoreController',
+        'updateStoreItem',
+        error,
+        {
+          itemId: req.params?.id,
+          updateData: req.body,
+        }
+      );
 
       if (error.code === 'VALIDATION_ERROR') {
         return res.status(400).json({
@@ -235,9 +255,14 @@ export class StoreController {
         message: 'Store item deleted successfully',
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('StoreController', 'deleteStoreItem', error, {
-        itemId: req.params?.id
-      });
+      loggingMiddleware.logControllerError(
+        'StoreController',
+        'deleteStoreItem',
+        error,
+        {
+          itemId: req.params?.id,
+        }
+      );
 
       if (error.code === 'ITEM_NOT_FOUND') {
         return res.status(404).json({
@@ -289,10 +314,15 @@ export class StoreController {
         message: `Item stock updated to ${stock}`,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('StoreController', 'updateItemStock', error, {
-        itemId: req.params?.id,
-        stock: req.body?.stock
-      });
+      loggingMiddleware.logControllerError(
+        'StoreController',
+        'updateItemStock',
+        error,
+        {
+          itemId: req.params?.id,
+          stock: req.body?.stock,
+        }
+      );
 
       if (error.code === 'VALIDATION_ERROR') {
         return res.status(400).json({
@@ -333,7 +363,11 @@ export class StoreController {
         data: stats,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('StoreController', 'getStoreStats', error);
+      loggingMiddleware.logControllerError(
+        'StoreController',
+        'getStoreStats',
+        error
+      );
 
       if (error.code === 'STATS_FETCH_FAILED' || error.code === 'STATS_ERROR') {
         return res.status(500).json({
@@ -376,9 +410,14 @@ export class StoreController {
         type: type,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('StoreController', 'getStoreItemsByType', error, {
-        type: req.params?.type
-      });
+      loggingMiddleware.logControllerError(
+        'StoreController',
+        'getStoreItemsByType',
+        error,
+        {
+          type: req.params?.type,
+        }
+      );
 
       if (error.code === 'FETCH_FAILED' || error.code === 'FETCH_ERROR') {
         return res.status(500).json({
