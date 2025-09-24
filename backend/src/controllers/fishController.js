@@ -11,9 +11,14 @@ export class FishController {
 
       res.json({ success: true, data: fishState });
     } catch (error) {
-      loggingMiddleware.logControllerError('FishController', 'getFishState', error, {
-        fishId: req.params?.fishId
-      });
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'getFishState',
+        error,
+        {
+          fishId: req.params?.fishId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -45,10 +50,15 @@ export class FishController {
         message: `Fish happiness updated to ${happinessLevel}`,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('FishController', 'updateFishHappiness', error, {
-        fishId: req.params?.fishId,
-        happinessLevel: req.body?.happinessLevel
-      });
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'updateFishHappiness',
+        error,
+        {
+          fishId: req.params?.fishId,
+          happinessLevel: req.body?.happinessLevel,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -67,10 +77,15 @@ export class FishController {
         message: `Fish fed with ${foodType} food`,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('FishController', 'feedFish', error, {
-        fishId: req.params?.fishId,
-        foodType: req.body?.foodType
-      });
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'feedFish',
+        error,
+        {
+          fishId: req.params?.fishId,
+          foodType: req.body?.foodType,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -88,9 +103,14 @@ export class FishController {
 
       res.json({ success: true, data: stats });
     } catch (error) {
-      loggingMiddleware.logControllerError('FishController', 'getFishStats', error, {
-        fishId: req.params?.fishId
-      });
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'getFishStats',
+        error,
+        {
+          fishId: req.params?.fishId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -112,10 +132,15 @@ export class FishController {
         message: 'Fish breeding will be implemented in a future update',
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('FishController', 'breedFish', error, {
-        parent1Id: req.body?.parent1Id,
-        parent2Id: req.body?.parent2Id
-      });
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'breedFish',
+        error,
+        {
+          parent1Id: req.body?.parent1Id,
+          parent2Id: req.body?.parent2Id,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -135,9 +160,14 @@ export class FishController {
 
       res.json({ success: true, data: fish });
     } catch (error) {
-      loggingMiddleware.logControllerError('FishController', 'getPlayerFish', error, {
-        playerId: req.params?.playerId
-      });
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'getPlayerFish',
+        error,
+        {
+          playerId: req.params?.playerId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -161,10 +191,15 @@ export class FishController {
         message: `Fed ${result.successful.length} fish successfully, ${result.failed.length} failed`,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('FishController', 'feedMultipleFish', error, {
-        fishIds: req.body?.fishIds,
-        foodType: req.body?.foodType
-      });
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'feedMultipleFish',
+        error,
+        {
+          fishIds: req.body?.fishIds,
+          foodType: req.body?.foodType,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -182,9 +217,14 @@ export class FishController {
         count: filteredFish.length,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('FishController', 'filterFish', error, {
-        filters: req.query
-      });
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'filterFish',
+        error,
+        {
+          filters: req.query,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -208,9 +248,14 @@ export class FishController {
         count: fishNeedingAttention.length,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('FishController', 'getFishNeedingAttention', error, {
-        playerId: req.params?.playerId
-      });
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'getFishNeedingAttention',
+        error,
+        {
+          playerId: req.params?.playerId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -232,9 +277,14 @@ export class FishController {
         message: `Fish mood updated to ${updatedFish.mood}`,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('FishController', 'updateFishMood', error, {
-        fishId: req.params?.fishId
-      });
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'updateFishMood',
+        error,
+        {
+          fishId: req.params?.fishId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -249,7 +299,11 @@ export class FishController {
         data: stats,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('FishController', 'getGlobalFishStats', error);
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'getGlobalFishStats',
+        error
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
