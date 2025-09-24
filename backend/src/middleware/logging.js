@@ -21,8 +21,7 @@ class LoggingMiddleware {
     this.currentLogLevel = process.env.LOG_LEVEL || 'INFO';
     this.logDir = process.env.LOG_DIR || './logs';
     // 10MB default
-    this.maxLogSize =
-      parseInt(process.env.MAX_LOG_SIZE) || 10 * 1024 * 1024;
+    this.maxLogSize = parseInt(process.env.MAX_LOG_SIZE) || 10 * 1024 * 1024;
     this.maxLogFiles = parseInt(process.env.MAX_LOG_FILES) || 5;
 
     this.ensureLogDirectory();
@@ -59,9 +58,7 @@ class LoggingMiddleware {
   formatMessage(level, message, metadata = {}) {
     const timestamp = new Date().toISOString();
     const metadataStr =
-      Object.keys(metadata).length > 0
-        ? ` | ${JSON.stringify(metadata)}`
-        : '';
+      Object.keys(metadata).length > 0 ? ` | ${JSON.stringify(metadata)}` : '';
 
     return `[${timestamp}] [${level}] ${message}${metadataStr}`;
   }
@@ -211,9 +208,7 @@ class LoggingMiddleware {
       ip: req.ip || req.connection.remoteAddress,
       headers: {
         'content-type': req.get('Content-Type'),
-        authorization: req.get('Authorization')
-          ? '[REDACTED]'
-          : undefined,
+        authorization: req.get('Authorization') ? '[REDACTED]' : undefined,
       },
     });
 
@@ -271,11 +266,15 @@ class LoggingMiddleware {
    * @param {Object} context - Additional context
    */
   logControllerError(controllerName, methodName, error, context = {}) {
-    this.error(`Error in ${controllerName}.${methodName}`, {
-      controller: controllerName,
-      method: methodName,
-      ...context,
-    }, error);
+    this.error(
+      `Error in ${controllerName}.${methodName}`,
+      {
+        controller: controllerName,
+        method: methodName,
+        ...context,
+      },
+      error
+    );
   }
 
   /**
