@@ -1,5 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { DirtSpot, DirtType, DirtSystemConfig, DirtSystemState } from '@/types';
+import {
+  DirtSpot,
+  DirtType,
+  DirtSystemConfig,
+  DirtSystemState,
+} from '@/constants';
 
 const DEFAULT_CONFIG: DirtSystemConfig = {
   spawnInterval: 5000, // 5 seconds
