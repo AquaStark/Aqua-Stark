@@ -1,20 +1,6 @@
 import { AquariumCard } from './aquarium-card';
 
-import type { Aquarium as AquariumCardType } from './aquarium-card';
-import type { Fish } from '@/types';
-
-interface Aquarium extends Omit<AquariumCardType, 'fishes'> {
-  id: number;
-  name: string;
-  image: string;
-  level: number;
-  type: string;
-  health: number;
-  lastVisited: string;
-  fishCount: string;
-  rating: number;
-  isPremium?: boolean;
-}
+import type { Aquarium, Fish } from '@/types';
 
 interface AquariumListProps {
   aquariums: Aquarium[];

@@ -12,7 +12,7 @@ import { useBubbles } from '@/hooks';
 import { Search, Filter } from 'lucide-react';
 import { useActiveAquarium } from '../store/active-aquarium';
 import { useNavigate } from 'react-router-dom';
-import type { Aquarium } from '@/components/aquarium/aquarium-card';
+import type { Aquarium } from '@/types';
 import { useAccount } from '@starknet-react/core';
 import { useFish } from '@/hooks';
 import * as models from '@/typescript/models.gen';

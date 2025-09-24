@@ -17,12 +17,18 @@
 // Core game types
 export * from './game';
 export * from './fishIndicators.d';
+// Centralized fish types
+export * from './fish-types';
 
 // API and backend types
 export * from './api-types';
 
 // User types (centralized user-related types)
 export * from './user-types';
+
+// Aquarium types (centralized aquarium-related types)
+export * from './aquarium-types';
+
 export type {
   FishType,
   AquariumData,
@@ -35,12 +41,21 @@ export type {
 
 // Fish-specific types for breeding, genetics, and states
 export type {
-  Fish,
-  FishStateType,
+  // legacy fish types from fish.ts (kept temporarily)
+  Fish as LegacyFish,
+  FishStateType as LegacyFishStateType,
   BreedingPair,
   BreedingResult,
   GeneticCombination,
 } from './fish';
+
+// New unified fish exports (preferred)
+export type {
+  UIFish as Fish,
+  FishStats,
+  FishRarity,
+  FishState,
+} from './fish-types';
 
 // Fish health and status indicator system
 export type {
@@ -226,8 +241,9 @@ export type {
 // =============================================================================
 
 // Re-export commonly used types for convenience
+// common aliases from their sources
+export type { UIFish as CommonFish } from './fish-types';
 export type {
-  Fish as CommonFish,
   BreedingPair as CommonBreedingPair,
   BreedingResult as CommonBreedingResult,
 } from './fish';
@@ -248,6 +264,17 @@ export const TYPE_VALIDATION = {
   FISH_TYPES: ['FishType', 'AquariumData', 'ContractAquarium', 'ContractFish'],
   FISH_SYSTEM: ['Fish', 'FishStateType', 'BreedingPair', 'BreedingResult'],
   FISH_INDICATORS: ['FishIndicatorState', 'FishIndicatorOptions'],
+
+  // Aquarium Types
+  AQUARIUM_TYPES: [
+    'Aquarium',
+    'AquariumStats',
+    'AquariumType',
+    'AquariumState',
+    'AquariumHealthStatus',
+    'AquariumConfig',
+    'AquariumMetrics',
+  ],
 
   // Game Systems
   DIRT_SYSTEM: ['DirtSpot', 'DirtType', 'DirtSystemConfig', 'DirtSystemState'],
