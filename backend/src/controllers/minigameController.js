@@ -1,4 +1,5 @@
 import { MinigameService } from '../services/minigameService.js';
+import { loggingMiddleware } from '../middleware/logging.js';
 
 // Minigame controller for handling HTTP requests related to game sessions
 export class MinigameController {
@@ -34,7 +35,10 @@ export class MinigameController {
         message: `Game session created for ${gameType}`,
       });
     } catch (error) {
-      console.error('Error in createGameSession:', error);
+      loggingMiddleware.logControllerError('MinigameController', 'createGameSession', error, {
+        gameType: req.body?.gameType,
+        walletAddress: req.user?.walletAddress
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -73,7 +77,11 @@ export class MinigameController {
         message: `Game ended! Score: ${finalScore}, XP earned: ${xpEarned}`,
       });
     } catch (error) {
-      console.error('Error in endGameSession:', error);
+      loggingMiddleware.logControllerError('MinigameController', 'endGameSession', error, {
+        sessionId: req.params?.sessionId,
+        finalScore: req.body?.finalScore,
+        gameType: req.body?.gameType
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -91,7 +99,9 @@ export class MinigameController {
 
       res.json({ success: true, data: stats });
     } catch (error) {
-      console.error('Error in getPlayerStats:', error);
+      loggingMiddleware.logControllerError('MinigameController', 'getPlayerStats', error, {
+        playerId: req.params?.playerId
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -124,7 +134,9 @@ export class MinigameController {
 
       res.json({ success: true, data: leaderboard });
     } catch (error) {
-      console.error('Error in getGameLeaderboard:', error);
+      loggingMiddleware.logControllerError('MinigameController', 'getGameLeaderboard', error, {
+        gameType: req.params?.gameType
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -140,7 +152,7 @@ export class MinigameController {
 
       res.json({ success: true, data: leaderboard });
     } catch (error) {
-      console.error('Error in getGlobalLeaderboard:', error);
+      loggingMiddleware.logControllerError('MinigameController', 'getGlobalLeaderboard', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -173,7 +185,10 @@ export class MinigameController {
         message: `Bonus XP awarded for achievement: ${achievement}`,
       });
     } catch (error) {
-      console.error('Error in awardBonusXP:', error);
+      loggingMiddleware.logControllerError('MinigameController', 'awardBonusXP', error, {
+        playerId: req.params?.playerId,
+        bonusXP: req.body?.bonusXP
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -196,7 +211,9 @@ export class MinigameController {
         message: 'Session details retrieved',
       });
     } catch (error) {
-      console.error('Error in getGameSession:', error);
+      loggingMiddleware.logControllerError('MinigameController', 'getGameSession', error, {
+        sessionId: req.params?.sessionId
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -244,7 +261,7 @@ export class MinigameController {
 
       res.json({ success: true, data: gameTypes });
     } catch (error) {
-      console.error('Error in getGameTypes:', error);
+      loggingMiddleware.logControllerError('MinigameController', 'getGameTypes', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }

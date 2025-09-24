@@ -1,4 +1,5 @@
 import { DirtService } from '../services/dirtService.js';
+import { loggingMiddleware } from '../middleware/logging.js';
 
 /**
  * DirtController - Handles HTTP requests for aquarium dirt/cleanliness system
@@ -136,7 +137,9 @@ export class DirtController {
         data: dirtStatuses,
       });
     } catch (error) {
-      console.error('Error in getPlayerAquariumDirtStatuses:', error);
+      loggingMiddleware.logControllerError('DirtController', 'getPlayerAquariumDirtStatuses', error, {
+        playerId: req.params?.playerId
+      });
       res.status(500).json({
         success: false,
         error: 'Internal server error',
@@ -181,7 +184,10 @@ export class DirtController {
         data: cleaningResult,
       });
     } catch (error) {
-      console.error('Error in cleanDirtSpot:', error);
+      loggingMiddleware.logControllerError('DirtController', 'cleanDirtSpot', error, {
+        spotId: req.params?.spotId,
+        playerId: req.user?.playerId || req.user?.id
+      });
 
       res.status(500).json({
         success: false,
@@ -219,7 +225,10 @@ export class DirtController {
         data: initResult,
       });
     } catch (error) {
-      console.error('Error in initializeAquariumDirtSystem:', error);
+      loggingMiddleware.logControllerError('DirtController', 'initializeAquariumDirtSystem', error, {
+        aquariumId: req.params?.aquariumId,
+        playerId: req.user?.playerId || req.user?.id
+      });
       res.status(500).json({
         success: false,
         error: 'Internal server error',
@@ -294,7 +303,11 @@ export class DirtController {
         },
       });
     } catch (error) {
-      console.error('Error in updateAquariumDirtConfig:', error);
+      loggingMiddleware.logControllerError('DirtController', 'updateAquariumDirtConfig', error, {
+        aquariumId: req.params?.aquariumId,
+        config: req.body,
+        playerId: req.user?.playerId || req.user?.id
+      });
       res.status(500).json({
         success: false,
         error: 'Internal server error',
@@ -366,7 +379,9 @@ export class DirtController {
         data: stats,
       });
     } catch (error) {
-      console.error('Error in getPlayerDirtStats:', error);
+      loggingMiddleware.logControllerError('DirtController', 'getPlayerDirtStats', error, {
+        playerId: req.params?.playerId
+      });
       res.status(500).json({
         success: false,
         error: 'Internal server error',

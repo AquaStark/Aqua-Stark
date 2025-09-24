@@ -1,4 +1,5 @@
 import { DecorationService } from '../services/decorationService.js';
+import { loggingMiddleware } from '../middleware/logging.js';
 
 // Decoration controller for handling HTTP requests related to decoration operations
 export class DecorationController {
@@ -10,7 +11,9 @@ export class DecorationController {
 
       res.json({ success: true, data: decorationState });
     } catch (error) {
-      console.error('Error in getDecorationState:', error);
+      loggingMiddleware.logControllerError('DecorationController', 'getDecorationState', error, {
+        decorationId: req.params?.decorationId
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -37,7 +40,10 @@ export class DecorationController {
         message: 'Decoration state created successfully',
       });
     } catch (error) {
-      console.error('Error in createDecorationState:', error);
+      loggingMiddleware.logControllerError('DecorationController', 'createDecorationState', error, {
+        decorationId: req.body?.decorationId,
+        aquariumId: req.body?.aquariumId
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -58,7 +64,9 @@ export class DecorationController {
 
       res.json({ success: true, data: decorations });
     } catch (error) {
-      console.error('Error in getPlayerDecorations:', error);
+      loggingMiddleware.logControllerError('DecorationController', 'getPlayerDecorations', error, {
+        playerId: req.params?.playerId
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -77,7 +85,9 @@ export class DecorationController {
 
       res.json({ success: true, data: decorations });
     } catch (error) {
-      console.error('Error in getAquariumDecorations:', error);
+      loggingMiddleware.logControllerError('DecorationController', 'getAquariumDecorations', error, {
+        aquariumId: req.params?.aquariumId
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -113,7 +123,10 @@ export class DecorationController {
         message: 'Decoration placed successfully',
       });
     } catch (error) {
-      console.error('Error in placeDecoration:', error);
+      loggingMiddleware.logControllerError('DecorationController', 'placeDecoration', error, {
+        decorationId: req.params?.decorationId,
+        position: req.body?.position
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -132,7 +145,9 @@ export class DecorationController {
         message: 'Decoration removed successfully',
       });
     } catch (error) {
-      console.error('Error in removeDecoration:', error);
+      loggingMiddleware.logControllerError('DecorationController', 'removeDecoration', error, {
+        decorationId: req.params?.decorationId
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -163,7 +178,10 @@ export class DecorationController {
         message: 'Decoration position updated successfully',
       });
     } catch (error) {
-      console.error('Error in updateDecorationPosition:', error);
+      loggingMiddleware.logControllerError('DecorationController', 'updateDecorationPosition', error, {
+        decorationId: req.params?.decorationId,
+        position: req.body?.position
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -182,7 +200,9 @@ export class DecorationController {
         message: `Decoration visibility ${updatedDecoration.is_visible ? 'enabled' : 'disabled'}`,
       });
     } catch (error) {
-      console.error('Error in toggleDecorationVisibility:', error);
+      loggingMiddleware.logControllerError('DecorationController', 'toggleDecorationVisibility', error, {
+        decorationId: req.params?.decorationId
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -211,7 +231,10 @@ export class DecorationController {
         message: 'Decoration moved successfully',
       });
     } catch (error) {
-      console.error('Error in moveDecoration:', error);
+      loggingMiddleware.logControllerError('DecorationController', 'moveDecoration', error, {
+        decorationId: req.params?.decorationId,
+        newPosition: req.body?.newPosition
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -231,7 +254,9 @@ export class DecorationController {
 
       res.json({ success: true, data: stats });
     } catch (error) {
-      console.error('Error in getPlayerDecorationStats:', error);
+      loggingMiddleware.logControllerError('DecorationController', 'getPlayerDecorationStats', error, {
+        playerId: req.params?.playerId
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -276,7 +301,9 @@ export class DecorationController {
         message: `${updatedDecorations.length} decorations updated successfully`,
       });
     } catch (error) {
-      console.error('Error in bulkUpdatePositions:', error);
+      loggingMiddleware.logControllerError('DecorationController', 'bulkUpdatePositions', error, {
+        updates: req.body?.updates
+      });
       res.status(500).json({ error: 'Internal server error' });
     }
   }
