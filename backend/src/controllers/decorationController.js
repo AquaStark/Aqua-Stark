@@ -11,9 +11,14 @@ export class DecorationController {
 
       res.json({ success: true, data: decorationState });
     } catch (error) {
-      loggingMiddleware.logControllerError('DecorationController', 'getDecorationState', error, {
-        decorationId: req.params?.decorationId
-      });
+      loggingMiddleware.logControllerError(
+        'DecorationController',
+        'getDecorationState',
+        error,
+        {
+          decorationId: req.params?.decorationId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -40,10 +45,15 @@ export class DecorationController {
         message: 'Decoration state created successfully',
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('DecorationController', 'createDecorationState', error, {
-        decorationId: req.body?.decorationId,
-        aquariumId: req.body?.aquariumId
-      });
+      loggingMiddleware.logControllerError(
+        'DecorationController',
+        'createDecorationState',
+        error,
+        {
+          decorationId: req.body?.decorationId,
+          aquariumId: req.body?.aquariumId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -59,35 +69,47 @@ export class DecorationController {
         return res.status(403).json({ error: 'Access denied' });
       }
 
-      const decorations =
-        await DecorationService.getPlayerDecorations(playerId);
+      const decorations = await DecorationService.getPlayerDecorations(playerId);
 
       res.json({ success: true, data: decorations });
     } catch (error) {
-      loggingMiddleware.logControllerError('DecorationController', 'getPlayerDecorations', error, {
-        playerId: req.params?.playerId
-      });
+      loggingMiddleware.logControllerError(
+        'DecorationController',
+        'getPlayerDecorations',
+        error,
+        {
+          playerId: req.params?.playerId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
 
-  // Get decorations in a specific aquarium
+  // Get decorations for a specific aquarium
   static async getAquariumDecorations(req, res) {
     try {
       const { aquariumId } = req.params;
+      const { playerId: authenticatedPlayerId } = req.user;
 
-      if (!aquariumId) {
-        return res.status(400).json({ error: 'Aquarium ID is required' });
+      // Ensure player can only access their own aquarium decorations
+      if (aquariumId !== authenticatedPlayerId) {
+        return res.status(403).json({ error: 'Access denied' });
       }
 
-      const decorations =
-        await DecorationService.getAquariumDecorations(aquariumId);
+      const decorations = await DecorationService.getAquariumDecorations(
+        aquariumId
+      );
 
       res.json({ success: true, data: decorations });
     } catch (error) {
-      loggingMiddleware.logControllerError('DecorationController', 'getAquariumDecorations', error, {
-        aquariumId: req.params?.aquariumId
-      });
+      loggingMiddleware.logControllerError(
+        'DecorationController',
+        'getAquariumDecorations',
+        error,
+        {
+          aquariumId: req.params?.aquariumId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -96,37 +118,34 @@ export class DecorationController {
   static async placeDecoration(req, res) {
     try {
       const { decorationId } = req.params;
-      const {
-        aquariumId,
-        positionX,
-        positionY,
-        rotationDegrees = 0,
-      } = req.body;
+      const { position } = req.body;
 
-      if (!aquariumId || positionX === undefined || positionY === undefined) {
-        return res
-          .status(400)
-          .json({ error: 'Aquarium ID and position are required' });
+      if (!position || !position.x || !position.y) {
+        return res.status(400).json({
+          error: 'Position with x and y coordinates is required',
+        });
       }
 
-      const placedDecoration = await DecorationService.placeDecoration(
+      const updatedDecoration = await DecorationService.placeDecoration(
         decorationId,
-        aquariumId,
-        positionX,
-        positionY,
-        rotationDegrees
+        position
       );
 
       res.json({
         success: true,
-        data: placedDecoration,
+        data: updatedDecoration,
         message: 'Decoration placed successfully',
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('DecorationController', 'placeDecoration', error, {
-        decorationId: req.params?.decorationId,
-        position: req.body?.position
-      });
+      loggingMiddleware.logControllerError(
+        'DecorationController',
+        'placeDecoration',
+        error,
+        {
+          decorationId: req.params?.decorationId,
+          position: req.body?.position,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -136,18 +155,22 @@ export class DecorationController {
     try {
       const { decorationId } = req.params;
 
-      const removedDecoration =
-        await DecorationService.removeDecoration(decorationId);
+      const result = await DecorationService.removeDecoration(decorationId);
 
       res.json({
         success: true,
-        data: removedDecoration,
+        data: result,
         message: 'Decoration removed successfully',
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('DecorationController', 'removeDecoration', error, {
-        decorationId: req.params?.decorationId
-      });
+      loggingMiddleware.logControllerError(
+        'DecorationController',
+        'removeDecoration',
+        error,
+        {
+          decorationId: req.params?.decorationId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -156,20 +179,18 @@ export class DecorationController {
   static async updateDecorationPosition(req, res) {
     try {
       const { decorationId } = req.params;
-      const { positionX, positionY, rotationDegrees = 0 } = req.body;
+      const { position } = req.body;
 
-      if (positionX === undefined || positionY === undefined) {
-        return res
-          .status(400)
-          .json({ error: 'Position coordinates are required' });
+      if (!position || !position.x || !position.y) {
+        return res.status(400).json({
+          error: 'Position with x and y coordinates is required',
+        });
       }
 
       const updatedDecoration =
         await DecorationService.updateDecorationPosition(
           decorationId,
-          positionX,
-          positionY,
-          rotationDegrees
+          position
         );
 
       res.json({
@@ -178,10 +199,15 @@ export class DecorationController {
         message: 'Decoration position updated successfully',
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('DecorationController', 'updateDecorationPosition', error, {
-        decorationId: req.params?.decorationId,
-        position: req.body?.position
-      });
+      loggingMiddleware.logControllerError(
+        'DecorationController',
+        'updateDecorationPosition',
+        error,
+        {
+          decorationId: req.params?.decorationId,
+          position: req.body?.position,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -197,113 +223,125 @@ export class DecorationController {
       res.json({
         success: true,
         data: updatedDecoration,
-        message: `Decoration visibility ${updatedDecoration.is_visible ? 'enabled' : 'disabled'}`,
+        message: `Decoration visibility toggled to ${
+          updatedDecoration.visible ? 'visible' : 'hidden'
+        }`,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('DecorationController', 'toggleDecorationVisibility', error, {
-        decorationId: req.params?.decorationId
-      });
+      loggingMiddleware.logControllerError(
+        'DecorationController',
+        'toggleDecorationVisibility',
+        error,
+        {
+          decorationId: req.params?.decorationId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
 
-  // Move decoration between aquariums
+  // Move decoration to new position
   static async moveDecoration(req, res) {
     try {
       const { decorationId } = req.params;
-      const { fromAquariumId, toAquariumId } = req.body;
+      const { newPosition } = req.body;
 
-      if (!fromAquariumId || !toAquariumId) {
-        return res
-          .status(400)
-          .json({ error: 'From aquarium ID and to aquarium ID are required' });
+      if (!newPosition || !newPosition.x || !newPosition.y) {
+        return res.status(400).json({
+          error: 'New position with x and y coordinates is required',
+        });
       }
 
-      const movedDecoration = await DecorationService.moveDecoration(
+      const updatedDecoration = await DecorationService.moveDecoration(
         decorationId,
-        fromAquariumId,
-        toAquariumId
+        newPosition
       );
 
       res.json({
         success: true,
-        data: movedDecoration,
+        data: updatedDecoration,
         message: 'Decoration moved successfully',
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('DecorationController', 'moveDecoration', error, {
-        decorationId: req.params?.decorationId,
-        newPosition: req.body?.newPosition
-      });
+      loggingMiddleware.logControllerError(
+        'DecorationController',
+        'moveDecoration',
+        error,
+        {
+          decorationId: req.params?.decorationId,
+          newPosition: req.body?.newPosition,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
 
-  // Get decoration statistics for a player
+  // Get player decoration statistics
   static async getPlayerDecorationStats(req, res) {
     try {
       const { playerId } = req.params;
       const { playerId: authenticatedPlayerId } = req.user;
 
-      // Ensure player can only access their own decoration stats
+      // Ensure player can only access their own stats
       if (playerId !== authenticatedPlayerId) {
         return res.status(403).json({ error: 'Access denied' });
       }
 
       const stats = await DecorationService.getPlayerDecorationStats(playerId);
 
-      res.json({ success: true, data: stats });
-    } catch (error) {
-      loggingMiddleware.logControllerError('DecorationController', 'getPlayerDecorationStats', error, {
-        playerId: req.params?.playerId
+      res.json({
+        success: true,
+        data: stats,
       });
+    } catch (error) {
+      loggingMiddleware.logControllerError(
+        'DecorationController',
+        'getPlayerDecorationStats',
+        error,
+        {
+          playerId: req.params?.playerId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
 
-  // Bulk update decoration positions (for drag & drop)
+  // Bulk update decoration positions
   static async bulkUpdatePositions(req, res) {
     try {
-      const { decorations } = req.body;
-      const { playerId } = req.user;
+      const { updates } = req.body;
 
-      if (!decorations || !Array.isArray(decorations)) {
-        return res.status(400).json({ error: 'Decorations array is required' });
+      if (!Array.isArray(updates) || updates.length === 0) {
+        return res.status(400).json({
+          error: 'Updates array is required and must not be empty',
+        });
       }
 
-      // Validate that all decorations belong to the authenticated player
-      for (const decoration of decorations) {
-        const decorationState = await DecorationService.getDecorationState(
-          decoration.decorationId
-        );
-        if (!decorationState || decorationState.player_id !== playerId) {
-          return res.status(403).json({
-            error: 'Access denied',
-            message: `Decoration ${decoration.decorationId} does not belong to you`,
+      // Validate each update
+      for (const update of updates) {
+        if (!update.decorationId || !update.position) {
+          return res.status(400).json({
+            error: 'Each update must have decorationId and position',
           });
         }
       }
 
-      const updatePromises = decorations.map(decoration =>
-        DecorationService.updateDecorationPosition(
-          decoration.decorationId,
-          decoration.positionX,
-          decoration.positionY,
-          decoration.rotationDegrees || 0
-        )
-      );
-
-      const updatedDecorations = await Promise.all(updatePromises);
+      const results = await DecorationService.bulkUpdatePositions(updates);
 
       res.json({
         success: true,
-        data: updatedDecorations,
-        message: `${updatedDecorations.length} decorations updated successfully`,
+        data: results,
+        message: `Updated ${results.length} decorations successfully`,
       });
     } catch (error) {
-      loggingMiddleware.logControllerError('DecorationController', 'bulkUpdatePositions', error, {
-        updates: req.body?.updates
-      });
+      loggingMiddleware.logControllerError(
+        'DecorationController',
+        'bulkUpdatePositions',
+        error,
+        {
+          updates: req.body?.updates,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
