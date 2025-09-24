@@ -37,7 +37,12 @@ export type { Wallet } from './wallets';
 /**
  * Environment-based configurations for development, production, and staging.
  */
-export { ENV_CONFIG, isDevelopment, isProduction, getApiUrl } from '../config/environment';
+export {
+  ENV_CONFIG,
+  isDevelopment,
+  isProduction,
+  getApiUrl,
+} from '../config/environment';
 
 // =======================
 // 🔗 API Configuration
@@ -45,7 +50,12 @@ export { ENV_CONFIG, isDevelopment, isProduction, getApiUrl } from '../config/en
 /**
  * API endpoints, headers, and reusable client utilities.
  */
-export { API_CONFIG, buildApiUrl, createHeaders, ApiClient } from '../config/api';
+export {
+  API_CONFIG,
+  buildApiUrl,
+  createHeaders,
+  ApiClient,
+} from '../config/api';
 
 // =======================
 // 🎮 Game Policies & Cartridge
@@ -53,7 +63,11 @@ export { API_CONFIG, buildApiUrl, createHeaders, ApiClient } from '../config/api
 /**
  * Game-specific rules and cartridge configuration.
  */
-export { GAME_POLICIES, CARTRIDGE_CONFIG, DEV_POLICIES } from '../config/policies';
+export {
+  GAME_POLICIES,
+  CARTRIDGE_CONFIG,
+  DEV_POLICIES,
+} from '../config/policies';
 
 // =======================
 // ⚙️ Wallet Configuration
@@ -62,8 +76,11 @@ export { GAME_POLICIES, CARTRIDGE_CONFIG, DEV_POLICIES } from '../config/policie
  * Wallet and cartridge chain configuration with supported modes.
  */
 export {
-	getWalletConfig, getCartridgePolicies, getCartridgeChains, CHAIN_IDS,
-	WALLET_MODES
+  getWalletConfig,
+  getCartridgePolicies,
+  getCartridgeChains,
+  CHAIN_IDS,
+  WALLET_MODES,
 } from '../config';
 
 export type { WalletConfig, WalletMode } from '../config';
@@ -74,7 +91,11 @@ export type { WalletConfig, WalletMode } from '../config';
 /**
  * Mock data and initial state for the game simulation.
  */
-export { MOCK_FISH, MOCK_AQUARIUMS, INITIAL_GAME_STATE } from '../data/game-data';
+export {
+  MOCK_FISH,
+  MOCK_AQUARIUMS,
+  INITIAL_GAME_STATE,
+} from '../data/game-data';
 export { fishCollection, breedingResults } from '../data/fish-data';
 
 // =======================
@@ -93,13 +114,14 @@ export { DEFAULT_OPTIONS, clamp } from '../utils/fishIndicators';
  * Dirt system configuration, types, and calculation helpers.
  */
 export {
-	DIRT_TYPE_CONFIG, DirtType, getDirtTypeConfig,
-	calculateSpotIntensity, calculateSpotAge
+  DIRT_TYPE_CONFIG,
+  DirtType,
+  getDirtTypeConfig,
+  calculateSpotIntensity,
+  calculateSpotAge,
 } from '../types/dirt';
 
-export type {
-	DirtSpot, DirtSubShape, DirtTypeProperties,
-} from '../types/dirt';
+export type { DirtSpot, DirtSubShape, DirtTypeProperties } from '../types/dirt';
 
 export type { DirtSpot as DirtSpotType } from '../types/dirt';
 export type { DirtSystemConfig, DirtSystemState } from '../types/dirt';
@@ -118,7 +140,12 @@ export { TYPE_VALIDATION } from '../types/index';
 /**
  * Mock data for the marketplace including fish, transactions, and food bundles.
  */
-export { mockFishData, mockTransactions, foodData, specialFoodBundles } from '../data/market-data';
+export {
+  mockFishData,
+  mockTransactions,
+  foodData,
+  specialFoodBundles,
+} from '../data/market-data';
 
 // =======================
 // 📚 Help Center
