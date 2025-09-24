@@ -21,16 +21,6 @@ export class FishController {
       const { fishId } = req.params;
       const { happinessLevel } = req.body;
 
-      if (
-        happinessLevel === undefined ||
-        happinessLevel < 0 ||
-        happinessLevel > 100
-      ) {
-        return res
-          .status(400)
-          .json({ error: 'Happiness level must be between 0 and 100' });
-      }
-
       const updatedFish = await FishService.updateFishHappiness(
         fishId,
         happinessLevel
@@ -87,13 +77,7 @@ export class FishController {
   // Breed fish (placeholder for future implementation)
   static async breedFish(req, res) {
     try {
-      const { parent1Id, parent2Id } = req.body;
-
-      if (!parent1Id || !parent2Id) {
-        return res
-          .status(400)
-          .json({ error: 'Both parent fish IDs are required' });
-      }
+      const { parent1Id: _parent1Id, parent2Id: _parent2Id } = req.body;
 
       // This would be implemented when breeding is added
       res.status(501).json({
@@ -130,12 +114,6 @@ export class FishController {
   static async feedMultipleFish(req, res) {
     try {
       const { fishIds, foodType = 'basic' } = req.body;
-
-      if (!Array.isArray(fishIds) || fishIds.length === 0) {
-        return res
-          .status(400)
-          .json({ error: 'Fish IDs must be a non-empty array' });
-      }
 
       const result = await FishService.feedMultipleFish(fishIds, foodType);
 

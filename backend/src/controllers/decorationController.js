@@ -21,10 +21,6 @@ export class DecorationController {
       const { decorationId, aquariumId } = req.body;
       const { playerId } = req.user;
 
-      if (!decorationId) {
-        return res.status(400).json({ error: 'Decoration ID is required' });
-      }
-
       const newDecoration = await DecorationService.createDecorationState(
         decorationId,
         playerId,
@@ -68,10 +64,6 @@ export class DecorationController {
     try {
       const { aquariumId } = req.params;
 
-      if (!aquariumId) {
-        return res.status(400).json({ error: 'Aquarium ID is required' });
-      }
-
       const decorations =
         await DecorationService.getAquariumDecorations(aquariumId);
 
@@ -92,12 +84,6 @@ export class DecorationController {
         positionY,
         rotationDegrees = 0,
       } = req.body;
-
-      if (!aquariumId || positionX === undefined || positionY === undefined) {
-        return res
-          .status(400)
-          .json({ error: 'Aquarium ID and position are required' });
-      }
 
       const placedDecoration = await DecorationService.placeDecoration(
         decorationId,
@@ -143,12 +129,6 @@ export class DecorationController {
       const { decorationId } = req.params;
       const { positionX, positionY, rotationDegrees = 0 } = req.body;
 
-      if (positionX === undefined || positionY === undefined) {
-        return res
-          .status(400)
-          .json({ error: 'Position coordinates are required' });
-      }
-
       const updatedDecoration =
         await DecorationService.updateDecorationPosition(
           decorationId,
@@ -193,12 +173,6 @@ export class DecorationController {
       const { decorationId } = req.params;
       const { fromAquariumId, toAquariumId } = req.body;
 
-      if (!fromAquariumId || !toAquariumId) {
-        return res
-          .status(400)
-          .json({ error: 'From aquarium ID and to aquarium ID are required' });
-      }
-
       const movedDecoration = await DecorationService.moveDecoration(
         decorationId,
         fromAquariumId,
@@ -241,10 +215,6 @@ export class DecorationController {
     try {
       const { decorations } = req.body;
       const { playerId } = req.user;
-
-      if (!decorations || !Array.isArray(decorations)) {
-        return res.status(400).json({ error: 'Decorations array is required' });
-      }
 
       // Validate that all decorations belong to the authenticated player
       for (const decoration of decorations) {

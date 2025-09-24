@@ -14,14 +14,6 @@ export class DirtController {
       // Use playerId from user if available, otherwise use demo player for development
       const playerId = req.user?.playerId || req.user?.id || 'demo-player';
 
-      // Validate input
-      if (!aquariumId) {
-        return res.status(400).json({
-          success: false,
-          error: 'Aquarium ID is required',
-        });
-      }
-
       const dirtStatus = await DirtService.getAquariumDirtStatus(
         aquariumId,
         playerId
@@ -57,21 +49,6 @@ export class DirtController {
       const { aquariumId } = req.params;
       const playerId = req.user?.playerId || req.user?.id || 'demo-player';
       const { cleaning_type = 'partial' } = req.body;
-
-      // Validate input
-      if (!aquariumId) {
-        return res.status(400).json({
-          success: false,
-          error: 'Aquarium ID is required',
-        });
-      }
-
-      if (!['partial', 'complete'].includes(cleaning_type)) {
-        return res.status(400).json({
-          success: false,
-          error: 'Invalid cleaning type. Must be "partial" or "complete"',
-        });
-      }
 
       const cleaningResult = await DirtService.cleanAquarium(
         aquariumId,
@@ -152,22 +129,7 @@ export class DirtController {
     try {
       const { aquariumId } = req.params;
       const playerId = req.user?.playerId || req.user?.id || 'demo-player';
-      const { spot_id } = req.body;
-
-      // Validate input
-      if (!aquariumId) {
-        return res.status(400).json({
-          success: false,
-          error: 'Aquarium ID is required',
-        });
-      }
-
-      if (!spot_id) {
-        return res.status(400).json({
-          success: false,
-          error: 'Spot ID is required',
-        });
-      }
+      const { spot_id: _spot_id } = req.body;
 
       // For now, just clean a small amount of dirt
       const cleaningResult = await DirtService.cleanAquarium(
@@ -200,14 +162,6 @@ export class DirtController {
       const playerId = req.user?.playerId || req.user?.id || 'demo-player';
       const { config } = req.body;
 
-      // Validate input
-      if (!aquariumId) {
-        return res.status(400).json({
-          success: false,
-          error: 'Aquarium ID is required',
-        });
-      }
-
       const initResult = await DirtService.initializeAquariumDirtSystem(
         aquariumId,
         playerId,
@@ -236,41 +190,6 @@ export class DirtController {
       const { aquariumId } = req.params;
       const playerId = req.user?.playerId || req.user?.id || 'demo-player';
       const { config } = req.body;
-
-      // Validate input
-      if (!aquariumId) {
-        return res.status(400).json({
-          success: false,
-          error: 'Aquarium ID is required',
-        });
-      }
-
-      if (!config || typeof config !== 'object') {
-        return res.status(400).json({
-          success: false,
-          error: 'Valid configuration object is required',
-        });
-      }
-
-      // Validate config fields
-      const validFields = [
-        'grace_period_hours',
-        'dirt_multiplier',
-        'max_dirt_level',
-        'log_base',
-        'cleaning_threshold',
-      ];
-
-      const invalidFields = Object.keys(config).filter(
-        key => !validFields.includes(key)
-      );
-
-      if (invalidFields.length > 0) {
-        return res.status(400).json({
-          success: false,
-          error: `Invalid configuration fields: ${invalidFields.join(', ')}`,
-        });
-      }
 
       // Update configuration in database
       const { supabase, TABLES } = await import('../config/supabase.js');
