@@ -69,7 +69,8 @@ export class DecorationController {
         return res.status(403).json({ error: 'Access denied' });
       }
 
-      const decorations = await DecorationService.getPlayerDecorations(playerId);
+      const decorations =
+        await DecorationService.getPlayerDecorations(playerId);
 
       res.json({ success: true, data: decorations });
     } catch (error) {
@@ -96,9 +97,8 @@ export class DecorationController {
         return res.status(403).json({ error: 'Access denied' });
       }
 
-      const decorations = await DecorationService.getAquariumDecorations(
-        aquariumId
-      );
+      const decorations =
+        await DecorationService.getAquariumDecorations(aquariumId);
 
       res.json({ success: true, data: decorations });
     } catch (error) {
