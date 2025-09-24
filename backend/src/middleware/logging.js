@@ -3,7 +3,7 @@ import path from 'path';
 
 /**
  * Unified logging middleware for centralized logging management
- * 
+ *
  * @class LoggingMiddleware
  * @author Aqua Stark Team
  * @version 1.0.0
@@ -15,14 +15,16 @@ class LoggingMiddleware {
       ERROR: 0,
       WARN: 1,
       INFO: 2,
-      DEBUG: 3
+      DEBUG: 3,
     };
-    
+
     this.currentLogLevel = process.env.LOG_LEVEL || 'INFO';
     this.logDir = process.env.LOG_DIR || './logs';
-    this.maxLogSize = parseInt(process.env.MAX_LOG_SIZE) || 10 * 1024 * 1024; // 10MB default
+    // 10MB default
+    this.maxLogSize =
+      parseInt(process.env.MAX_LOG_SIZE) || 10 * 1024 * 1024;
     this.maxLogFiles = parseInt(process.env.MAX_LOG_FILES) || 5;
-    
+
     this.ensureLogDirectory();
   }
 
@@ -56,10 +58,11 @@ class LoggingMiddleware {
    */
   formatMessage(level, message, metadata = {}) {
     const timestamp = new Date().toISOString();
-    const metadataStr = Object.keys(metadata).length > 0 
-      ? ` | ${JSON.stringify(metadata)}` 
-      : '';
-    
+    const metadataStr =
+      Object.keys(metadata).length > 0
+        ? ` | ${JSON.stringify(metadata)}`
+        : '';
+
     return `[${timestamp}] [${level}] ${message}${metadataStr}`;
   }
 
@@ -73,7 +76,7 @@ class LoggingMiddleware {
   writeToFile(level, message, metadata = {}) {
     const logFile = path.join(this.logDir, `${level.toLowerCase()}.log`);
     const formattedMessage = this.formatMessage(level, message, metadata);
-    
+
     try {
       // Check if file exists and get its size
       if (fs.existsSync(logFile)) {
@@ -82,7 +85,7 @@ class LoggingMiddleware {
           this.rotateLogFile(logFile);
         }
       }
-      
+
       fs.appendFileSync(logFile, formattedMessage + '\n');
     } catch (error) {
       console.error('Failed to write to log file:', error);
@@ -99,16 +102,16 @@ class LoggingMiddleware {
       // Remove oldest log file if we have reached max files
       const logFileBase = logFile.replace('.log', '');
       const oldestFile = `${logFileBase}.${this.maxLogFiles - 1}.log`;
-      
+
       if (fs.existsSync(oldestFile)) {
         fs.unlinkSync(oldestFile);
       }
-      
+
       // Shift existing log files
       for (let i = this.maxLogFiles - 2; i >= 0; i--) {
         const currentFile = i === 0 ? logFile : `${logFileBase}.${i}.log`;
         const nextFile = `${logFileBase}.${i + 1}.log`;
-        
+
         if (fs.existsSync(currentFile)) {
           fs.renameSync(currentFile, nextFile);
         }
@@ -126,19 +129,23 @@ class LoggingMiddleware {
    */
   error(message, metadata = {}, error = null) {
     if (!this.shouldLog('ERROR')) return;
-    
+
     const errorMetadata = {
       ...metadata,
       ...(error && {
         error: {
           name: error.name,
           message: error.message,
-          stack: error.stack
-        }
-      })
+          stack: error.stack,
+        },
+      }),
     };
-    
-    const formattedMessage = this.formatMessage('ERROR', message, errorMetadata);
+
+    const formattedMessage = this.formatMessage(
+      'ERROR',
+      message,
+      errorMetadata
+    );
     console.error(formattedMessage);
     this.writeToFile('ERROR', message, errorMetadata);
   }
@@ -150,7 +157,7 @@ class LoggingMiddleware {
    */
   warn(message, metadata = {}) {
     if (!this.shouldLog('WARN')) return;
-    
+
     const formattedMessage = this.formatMessage('WARN', message, metadata);
     console.warn(formattedMessage);
     this.writeToFile('WARN', message, metadata);
@@ -163,7 +170,7 @@ class LoggingMiddleware {
    */
   info(message, metadata = {}) {
     if (!this.shouldLog('INFO')) return;
-    
+
     const formattedMessage = this.formatMessage('INFO', message, metadata);
     console.log(formattedMessage);
     this.writeToFile('INFO', message, metadata);
@@ -176,7 +183,7 @@ class LoggingMiddleware {
    */
   debug(message, metadata = {}) {
     if (!this.shouldLog('DEBUG')) return;
-    
+
     const formattedMessage = this.formatMessage('DEBUG', message, metadata);
     console.debug(formattedMessage);
     this.writeToFile('DEBUG', message, metadata);
@@ -191,10 +198,10 @@ class LoggingMiddleware {
   requestLogger(req, res, next) {
     const startTime = Date.now();
     const requestId = Math.random().toString(36).substr(2, 9);
-    
+
     // Add request ID to request object for tracking
     req.requestId = requestId;
-    
+
     // Log incoming request
     this.info('Incoming request', {
       requestId,
@@ -204,27 +211,29 @@ class LoggingMiddleware {
       ip: req.ip || req.connection.remoteAddress,
       headers: {
         'content-type': req.get('Content-Type'),
-        'authorization': req.get('Authorization') ? '[REDACTED]' : undefined
-      }
+        authorization: req.get('Authorization')
+          ? '[REDACTED]'
+          : undefined,
+      },
     });
-    
+
     // Override res.end to log response
     const originalEnd = res.end;
-    res.end = function(chunk, encoding) {
+    res.end = function (chunk, encoding) {
       const duration = Date.now() - startTime;
-      
+
       // Log response
       this.info('Response sent', {
         requestId,
         statusCode: res.statusCode,
         duration: `${duration}ms`,
-        contentLength: res.get('Content-Length') || 0
+        contentLength: res.get('Content-Length') || 0,
       });
-      
+
       // Call original end method
       originalEnd.call(this, chunk, encoding);
     }.bind(this);
-    
+
     next();
   }
 
@@ -236,17 +245,21 @@ class LoggingMiddleware {
    * @param {Function} next - Express next function
    */
   errorLogger(error, req, res, next) {
-    this.error('Unhandled error in request', {
-      requestId: req.requestId,
-      method: req.method,
-      url: req.url,
-      error: {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      }
-    }, error);
-    
+    this.error(
+      'Unhandled error in request',
+      {
+        requestId: req.requestId,
+        method: req.method,
+        url: req.url,
+        error: {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        },
+      },
+      error
+    );
+
     next(error);
   }
 
@@ -261,7 +274,7 @@ class LoggingMiddleware {
     this.error(`Error in ${controllerName}.${methodName}`, {
       controller: controllerName,
       method: methodName,
-      ...context
+      ...context,
     }, error);
   }
 
@@ -275,7 +288,7 @@ class LoggingMiddleware {
     this.info(`Service operation: ${serviceName}.${operation}`, {
       service: serviceName,
       operation,
-      ...metadata
+      ...metadata,
     });
   }
 
@@ -289,7 +302,7 @@ class LoggingMiddleware {
     this.debug(`Database operation: ${operation} on ${table}`, {
       operation,
       table,
-      ...metadata
+      ...metadata,
     });
   }
 }
