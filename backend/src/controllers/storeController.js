@@ -30,7 +30,7 @@ export class StoreController {
       };
 
       // Remove undefined values
-      Object.keys(filters).forEach((key) => {
+      Object.keys(filters).forEach(key => {
         if (filters[key] === undefined) {
           delete filters[key];
         }
@@ -129,7 +129,7 @@ export class StoreController {
         'type',
         'image_url',
       ];
-      const missingFields = requiredFields.filter((field) => !itemData[field]);
+      const missingFields = requiredFields.filter(field => !itemData[field]);
 
       if (missingFields.length > 0) {
         return res.status(400).json({
