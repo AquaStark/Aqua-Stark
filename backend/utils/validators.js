@@ -5,7 +5,6 @@ export const playerIdSchema = z.string().min(1, 'playerId is required');
 export const happinessSchema = z.number().min(0).max(100);
 export const foodTypeSchema = z.enum(['basic', 'premium']);
 
-
 // Shop Input validation
 export const shopItemSchema = z.object({
   item_id: z.string().min(1),
@@ -28,6 +27,7 @@ export const purchaseSchema = z.object({
   item_id: z.string().min(1),
   quantity: z.number().int().positive().default(1),
   use_gems: z.boolean().default(false),
+});
 
 // Transaction Validation schema
 
@@ -41,5 +41,4 @@ export const TransactionSchema = z.object({
   status: z
     .enum(['pending', 'completed', 'failed', 'refunded'])
     .default('pending'),
-
 });
