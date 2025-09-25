@@ -27,7 +27,6 @@ export const TABLES = {
   STORE_ITEMS: 'store_items',
   SHOP: 'shop_items',
   TRANSACTIONS: 'shop_transactions',
-
 };
 
 // Real-time subscription channels

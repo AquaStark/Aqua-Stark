@@ -42,14 +42,14 @@ export const CACHE_KEYS = {
   GAME_LEADERBOARD: 'game:leaderboard',
   ACTIVE_PLAYERS: 'game:active_players',
   STORE_ITEMS: filters => `store:items:${filters}`,
-  SHOP_ITEM: itemId => `shop:item:${itemId}`,  PLAYER_INVENTORY: 'player:inventory',
+  SHOP_ITEM: itemId => `shop:item:${itemId}`,
+  PLAYER_INVENTORY: 'player:inventory',
   PLAYER_CURRENCY: 'player:currency',
   SHOP_CATEGORIES: 'shop:categories',
   LIMITED_ITEMS: 'shop:limited',
   DAILY_DEALS: 'shop:daily_deals',
   TRANSACTION: id => `transaction:${id}`,
   PLAYER_TRANSACTIONS: wallet => `player:transactions:${wallet}`,
-
 };
 
 // Cache TTL (Time To Live) in seconds
@@ -68,5 +68,4 @@ export const CACHE_TTL = {
 
   TRANSACTION: 300, // 5 minutes
   PLAYER_TRANSACTIONS: 300, // 5 minutes
-
 };
