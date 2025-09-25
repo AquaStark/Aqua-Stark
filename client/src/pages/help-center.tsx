@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
-import { featuredTopics } from '@/data/help-center-data';
+import { featuredTopics } from '@/constants';
 import HelpCenterSidebar from '@/components/help-center/help-sidebar';
 import HelpMainContent from '@/components/help-center/help-main-content';
 import { BubblesBackground } from '@/components/bubble-background';

@@ -6,7 +6,7 @@ import { BreedingTab } from '@/components/laboratory/tabs/breeding-tab';
 import { GeneticsTab } from '@/components/laboratory/tabs/genetics-tab';
 import { DiscoveriesTab } from '@/components/laboratory/tabs/discoveries-tab';
 import { GenealogyTab } from '@/components/laboratory/tabs/genealogy-tab';
-import type { Fish } from '@/types/fish';
+import type { Fish } from '@/types';
 
 interface LaboratoryTabsProps {
   activeTab: string;

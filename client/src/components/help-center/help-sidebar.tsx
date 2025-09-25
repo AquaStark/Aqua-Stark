@@ -1,4 +1,4 @@
-import type { Category, FeaturedTopic } from '@/types/help-types';
+import type { Category, FeaturedTopic } from '@/types';
 import HelpCategories from '@/components/help-center/help-categories';
 import FeaturedTopics from '@/components/help-center/featured-topics';
 

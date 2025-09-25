@@ -1,4 +1,4 @@
-import type { Category, FeaturedTopic } from '@/types/help-types';
+import type { Category, FeaturedTopic } from '@/types';
 
 export const categories: Category[] = [
   {

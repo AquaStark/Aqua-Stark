@@ -10,7 +10,7 @@ import {
   getDirtTypeConfig,
   calculateSpotIntensity,
   calculateSpotAge,
-} from '@/types/dirt';
+} from '@/types';
 
 const DEFAULT_CONFIG: DirtSystemConfig = {
   spawnInterval: 30000, // 30 seconds

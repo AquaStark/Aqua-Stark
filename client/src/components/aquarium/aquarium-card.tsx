@@ -1,19 +1,5 @@
 import { Edit, Trash2, Eye } from 'lucide-react';
-import type { Fish } from '@/types/fish';
-
-export interface Aquarium {
-  id: number;
-  name: string;
-  image: string;
-  level: number;
-  type: string;
-  health: number;
-  lastVisited: string;
-  fishCount: string;
-  rating: number;
-  isPremium?: boolean;
-  fishes: Fish[];
-}
+import type { Aquarium } from '@/types';
 
 interface AquariumCardProps {
   aquarium: Aquarium;

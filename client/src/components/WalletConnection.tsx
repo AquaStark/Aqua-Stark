@@ -1,5 +1,5 @@
 import { useAccount, useConnect, useDisconnect } from '@starknet-react/core';
-import { WalletConnector } from '@/types/connector-types';
+import { WalletConnector } from '@/types';
 import { useNotifications, useLocalStorage } from '@/hooks';
 
 export function WalletConnection() {

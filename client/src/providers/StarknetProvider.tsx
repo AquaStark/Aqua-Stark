@@ -8,7 +8,7 @@ import {
   useInjectedConnectors,
 } from '@starknet-react/core';
 import ControllerConnector from '@cartridge/connector/controller';
-import { GAME_POLICIES } from '../config/policies';
+import { GAME_POLICIES } from '@/constants';
 import { constants } from 'starknet';
 
 // IMPORTANTE: Crear conector de Cartridge FUERA del componente

@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import { useFish } from '@/hooks';
 import { CairoCustomEnum } from 'starknet';
 import { SpeciesEnum } from '@/typescript/models.gen';
-import { WalletAccount } from '@/types/wallet-types';
+import { WalletAccount } from '@/types';
 // Removed unused import
 
 // This map connects your frontend IDs to Cairo enum variants

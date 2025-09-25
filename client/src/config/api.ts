@@ -1,7 +1,7 @@
 // API Configuration for Aqua Stark Backend
 // Centralized configuration to avoid hardcoding URLs throughout the frontend
 
-import { ENV_CONFIG } from './environment';
+import { ENV_CONFIG } from '@/constants';
 import { RequestData } from '../types/api-types';
 
 export const API_CONFIG = {

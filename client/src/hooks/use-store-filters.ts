@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { type Rarity, type ItemType } from '@/data/mock-game';
 import { fishData } from '@/data/mock-game';
 import { decorationItems, miscItems } from '@/data/mock-store';
-import { foodData } from '@/data/market-data';
+import { foodData } from '@/constants';
 import { useDebounce } from './use-debounce';
 // import { Category } from "@/types/help-types";
 import { FilterCategory } from '@/components/store/filter-panel';
