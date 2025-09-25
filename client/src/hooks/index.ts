@@ -50,6 +50,17 @@ export { useGameActions } from './useGameActions';
 export { usePlayerValidation } from './usePlayerValidation';
 export { useLocalStorage } from './use-local-storage';
 
+// Dojo hooks
+
+export { useDecoration } from './dojo/useDecoration';
+export { useFish } from './dojo/useFish';
+export { usePlayer } from './dojo/usePlayer';
+
+// Minigames hooks
+
+export { useGameLogic } from './minigames/floppy-fish/use-game-logic';
+export { useInputHandler } from './minigames/floppy-fish/use-input-handler';
+
 // API hooks
 export { useApi, useApiRequest } from './use-api';
 

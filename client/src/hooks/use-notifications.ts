@@ -51,8 +51,11 @@ export interface NotificationConfig {
  * Stored notification interface for persistence
  */
 interface StoredNotification extends NotificationConfig {
+  /** Unique notification identifier */
   id: string;
+  /** Timestamp when notification was created */
   timestamp: number;
+  /** Whether the notification has been read */
   read: boolean;
 }
 
@@ -60,8 +63,11 @@ interface StoredNotification extends NotificationConfig {
  * Notification queue item
  */
 interface NotificationQueueItem extends NotificationConfig {
+  /** Unique notification identifier */
   id: string;
+  /** Timestamp when notification was created */
   timestamp: number;
+  /** Priority level for queue ordering */
   priority: NotificationPriority;
 }
 
@@ -98,7 +104,7 @@ export interface UseNotificationsReturn {
 }
 
 /**
- * Default notification configurations
+ * Default notification configurations for each type
  */
 const DEFAULT_CONFIGS: Record<NotificationType, Partial<NotificationConfig>> = {
   success: {
@@ -134,34 +140,110 @@ const DEFAULT_CONFIGS: Record<NotificationType, Partial<NotificationConfig>> = {
 const STORAGE_KEY = 'aqua-stark-notifications';
 
 /**
- * Maximum number of stored notifications
+ * Maximum number of stored notifications to prevent memory issues
  */
 const MAX_STORED_NOTIFICATIONS = 50;
 
 /**
- * Unified hook for managing game notifications
+ * Unified hook for managing game notifications.
  *
  * This hook centralizes all notification logic to avoid duplication across components.
  * It provides a consistent interface for showing different types of notifications,
- * managing notification persistence, and handling notification queues.
+ * managing notification persistence, and handling notification queues with priority support.
+ *
+ * Features:
+ * - Multiple notification types (success, error, warning, info, loading)
+ * - Persistent notifications stored in localStorage
+ * - Priority-based queuing system
+ * - Automatic cleanup and memory management
+ * - Custom actions and callbacks
+ * - Read/unread state management
+ *
+ * @returns Object containing notification methods and state
  *
  * @example
+ * Basic usage:
  * ```tsx
- * const { success, error, warning, info, loading } = useNotifications();
+ * const notifications = useNotifications();
  *
- * // Show a success notification
- * success('Fish fed successfully!');
+ * // Show different types of notifications
+ * notifications.success('Fish fed successfully!');
+ * notifications.error('Failed to save progress');
+ * notifications.warning('Low on fish food');
+ * notifications.info('New feature available');
+ * notifications.loading('Connecting to blockchain...');
+ * ```
  *
- * // Show an error with custom config
+ * @example
+ * Advanced usage with custom configuration:
+ * ```tsx
+ * const { success, error, show } = useNotifications();
+ *
+ * // Error with retry action
  * error('Failed to connect wallet', {
  *   title: 'Connection Error',
  *   persistent: true,
  *   actionText: 'Retry',
- *   onAction: () => retryConnection()
+ *   onAction: () => retryConnection(),
+ *   priority: 'high'
+ * });
+ *
+ * // Custom notification with full control
+ * show({
+ *   message: 'Achievement unlocked!',
+ *   type: 'success',
+ *   title: 'Congratulations',
+ *   duration: 8000,
+ *   persistent: true,
+ *   icon: '🏆',
+ *   data: { achievementId: 'first_fish' }
  * });
  * ```
  *
- * @returns {UseNotificationsReturn} Object containing notification methods and state
+ * @example
+ * Managing notification state:
+ * ```tsx
+ * const {
+ *   unreadCount,
+ *   getStoredNotifications,
+ *   markAsRead,
+ *   clearStored,
+ *   queue
+ * } = useNotifications();
+ *
+ * // Show unread count in UI
+ * const notifications = getStoredNotifications();
+ * const unread = notifications.filter(n => !n.read);
+ *
+ * // Mark as read when user views notification
+ * const handleNotificationClick = (id: string) => {
+ *   markAsRead(id);
+ * };
+ *
+ * // Clear all stored notifications
+ * const handleClearAll = () => {
+ *   clearStored();
+ * };
+ * ```
+ *
+ * @example
+ * Loading states and dismissal:
+ * ```tsx
+ * const { loading, hide } = useNotifications();
+ *
+ * const handleAsyncAction = async () => {
+ *   const loadingId = loading('Processing transaction...');
+ *
+ *   try {
+ *     await performAction();
+ *     hide(loadingId);
+ *     success('Transaction completed!');
+ *   } catch (error) {
+ *     hide(loadingId);
+ *     error('Transaction failed');
+ *   }
+ * };
+ * ```
  */
 export function useNotifications(): UseNotificationsReturn {
   const { get, set, remove } = useLocalStorage('aqua-');
@@ -171,7 +253,8 @@ export function useNotifications(): UseNotificationsReturn {
   >([]);
 
   /**
-   * Load stored notifications from localStorage on mount
+   * Load stored notifications from localStorage on component mount.
+   * Handles parsing errors gracefully and validates data structure.
    */
   useEffect(() => {
     try {
@@ -186,7 +269,10 @@ export function useNotifications(): UseNotificationsReturn {
   }, []);
 
   /**
-   * Save notifications to localStorage
+   * Save notifications to localStorage with automatic cleanup.
+   * Limits stored notifications to prevent memory issues.
+   *
+   * @param notifications - Array of notifications to save
    */
   const saveToStorage = useCallback((notifications: StoredNotification[]) => {
     try {
@@ -200,14 +286,21 @@ export function useNotifications(): UseNotificationsReturn {
   }, []);
 
   /**
-   * Generate unique ID for notification
+   * Generate a unique identifier for notifications.
+   * Uses timestamp and random string to ensure uniqueness.
+   *
+   * @returns Unique notification ID
    */
   const generateId = useCallback(() => {
     return `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }, []);
 
   /**
-   * Validate notification configuration
+   * Validate notification configuration before showing.
+   * Ensures required fields are present and valid.
+   *
+   * @param config - Notification configuration to validate
+   * @returns True if configuration is valid, false otherwise
    */
   const validateConfig = useCallback((config: NotificationConfig): boolean => {
     if (!config.message || typeof config.message !== 'string') {
@@ -235,7 +328,11 @@ export function useNotifications(): UseNotificationsReturn {
   }, []);
 
   /**
-   * Show a notification
+   * Show a notification with full configuration options.
+   * Handles validation, queue management, toast display, and persistence.
+   *
+   * @param config - Complete notification configuration
+   * @returns Notification ID for later reference, empty string if validation fails
    */
   const show = useCallback(
     (config: NotificationConfig): string => {
@@ -328,7 +425,10 @@ export function useNotifications(): UseNotificationsReturn {
   );
 
   /**
-   * Hide a specific notification
+   * Hide a specific notification by ID.
+   * Removes from both toast display and internal queue.
+   *
+   * @param id - Notification ID to hide
    */
   const hide = useCallback((id: string) => {
     toast.dismiss(id);
@@ -336,7 +436,8 @@ export function useNotifications(): UseNotificationsReturn {
   }, []);
 
   /**
-   * Clear all notifications
+   * Clear all currently visible notifications.
+   * Dismisses all toasts and clears the queue.
    */
   const clear = useCallback(() => {
     toast.dismiss();
@@ -344,7 +445,11 @@ export function useNotifications(): UseNotificationsReturn {
   }, []);
 
   /**
-   * Show success notification
+   * Show a success notification with default success styling.
+   *
+   * @param message - Success message to display
+   * @param config - Optional additional configuration
+   * @returns Notification ID for later reference
    */
   const success = useCallback(
     (message: string, config: Partial<NotificationConfig> = {}) => {
@@ -354,7 +459,11 @@ export function useNotifications(): UseNotificationsReturn {
   );
 
   /**
-   * Show error notification
+   * Show an error notification with default error styling.
+   *
+   * @param message - Error message to display
+   * @param config - Optional additional configuration
+   * @returns Notification ID for later reference
    */
   const error = useCallback(
     (message: string, config: Partial<NotificationConfig> = {}) => {
@@ -364,7 +473,11 @@ export function useNotifications(): UseNotificationsReturn {
   );
 
   /**
-   * Show warning notification
+   * Show a warning notification with default warning styling.
+   *
+   * @param message - Warning message to display
+   * @param config - Optional additional configuration
+   * @returns Notification ID for later reference
    */
   const warning = useCallback(
     (message: string, config: Partial<NotificationConfig> = {}) => {
@@ -374,7 +487,11 @@ export function useNotifications(): UseNotificationsReturn {
   );
 
   /**
-   * Show info notification
+   * Show an info notification with default info styling.
+   *
+   * @param message - Info message to display
+   * @param config - Optional additional configuration
+   * @returns Notification ID for later reference
    */
   const info = useCallback(
     (message: string, config: Partial<NotificationConfig> = {}) => {
@@ -384,7 +501,12 @@ export function useNotifications(): UseNotificationsReturn {
   );
 
   /**
-   * Show loading notification
+   * Show a loading notification with default loading styling.
+   * Loading notifications are persistent by default.
+   *
+   * @param message - Loading message to display
+   * @param config - Optional additional configuration
+   * @returns Notification ID for later reference (important for dismissing loading states)
    */
   const loading = useCallback(
     (message: string, config: Partial<NotificationConfig> = {}) => {
@@ -394,14 +516,20 @@ export function useNotifications(): UseNotificationsReturn {
   );
 
   /**
-   * Get all stored notifications
+   * Get all stored notifications from localStorage.
+   * Returns notifications sorted by timestamp (newest first).
+   *
+   * @returns Array of stored notifications
    */
   const getStoredNotifications = useCallback(() => {
     return storedNotifications;
   }, [storedNotifications]);
 
   /**
-   * Mark notification as read
+   * Mark a specific notification as read.
+   * Updates the notification state and saves to localStorage.
+   *
+   * @param id - Notification ID to mark as read
    */
   const markAsRead = useCallback(
     (id: string) => {
@@ -419,7 +547,8 @@ export function useNotifications(): UseNotificationsReturn {
   );
 
   /**
-   * Clear stored notifications
+   * Clear all stored notifications from localStorage and memory.
+   * This does not affect currently visible toast notifications.
    */
   const clearStored = useCallback(() => {
     setStoredNotifications([]);
@@ -427,7 +556,8 @@ export function useNotifications(): UseNotificationsReturn {
   }, []);
 
   /**
-   * Calculate unread count
+   * Calculate the number of unread notifications.
+   * Updates automatically when notifications are added or marked as read.
    */
   const unreadCount = useMemo(() => {
     return storedNotifications.filter(notification => !notification.read)

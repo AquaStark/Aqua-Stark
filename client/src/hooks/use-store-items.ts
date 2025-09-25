@@ -2,67 +2,158 @@ import { useState, useCallback, useEffect } from 'react';
 import { useApi } from './use-api';
 
 /**
- * Store Item Types
+ * Represents the type of a store item.
  */
 export type StoreItemType = 'fish' | 'decoration' | 'food' | 'other';
 
+/**
+ * Represents a store item entity from the backend API.
+ */
 export interface StoreItem {
+  /** Unique identifier for the item */
   id: string;
+  /** Display name of the item */
   name: string;
+  /** Detailed description of the item */
   description: string;
+  /** Price in game currency */
   price: number;
+  /** Category of the item */
   type: StoreItemType;
+  /** Current inventory count */
   stock: number;
+  /** URL to the item's image */
   image_url: string;
+  /** Whether the item is currently available for purchase */
   is_active: boolean;
+  /** ISO string of when the item was created */
   created_at: string;
+  /** ISO string of when the item was last updated */
   updated_at: string;
 }
 
+/**
+ * Filters that can be applied when fetching store items.
+ */
 export interface StoreFilters {
+  /** Filter by item type */
   type?: StoreItemType;
+  /** Minimum price filter (inclusive) */
   minPrice?: number;
+  /** Maximum price filter (inclusive) */
   maxPrice?: number;
+  /** Text search query (name or description) */
   search?: string;
+  /** Maximum number of items to return */
   limit?: number;
 }
 
+/**
+ * Statistics about the store inventory.
+ */
 export interface StoreStats {
+  /** Total number of items in the store */
   totalItems: number;
+  /** Number of items that are currently active */
   activeItems: number;
+  /** Total monetary value of all inventory */
   totalValue: number;
+  /** Count of items per type */
   typeDistribution: Record<StoreItemType, number>;
+  /** Price statistics */
   priceRange: {
+    /** Lowest item price */
     min: number;
+    /** Highest item price */
     max: number;
+    /** Average item price */
     average: number;
   };
+  /** Number of items with low stock (≤10 units) */
   lowStockItems: number;
 }
 
+/**
+ * Standard API response format for store item collections.
+ */
 export interface StoreResponse {
+  /** Whether the request succeeded */
   success: boolean;
+  /** Array of store items */
   data: StoreItem[];
+  /** Total count of items matching the filters (for pagination) */
   count?: number;
+  /** The filters that were applied in this request */
   filters?: StoreFilters;
 }
 
+/**
+ * Standard API response format for a single store item.
+ */
 export interface StoreItemResponse {
+  /** Whether the request succeeded */
   success: boolean;
+  /** The requested store item */
   data: StoreItem;
 }
 
+/**
+ * Standard API response format for store statistics.
+ */
 export interface StoreStatsResponse {
+  /** Whether the request succeeded */
   success: boolean;
+  /** The store statistics */
   data: StoreStats;
 }
 
 /**
- * Hook for managing store items from the backend API
+ * Custom hook for managing store items from the backend API.
  *
- * @author Aqua Stark Team
- * @version 1.0.0
- * @since 2025-01-XX
+ * Provides comprehensive functionality for fetching, filtering, sorting,
+ * and analyzing store inventory data. Automatically fetches all items on mount
+ * and maintains local state for efficient client-side operations.
+ *
+ * @returns {{
+ *   items: StoreItem[];
+ *   stats: StoreStats | null;
+ *   lastFilters: StoreFilters;
+ *   isInitialized: boolean;
+ *   loading: boolean;
+ *   error: unknown;
+ *   fetchStoreItems: (filters?: StoreFilters) => Promise<StoreItem[]>;
+ *   fetchStoreItem: (itemId: string) => Promise<StoreItem>;
+ *   fetchStoreItemsByType: (type: StoreItemType) => Promise<StoreItem[]>;
+ *   fetchStoreStats: () => Promise<StoreStats>;
+ *   getItemsByType: (type: StoreItemType) => StoreItem[];
+ *   searchItems: (query: string) => StoreItem[];
+ *   filterItemsByPrice: (minPrice: number, maxPrice: number) => StoreItem[];
+ *   getLowStockItems: (threshold?: number) => StoreItem[];
+ *   getOutOfStockItems: () => StoreItem[];
+ *   getAvailableItems: () => StoreItem[];
+ *   getItemsSortedByPrice: (ascending?: boolean) => StoreItem[];
+ *   getItemsSortedByName: (ascending?: boolean) => StoreItem[];
+ *   getItemsSortedByDate: (ascending?: boolean) => StoreItem[];
+ *   getTotalValue: () => number;
+ *   getTypeDistribution: () => Record<StoreItemType, number>;
+ *   refreshItems: () => Promise<StoreItem[]>;
+ *   clearItems: () => void;
+ * }} An object containing store data, loading states, and utility functions.
+ *
+ * @example
+ * ```tsx
+ * const {
+ *   items,
+ *   loading,
+ *   fetchStoreItemsByType,
+ *   getItemsSortedByPrice
+ * } = useStoreItems();
+ *
+ * const handleFishTab = async () => {
+ *   const fishItems = await fetchStoreItemsByType('fish');
+ *   const sortedFish = getItemsSortedByPrice(true);
+ * };
+ * ```
  */
 export function useStoreItems() {
   const { get, loading, error } = useApi();
@@ -74,7 +165,11 @@ export function useStoreItems() {
   const [isInitialized, setIsInitialized] = useState(false);
 
   /**
-   * Fetch store items with optional filters
+   * Fetches store items from the API with optional filters.
+   *
+   * @param {StoreFilters} [filters={}] - Filters to apply to the request.
+   * @returns {Promise<StoreItem[]>} A promise that resolves to the fetched items.
+   * @throws {Error} If the API request fails or returns an unsuccessful response.
    */
   const fetchStoreItems = useCallback(
     async (filters: StoreFilters = {}) => {
@@ -108,7 +203,11 @@ export function useStoreItems() {
   );
 
   /**
-   * Fetch a specific store item by ID
+   * Fetches a single store item by its ID.
+   *
+   * @param {string} itemId - The unique identifier of the item to fetch.
+   * @returns {Promise<StoreItem>} A promise that resolves to the fetched item.
+   * @throws {Error} If the API request fails or returns an unsuccessful response.
    */
   const fetchStoreItem = useCallback(
     async (itemId: string): Promise<StoreItem> => {
@@ -129,7 +228,11 @@ export function useStoreItems() {
   );
 
   /**
-   * Fetch store items by type
+   * Fetches all store items of a specific type.
+   *
+   * @param {StoreItemType} type - The type of items to fetch.
+   * @returns {Promise<StoreItem[]>} A promise that resolves to the fetched items.
+   * @throws {Error} If the API request fails or returns an unsuccessful response.
    */
   const fetchStoreItemsByType = useCallback(
     async (type: StoreItemType): Promise<StoreItem[]> => {
@@ -150,7 +253,10 @@ export function useStoreItems() {
   );
 
   /**
-   * Fetch store statistics
+   * Fetches comprehensive statistics about the store inventory.
+   *
+   * @returns {Promise<StoreStats>} A promise that resolves to the store statistics.
+   * @throws {Error} If the API request fails or returns an unsuccessful response.
    */
   const fetchStoreStats = useCallback(async (): Promise<StoreStats> => {
     try {
@@ -169,7 +275,10 @@ export function useStoreItems() {
   }, [get]);
 
   /**
-   * Get items by type from current items state
+   * Filters the current items by type using client-side data.
+   *
+   * @param {StoreItemType} type - The type to filter by.
+   * @returns {StoreItem[]} Items matching the specified type.
    */
   const getItemsByType = useCallback(
     (type: StoreItemType): StoreItem[] => {
@@ -179,7 +288,10 @@ export function useStoreItems() {
   );
 
   /**
-   * Search items by name or description
+   * Searches items by name or description using client-side data.
+   *
+   * @param {string} query - The search query string.
+   * @returns {StoreItem[]} Items matching the search query.
    */
   const searchItems = useCallback(
     (query: string): StoreItem[] => {
@@ -196,7 +308,11 @@ export function useStoreItems() {
   );
 
   /**
-   * Filter items by price range
+   * Filters items by price range using client-side data.
+   *
+   * @param {number} minPrice - Minimum price (inclusive).
+   * @param {number} maxPrice - Maximum price (inclusive).
+   * @returns {StoreItem[]} Items within the specified price range.
    */
   const filterItemsByPrice = useCallback(
     (minPrice: number, maxPrice: number): StoreItem[] => {
@@ -208,7 +324,10 @@ export function useStoreItems() {
   );
 
   /**
-   * Get items with low stock
+   * Gets items with low stock (at or below the threshold).
+   *
+   * @param {number} [threshold=10] - The stock threshold for "low stock".
+   * @returns {StoreItem[]} Items with stock at or below the threshold.
    */
   const getLowStockItems = useCallback(
     (threshold: number = 10): StoreItem[] => {
@@ -218,21 +337,28 @@ export function useStoreItems() {
   );
 
   /**
-   * Get out of stock items
+   * Gets items that are completely out of stock.
+   *
+   * @returns {StoreItem[]} Items with zero stock.
    */
   const getOutOfStockItems = useCallback((): StoreItem[] => {
     return items.filter(item => item.stock === 0);
   }, [items]);
 
   /**
-   * Get available items (in stock)
+   * Gets items that are currently available (in stock).
+   *
+   * @returns {StoreItem[]} Items with stock greater than zero.
    */
   const getAvailableItems = useCallback((): StoreItem[] => {
     return items.filter(item => item.stock > 0);
   }, [items]);
 
   /**
-   * Get items sorted by price
+   * Sorts items by price.
+   *
+   * @param {boolean} [ascending=true] - Sort direction (true for ascending).
+   * @returns {StoreItem[]} Items sorted by price.
    */
   const getItemsSortedByPrice = useCallback(
     (ascending: boolean = true): StoreItem[] => {
@@ -244,7 +370,10 @@ export function useStoreItems() {
   );
 
   /**
-   * Get items sorted by name
+   * Sorts items by name alphabetically.
+   *
+   * @param {boolean} [ascending=true] - Sort direction (true for A-Z).
+   * @returns {StoreItem[]} Items sorted by name.
    */
   const getItemsSortedByName = useCallback(
     (ascending: boolean = true): StoreItem[] => {
@@ -256,7 +385,10 @@ export function useStoreItems() {
   );
 
   /**
-   * Get items sorted by creation date
+   * Sorts items by creation date.
+   *
+   * @param {boolean} [ascending=true] - Sort direction (true for oldest first).
+   * @returns {StoreItem[]} Items sorted by creation date.
    */
   const getItemsSortedByDate = useCallback(
     (ascending: boolean = true): StoreItem[] => {
@@ -270,14 +402,18 @@ export function useStoreItems() {
   );
 
   /**
-   * Get total value of all items
+   * Calculates the total monetary value of all inventory.
+   *
+   * @returns {number} Total value (sum of price × stock for all items).
    */
   const getTotalValue = useCallback((): number => {
     return items.reduce((total, item) => total + item.price * item.stock, 0);
   }, [items]);
 
   /**
-   * Get type distribution
+   * Calculates the distribution of items by type.
+   *
+   * @returns {Record<StoreItemType, number>} Count of items per type.
    */
   const getTypeDistribution = useCallback((): Record<StoreItemType, number> => {
     return items.reduce(
@@ -290,14 +426,16 @@ export function useStoreItems() {
   }, [items]);
 
   /**
-   * Refresh store items with last used filters
+   * Refreshes the current item list using the last applied filters.
+   *
+   * @returns {Promise<StoreItem[]>} A promise that resolves to the refreshed items.
    */
   const refreshItems = useCallback(async () => {
     return fetchStoreItems(lastFilters);
   }, [fetchStoreItems, lastFilters]);
 
   /**
-   * Clear all items from state
+   * Clears all items and statistics from local state.
    */
   const clearItems = useCallback(() => {
     setItems([]);
@@ -346,12 +484,44 @@ export function useStoreItems() {
 }
 
 /**
- * Hook for managing a specific store item
+ * Custom hook for managing a single store item by ID.
+ *
+ * Automatically fetches the item on mount and provides a refetch function
+ * for manual updates. Useful for item detail pages or modals.
+ *
+ * @param {string} itemId - The unique identifier of the item to manage.
+ * @returns {{
+ *   item: StoreItem | null;
+ *   loading: boolean;
+ *   error: unknown;
+ *   refetch: () => Promise<StoreItem>;
+ * }} An object containing the item data, loading state, error state, and refetch function.
+ *
+ * @example
+ * ```tsx
+ * const { item, loading, refetch } = useStoreItem('fish-001');
+ *
+ * if (loading) return <Spinner />;
+ * if (!item) return <div>Item not found</div>;
+ *
+ * return (
+ *   <div>
+ *     <h1>{item.name}</h1>
+ *     <button onClick={refetch}>Refresh</button>
+ *   </div>
+ * );
+ * ```
  */
 export function useStoreItem(itemId: string) {
   const { get, loading, error } = useApi();
   const [item, setItem] = useState<StoreItem | null>(null);
 
+  /**
+   * Fetches the store item from the API.
+   *
+   * @returns {Promise<StoreItem>} A promise that resolves to the fetched item.
+   * @throws {Error} If the API request fails or returns an unsuccessful response.
+   */
   const fetchItem = useCallback(async () => {
     if (!itemId) return;
 
