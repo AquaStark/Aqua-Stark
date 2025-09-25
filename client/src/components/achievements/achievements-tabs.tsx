@@ -2,10 +2,10 @@
 
 import { Calendar, Star, Target, Trophy } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Achievements } from './achievements';
-import { Missions } from './missions';
-import { LoginRewards } from './login-rewards';
-import { Milestones } from './milestones';
+import { Achievements } from '@/components';
+import { Missions } from '@/components';
+import { LoginRewards } from '@/components';
+import { Milestones } from '@/components';
 import { mockGameMilestones, mockLoginRewards } from '@/data/mock-data';
 
 interface AchievementsTabsProps {

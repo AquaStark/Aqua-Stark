@@ -1,0 +1,1 @@
+export { WalletModal } from './walletConnectModal';

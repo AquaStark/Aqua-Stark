@@ -1,6 +1,7 @@
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components';
 import { rarityData } from '@/data/genetic-combination-data';
-const Rarity = () => {
+
+export const Rarity = () => {
   return (
     <Card>
       <div className='flex items-center mb-4'>
@@ -44,5 +45,3 @@ const Rarity = () => {
     </Card>
   );
 };
-
-export default Rarity;

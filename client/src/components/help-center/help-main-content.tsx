@@ -2,7 +2,7 @@
 
 import { ChevronRight, X } from 'lucide-react';
 import type { Category, Topic } from '@/types';
-import { renderTopicContent } from '@/components/help-center/content-renderer';
+import { RenderTopicContent } from '@/components';
 import { getIcon } from '@/components/help-center/icon-mapper';
 
 interface HelpMainContentProps {
@@ -13,7 +13,7 @@ interface HelpMainContentProps {
   onClose: () => void;
 }
 
-export default function HelpMainContent({
+export function HelpMainContent({
   currentCategory,
   currentTopic,
   activeTopic,
@@ -40,7 +40,7 @@ export default function HelpMainContent({
           <div className='text-white space-y-6'>
             <h3 className='text-2xl font-bold'>{currentTopic.title}</h3>
             <div className='text-blue-100'>
-              {renderTopicContent(currentTopic)}
+              {RenderTopicContent(currentTopic)}
             </div>
           </div>
         </div>

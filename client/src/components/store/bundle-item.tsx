@@ -5,7 +5,7 @@ import { ShopBundle } from '@/types/shop-types';
 
 type BundleItemProps = ShopBundle;
 
-export default function BundleItem({
+export function BundleItem({
   id,
   name,
   image,

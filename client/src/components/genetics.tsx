@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { FaCalculator, FaDna } from 'react-icons/fa';
 import { colorInheritance } from '@/data/genetic-combination-data';
-import Traits from './genetics/traits';
-import Inheritance from './genetics/traits';
-import Rarity from './genetics/traits';
+import { Traits } from './genetics/traits';
+import { Rarity } from './genetics/rarity';
 
-import { Button } from './ui/button';
-import { Card } from './ui/card';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components';
+import { Inheritance } from './genetics/inheritance';
 
-const GeneticCombinationsPage: React.FC = () => {
+export const GeneticCombinationsPage: React.FC = () => {
   const [selectedPair] = useState<string | null>(null);
 
   return (
@@ -96,5 +96,3 @@ const GeneticCombinationsPage: React.FC = () => {
     </div>
   );
 };
-
-export default GeneticCombinationsPage;

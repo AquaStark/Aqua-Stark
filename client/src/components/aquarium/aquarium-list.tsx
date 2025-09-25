@@ -1,4 +1,4 @@
-import { AquariumCard } from './aquarium-card';
+import { AquariumCard } from '@/components';
 
 import type { Aquarium, Fish } from '@/types';
 

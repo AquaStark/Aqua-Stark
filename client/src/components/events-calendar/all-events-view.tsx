@@ -9,7 +9,7 @@ import {
   Sparkles,
   Users,
 } from 'lucide-react';
-import { EventCard } from './event-card';
+import { EventCard } from '@/components';
 import { CalendarEvent, EventClickHandler } from '@/types';
 
 // Moved utility function directly into component

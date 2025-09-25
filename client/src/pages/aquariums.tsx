@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { PageHeader } from '@/components/layout/page-header';
-import { Footer } from '@/components/layout/footer';
-import { AquariumStats } from '@/components/aquarium/aquarium-stats';
-import { AquariumList } from '@/components/aquarium/aquarium-list';
-import { PurchaseModal } from '@/components/aquarium/purchase-modal';
-import { CreateAquariumButton } from '@/components/aquarium/create-aquarium-button';
-import { BubblesBackground } from '@/components/bubble-background';
+import { PageHeader } from '@/components';
+import { LayoutFooter } from '@/components';
+import { AquariumStats } from '@/components';
+import { AquariumList } from '@/components';
+import { PurchaseModal } from '@/components';
+import { CreateAquariumButton } from '@/components';
+import { BubblesBackground } from '@/components';
 import { useBubbles } from '@/hooks';
 import { Search, Filter } from 'lucide-react';
 import { useActiveAquarium } from '../store/active-aquarium';
@@ -314,7 +314,7 @@ export default function AquariumsPage() {
           )}
         </main>
 
-        <Footer />
+        <LayoutFooter />
       </div>
 
       {showPurchaseModal && (

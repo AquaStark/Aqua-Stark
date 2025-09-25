@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp, Filter, Lock, Search, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { FishTank } from '@/components/fish-tank';
-import EncyclopediaFilters from './encyclopedia-filters';
+import { FishTank } from '@/components';
+import { EncyclopediaFilters } from './encyclopedia-filters';
 import type { EncyclopediaFilters as EncyclopediaFiltersState } from '@/hooks/use-encyclopedia';
 import type { FishSpecies } from '@/data/encyclopedia-data';
 
@@ -21,7 +21,7 @@ interface EncyclopediaCatalogProps {
   resetFilters: () => void;
 }
 
-export default function EncyclopediaCatalog({
+export function EncyclopediaCatalog({
   filters,
   setFilters,
   showFilters,

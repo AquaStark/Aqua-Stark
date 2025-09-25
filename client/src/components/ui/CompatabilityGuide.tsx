@@ -1,7 +1,7 @@
 import { sizeCompatibility } from '@/data/encyclopedia-habitat';
 import { Check, X, TriangleAlert } from 'lucide-react';
 
-export default function CompatabilityGuide() {
+export function CompatabilityGuide() {
   return (
     <div className='rounded-lg bg-[#003f86] space-y-4'>
       <div className='p-4 border-b border-blue-700'>

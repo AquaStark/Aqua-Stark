@@ -1,0 +1,9 @@
+export { FeatureCards } from './featured-card';
+export { FeaturedFish } from './featured-fish';
+export { FeaturesSection } from './featured-sections';
+export { FishCardComponent } from './fish-card';
+export { FishStatusTips } from './fish-status-tips';
+export { Footer } from './footer';
+export { HeroSection } from './hero-section';
+export { Navbar } from './navbar';
+export { ReadyToPlay } from './ready-to-play';

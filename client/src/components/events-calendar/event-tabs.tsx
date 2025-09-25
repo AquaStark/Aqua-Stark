@@ -13,18 +13,18 @@ import {
   Trophy,
   ChevronDown,
 } from 'lucide-react';
-import { AllEventsView } from './all-events-view';
+import { AllEventsView } from '@/components';
 import { SpecialEventsView } from './special-events-view';
-import { ListEventView } from './list-event-view';
-import { CalendarView } from './calendar-view';
-import { EventDetailsModal } from './event-details-modal';
+import { ListEventView } from '@/components';
+import { CalendarView } from '@/components';
+import { EventDetailsModal } from '@/components';
 import { mockEvents } from '@/data/event-calendar-data';
 import { CalendarEvent } from '@/types';
 
 type TabType = 'all' | 'special' | 'seasons' | 'tournaments' | 'offers';
 type ViewType = 'list' | 'calendar';
 
-export default function EventTabs() {
+export function EventTabs() {
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const [viewType, setViewType] = useState<ViewType>('list');
   const [searchQuery, setSearchQuery] = useState('');

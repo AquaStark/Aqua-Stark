@@ -1,0 +1,9 @@
+export { BackToGameButton } from './back-to-game-button';
+export { RenderTopicContent } from './content-renderer';
+export { FeaturedTopics } from './featured-topics';
+export { HelpCategories } from './help-categories';
+export { HelpFooter } from './help-footer';
+export { HelpMainContent } from './help-main-content';
+export { HelpCenterSidebar } from './help-sidebar';
+export { getIcon } from './icon-mapper';
+export { TopicContent } from './topic-content';

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import BundleItem from '@/components/store/bundle-item';
+import { BundleItem } from '@/components';
 import { Package, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { ShopBundle } from '@/types/shop-types';

@@ -13,7 +13,7 @@ interface StoreItemProps extends Partial<ShopItem> {
   onAddToWishlist?: (itemName: string, isFavorite: boolean) => void;
 }
 
-export default function StoreItem({
+export function StoreItem({
   id,
   name,
   image,

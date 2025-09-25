@@ -14,7 +14,7 @@ interface FishCardProps {
   onClick?: () => void;
 }
 
-export function FishCard({ fish, onClick }: FishCardProps) {
+export function MarketFishCard({ fish, onClick }: FishCardProps) {
   const { setSelectedFish, setShowBidModal, setShowOfferModal } =
     useMarketStore();
 

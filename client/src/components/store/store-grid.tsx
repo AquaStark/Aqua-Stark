@@ -1,6 +1,7 @@
+import { StoreItem } from '@/components';
+
 import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import StoreItem from '@/components/store/store-item';
 import { ShopItem } from '@/types/shop-types';
 
 interface StoreGridProps {

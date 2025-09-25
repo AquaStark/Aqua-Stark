@@ -5,7 +5,7 @@ interface FooterProps {
   className?: string;
 }
 
-export function Footer({ className }: FooterProps = {}) {
+export function LayoutFooter({ className }: FooterProps = {}) {
   return (
     <footer
       className={cn(

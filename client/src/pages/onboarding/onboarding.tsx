@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { BubblesBackground } from '@/components/bubble-background';
+import { BubblesBackground } from '@/components';
 import { useBubbles } from '@/hooks';
 import { FishCard } from '@/components/ui/fish-card/fish-card';
 import { useAquarium } from '@/hooks/dojo';

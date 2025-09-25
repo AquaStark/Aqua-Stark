@@ -1,6 +1,7 @@
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components';
 import { patternInheritance } from '@/data/genetic-combination-data';
-const Inheritance = () => {
+
+export const Inheritance = () => {
   return (
     <Card>
       <div className='flex items-center mb-4'>
@@ -45,5 +46,3 @@ const Inheritance = () => {
     </Card>
   );
 };
-
-export default Inheritance;

@@ -5,7 +5,7 @@ import { StoreOriginal } from '@/components/store/store-original';
 import { BubblesBackground } from '@/components/bubble-background';
 import { useBubbles } from '@/hooks';
 import { PageHeader } from '@/components/layout/page-header';
-import { Footer } from '@/components/layout/footer';
+import { LayoutFooter } from '@/components/layout/footer';
 import { CartSidebar } from '@/components/store/cart-sidebar';
 import { CheckoutModal } from '@/components/store/checkout-modal';
 import { useCartStore } from '@/store/use-cart-store';
@@ -133,7 +133,7 @@ export default function StorePage() {
                 <StoreOriginal />
               </div>
             </main>
-            <Footer />
+            <LayoutFooter />
           </div>
         </div>
       </>
@@ -173,7 +173,7 @@ export default function StorePage() {
         </div>
       </main>
 
-      <Footer />
+      <LayoutFooter />
     </div>
   );
 }
