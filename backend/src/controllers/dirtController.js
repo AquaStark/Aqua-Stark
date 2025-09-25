@@ -160,10 +160,6 @@ export class DirtController {
         spotId,
         playerId
       );
-        aquariumId,
-        spotId,
-        playerId
-      );
 
       res.json({
         success: true,
