@@ -128,9 +128,6 @@ export class DecorationController {
         decorationId,
         position
       );
-        decorationId,
-        position
-      );
 
       res.json({
         success: true,
@@ -259,9 +256,6 @@ export class DecorationController {
         decorationId,
         newPosition
       );
-        decorationId,
-        newPosition
-      );
 
       res.json({
         success: true,
@@ -343,9 +337,6 @@ export class DecorationController {
           return res.status(403).json({
             error: 'Access denied',
             message: `Decoration ${update.decorationId} does not belong to you`,
-          });
-        }
-      }
           });
         }
       }
