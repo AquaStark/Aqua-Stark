@@ -9,6 +9,16 @@ import {
   CartridgeErrorType,
 } from '@/types';
 
+/**
+ * @file use-cartridge-session.ts
+ * @description
+ * A custom hook to manage user sessions specifically with the Cartridge Controller.
+ * It provides a streamlined interface for connecting, disconnecting, and managing
+ * the user's account data and session state, including robust error handling and
+ * user-friendly notifications.
+ *
+ * @category Hooks
+ */
 export function useCartridgeSession(): UseCartridgeSessionReturn {
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
@@ -21,7 +31,11 @@ export function useCartridgeSession(): UseCartridgeSessionReturn {
     c => c instanceof ControllerConnector
   ) as ControllerConnector;
 
-  // Función para manejar errores de Cartridge
+  /**
+   * Handles and categorizes errors from the Cartridge connection process.
+   * @param {any} error - The raw error object caught during the connection attempt.
+   * @returns {CartridgeError} An object containing a standardized error code and message.
+   */
   const handleCartridgeError = useCallback((error: any): CartridgeError => {
     let errorType: CartridgeErrorType = 'UNKNOWN_ERROR';
     let message = 'Error inesperado al conectar';
@@ -52,7 +66,12 @@ export function useCartridgeSession(): UseCartridgeSessionReturn {
     };
   }, []);
 
-  // Función para conectar con Cartridge
+  /**
+   * Initiates the connection process to the Cartridge Controller.
+   * This function opens the Cartridge modal, handles the connection,
+   * attempts to retrieve additional user data, and shows toasts for success or failure.
+   * @returns {Promise<void>}
+   */
   const handleConnect = useCallback(async () => {
     if (!controller) {
       const error: CartridgeError = {
@@ -106,7 +125,10 @@ export function useCartridgeSession(): UseCartridgeSessionReturn {
     }
   }, [connect, controller, address, handleCartridgeError]);
 
-  // Función para desconectar
+  /**
+   * Disconnects the current wallet session and clears the account state.
+   * @returns {Promise<void>}
+   */
   const handleDisconnect = useCallback(async () => {
     try {
       await disconnect();
@@ -118,7 +140,11 @@ export function useCartridgeSession(): UseCartridgeSessionReturn {
     }
   }, [disconnect]);
 
-  // Función para refrescar la sesión
+  /**
+   * Attempts to refresh the user's session.
+   * NOTE: This function is a placeholder for future Cartridge SDK features, as `refreshSession` is not currently available.
+   * @returns {Promise<void>}
+   */
   const refreshSession = useCallback(async () => {
     if (!controller || !isConnected) return;
 
@@ -133,7 +159,10 @@ export function useCartridgeSession(): UseCartridgeSessionReturn {
     }
   }, [controller, isConnected, handleCartridgeError]);
 
-  // Efecto para limpiar datos de sesión cuando se desconecta
+  /**
+   * Effect to manage the account state based on the connection status from `starknet-react/core`.
+   * It ensures the `account` state is cleared on disconnect and populated with a basic address on connect.
+   */
   useEffect(() => {
     if (!isConnected) {
       setAccount(undefined);
@@ -143,6 +172,9 @@ export function useCartridgeSession(): UseCartridgeSessionReturn {
     }
   }, [isConnected, address, account]);
 
+  /**
+   * @returns {UseCartridgeSessionReturn} An object containing the session state and control functions.
+   */
   return {
     isConnected: isConnected || false,
     address,

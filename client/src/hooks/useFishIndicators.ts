@@ -13,6 +13,12 @@ import {
   feedIndicators,
 } from '@/utils/fishIndicators';
 
+/**
+ * Converts various input types to a valid Date object or null.
+ *
+ * @param {Date | string | number | null | undefined} input - The input to convert.
+ * @returns {Date | null} A valid Date object or null if the input is invalid.
+ */
 function coerceDate(
   input: Date | string | number | null | undefined
 ): Date | null {
@@ -29,6 +35,42 @@ const DEFAULT_STATE: FishIndicatorState = {
   lastUpdatedAt: null,
 };
 
+/**
+ * Custom hook to manage and simulate fish indicator states over time.
+ *
+ * This hook handles the core logic for fish well-being indicators including
+ * hunger, energy, happiness, and cleanliness. It automatically updates indicators
+ * at regular intervals based on configurable decay rates and provides methods
+ * to feed the fish or adjust tank cleanliness.
+ *
+ * The happiness indicator is dynamically computed based on the other three indicators
+ * using configurable weights, ensuring realistic simulation of fish mood.
+ *
+ * @param {UseFishIndicatorsParams} params - Configuration parameters for the hook.
+ * @param {Partial<FishIndicatorState>} [params.initial] - Initial indicator values to override defaults.
+ * @param {Date | string | number | null} [params.lastFedTimestamp] - Timestamp when the fish was last fed.
+ * @param {Date | string | number | null} [params.lastUpdated] - Timestamp of the last state update.
+ * @param {IndicatorValue} [params.cleanliness=100] - Initial cleanliness level (0-100).
+ * @param {Partial<FishIndicatorOptions>} [params.options] - Override default simulation options.
+ * @param {(state: FishIndicatorState) => void} [params.onChange] - Callback invoked when indicators change.
+ *
+ * @returns {UseFishIndicatorsReturn} An object containing the current indicators and control functions.
+ *
+ * @example
+ * ```tsx
+ * const { indicators, feed, setCleanliness } = useFishIndicators({
+ *   initial: { hunger: 70, energy: 90 },
+ *   cleanliness: 95,
+ *   onChange: (state) => console.log('Fish state updated:', state)
+ * });
+ *
+ * // Feed the fish with default boost
+ * feed();
+ *
+ * // Set tank cleanliness to 80%
+ * setCleanliness(80);
+ * ```
+ */
 export function useFishIndicators(
   params: UseFishIndicatorsParams
 ): UseFishIndicatorsReturn {
@@ -101,6 +143,12 @@ export function useFishIndicators(
     onChangeRef.current?.(indicators);
   }, [indicators]);
 
+  /**
+   * Feeds the fish, increasing hunger and energy indicators.
+   *
+   * @param {number} [boost] - Custom feeding boost amount. Uses default if not provided.
+   * @param {Date | string | number} [fedAt] - Timestamp of when the fish was fed. Defaults to now.
+   */
   const feed = useCallback<UseFishIndicatorsReturn['feed']>((boost, fedAt) => {
     setIndicators(prev => {
       const next = feedIndicators(
@@ -115,6 +163,11 @@ export function useFishIndicators(
     });
   }, []);
 
+  /**
+   * Updates the tank cleanliness level.
+   *
+   * @param {IndicatorValue} value - New cleanliness value (will be clamped between 0 and 100).
+   */
   const setCleanliness = useCallback<UseFishIndicatorsReturn['setCleanliness']>(
     value => {
       setCleanlinessState(Math.max(0, Math.min(100, value)));
@@ -122,6 +175,11 @@ export function useFishIndicators(
     []
   );
 
+  /**
+   * Resets the fish indicators to a specified state or default values.
+   *
+   * @param {Partial<FishIndicatorState>} [state] - Partial state to reset to. Uses defaults if not provided.
+   */
   const reset = useCallback<UseFishIndicatorsReturn['reset']>(
     state => {
       setIndicators(prev => {

@@ -1,3 +1,16 @@
+/**
+ * @file use-dirt-system-realistic.ts
+ * @description
+ * Custom hook for a realistic dirt simulation system in an aquarium.
+ * It manages the state of dirt spots and cleanliness metrics by synchronizing
+ * with a backend API, which handles the time-based accumulation of dirt.
+ *
+ * This hook is designed to provide persistent, server-side game state for the
+ * aquarium's cleanliness, ensuring a consistent experience across sessions.
+ *
+ * @category Hooks
+ */
+
 import { useState, useEffect, useCallback } from 'react';
 import { DirtSpot, DirtType } from '@/constants';
 
@@ -5,6 +18,21 @@ import { DirtSpot, DirtType } from '@/constants';
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
 
+/**
+ * @typedef {Object} DirtSystemState
+ * @property {DirtSpot[]} spots - An array of active dirt spots in the aquarium.
+ * @property {number} dirtLevel - The current dirt level as a percentage (0-100).
+ * @property {boolean} isDirty - True if the dirt level is above a certain threshold.
+ * @property {boolean} needsCleaning - True if the aquarium is dirty enough to require cleaning.
+ * @property {{ level: string, label: string, color: string }} cleanlinessStatus - A descriptive status object based on the current dirt level.
+ * @property {string | null} lastCleaningTime - Timestamp of the last successful cleaning.
+ * @property {number} cleaningStreak - The number of consecutive times the player has cleaned the aquarium.
+ * @property {number} totalCleanings - The total number of cleanings performed.
+ * @property {number} hoursSinceCleaning - The number of hours passed since the last cleaning.
+ * @property {boolean} isLoading - True if the system is currently fetching data from the backend.
+ * @property {string | null} error - A string containing the error message if a request fails.
+ * @property {boolean} isSpongeMode - True if the visual "sponge" cleaning mode is active.
+ */
 interface DirtSystemState {
   spots: DirtSpot[];
   dirtLevel: number;
@@ -24,6 +52,14 @@ interface DirtSystemState {
   isSpongeMode: boolean;
 }
 
+/**
+ * @typedef {Object} UseDirtSystemRealisticOptions
+ * @property {string} aquariumId - The unique identifier of the aquarium.
+ * @property {string} playerId - The unique identifier of the player.
+ * @property {string} [authToken] - Optional authentication token for API requests.
+ * @property {boolean} [autoRefresh=true] - If true, the hook will periodically fetch updates from the backend.
+ * @property {number} [refreshInterval=30000] - The interval in milliseconds for auto-refresh. Defaults to 30 seconds.
+ */
 interface UseDirtSystemRealisticOptions {
   aquariumId: string;
   playerId: string;
@@ -33,7 +69,34 @@ interface UseDirtSystemRealisticOptions {
 }
 
 /**
- * Hook for realistic dirt system based on backend time calculations
+ * @function useDirtSystemRealistic
+ * @description
+ * Hook for a realistic dirt system based on backend time calculations.
+ * It manages the state of dirt spots, cleanliness level, and cleaning statistics
+ * by communicating with a backend API. This hook handles fetching the current
+ * state, cleaning individual dirt spots, and initializing the system for new aquariums.
+ *
+ * @param {UseDirtSystemRealisticOptions} options - Configuration options for the hook.
+ * @returns {{
+ * spots: DirtSpot[],
+ * dirtLevel: number,
+ * isDirty: boolean,
+ * needsCleaning: boolean,
+ * cleanlinessStatus: { level: string, label: string, color: string },
+ * lastCleaningTime: string | null,
+ * cleaningStreak: number,
+ * totalCleanings: number,
+ * hoursSinceCleaning: number,
+ * isLoading: boolean,
+ * error: string | null,
+ * isSpongeMode: boolean,
+ * fetchDirtStatus: () => Promise<void>,
+ * toggleSpongeMode: () => void,
+ * cleanDirtSpot: (spotId: number) => Promise<any>,
+ * removeDirtSpot: (spotId: number) => void,
+ * initializeDirtSystem: (config?: any) => Promise<any>,
+ * refresh: () => Promise<void>,
+ * }} An object containing the current state and various action functions.
  */
 export function useDirtSystemRealistic({
   aquariumId,
@@ -57,7 +120,13 @@ export function useDirtSystemRealistic({
     isSpongeMode: false,
   });
 
-  // Fetch dirt status from backend
+  /**
+   * @function fetchDirtStatus
+   * @description
+   * Asynchronously fetches the current dirt status from the backend API.
+   * Updates the hook's state with the latest cleanliness data and generates
+   * dirt spots for rendering based on the new dirt level.
+   */
   const fetchDirtStatus = useCallback(async () => {
     if (!aquariumId || !playerId) return;
 
@@ -123,7 +192,12 @@ export function useDirtSystemRealistic({
     }
   }, [aquariumId, playerId, authToken]);
 
-  // Toggle sponge mode
+  /**
+   * @function toggleSpongeMode
+   * @description
+   * Toggles the `isSpongeMode` state, which can be used to control the
+   * interactive cleaning visual.
+   */
   const toggleSpongeMode = useCallback(() => {
     setState(prev => ({
       ...prev,
@@ -131,7 +205,16 @@ export function useDirtSystemRealistic({
     }));
   }, []);
 
-  // Clean individual dirt spot (interactive cleaning)
+  /**
+   * @function cleanDirtSpot
+   * @description
+   * Sends a request to the backend to clean a specific dirt spot. On a successful
+   * response, it updates the local state with the new dirt level and regenerates
+   * the visible dirt spots accordingly.
+   *
+   * @param {number} spotId - The unique ID of the dirt spot to be cleaned.
+   * @returns {Promise<any>} A promise that resolves with the updated data from the backend.
+   */
   const cleanDirtSpot = useCallback(
     async (spotId: number) => {
       if (!aquariumId || !playerId) return;
@@ -196,7 +279,15 @@ export function useDirtSystemRealistic({
     [aquariumId, playerId, authToken]
   );
 
-  // Remove individual dirt spot (for visual feedback)
+  /**
+   * @function removeDirtSpot
+   * @description
+   * Removes a specific dirt spot from the local state. This is primarily for
+   * providing immediate visual feedback during interactive cleaning before the
+   * backend confirms the state change.
+   *
+   * @param {number} spotId - The unique ID of the dirt spot to remove.
+   */
   const removeDirtSpot = useCallback((spotId: number) => {
     setState(prev => ({
       ...prev,
@@ -204,7 +295,15 @@ export function useDirtSystemRealistic({
     }));
   }, []);
 
-  // Initialize dirt system for new aquarium
+  /**
+   * @function initializeDirtSystem
+   * @description
+   * Initializes the dirt system for a new aquarium on the backend. This should
+   * be called when a new aquarium is created.
+   *
+   * @param {any} [config] - Optional configuration object to send to the backend.
+   * @returns {Promise<any>} A promise that resolves with the initialization data.
+   */
   const initializeDirtSystem = useCallback(
     async (config?: any) => {
       if (!aquariumId || !playerId) return;
@@ -249,7 +348,13 @@ export function useDirtSystemRealistic({
     [aquariumId, playerId, authToken, fetchDirtStatus]
   );
 
-  // Auto-refresh effect
+  /**
+   * @function useEffect
+   * @description
+   * Manages the automatic refresh of the dirt status. It performs an initial
+   * fetch and then sets up a recurring interval to call `fetchDirtStatus`.
+   * The interval is cleared when the component unmounts.
+   */
   useEffect(() => {
     if (!autoRefresh || !aquariumId || !playerId) return;
 
@@ -279,7 +384,13 @@ export function useDirtSystemRealistic({
 }
 
 /**
- * Generate dirt spots based on dirt level
+ * @function generateDirtSpotsFromLevel
+ * @description
+ * Generates an array of `DirtSpot` objects based on a given dirt level. The
+ * number, size, and type of spots are determined by this level.
+ *
+ * @param {number} dirtLevel - The dirt level percentage (0-100).
+ * @returns {DirtSpot[]} An array of generated dirt spots.
  */
 function generateDirtSpotsFromLevel(dirtLevel: number): DirtSpot[] {
   if (dirtLevel <= 0) return [];
@@ -309,7 +420,13 @@ function generateDirtSpotsFromLevel(dirtLevel: number): DirtSpot[] {
 }
 
 /**
- * Get random dirt type based on dirt level
+ * @function getRandomDirtType
+ * @description
+ * Selects a random dirt type with weighted probabilities based on the
+ * current dirt level. Higher levels are more likely to generate "heavier" dirt types.
+ *
+ * @param {number} dirtLevel - The current dirt level percentage (0-100).
+ * @returns {DirtType} A randomly selected dirt type.
  */
 function getRandomDirtType(dirtLevel: number): DirtType {
   const types = Object.values(DirtType);
@@ -347,7 +464,11 @@ function getRandomDirtType(dirtLevel: number): DirtType {
 }
 
 /**
- * Get random spot size based on dirt level
+ * @function getRandomSpotSize
+ * @description
+ * Returns a random size for a dirt spot from a predefined array of sizes.
+ *
+ * @returns {number} The size of the spot in pixels.
  */
 function getRandomSpotSize(): number {
   // MUCHOS TAMAÑOS GRANDES Y VARIADOS
@@ -357,7 +478,13 @@ function getRandomSpotSize(): number {
 }
 
 /**
- * Get cleanliness status based on dirt level
+ * @function getCleanlinessStatus
+ * @description
+ * Determines the cleanliness status (e.g., 'Clean', 'Dirty', 'Critical') and
+ * a corresponding label and color based on the current dirt level.
+ *
+ * @param {number} dirtLevel - The current dirt level percentage (0-100).
+ * @returns {{ level: string, label: string, color: string }} An object with status details.
  */
 function getCleanlinessStatus(dirtLevel: number) {
   if (dirtLevel >= 90)

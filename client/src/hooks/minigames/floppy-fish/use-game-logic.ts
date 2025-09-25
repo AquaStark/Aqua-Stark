@@ -1,7 +1,9 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { useLocalStorage } from '@/hooks';
 
-// Game constants - wider screen for better gameplay
+/**
+ * Game constants used across the Floppy Fish game logic.
+ */
 const GAME_WIDTH = 600; // Increased from 400
 const GAME_HEIGHT = 400; // Reduced from 500 for better aspect ratio
 const FISH_SIZE = 40; // Slightly smaller for better proportions
@@ -13,13 +15,41 @@ const COLUMN_INTERVAL = 2000; // Increased from 1600 for more spacing
 const COLUMN_SPEED = 2; // Reduced from 2.5 for slower movement
 const FISH_X = 120; // Moved further right for better visibility
 
-function getRandomGapY() {
-  // Ensure gap is always fully on screen with better positioning
+/**
+ * Generate a random vertical position for a new gap between columns.
+ * Ensures that the gap is always fully visible on screen.
+ *
+ * @returns {number} The vertical Y coordinate for the top of the gap.
+ */
+function getRandomGapY(): number {
   const minY = 80;
   const maxY = GAME_HEIGHT - GAP_HEIGHT - 80;
   return Math.floor(Math.random() * (maxY - minY + 1)) + minY;
 }
 
+/**
+ * Hook that encapsulates the entire game loop and logic for the Floppy Fish game.
+ * Handles fish physics, column spawning, collisions, scoring, and persistent best score.
+ *
+ * @param {function} [onGameOver] - Optional callback triggered when the game ends,
+ * receiving the final score as argument.
+ * @returns {{
+ *   fishY: number,
+ *   columns: {x: number, gapY: number, scored?: boolean}[],
+ *   score: number,
+ *   bestScore: number,
+ *   gameOver: boolean,
+ *   started: boolean,
+ *   jump: () => void,
+ *   resetGame: () => void,
+ *   GAME_WIDTH: number,
+ *   GAME_HEIGHT: number,
+ *   FISH_SIZE: number,
+ *   FISH_X: number,
+ *   COLUMN_WIDTH: number,
+ *   GAP_HEIGHT: number
+ * }}
+ */
 export function useGameLogic(onGameOver?: (score: number) => void) {
   const { get, set } = useLocalStorage();
   // Fish state

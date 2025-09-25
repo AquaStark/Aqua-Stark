@@ -1,7 +1,3 @@
-/**
- * Custom hook that encapsulates all dev console handlers
- */
-
 import { useCallback } from 'react';
 import { useAccount } from '@starknet-react/core';
 import { useAquarium, useDecoration, useFish, usePlayer } from './dojo';
@@ -13,6 +9,48 @@ import {
 } from '@/systems/data-transformation-system';
 import { useDevConsoleStore } from '@/store/dev-console-store';
 
+/**
+ * @file use-dev-console-handlers.ts
+ * @description
+ * A comprehensive custom hook that centralizes all handler functions for the
+ * in-game developer console. It provides a clean, organized way to call various
+ * game systems and smart contract functions (Dojo systems), handling state,
+ * loading, errors, and responses using a Zustand store. It acts as a bridge
+ * between the UI components of the dev console and the underlying game logic.
+ *
+ * @category Hooks
+ */
+
+/**
+ * Custom hook that encapsulates all dev console handlers for interacting with the game's smart contracts and systems.
+ * It uses other custom hooks to access the Dojo world and provides a centralized way to trigger
+ * and manage the state of these requests (loading, errors, and responses).
+ *
+ * @returns {{
+ * state: import('@/store/dev-console-store').DevConsoleState,
+ * handlers: {
+ * handleRegisterPlayer: () => void,
+ * handleGetPlayer: () => void,
+ * handleIsVerified: () => void,
+ * handleNewAquarium: () => void,
+ * handleGetAquarium: () => void,
+ * handleGetAquariumOwner: () => void,
+ * handleNewFish: () => void,
+ * handleGetFish: () => void,
+ * handleGetFishOwner: () => void,
+ * handleNewDecoration: () => void,
+ * handleGetDecoration: () => void,
+ * handleGetDecorationOwner: () => void,
+ * handleBreedFishes: () => void,
+ * handleMoveFish: () => void,
+ * handleMoveDecoration: () => void,
+ * handleGetParents: () => void,
+ * handleGetOffspring: () => void,
+ * handleFamilyTree: () => void,
+ * handleFishAncestor: () => void,
+ * },
+ * }} An object containing the current console state and all the handler functions.
+ */
 export const useDevConsoleHandlers = () => {
   const { account } = useAccount();
   const { registerPlayer, getPlayer, isVerified } = usePlayer();
@@ -38,6 +76,13 @@ export const useDevConsoleHandlers = () => {
   const state = useDevConsoleStore();
   const { setError, setResponse, updateResponseState } = state;
 
+  /**
+   * A generic wrapper function to handle a contract request.
+   * It manages the loading, success, and error states for any given async function.
+   * @param {() => Promise<T>} request - The async function to execute.
+   * @param {string} name - The name of the request for logging and identification.
+   * @template T
+   */
   const handleRequest = useCallback(
     async <T>(request: () => Promise<T>, name: string) => {
       await handleContractRequest(request, name, {
