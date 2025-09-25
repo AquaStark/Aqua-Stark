@@ -180,7 +180,11 @@ export class DecorationController {
       const { position } = req.body;
 
       // Validate that position and its x and y coordinates exist
-      if (!position || typeof position.x !== 'number' || typeof position.y !== 'number') {
+      if (
+        !position ||
+        typeof position.x !== 'number' ||
+        typeof position.y !== 'number'
+      ) {
         return res.status(400).json({
           error: 'Position with x and y coordinates is required',
         });
