@@ -7,7 +7,7 @@ import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BubblesBackground } from '@/components';
 import { useBubbles } from '@/hooks';
-import { FishCard } from '@/components';
+import { FishCard } from '@/components/ui/fish-card/fish-card';
 import { useAquarium } from '@/hooks/dojo';
 import { useAccount } from '@starknet-react/core';
 import { toast } from 'sonner';
