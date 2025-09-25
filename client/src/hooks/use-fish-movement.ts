@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import type { FishType } from '@/types/game';
-import type { FoodItem } from '@/types/food';
+import type { FishType, FoodItem } from '@/types';
 
 interface MovementParams {
   speed: number;

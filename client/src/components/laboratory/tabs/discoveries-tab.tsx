@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Filter, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import type { BreedingResult } from '@/types';
 
-import { breedingResults } from '@/data/fish-data';
-import { fishCollection } from '@/data/fish-data';
+import { breedingResults } from '@/constants';
+import { fishCollection } from '@/constants';
 
 export function DiscoveriesTab() {
   return (
@@ -96,8 +97,6 @@ export function DiscoveriesTab() {
     </>
   );
 }
-
-import type { BreedingResult } from '@/types/fish';
 
 function DiscoveryCard({ result }: { result: BreedingResult }) {
   return (

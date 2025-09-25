@@ -1,7 +1,7 @@
 import { useConnect, useAccount } from '@starknet-react/core';
 import { useState, useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
-import { WalletConnector } from '@/types/connector-types';
+import { WalletConnector } from '@/types';
 
 export function useCartridgeConnection() {
   const { connect, connectors } = useConnect();

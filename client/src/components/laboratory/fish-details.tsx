@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { FishTank } from '@/components/fish-tank';
 import { FishIcon } from 'lucide-react';
-import type { Fish } from '@/types/fish';
-import { fishCollection } from '@/data/fish-data';
+import type { Fish } from '@/types';
+import { fishCollection } from '@/constants';
 
 interface FishDetailsProps {
   selectedFish: Fish | null;

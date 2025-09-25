@@ -1,7 +1,7 @@
 import { usePlayer } from './dojo/usePlayer';
-import { ApiClient, API_CONFIG, buildApiUrl } from '@/config/api';
+import { ApiClient, API_CONFIG, buildApiUrl } from '@/constants';
 import { useCallback, useState } from 'react';
-import { BackendPlayerData, OnChainPlayerData } from '@/types/player-types';
+import { BackendPlayerData, OnChainPlayerData } from '@/types';
 import type { ApiResponse, RequestData } from '@/types/api-types';
 
 interface PlayerValidationResult {

@@ -4,7 +4,7 @@ import {
   ParticleEffect,
   BubbleEffect,
   getDirtTypeConfig,
-} from '@/types/dirt';
+} from '@/types';
 
 interface DirtSpotProps {
   spot: DirtSpotType;

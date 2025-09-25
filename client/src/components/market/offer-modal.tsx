@@ -11,7 +11,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { useMarketStore } from '@/store/market-store';
 import { RarityBadge } from '@/components/market/rarity-badge';
-import { mockFishData } from '@/data/market-data';
+import { mockFishData } from '@/constants';
 import { useModal } from '@/hooks';
 
 export function OfferModal() {

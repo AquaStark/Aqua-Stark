@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { DirtSpot, DirtType } from '@/types/dirt';
+import { DirtSpot, DirtType } from '@/constants';
 
 // API base URL - adjust based on your backend configuration
 const API_BASE_URL =

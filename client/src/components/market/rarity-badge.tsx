@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 
 interface RarityBadgeProps {
-  rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
+  rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary' | 'Special';
   className?: string;
 }
 

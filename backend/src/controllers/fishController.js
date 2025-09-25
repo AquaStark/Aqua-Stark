@@ -1,4 +1,5 @@
 import { FishService } from '../services/fishService.js';
+import { loggingMiddleware } from '../middleware/logging.js';
 
 // Fish controller for handling HTTP requests related to fish operations
 export class FishController {
@@ -10,7 +11,14 @@ export class FishController {
 
       res.json({ success: true, data: fishState });
     } catch (error) {
-      console.error('Error in getFishState:', error);
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'getFishState',
+        error,
+        {
+          fishId: req.params?.fishId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -42,7 +50,15 @@ export class FishController {
         message: `Fish happiness updated to ${happinessLevel}`,
       });
     } catch (error) {
-      console.error('Error in updateFishHappiness:', error);
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'updateFishHappiness',
+        error,
+        {
+          fishId: req.params?.fishId,
+          happinessLevel: req.body?.happinessLevel,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -61,7 +77,15 @@ export class FishController {
         message: `Fish fed with ${foodType} food`,
       });
     } catch (error) {
-      console.error('Error in feedFish:', error);
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'feedFish',
+        error,
+        {
+          fishId: req.params?.fishId,
+          foodType: req.body?.foodType,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -79,7 +103,14 @@ export class FishController {
 
       res.json({ success: true, data: stats });
     } catch (error) {
-      console.error('Error in getFishStats:', error);
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'getFishStats',
+        error,
+        {
+          fishId: req.params?.fishId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -101,7 +132,15 @@ export class FishController {
         message: 'Fish breeding will be implemented in a future update',
       });
     } catch (error) {
-      console.error('Error in breedFish:', error);
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'breedFish',
+        error,
+        {
+          parent1Id: req.body?.parent1Id,
+          parent2Id: req.body?.parent2Id,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -121,7 +160,14 @@ export class FishController {
 
       res.json({ success: true, data: fish });
     } catch (error) {
-      console.error('Error in getPlayerFish:', error);
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'getPlayerFish',
+        error,
+        {
+          playerId: req.params?.playerId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -145,7 +191,15 @@ export class FishController {
         message: `Fed ${result.successful.length} fish successfully, ${result.failed.length} failed`,
       });
     } catch (error) {
-      console.error('Error in feedMultipleFish:', error);
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'feedMultipleFish',
+        error,
+        {
+          fishIds: req.body?.fishIds,
+          foodType: req.body?.foodType,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -163,7 +217,14 @@ export class FishController {
         count: filteredFish.length,
       });
     } catch (error) {
-      console.error('Error in filterFish:', error);
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'filterFish',
+        error,
+        {
+          filters: req.query,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -187,7 +248,14 @@ export class FishController {
         count: fishNeedingAttention.length,
       });
     } catch (error) {
-      console.error('Error in getFishNeedingAttention:', error);
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'getFishNeedingAttention',
+        error,
+        {
+          playerId: req.params?.playerId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -209,7 +277,14 @@ export class FishController {
         message: `Fish mood updated to ${updatedFish.mood}`,
       });
     } catch (error) {
-      console.error('Error in updateFishMood:', error);
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'updateFishMood',
+        error,
+        {
+          fishId: req.params?.fishId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -224,7 +299,11 @@ export class FishController {
         data: stats,
       });
     } catch (error) {
-      console.error('Error in getGlobalFishStats:', error);
+      loggingMiddleware.logControllerError(
+        'FishController',
+        'getGlobalFishStats',
+        error
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }

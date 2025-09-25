@@ -1,5 +1,5 @@
 import { Progress } from '@/components/ui/progress';
-import type { FishIndicatorState } from '@/types/fishIndicators';
+import type { FishIndicatorState } from '@/types';
 import { cn } from '@/lib/utils';
 
 interface FishStatusProps {

@@ -9,7 +9,7 @@ import { ListingModal } from '@/components/market/listing-modal';
 import { useMarketStore } from '@/store/market-store';
 import { Button } from '@/components/ui/button';
 import { Search, Filter, X, Plus, Coins } from 'lucide-react';
-import { mockFishData } from '@/data/market-data';
+import { mockFishData } from '@/constants';
 import '@/styles/market.css';
 import { Footer } from '@/components/layout/footer';
 import { PageHeader } from '@/components/layout/page-header';
@@ -75,6 +75,7 @@ export default function MarketPage() {
         Rare: 3,
         Epic: 4,
         Legendary: 5,
+        Special: 6,
       };
       return rarityOrder[b.rarity] - rarityOrder[a.rarity];
     }
