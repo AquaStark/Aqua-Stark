@@ -5,7 +5,43 @@ const GAME_CONTRACT =
 const REWARDS_CONTRACT =
   '0x0000000000000000000000000000000000000000000000000000000000000004';
 
+/**
+ * Custom hook that provides functions to execute in-game actions on the blockchain.
+ *
+ * This hook encapsulates all game-related contract interactions, such as feeding fish,
+ * cleaning the aquarium, collecting rewards, and performing upgrades. Each action
+ * simulates a Starknet transaction by returning a mock transaction hash after a delay.
+ *
+ * @returns {{
+ *   feedFish: (fishId: string) => Promise<GameActionResult>;
+ *   cleanAquarium: () => Promise<GameActionResult>;
+ *   collectRewards: () => Promise<GameActionResult>;
+ *   upgradeAquarium: (upgradeType: string) => Promise<GameActionResult>;
+ *   dailyMaintenance: (fishIds: string[]) => Promise<GameActionResult>;
+ * }} An object containing functions to perform various game actions.
+ *
+ * @example
+ * ```tsx
+ * const { feedFish, cleanAquarium } = useGameActions();
+ *
+ * const handleFeed = async () => {
+ *   const result = await feedFish('fish-001');
+ *   console.log('Transaction hash:', result.hash);
+ * };
+ *
+ * const handleClean = async () => {
+ *   await cleanAquarium();
+ * };
+ * ```
+ */
 export function useGameActions() {
+  /**
+   * Executes a batch of game actions by simulating a blockchain transaction.
+   *
+   * @param {GameActionParams} params - The parameters for the action execution.
+   * @param {Array<{ contractAddress: string; entrypoint: string; calldata: string[] }>} params.calls - Array of contract calls to execute.
+   * @returns {Promise<GameActionResult>} A promise that resolves to the transaction result.
+   */
   const executeAction = async ({
     calls,
   }: GameActionParams): Promise<GameActionResult> => {
@@ -15,6 +51,12 @@ export function useGameActions() {
     return { hash: '0x123...' };
   };
 
+  /**
+   * Feeds a specific fish by executing the corresponding contract call.
+   *
+   * @param {string} fishId - The unique identifier of the fish to feed.
+   * @returns {Promise<GameActionResult>} A promise that resolves to the transaction result.
+   */
   const feedFish = async (fishId: string) => {
     return await executeAction({
       calls: [
@@ -27,6 +69,11 @@ export function useGameActions() {
     });
   };
 
+  /**
+   * Cleans the entire aquarium by executing the corresponding contract call.
+   *
+   * @returns {Promise<GameActionResult>} A promise that resolves to the transaction result.
+   */
   const cleanAquarium = async () => {
     return await executeAction({
       calls: [
@@ -39,6 +86,11 @@ export function useGameActions() {
     });
   };
 
+  /**
+   * Collects available rewards by executing the corresponding contract call.
+   *
+   * @returns {Promise<GameActionResult>} A promise that resolves to the transaction result.
+   */
   const collectRewards = async () => {
     return await executeAction({
       calls: [
@@ -51,6 +103,12 @@ export function useGameActions() {
     });
   };
 
+  /**
+   * Upgrades the aquarium with the specified upgrade type.
+   *
+   * @param {string} upgradeType - The type of upgrade to apply (e.g., 'filter', 'lighting').
+   * @returns {Promise<GameActionResult>} A promise that resolves to the transaction result.
+   */
   const upgradeAquarium = async (upgradeType: string) => {
     return await executeAction({
       calls: [
@@ -63,6 +121,13 @@ export function useGameActions() {
     });
   };
 
+  /**
+   * Performs daily maintenance by combining multiple actions into a single transaction:
+   * cleaning the aquarium, feeding all specified fish, collecting rewards, and claiming daily rewards.
+   *
+   * @param {string[]} fishIds - Array of fish IDs to feed during maintenance.
+   * @returns {Promise<GameActionResult>} A promise that resolves to the transaction result.
+   */
   const dailyMaintenance = async (fishIds: string[]) => {
     const calls = [
       {

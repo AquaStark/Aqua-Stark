@@ -45,10 +45,23 @@ export { useSettings } from './use-settings';
 export { useShopData } from './use-shop-data';
 export { useSimpleWalletConnection } from './use-simple-wallet-connection';
 export { useStoreFilters } from './use-store-filters';
+export { useStoreLoading } from './use-store-loading';
+export { useMinimumLoading } from './use-minimum-loading';
 export { useFishIndicators } from './useFishIndicators';
 export { useGameActions } from './useGameActions';
 export { usePlayerValidation } from './usePlayerValidation';
 export { useLocalStorage } from './use-local-storage';
+
+// Dojo hooks
+
+export { useDecoration } from './dojo/useDecoration';
+export { useFish } from './dojo/useFish';
+export { usePlayer } from './dojo/usePlayer';
+
+// Minigames hooks
+
+export { useGameLogic } from './minigames/floppy-fish/use-game-logic';
+export { useInputHandler } from './minigames/floppy-fish/use-input-handler';
 
 // API hooks
 export { useApi, useApiRequest } from './use-api';

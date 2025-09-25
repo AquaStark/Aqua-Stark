@@ -25,6 +25,8 @@ export const TABLES = {
   MINIGAME_SESSIONS: 'minigame_sessions',
   GAME_ANALYTICS: 'game_analytics',
   STORE_ITEMS: 'store_items',
+  SHOP: 'shop_items',
+  TRANSACTIONS: 'shop_transactions',
 };
 
 // Real-time subscription channels

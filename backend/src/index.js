@@ -16,6 +16,8 @@ import playerRoutes from './routes/playerRoutes.js';
 import decorationRoutes from './routes/decorationRoutes.js';
 import dirtRoutes from './routes/dirtRoutes.js';
 import storeRoutes from './routes/storeRoutes.js';
+import shopRouter from './routes/shopRoutes.js';
+import transactionRouter from './routes/transactionRoutes.js';
 
 // Import WebSocket
 import { GameWebSocket } from './websocket/gameWebSocket.js';
@@ -87,6 +89,8 @@ app.use('/api/v1/players', playerRoutes);
 app.use('/api/v1/decorations', decorationRoutes);
 app.use('/api/v1/dirt', dirtRoutes);
 app.use('/api/v1/store', storeRoutes);
+app.use('/api/v1/shop', shopRouter);
+app.use('/api/transaction/', transactionRouter);
 
 // WebSocket endpoint info
 app.get('/ws', (req, res) => {

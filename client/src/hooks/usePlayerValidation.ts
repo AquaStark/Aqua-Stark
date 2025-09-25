@@ -1,21 +1,67 @@
 import { usePlayer } from './dojo/usePlayer';
-import { ApiClient, API_CONFIG, buildApiUrl } from '@/config/api';
+import { ApiClient, API_CONFIG, buildApiUrl } from '@/constants';
 import { useCallback, useState } from 'react';
 import { BackendPlayerData, OnChainPlayerData } from '@/types';
 import type { ApiResponse, RequestData } from '@/types/api-types';
 
+/**
+ * Represents the result of a player validation check.
+ */
 interface PlayerValidationResult {
+  /** Whether the player exists in either on-chain or backend systems */
   exists: boolean;
+  /** Whether the player exists on-chain */
   isOnChain: boolean;
+  /** Whether the player exists in the backend database */
   isInBackend: boolean;
+  /** On-chain player data if found */
   playerData?: OnChainPlayerData;
+  /** Backend player data if found */
   backendData?: BackendPlayerData;
 }
 
+/**
+ * Custom hook for validating and synchronizing player data across on-chain and backend systems.
+ *
+ * This hook provides functionality to:
+ * - Check if a player exists on-chain (via Starknet contracts)
+ * - Check if a player exists in the backend database
+ * - Create a new backend player record
+ * - Synchronize on-chain player data to the backend
+ *
+ * It's primarily used during player onboarding or authentication flows to ensure
+ * data consistency between blockchain and server-side storage.
+ *
+ * @returns {{
+ *   validatePlayer: (walletAddress: string) => Promise<PlayerValidationResult>;
+ *   createBackendPlayer: (playerId: string, walletAddress: string, username?: string) => Promise<BackendPlayerData>;
+ *   syncPlayerToBackend: (onChainPlayer: OnChainPlayerData, walletAddress: string) => Promise<BackendPlayerData>;
+ *   isValidating: boolean;
+ * }} An object containing validation functions and state.
+ *
+ * @example
+ * ```tsx
+ * const { validatePlayer, syncPlayerToBackend, isValidating } = usePlayerValidation();
+ *
+ * const handlePlayerLogin = async (address: string) => {
+ *   const validation = await validatePlayer(address);
+ *
+ *   if (validation.isOnChain && !validation.isInBackend) {
+ *     await syncPlayerToBackend(validation.playerData!, address);
+ *   }
+ * };
+ * ```
+ */
 export const usePlayerValidation = () => {
   const { getPlayer } = usePlayer();
   const [isValidating, setIsValidating] = useState(false);
 
+  /**
+   * Validates a player by checking both on-chain and backend systems.
+   *
+   * @param {string} walletAddress - The wallet address to validate.
+   * @returns {Promise<PlayerValidationResult>} The validation result containing existence flags and player data.
+   */
   const validatePlayer = useCallback(
     async (walletAddress: string): Promise<PlayerValidationResult> => {
       setIsValidating(true);
@@ -75,6 +121,15 @@ export const usePlayerValidation = () => {
     [getPlayer]
   );
 
+  /**
+   * Creates a new player record in the backend database.
+   *
+   * @param {string} playerId - The unique player identifier (typically from on-chain).
+   * @param {string} walletAddress - The player's wallet address.
+   * @param {string} [username] - Optional username for the player.
+   * @returns {Promise<BackendPlayerData>} The created backend player data.
+   * @throws {Error} If the creation request fails.
+   */
   const createBackendPlayer = useCallback(
     async (playerId: string, walletAddress: string, username?: string) => {
       try {
@@ -99,6 +154,17 @@ export const usePlayerValidation = () => {
     []
   );
 
+  /**
+   * Synchronizes an on-chain player to the backend database.
+   *
+   * If the player exists on-chain but not in the backend, this function
+   * creates a corresponding backend record using the on-chain data.
+   *
+   * @param {OnChainPlayerData} onChainPlayer - The on-chain player data to sync.
+   * @param {string} walletAddress - The player's wallet address.
+   * @returns {Promise<BackendPlayerData>} The created backend player data.
+   * @throws {Error} If the synchronization fails.
+   */
   const syncPlayerToBackend = useCallback(
     async (onChainPlayer: OnChainPlayerData, walletAddress: string) => {
       try {

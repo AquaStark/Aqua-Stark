@@ -1,5 +1,17 @@
+/**
+ * @file use-dirt-system.ts
+ * @description Custom hook for a dirt simulation system. It manages the spawning,
+ * removal, and state of dirt spots in an aquarium-like environment.
+ * @category Hooks
+ */
+
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { DirtSpot, DirtType, DirtSystemConfig, DirtSystemState } from '@/types';
+import {
+  DirtSpot,
+  DirtType,
+  DirtSystemConfig,
+  DirtSystemState,
+} from '@/constants';
 
 const DEFAULT_CONFIG: DirtSystemConfig = {
   spawnInterval: 5000, // 5 seconds
@@ -14,6 +26,28 @@ const DEFAULT_CONFIG: DirtSystemConfig = {
   spawnChance: 0.7,
 };
 
+/**
+ * @function useDirtSystem
+ * @description
+ * Custom hook that manages the state and logic for a dirt simulation system.
+ * It handles the spawning of new dirt spots, cleaning of existing ones, and
+ * keeps track of key metrics like cleanliness score.
+ *
+ * @param {Partial<DirtSystemConfig>} config - Optional configuration to override the default settings.
+ * @returns {{
+ * spots: DirtSpot[],
+ * isSpawnerActive: boolean,
+ * totalSpotsCreated: number,
+ * totalSpotsRemoved: number,
+ * cleanlinessScore: number,
+ * removeDirtSpot: (spotId: number) => void,
+ * forceSpawnSpot: () => boolean,
+ * toggleSpawner: () => void,
+ * clearAllSpots: () => void,
+ * updateAquariumBounds: (bounds: object) => void,
+ * config: DirtSystemConfig
+ * }} An object containing the current state and action functions.
+ */
 export function useDirtSystem(config: Partial<DirtSystemConfig> = {}) {
   const finalConfig = { ...DEFAULT_CONFIG, ...config };
   const [state, setState] = useState<DirtSystemState>({
@@ -40,7 +74,16 @@ export function useDirtSystem(config: Partial<DirtSystemConfig> = {}) {
   const intervalRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const nextIdRef = useRef(1);
 
-  // Check if position conflicts with existing spots
+  /**
+   * @function isValidPosition
+   * @description
+   * Checks if a new position is valid by ensuring it's not too close to any
+   * existing dirt spots based on the `minSpotDistance` configuration.
+   *
+   * @param {{ x: number; y: number }} newPos - The candidate position for the new spot.
+   * @param {DirtSpot[]} spots - The array of existing dirt spots.
+   * @returns {boolean} `true` if the position is valid, `false` otherwise.
+   */
   const isValidPosition = useCallback(
     (newPos: { x: number; y: number }, spots: DirtSpot[]): boolean => {
       const { minSpotDistance } = finalConfig;
@@ -55,7 +98,14 @@ export function useDirtSystem(config: Partial<DirtSystemConfig> = {}) {
     [finalConfig.minSpotDistance]
   );
 
-  // Generate random position within aquarium bounds
+  /**
+   * @function generateRandomPosition
+   * @description
+   * Generates a random position within the aquarium's defined bounds,
+   * with a small padding to prevent spots from appearing at the edges.
+   *
+   * @returns {{ x: number; y: number }} An object with the randomly generated x and y coordinates.
+   */
   const generateRandomPosition = useCallback((): { x: number; y: number } => {
     const { aquariumBounds } = finalConfig;
     const padding = 30; // Keep spots away from edges
@@ -70,7 +120,18 @@ export function useDirtSystem(config: Partial<DirtSystemConfig> = {}) {
         aquariumBounds.y +
         padding,
     };
-  }, [finalConfig.aquariumBounds]); // Create a new dirt spot
+  }, [finalConfig.aquariumBounds]);
+
+  /**
+   * @function createDirtSpot
+   * @description
+   * Attempts to create a new dirt spot if the conditions are met (e.g., maximum
+   * number of spots not reached, passing the `spawnChance` check). It handles
+   * finding a valid position for the new spot.
+   *
+   * @param {DirtSpot[]} currentSpots - The current array of dirt spots.
+   * @returns {DirtSpot | null} The new dirt spot object, or `null` if a spot could not be created.
+   */
   const createDirtSpot = useCallback(
     (currentSpots: DirtSpot[]): DirtSpot | null => {
       const { maxSpots, spawnChance } = finalConfig;
@@ -105,7 +166,14 @@ export function useDirtSystem(config: Partial<DirtSystemConfig> = {}) {
     [finalConfig, generateRandomPosition, isValidPosition]
   );
 
-  // Force spawn (for debug)
+  /**
+   * @function forceSpawnSpot
+   * @description
+   * Manually triggers the creation of a single dirt spot, bypassing the
+   * regular spawn interval. Useful for debugging or testing purposes.
+   *
+   * @returns {boolean} `true` if a new spot was spawned, `false` otherwise.
+   */
   const forceSpawnSpot = useCallback(() => {
     let spawned = false;
     setState((prev: DirtSystemState) => {
@@ -126,7 +194,15 @@ export function useDirtSystem(config: Partial<DirtSystemConfig> = {}) {
     });
     return spawned;
   }, [createDirtSpot, finalConfig.maxSpots]);
-  // Remove dirt spot
+
+  /**
+   * @function removeDirtSpot
+   * @description
+   * Removes a specific dirt spot by its ID and updates the cleanliness score
+   * based on the `maxSpots` configuration.
+   *
+   * @param {number} spotId - The ID of the dirt spot to remove.
+   */
   const removeDirtSpot = useCallback(
     (spotId: number) => {
       setState((prev: DirtSystemState) => {
@@ -148,14 +224,24 @@ export function useDirtSystem(config: Partial<DirtSystemConfig> = {}) {
     },
     [finalConfig.maxSpots]
   );
-  // Toggle spawner
+
+  /**
+   * @function toggleSpawner
+   * @description
+   * Toggles the active state of the dirt spot spawner.
+   */
   const toggleSpawner = useCallback(() => {
     setState((prev: DirtSystemState) => ({
       ...prev,
       isSpawnerActive: !prev.isSpawnerActive,
     }));
   }, []);
-  // Clear all spots
+
+  /**
+   * @function clearAllSpots
+   * @description
+   * Removes all dirt spots from the system and resets the cleanliness score to 100.
+   */
   const clearAllSpots = useCallback(() => {
     setState((prev: DirtSystemState) => ({
       ...prev,
@@ -163,7 +249,15 @@ export function useDirtSystem(config: Partial<DirtSystemConfig> = {}) {
       totalSpotsRemoved: prev.totalSpotsRemoved + prev.spots.length,
       cleanlinessScore: 100,
     }));
-  }, []); // Setup spawn interval
+  }, []);
+
+  /**
+   * @function useEffect
+   * @description
+   * Manages the spawning interval. It sets up `setInterval` to create
+   * new dirt spots at the configured rate when the spawner is active, and
+   * clears the interval when the spawner is not.
+   */
   useEffect(() => {
     if (state.isSpawnerActive) {
       intervalRef.current = setInterval(() => {
@@ -202,7 +296,14 @@ export function useDirtSystem(config: Partial<DirtSystemConfig> = {}) {
     finalConfig.maxSpots,
   ]);
 
-  // Update aquarium bounds
+  /**
+   * @function updateAquariumBounds
+   * @description
+   * Updates the boundaries of the aquarium. This function uses `Object.assign`
+   * to directly modify the `finalConfig` object's `aquariumBounds` property.
+   *
+   * @param {DirtSystemConfig['aquariumBounds']} bounds - The new bounds to apply.
+   */
   const updateAquariumBounds = useCallback(
     (bounds: DirtSystemConfig['aquariumBounds']) => {
       // Update the config without triggering a re-render cycle

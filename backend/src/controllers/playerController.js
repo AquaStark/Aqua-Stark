@@ -1,4 +1,5 @@
 import { PlayerService } from '../services/playerService.js';
+import { loggingMiddleware } from '../middleware/logging.js';
 
 // Player controller for handling HTTP requests related to player operations
 export class PlayerController {
@@ -10,7 +11,14 @@ export class PlayerController {
 
       res.json({ success: true, data: playerProfile });
     } catch (error) {
-      console.error('Error in getPlayerProfile:', error);
+      loggingMiddleware.logControllerError(
+        'PlayerController',
+        'getPlayerProfile',
+        error,
+        {
+          playerId: req.params?.playerId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -28,7 +36,14 @@ export class PlayerController {
 
       res.json({ success: true, data: player });
     } catch (error) {
-      console.error('Error in getPlayerByWallet:', error);
+      loggingMiddleware.logControllerError(
+        'PlayerController',
+        'getPlayerByWallet',
+        error,
+        {
+          walletAddress: req.params?.walletAddress,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -50,7 +65,15 @@ export class PlayerController {
         message: 'Player created successfully',
       });
     } catch (error) {
-      console.error('Error in createPlayer:', error);
+      loggingMiddleware.logControllerError(
+        'PlayerController',
+        'createPlayer',
+        error,
+        {
+          playerId: req.body?.playerId,
+          walletAddress: req.body?.walletAddress,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -78,7 +101,15 @@ export class PlayerController {
         message: `Experience updated: +${experienceGained} XP`,
       });
     } catch (error) {
-      console.error('Error in updatePlayerExperience:', error);
+      loggingMiddleware.logControllerError(
+        'PlayerController',
+        'updatePlayerExperience',
+        error,
+        {
+          playerId: req.params?.playerId,
+          experienceGained: req.body?.experienceGained,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -106,7 +137,15 @@ export class PlayerController {
         message: `Currency updated: ${currencyChange > 0 ? '+' : ''}${currencyChange}`,
       });
     } catch (error) {
-      console.error('Error in updatePlayerCurrency:', error);
+      loggingMiddleware.logControllerError(
+        'PlayerController',
+        'updatePlayerCurrency',
+        error,
+        {
+          playerId: req.params?.playerId,
+          currencyChange: req.body?.currencyChange,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -134,7 +173,15 @@ export class PlayerController {
         message: 'Player statistics updated successfully',
       });
     } catch (error) {
-      console.error('Error in updatePlayerStats:', error);
+      loggingMiddleware.logControllerError(
+        'PlayerController',
+        'updatePlayerStats',
+        error,
+        {
+          playerId: req.params?.playerId,
+          statsUpdate: req.body,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -158,7 +205,14 @@ export class PlayerController {
         message: 'Last login updated successfully',
       });
     } catch (error) {
-      console.error('Error in updateLastLogin:', error);
+      loggingMiddleware.logControllerError(
+        'PlayerController',
+        'updateLastLogin',
+        error,
+        {
+          playerId: req.params?.playerId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -182,7 +236,14 @@ export class PlayerController {
 
       res.json({ success: true, data: preferences });
     } catch (error) {
-      console.error('Error in getPlayerPreferences:', error);
+      loggingMiddleware.logControllerError(
+        'PlayerController',
+        'getPlayerPreferences',
+        error,
+        {
+          playerId: req.params?.playerId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -210,7 +271,15 @@ export class PlayerController {
         message: 'Player preferences updated successfully',
       });
     } catch (error) {
-      console.error('Error in updatePlayerPreferences:', error);
+      loggingMiddleware.logControllerError(
+        'PlayerController',
+        'updatePlayerPreferences',
+        error,
+        {
+          playerId: req.params?.playerId,
+          preferences: req.body,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
@@ -243,7 +312,14 @@ export class PlayerController {
 
       res.json({ success: true, data: dashboardData });
     } catch (error) {
-      console.error('Error in getPlayerDashboard:', error);
+      loggingMiddleware.logControllerError(
+        'PlayerController',
+        'getPlayerDashboard',
+        error,
+        {
+          playerId: req.params?.playerId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }

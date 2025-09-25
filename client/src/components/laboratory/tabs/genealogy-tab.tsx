@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { fishCollection } from '@/data/fish-data';
+import { fishCollection } from '@/constants';
 
 export function GenealogyTab() {
   return (

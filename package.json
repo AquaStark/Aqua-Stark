@@ -21,6 +21,9 @@
   "pnpm": {
     "overrides": {
       "starknet": "6.23.1"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "supabase"
+    ]
   }
 }

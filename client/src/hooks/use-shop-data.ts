@@ -7,7 +7,7 @@ import {
   bundles,
   decorationBundles,
 } from '@/data/mock-store';
-import { foodData, specialFoodBundles } from '@/data/market-data';
+import { foodData, specialFoodBundles } from '@/constants';
 import { ItemType } from '@/data/mock-game';
 import {
   ShopItem,
@@ -16,17 +16,232 @@ import {
   ShopFilters,
 } from '@/types/shop-types';
 
-// Cache interface for shop data
+/**
+ * Cache interface for shop data with expiration management
+ */
 interface ShopCache {
+  /** Cached shop items array */
   items: ShopItem[];
+  /** Cached shop bundles array */
   bundles: ShopBundle[];
+  /** Timestamp when cache was last updated */
   lastUpdated: number;
-  expiresIn: number; // milliseconds
+  /** Cache expiration duration in milliseconds */
+  expiresIn: number;
 }
 
 /**
- * Unified hook for managing shop data, transactions, and caching
- * Centralizes all shop-related logic to avoid duplication across components
+ * Unified hook for managing shop data, transactions, and caching.
+ *
+ * This hook centralizes all shop-related logic to avoid duplication across components.
+ * It provides comprehensive functionality for browsing items, managing cart operations,
+ * processing transactions, and caching data for improved performance.
+ *
+ * Features:
+ * - Shop item and bundle retrieval by category
+ * - Advanced filtering and sorting capabilities
+ * - Buy/sell transaction processing
+ * - Cart management integration
+ * - Data caching with automatic expiration
+ * - Comprehensive error handling
+ * - Loading state management
+ * - Cart summary calculations
+ *
+ * @returns Object containing shop data methods, transaction functions, and state management
+ *
+ * @example
+ * Basic shop data retrieval:
+ * ```tsx
+ * const {
+ *   getShopItems,
+ *   getShopBundles,
+ *   filterShopItems,
+ *   isLoading,
+ *   error
+ * } = useShopData();
+ *
+ * // Get fish items
+ * const fishItems = getShopItems('fish');
+ *
+ * // Get decoration bundles
+ * const decoBundle = getShopBundles('decorations');
+ *
+ * // Filter items by search and price
+ * const filteredItems = filterShopItems(fishItems, {
+ *   searchQuery: 'goldfish',
+ *   priceRange: [0, 100],
+ *   categories: ['Fish'],
+ *   onSale: false,
+ *   sort: 'price'
+ * });
+ * ```
+ *
+ * @example
+ * Transaction processing:
+ * ```tsx
+ * const { buyItem, sellItem, processCartCheckout } = useShopData();
+ *
+ * // Buy single item
+ * const handleBuyFish = async (fish: ShopItem) => {
+ *   const result = await buyItem(fish, 1);
+ *   if (result.success) {
+ *     console.log('Purchase successful:', result.message);
+ *   } else {
+ *     console.error('Purchase failed:', result.error);
+ *   }
+ * };
+ *
+ * // Buy multiple items
+ * const handleBuyBulk = async (item: ShopItem, quantity: number) => {
+ *   const result = await buyItem(item, quantity);
+ *   if (result.success) {
+ *     console.log('Bulk purchase completed:', result.transactionId);
+ *   }
+ * };
+ *
+ * // Sell item back
+ * const handleSellItem = async (item: ShopItem) => {
+ *   const result = await sellItem(item, 1);
+ *   if (result.success) {
+ *     console.log('Item sold:', result.message);
+ *   }
+ * };
+ *
+ * // Process cart checkout
+ * const handleCheckout = async () => {
+ *   const result = await processCartCheckout();
+ *   if (result.success) {
+ *     console.log('Checkout completed:', result.transactionId);
+ *   }
+ * };
+ * ```
+ *
+ * @example
+ * Cart management and summary:
+ * ```tsx
+ * const {
+ *   cartSummary,
+ *   removeItem,
+ *   updateQuantity,
+ *   clearCart
+ * } = useShopData();
+ *
+ * // Display cart summary
+ * const CartSummary = () => (
+ *   <div className="cart-summary">
+ *     <h3>Cart Summary</h3>
+ *     <p>Items: {cartSummary.itemCount}</p>
+ *     <p>Subtotal: {cartSummary.subtotal} coins</p>
+ *     <p>Transaction Fee: {cartSummary.fee} coins</p>
+ *     <p><strong>Total: {cartSummary.total} coins</strong></p>
+ *     <button onClick={clearCart}>Clear Cart</button>
+ *   </div>
+ * );
+ *
+ * // Update item quantity in cart
+ * const handleQuantityChange = (itemId: string, newQuantity: number) => {
+ *   updateQuantity(itemId, newQuantity);
+ * };
+ *
+ * // Remove item from cart
+ * const handleRemoveItem = (itemId: string) => {
+ *   removeItem(itemId);
+ * };
+ * ```
+ *
+ * @example
+ * Advanced filtering and search:
+ * ```tsx
+ * const { getShopItems, filterShopItems } = useShopData();
+ *
+ * const ShopFilter = () => {
+ *   const [filters, setFilters] = useState<ShopFilters>({
+ *     searchQuery: '',
+ *     priceRange: [0, 1000],
+ *     categories: [],
+ *     onSale: false,
+ *     sort: 'name'
+ *   });
+ *
+ *   const allItems = [
+ *     ...getShopItems('fish'),
+ *     ...getShopItems('food'),
+ *     ...getShopItems('decorations'),
+ *     ...getShopItems('others')
+ *   ];
+ *
+ *   const filteredItems = filterShopItems(allItems, filters);
+ *
+ *   return (
+ *     <div>
+ *       <input
+ *         type="text"
+ *         placeholder="Search items..."
+ *         value={filters.searchQuery}
+ *         onChange={(e) => setFilters({
+ *           ...filters,
+ *           searchQuery: e.target.value
+ *         })}
+ *       />
+ *
+ *       <select
+ *         value={filters.sort}
+ *         onChange={(e) => setFilters({
+ *           ...filters,
+ *           sort: e.target.value as ShopFilters['sort']
+ *         })}
+ *       >
+ *         <option value="name">Name</option>
+ *         <option value="price">Price</option>
+ *         <option value="rating">Rating</option>
+ *         <option value="newest">Newest</option>
+ *         <option value="popularity">Popularity</option>
+ *       </select>
+ *
+ *       <div className="items-grid">
+ *         {filteredItems.map(item => (
+ *           <ItemCard key={item.id} item={item} />
+ *         ))}
+ *       </div>
+ *     </div>
+ *   );
+ * };
+ * ```
+ *
+ * @example
+ * Caching and performance optimization:
+ * ```tsx
+ * const { getCachedShopData, clearCache } = useShopData();
+ *
+ * const ShopPage = ({ category }: { category: ItemType }) => {
+ *   const [shopData, setShopData] = useState<{
+ *     items: ShopItem[];
+ *     bundles: ShopBundle[];
+ *   } | null>(null);
+ *
+ *   useEffect(() => {
+ *     // Get cached data or fetch fresh data
+ *     const data = getCachedShopData(category);
+ *     setShopData(data);
+ *   }, [category]);
+ *
+ *   const handleRefresh = () => {
+ *     clearCache(); // Clear cache to force fresh data
+ *     const freshData = getCachedShopData(category);
+ *     setShopData(freshData);
+ *   };
+ *
+ *   if (!shopData) return <LoadingSpinner />;
+ *
+ *   return (
+ *     <div>
+ *       <button onClick={handleRefresh}>Refresh Data</button>
+ *       <ItemGrid items={shopData.items} />
+ *       <BundleGrid bundles={shopData.bundles} />
+ *     </div>
+ *   );
+ * };
+ * ```
  */
 export function useShopData() {
   const {
@@ -47,9 +262,19 @@ export function useShopData() {
   const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
   /**
-   * Get all shop items by category
-   * @param category - The item category to filter by
+   * Get all shop items by category.
+   * Transforms raw data from different sources into standardized ShopItem format.
+   *
+   * @param category - The item category to filter by (fish, food, decorations, others)
    * @returns Array of shop items for the specified category
+   *
+   * @example
+   * ```tsx
+   * const fishItems = getShopItems('fish');
+   * const foodItems = getShopItems('food');
+   * const decorationItems = getShopItems('decorations');
+   * const miscItems = getShopItems('others');
+   * ```
    */
   const getShopItems = useCallback((category: ItemType): ShopItem[] => {
     switch (category) {
@@ -131,9 +356,18 @@ export function useShopData() {
   }, []);
 
   /**
-   * Get all shop bundles by category
-   * @param category - The bundle category to filter by
+   * Get all shop bundles by category.
+   * Transforms bundle data from different sources into standardized ShopBundle format.
+   *
+   * @param category - The bundle category to filter by (decorations, food, others)
    * @returns Array of shop bundles for the specified category
+   *
+   * @example
+   * ```tsx
+   * const decorationBundles = getShopBundles('decorations');
+   * const foodBundles = getShopBundles('food');
+   * const miscBundles = getShopBundles('others');
+   * ```
    */
   const getShopBundles = useCallback((category: ItemType): ShopBundle[] => {
     switch (category) {
@@ -185,10 +419,23 @@ export function useShopData() {
   }, []);
 
   /**
-   * Filter shop items based on provided filters
+   * Filter shop items based on provided filter criteria.
+   * Supports search, price range, category, sale status, and sorting options.
+   *
    * @param items - Array of shop items to filter
-   * @param filters - Filter criteria
-   * @returns Filtered array of shop items
+   * @param filters - Filter criteria object containing search, price, category, sale, and sort options
+   * @returns Filtered and sorted array of shop items
+   *
+   * @example
+   * ```tsx
+   * const filteredItems = filterShopItems(allItems, {
+   *   searchQuery: 'goldfish',
+   *   priceRange: [10, 100],
+   *   categories: ['Fish', 'Food'],
+   *   onSale: true,
+   *   sort: 'price'
+   * });
+   * ```
    */
   const filterShopItems = useCallback(
     (items: ShopItem[], filters: ShopFilters): ShopItem[] => {
@@ -254,10 +501,24 @@ export function useShopData() {
   );
 
   /**
-   * Buy an item and add it to cart
-   * @param item - The item to buy
-   * @param quantity - Quantity to buy (default: 1)
-   * @returns Transaction result
+   * Buy an item and add it to the shopping cart.
+   * Validates stock availability and item price before processing.
+   *
+   * @param item - The shop item to purchase
+   * @param quantity - Number of items to buy (defaults to 1)
+   * @returns Promise resolving to transaction result with success/failure status
+   *
+   * @example
+   * ```tsx
+   * const handlePurchase = async (item: ShopItem) => {
+   *   const result = await buyItem(item, 2);
+   *   if (result.success) {
+   *     showSuccessMessage(result.message);
+   *   } else {
+   *     showErrorMessage(result.error);
+   *   }
+   * };
+   * ```
    */
   const buyItem = useCallback(
     async (
@@ -313,10 +574,24 @@ export function useShopData() {
   );
 
   /**
-   * Sell an item (remove from inventory and add coins)
-   * @param item - The item to sell
-   * @param quantity - Quantity to sell (default: 1)
-   * @returns Transaction result
+   * Sell an item back to the shop for coins.
+   * Calculates sell price as 70% of the original buy price.
+   * In a full implementation, this would remove items from inventory and add coins.
+   *
+   * @param item - The shop item to sell
+   * @param quantity - Number of items to sell (defaults to 1)
+   * @returns Promise resolving to transaction result with success/failure status
+   *
+   * @example
+   * ```tsx
+   * const handleSell = async (item: ShopItem) => {
+   *   const result = await sellItem(item, 1);
+   *   if (result.success) {
+   *     updatePlayerCoins(sellPrice);
+   *     removeFromInventory(item.id);
+   *   }
+   * };
+   * ```
    */
   const sellItem = useCallback(
     async (
@@ -366,8 +641,24 @@ export function useShopData() {
   );
 
   /**
-   * Process checkout for all items in cart
-   * @returns Transaction result
+   * Process checkout for all items currently in the shopping cart.
+   * Calculates total cost including transaction fees and processes payment.
+   * In a full implementation, this would integrate with blockchain transactions.
+   *
+   * @returns Promise resolving to transaction result with success/failure status
+   *
+   * @example
+   * ```tsx
+   * const handleCheckout = async () => {
+   *   const result = await processCartCheckout();
+   *   if (result.success) {
+   *     navigateToSuccess();
+   *     clearCart();
+   *   } else {
+   *     showCheckoutError(result.error);
+   *   }
+   * };
+   * ```
    */
   const processCartCheckout =
     useCallback(async (): Promise<TransactionResult> => {
@@ -420,9 +711,18 @@ export function useShopData() {
     }, [cartItems, processCheckout]);
 
   /**
-   * Get cached shop data or fetch fresh data
-   * @param category - The category to get data for
-   * @returns Cached or fresh shop data
+   * Get cached shop data or fetch fresh data if cache is expired.
+   * Implements automatic cache management with 5-minute expiration.
+   *
+   * @param category - The item category to get data for
+   * @returns Object containing cached or fresh shop items and bundles
+   *
+   * @example
+   * ```tsx
+   * const { items, bundles } = getCachedShopData('fish');
+   * // Data will be served from cache if still valid,
+   * // otherwise fresh data will be fetched and cached
+   * ```
    */
   const getCachedShopData = useCallback(
     (category: ItemType) => {
@@ -454,14 +754,25 @@ export function useShopData() {
   );
 
   /**
-   * Clear shop data cache
+   * Clear the shop data cache to force fresh data retrieval on next request.
+   * Useful when data needs to be refreshed manually or after certain operations.
+   *
+   * @example
+   * ```tsx
+   * const handleRefreshShop = () => {
+   *   clearCache();
+   *   // Next call to getCachedShopData will fetch fresh data
+   * };
+   * ```
    */
   const clearCache = useCallback(() => {
     setShopCache(null);
   }, []);
 
   /**
-   * Get cart summary information
+   * Calculate and return comprehensive cart summary information.
+   * Includes subtotal, transaction fees, total cost, item count, and item details.
+   * Updates automatically when cart contents change.
    */
   const cartSummary = useMemo(() => {
     const subtotal = cartItems.reduce(

@@ -11,3 +11,4 @@ export {
   validateFishIds,
   validateOwnership as validateResourceOwnership,
 } from './validation.js';
+export { LoggingMiddleware, loggingMiddleware } from './logging.js';

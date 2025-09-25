@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { ENV_CONFIG } from '@/config/environment';
+import { ENV_CONFIG } from '@/constants';
 
 /**
  * @file use-api.ts
@@ -22,29 +22,63 @@ import { ENV_CONFIG } from '@/config/environment';
 
 // Types for API configuration
 export interface ApiConfig {
+  /**
+   * The base URL for the API.
+   * @example 'https://api.example.com/v1'
+   */
   baseURL?: string;
+  /**
+   * The request timeout in milliseconds.
+   * @default 10000
+   */
   timeout?: number;
+  /**
+   * The number of retries for failed requests.
+   * @default 3
+   */
   retries?: number;
+  /**
+   * The delay between retries in milliseconds.
+   * @default 1000
+   */
   retryDelay?: number;
+  /**
+   * The time-to-live (TTL) for cached responses in milliseconds.
+   * @default 300000 (5 minutes)
+   */
   cacheTTL?: number;
+  /**
+   * Default headers to be included in every request.
+   * @example { 'Authorization': 'Bearer token' }
+   */
   headers?: Record<string, string>;
 }
 
 // Types for API response
 export interface ApiResponse<T = any> {
+  /** The response data, parsed as JSON or text. */
   data: T;
+  /** The HTTP status code of the response. */
   status: number;
+  /** The HTTP status text of the response. */
   statusText: string;
+  /** All headers from the response. */
   headers: Record<string, string>;
+  /** Indicates if the request was successful (status code 2xx). */
   success: boolean;
+  /** An error message if the request failed. */
   error?: string;
 }
 
 // Types for API error
 export interface ApiError {
+  /** The error message. */
   message: string;
+  /** The HTTP status code (if available). */
   status?: number;
+  /** An error code or name (e.g., 'AbortError'). */
   code?: string;
+  /** Additional details about the error. */
   details?: any;
 }
 
@@ -57,12 +91,22 @@ interface CacheEntry<T> {
 
 // Types for request options
 export interface RequestOptions {
+  /** The HTTP method. */
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  /** The URL path. */
   url: string;
+  /** The data to be sent with the request (body for POST/PUT, params for GET). */
   data?: any;
+  /** Headers specific to this request. */
   headers?: Record<string, string>;
+  /**
+   * Indicates whether the response should be cached.
+   * @default false for POST/PUT/DELETE, true for GET.
+   */
   cache?: boolean;
+  /** The request timeout in milliseconds. Overrides global config. */
   timeout?: number;
+  /** The number of retries for this request. Overrides global config. */
   retries?: number;
 }
 
@@ -79,9 +123,40 @@ const DEFAULT_CONFIG: Required<ApiConfig> = {
 };
 
 /**
- * Unified API hook for handling HTTP requests
- * @param config - API configuration options
- * @returns Object with API methods and state
+ * A unified hook for handling API calls with a focus on simplicity, error handling,
+ * caching, and state management.
+ *
+ * @param config - Optional configuration to override default API settings.
+ * @returns An object containing HTTP methods and state properties.
+ *
+ * @example
+ * ```tsx
+ * import { useApi } from '@/hooks/use-api';
+ *
+ * function MyComponent() {
+ * const { get, post, loading, error, clearError } = useApi();
+ *
+ * const fetchData = async () => {
+ * try {
+ * const response = await get('/users/123');
+ * console.log('User data:', response.data);
+ * } catch (err) {
+ * console.error('Failed to fetch user:', err);
+ * }
+ * };
+ *
+ * const createPost = async () => {
+ * try {
+ * const response = await post('/posts', { title: 'New Post' });
+ * console.log('Post created:', response.data);
+ * } catch (err) {
+ * console.error('Failed to create post:', err);
+ * }
+ * };
+ *
+ * // JSX rendering...
+ * }
+ * ```
  */
 export function useApi(config: ApiConfig = {}) {
   // Merge user config with defaults
@@ -98,7 +173,8 @@ export function useApi(config: ApiConfig = {}) {
   const abortControllerRef = useRef<AbortController | null>(null);
 
   /**
-   * Clear cache entries that have expired
+   * Clears cache entries that have expired.
+   * @private
    */
   const clearExpiredCache = useCallback(() => {
     const now = Date.now();
@@ -112,7 +188,10 @@ export function useApi(config: ApiConfig = {}) {
   }, []);
 
   /**
-   * Generate cache key from request options
+   * Generates a unique cache key from request options.
+   * @private
+   * @param options - The request options.
+   * @returns The generated cache key.
    */
   const getCacheKey = useCallback((options: RequestOptions): string => {
     return `${options.method}:${options.url}:${JSON.stringify(
@@ -121,7 +200,10 @@ export function useApi(config: ApiConfig = {}) {
   }, []);
 
   /**
-   * Get cached response if available and valid
+   * Retrieves a cached response if available and valid.
+   * @private
+   * @param options - The request options.
+   * @returns The cached data or `null` if not found or expired.
    */
   const getCachedResponse = useCallback(
     <T>(options: RequestOptions): T | null => {
@@ -141,7 +223,10 @@ export function useApi(config: ApiConfig = {}) {
   );
 
   /**
-   * Store response in cache
+   * Stores a successful response in the cache.
+   * @private
+   * @param options - The request options.
+   * @param data - The data to cache.
    */
   const setCachedResponse = useCallback(
     <T>(options: RequestOptions, data: T): void => {
@@ -158,7 +243,10 @@ export function useApi(config: ApiConfig = {}) {
   );
 
   /**
-   * Validate response data
+   * Validates the response data for common error patterns.
+   * @private
+   * @param data - The data to validate.
+   * @returns `true` if the data is valid, `false` otherwise.
    */
   const validateResponse = useCallback((data: any): boolean => {
     // Basic validation - can be extended based on needs
@@ -175,7 +263,12 @@ export function useApi(config: ApiConfig = {}) {
   }, []);
 
   /**
-   * Make HTTP request with retry logic
+   * Internal function to make the HTTP request with retry logic.
+   * @private
+   * @param options - The request options.
+   * @param attempt - The current retry attempt.
+   * @returns A promise that resolves with the API response.
+   * @throws {ApiError} Throws an ApiError object on failure.
    */
   const makeRequest = useCallback(
     async <T>(
@@ -298,7 +391,20 @@ export function useApi(config: ApiConfig = {}) {
   );
 
   /**
-   * GET request
+   * Performs an HTTP GET request.
+   *
+   * @template T The expected type of the response data.
+   * @param url - The URL path to fetch from.
+   * @param params - Optional query parameters.
+   * @param options - Optional request options to override global config.
+   * @returns A promise that resolves with the API response.
+   * @throws {ApiError} Throws an ApiError object on failure.
+   *
+   * @example
+   * ```ts
+   * const response = await get<User[]>('/users');
+   * console.log(response.data); // Array of users
+   * ```
    */
   const get = useCallback(
     async <T>(
@@ -332,7 +438,20 @@ export function useApi(config: ApiConfig = {}) {
   );
 
   /**
-   * POST request
+   * Performs an HTTP POST request.
+   *
+   * @template T The expected type of the response data.
+   * @param url - The URL path to post to.
+   * @param data - The data to be sent in the request body.
+   * @param options - Optional request options.
+   * @returns A promise that resolves with the API response.
+   * @throws {ApiError} Throws an ApiError object on failure.
+   *
+   * @example
+   * ```ts
+   * const response = await post<Product>('/products', { name: 'New Item' });
+   * console.log(response.data); // The created product object
+   * ```
    */
   const post = useCallback(
     async <T>(
@@ -366,7 +485,20 @@ export function useApi(config: ApiConfig = {}) {
   );
 
   /**
-   * PUT request
+   * Performs an HTTP PUT request.
+   *
+   * @template T The expected type of the response data.
+   * @param url - The URL path to put to.
+   * @param data - The data to be sent in the request body.
+   * @param options - Optional request options.
+   * @returns A promise that resolves with the API response.
+   * @throws {ApiError} Throws an ApiError object on failure.
+   *
+   * @example
+   * ```ts
+   * const response = await put<User>('/users/123', { name: 'Jane Doe' });
+   * console.log(response.data); // The updated user object
+   * ```
    */
   const put = useCallback(
     async <T>(
@@ -400,7 +532,19 @@ export function useApi(config: ApiConfig = {}) {
   );
 
   /**
-   * DELETE request
+   * Performs an HTTP DELETE request.
+   *
+   * @template T The expected type of the response data.
+   * @param url - The URL path to delete from.
+   * @param options - Optional request options.
+   * @returns A promise that resolves with the API response.
+   * @throws {ApiError} Throws an ApiError object on failure.
+   *
+   * @example
+   * ```ts
+   * const response = await del<void>('/posts/456');
+   * console.log(response.status); // 204 (No Content)
+   * ```
    */
   const del = useCallback(
     async <T>(
@@ -432,14 +576,16 @@ export function useApi(config: ApiConfig = {}) {
   );
 
   /**
-   * Clear all cached data
+   * Clears all cached data from memory.
+   * @returns {void}
    */
   const clearCache = useCallback(() => {
     cacheRef.current.clear();
   }, []);
 
   /**
-   * Cancel ongoing request
+   * Cancels any ongoing API request.
+   * @returns {void}
    */
   const cancelRequest = useCallback(() => {
     if (abortControllerRef.current) {
@@ -449,7 +595,8 @@ export function useApi(config: ApiConfig = {}) {
   }, []);
 
   /**
-   * Clear error state
+   * Clears the current error state.
+   * @returns {void}
    */
   const clearError = useCallback(() => {
     setError(null);
@@ -481,13 +628,56 @@ export function useApi(config: ApiConfig = {}) {
 }
 
 /**
- * Hook for making a single API request
- * @param options - Request options
- * @returns Object with request function and state
+ * A specialized hook for making a single, one-off API request.
+ * It simplifies the API call pattern for components that only need to fetch
+ * data once, such as on component mount.
+ *
+ * @template T The expected type of the response data.
+ * @param options - The full request options for the API call.
+ * @returns An object containing the request function, loading state, and error state.
+ *
+ * @example
+ * ```tsx
+ * import { useApiRequest } from '@/hooks/use-api';
+ * import { useEffect } from 'react';
+ *
+ * function PostComponent({ postId }) {
+ * const { makeRequest, loading, error } = useApiRequest({
+ * method: 'GET',
+ * url: `/posts/${postId}`,
+ * });
+ *
+ * useEffect(() => {
+ * const fetchPost = async () => {
+ * try {
+ * const response = await makeRequest();
+ * console.log('Post data:', response.data);
+ * } catch (err) {
+ * console.error('Failed to fetch post:', err);
+ * }
+ * };
+ * fetchPost();
+ * }, [makeRequest]);
+ *
+ * // JSX rendering based on loading/error state
+ * }
+ * ```
  */
 export function useApiRequest<T = any>(options: RequestOptions) {
   const { get, post, put, delete: del, loading, error, clearError } = useApi();
 
+  /**
+   * Executes the API request based on the provided options.
+   * @returns A promise that resolves with the API response.
+   * @throws {Error} Throws an error if the HTTP method is not supported.
+   *
+   * @example
+   * ```ts
+   * // Inside a component
+   * const { makeRequest } = useApiRequest({ method: 'GET', url: '/data' });
+   * const handleClick = () => makeRequest().then(res => console.log(res));
+   * ```
+   */
   const makeRequest = useCallback(async (): Promise<ApiResponse<T>> => {
     switch (options.method) {
       case 'GET':
