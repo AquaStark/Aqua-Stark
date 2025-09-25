@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { DirtSpot } from '@/components';
+import { DirtSpot } from '@/components/dirt';
 import { DirtSpotType } from '@/types';
 
 interface DirtOverlayProps {

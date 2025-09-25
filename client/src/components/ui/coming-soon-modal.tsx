@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { X, Construction, Fish, Sparkles } from 'lucide-react';
-import { Button } from '@/components';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { useModal } from '@/hooks';

@@ -4,7 +4,7 @@ import { colorInheritance } from '@/data/genetic-combination-data';
 import { Traits } from './genetics/traits';
 import { Rarity } from './genetics/rarity';
 
-import { Button } from '@/components';
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components';
 import { Inheritance } from './genetics/inheritance';
 

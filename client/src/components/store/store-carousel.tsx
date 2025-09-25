@@ -6,7 +6,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
 import { CountdownTimer } from './countdown-timer';
-import { FishTank } from '@/components';
+import { FishTank } from '@/components/fish-tank';
 // Use the actual inferred shape from mock data
 
 export const StoreCarousel = () => {

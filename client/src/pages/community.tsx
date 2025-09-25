@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Users } from 'lucide-react';
-import { Button } from '@/components';
+import { Button } from '@/components/ui/button';
 import { BubblesBackground } from '@/components';
 import { useBubbles } from '@/hooks';
 import { PageHeader } from '@/components';

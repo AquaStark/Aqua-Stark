@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components';
-import { Slider } from '@/components';
+import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
 import { RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MarketFilters } from '@/types/shop-types';

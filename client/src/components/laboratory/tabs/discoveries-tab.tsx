@@ -1,6 +1,6 @@
 'use client';
-import { Button } from '@/components';
-import { Input } from '@/components';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Search, Filter, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { BreedingResult } from '@/types';

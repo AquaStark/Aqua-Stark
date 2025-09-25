@@ -3,7 +3,7 @@
 import { ChevronRight, X } from 'lucide-react';
 import type { Category, Topic } from '@/types';
 import { RenderTopicContent } from '@/components';
-import { getIcon } from '@/components';
+import { getIcon } from '@/components/help-center/icon-mapper';
 
 interface HelpMainContentProps {
   currentCategory: Category | undefined;

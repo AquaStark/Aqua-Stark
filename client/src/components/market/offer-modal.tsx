@@ -8,9 +8,9 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { Button } from '@/components';
+import { Button } from '@/components/ui/button';
 import { useMarketStore } from '@/store/market-store';
-import { RarityBadge } from '@/components';
+import { RarityBadge } from '@/components/market/rarity-badge';
 import { mockFishData } from '@/constants';
 import { useModal } from '@/hooks';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { Fish } from '@/components';
+import { Fish } from '@/components/aquarium/fish';
 
 interface FishDisplayProps {
   fish: Array<{

@@ -1,8 +1,8 @@
 import { useEncyclopedia } from '@/hooks';
-import { CollectionProgress } from '@/components';
-import { BreakdownSection } from '@/components';
-import { RecentDiscoveries } from '@/components';
-import { CollectionAchievements } from '@/components';
+import { CollectionProgress } from './collection-stats/collection-progress';
+import { BreakdownSection } from './collection-stats/breakdown-section';
+import { RecentDiscoveries } from './collection-stats/recent-discoveries';
+import { CollectionAchievements } from './collection-stats/collection-achievements';
 
 export function EncyclopediaStats() {
   const { totalSpecies, discoveredSpecies } = useEncyclopedia();

@@ -2,8 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { Clock, Check, Coins } from 'lucide-react';
-import { Button } from '@/components';
-import { RarityBadge } from '@/components';
+import { Button } from '@/components/ui/button';
+import { RarityBadge } from '@/components/market/rarity-badge';
 import { ListingTypeBadge } from '@/components';
 import type { MarketplaceFish } from '@/types/shop-types';
 import { useMarketStore } from '@/store/market-store';

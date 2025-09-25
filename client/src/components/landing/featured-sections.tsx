@@ -1,5 +1,5 @@
 'use client';
-import { FeatureCards } from '@/components';
+import { FeatureCards } from './featured-card';
 import mockData from '@/data/mock-data';
 // Define proper interface for game features
 interface GameFeature {

@@ -1,11 +1,11 @@
 'use client';
-import { Input } from '@/components';
-import { Button } from '@/components';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp, Filter, Lock, Search, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { FishTank } from '@/components';
-import { EncyclopediaFilters } from '@/components';
+import { EncyclopediaFilters } from './encyclopedia-filters';
 import type { EncyclopediaFilters as EncyclopediaFiltersState } from '@/hooks/use-encyclopedia';
 import type { FishSpecies } from '@/data/encyclopedia-data';
 

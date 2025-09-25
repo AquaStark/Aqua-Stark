@@ -8,11 +8,11 @@ import {
   DialogTitle,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { Button } from '@/components';
-import { Input } from '@/components';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Coins, Clock, Plus, Minus } from 'lucide-react';
 import { useMarketStore } from '@/store/market-store';
-import { RarityBadge } from '@/components';
+import { RarityBadge } from '@/components/market/rarity-badge';
 import { useModal } from '@/hooks';
 
 export function BidModal() {

@@ -1,7 +1,7 @@
 'use client';
 
 import type { FeaturedTopic } from '@/types';
-import { getIcon } from '@/components';
+import { getIcon } from '@/components/help-center/icon-mapper';
 
 interface FeaturedTopicsProps {
   topics: FeaturedTopic[];

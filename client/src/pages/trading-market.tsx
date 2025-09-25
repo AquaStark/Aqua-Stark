@@ -7,7 +7,7 @@ import { BidModal } from '@/components';
 import { OfferModal } from '@/components';
 import { ListingModal } from '@/components';
 import { useMarketStore } from '@/store/market-store';
-import { Button } from '@/components';
+import { Button } from '@/components/ui/button';
 import { Search, Filter, X, Plus, Coins } from 'lucide-react';
 import { mockFishData } from '@/constants';
 import '@/styles/market.css';

@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { LaboratoryTabs } from '@/components/laboratory/laboratory-tabs';
-import { Button } from '@/components';
-import { Input } from '@/components';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Beaker, Search } from 'lucide-react';
 import { BubblesBackground } from '@/components';
 import { fishCollection } from '@/data/fish-data';

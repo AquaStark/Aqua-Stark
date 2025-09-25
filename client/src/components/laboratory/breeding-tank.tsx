@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Button } from '@/components';
+import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { FishTank } from '@/components';
+import { FishTank } from '@/components/fish-tank';
 import { X, Heart, Clock, AlertTriangle, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { BreedingPair, BreedingResult } from '@/types';

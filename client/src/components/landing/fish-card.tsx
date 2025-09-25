@@ -1,5 +1,5 @@
 'use client';
-import { FishTank } from '@/components';
+import { FishTank } from '@/components/fish-tank';
 
 export function FishCardComponent({
   name,

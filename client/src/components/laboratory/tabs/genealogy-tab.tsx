@@ -1,5 +1,5 @@
 'use client';
-import { Button } from '@/components';
+import { Button } from '@/components/ui/button';
 import { FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { fishCollection } from '@/constants';

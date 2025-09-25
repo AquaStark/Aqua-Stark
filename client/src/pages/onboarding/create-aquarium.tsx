@@ -9,7 +9,7 @@ import { PageHeader } from '@/components';
 import { LayoutFooter } from '@/components';
 import { BubblesBackground } from '@/components';
 import { useBubbles } from '@/hooks';
-import { Button } from '@/components';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { ComingSoonModal } from '@/components';

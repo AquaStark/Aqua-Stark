@@ -1,7 +1,7 @@
 import { X, Plus, Minus, Trash2, ShoppingCart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore } from '@/store/use-cart-store';
-import { Button } from '@/components';
+import { Button } from '@/components/ui/button';
 import { useShopData } from '@/hooks/use-shop-data';
 
 export function CartSidebar() {

@@ -1,6 +1,6 @@
 import type { Category, FeaturedTopic } from '@/types';
-import { HelpCategories } from '@/components';
-import { FeaturedTopics } from '@/components';
+import { HelpCategories } from '@/components/help-center/help-categories';
+import { FeaturedTopics } from '@/components/help-center/featured-topics';
 
 interface HelpCenterSidebarProps {
   categories: Category[];

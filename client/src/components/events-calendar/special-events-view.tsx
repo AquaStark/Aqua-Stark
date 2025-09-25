@@ -1,7 +1,7 @@
 'use client';
 
 import { CalendarClock, Flame } from 'lucide-react';
-import { EventCard } from '@/components';
+import { EventCard } from './event-card';
 import { CalendarEvent, EventClickHandler } from '@/types';
 
 interface SpecialEventsViewProps {

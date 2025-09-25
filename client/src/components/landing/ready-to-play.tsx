@@ -1,4 +1,4 @@
-import { Button } from '@/components';
+import { Button } from '@/components/ui/button';
 export function ReadyToPlay() {
   return (
     <div className='w-full max-w-4xl mx-auto text-center mb-12'>

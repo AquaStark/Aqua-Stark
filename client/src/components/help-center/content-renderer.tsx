@@ -1,6 +1,6 @@
 import type { ContentSection, Topic } from '@/types';
 import { UtensilsCrossed } from 'lucide-react';
-import { getIcon } from '@/components';
+import { getIcon } from '@/components/help-center/icon-mapper';
 
 export function RenderTopicContent(topic: Topic) {
   return (

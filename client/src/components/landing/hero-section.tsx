@@ -1,7 +1,7 @@
 'use client';
 import { useNavigate } from 'react-router-dom';
 import { useAccount } from '@starknet-react/core';
-import { Button } from '@/components';
+import { Button } from '@/components/ui/button';
 import { usePlayerValidation, useNotifications } from '@/hooks';
 import { useState } from 'react';
 

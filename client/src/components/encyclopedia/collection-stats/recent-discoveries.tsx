@@ -1,4 +1,4 @@
-import { Badge } from '@/components';
+import { Badge } from '@/components/ui/badge';
 
 interface Discovery {
   id: number;

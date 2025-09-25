@@ -1,6 +1,6 @@
 import { ArrowLeft, Coins, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Button } from '@/components';
+import { Button } from '@/components/ui/button';
 import { useCartStore } from '@/store/use-cart-store';
 
 export function StoreHeader() {

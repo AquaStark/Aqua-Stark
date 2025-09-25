@@ -9,7 +9,7 @@ import { featuredTopics } from '@/constants';
 import { useBubbles } from '@/hooks';
 import { PageHeader } from '@/components';
 import { LayoutFooter } from '@/components';
-import { Input } from '@/components';
+import { Input } from '@/components/ui/input';
 import { useHelpCenter } from '@/hooks';
 import { ComingSoonModal } from '@/components';
 
