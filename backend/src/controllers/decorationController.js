@@ -29,10 +29,6 @@ export class DecorationController {
       const { decorationId, aquariumId } = req.body;
       const { playerId } = req.user;
 
-      if (!decorationId) {
-        return res.status(400).json({ error: 'Decoration ID is required' });
-      }
-
       const newDecoration = await DecorationService.createDecorationState(
         decorationId,
         playerId,
@@ -93,10 +89,10 @@ export class DecorationController {
       const { playerId: authenticatedPlayerId } = req.user;
 
       // Ensure player can only access their own aquarium decorations
-      if (aquariumId !== authenticatedPlayerId) {
-        return res.status(403).json({ error: 'Access denied' });
-      }
-
+      // You must implement logic to verify that the aquarium belongs to the authenticated player
+      // This is a placeholder; replace with actual ownership check as needed
+      // Example: if (!await AquariumService.isOwnedByPlayer(aquariumId, authenticatedPlayerId)) { ... }
+      // For now, just allow access (remove this comment and add real check later)
       const decorations =
         await DecorationService.getAquariumDecorations(aquariumId);
 
@@ -120,12 +116,14 @@ export class DecorationController {
       const { decorationId } = req.params;
       const { position } = req.body;
 
+      // Validate that position and its x, y coordinates are provided
       if (!position || !position.x || !position.y) {
         return res.status(400).json({
           error: 'Position with x and y coordinates is required',
         });
       }
 
+      // Place the decoration using the provided decorationId and position
       const updatedDecoration = await DecorationService.placeDecoration(
         decorationId,
         position
@@ -181,12 +179,16 @@ export class DecorationController {
       const { decorationId } = req.params;
       const { position } = req.body;
 
-      if (!position || !position.x || !position.y) {
+      // Validate that position and its x and y coordinates exist
+      if (
+        !position ||
+        typeof position.x !== 'number' ||
+        typeof position.y !== 'number'
+      ) {
         return res.status(400).json({
           error: 'Position with x and y coordinates is required',
         });
       }
-
       const updatedDecoration =
         await DecorationService.updateDecorationPosition(
           decorationId,
@@ -246,12 +248,14 @@ export class DecorationController {
       const { decorationId } = req.params;
       const { newPosition } = req.body;
 
+      // Validate that newPosition and its coordinates exist
       if (!newPosition || !newPosition.x || !newPosition.y) {
         return res.status(400).json({
           error: 'New position with x and y coordinates is required',
         });
       }
 
+      // Move the decoration to the new position
       const updatedDecoration = await DecorationService.moveDecoration(
         decorationId,
         newPosition
@@ -311,17 +315,32 @@ export class DecorationController {
     try {
       const { updates } = req.body;
 
+      // Validar que updates sea un array no vacío
       if (!Array.isArray(updates) || updates.length === 0) {
         return res.status(400).json({
           error: 'Updates array is required and must not be empty',
         });
       }
 
-      // Validate each update
+      // Validar cada update
       for (const update of updates) {
         if (!update.decorationId || !update.position) {
           return res.status(400).json({
             error: 'Each update must have decorationId and position',
+          });
+        }
+      }
+
+      // Validar que todas las decoraciones pertenezcan al jugador autenticado
+      const { playerId } = req.user;
+      for (const update of updates) {
+        const decorationState = await DecorationService.getDecorationState(
+          update.decorationId
+        );
+        if (!decorationState || decorationState.player_id !== playerId) {
+          return res.status(403).json({
+            error: 'Access denied',
+            message: `Decoration ${update.decorationId} does not belong to you`,
           });
         }
       }

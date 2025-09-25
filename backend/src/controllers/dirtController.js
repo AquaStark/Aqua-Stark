@@ -15,14 +15,6 @@ export class DirtController {
       // Use playerId from user if available, otherwise use demo player for development
       const playerId = req.user?.playerId || req.user?.id || 'demo-player';
 
-      // Validate input
-      if (!aquariumId) {
-        return res.status(400).json({
-          success: false,
-          error: 'Aquarium ID is required',
-        });
-      }
-
       const dirtStatus = await DirtService.getAquariumDirtStatus(
         aquariumId,
         playerId
@@ -73,7 +65,6 @@ export class DirtController {
           error: 'Aquarium ID is required',
         });
       }
-
       const cleaningResult = await DirtService.cleanAquarium(
         aquariumId,
         playerId
@@ -155,7 +146,7 @@ export class DirtController {
       const { aquariumId } = req.params;
       const { spotId } = req.body;
       const playerId = req.user?.playerId || req.user?.id || 'demo-player';
-
+      // Validate required parameters
       if (!aquariumId || !spotId) {
         return res.status(400).json({
           success: false,
@@ -163,6 +154,7 @@ export class DirtController {
         });
       }
 
+      // Call the service to clean the dirt spot
       const cleaningResult = await DirtService.cleanDirtSpot(
         aquariumId,
         spotId,
@@ -200,13 +192,13 @@ export class DirtController {
       const { aquariumId } = req.params;
       const playerId = req.user?.playerId || req.user?.id || 'demo-player';
 
+      // Validate that aquariumId is present
       if (!aquariumId) {
         return res.status(400).json({
           success: false,
           error: 'Aquarium ID is required',
         });
       }
-
       const initResult = await DirtService.initializeAquariumDirtSystem(
         aquariumId,
         playerId
@@ -243,6 +235,7 @@ export class DirtController {
       const config = req.body;
       const playerId = req.user?.playerId || req.user?.id || 'demo-player';
 
+      // Validar que aquariumId esté presente
       if (!aquariumId) {
         return res.status(400).json({
           success: false,
@@ -250,6 +243,7 @@ export class DirtController {
         });
       }
 
+      // Validar que config no esté vacío
       if (!config || Object.keys(config).length === 0) {
         return res.status(400).json({
           success: false,
@@ -257,6 +251,7 @@ export class DirtController {
         });
       }
 
+      // Llamar al servicio para actualizar la configuración de dirt
       const updatedConfig = await DirtService.updateAquariumDirtConfig(
         aquariumId,
         config,

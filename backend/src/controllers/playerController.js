@@ -28,10 +28,6 @@ export class PlayerController {
     try {
       const { walletAddress } = req.params;
 
-      if (!walletAddress) {
-        return res.status(400).json({ error: 'Wallet address is required' });
-      }
-
       const player = await PlayerService.getPlayerByWallet(walletAddress);
 
       if (!player) {
@@ -56,12 +52,6 @@ export class PlayerController {
   static async createPlayer(req, res) {
     try {
       const { playerId, walletAddress, username } = req.body;
-
-      if (!playerId || !walletAddress) {
-        return res
-          .status(400)
-          .json({ error: 'Player ID and wallet address are required' });
-      }
 
       const newPlayer = await PlayerService.createPlayer(
         playerId,
@@ -100,16 +90,6 @@ export class PlayerController {
         return res.status(403).json({ error: 'Access denied' });
       }
 
-      if (experienceGained === undefined) {
-        return res.status(400).json({ error: 'Experience gained is required' });
-      }
-
-      if (experienceGained < 0) {
-        return res
-          .status(400)
-          .json({ error: 'Experience gained must be positive' });
-      }
-
       const updatedPlayer = await PlayerService.updatePlayerExperience(
         playerId,
         experienceGained
@@ -146,10 +126,6 @@ export class PlayerController {
         return res.status(403).json({ error: 'Access denied' });
       }
 
-      if (currencyChange === undefined) {
-        return res.status(400).json({ error: 'Currency change is required' });
-      }
-
       const updatedPlayer = await PlayerService.updatePlayerCurrency(
         playerId,
         currencyChange
@@ -184,10 +160,6 @@ export class PlayerController {
       // Ensure player can only update their own stats
       if (playerId !== authenticatedPlayerId) {
         return res.status(403).json({ error: 'Access denied' });
-      }
-
-      if (!statsUpdate) {
-        return res.status(400).json({ error: 'Stats update is required' });
       }
 
       const updatedPlayer = await PlayerService.updatePlayerStats(
@@ -286,10 +258,6 @@ export class PlayerController {
       // Ensure player can only update their own preferences
       if (playerId !== authenticatedPlayerId) {
         return res.status(403).json({ error: 'Access denied' });
-      }
-
-      if (!preferences) {
-        return res.status(400).json({ error: 'Preferences are required' });
       }
 
       const updatedPreferences = await PlayerService.updatePlayerPreferences(

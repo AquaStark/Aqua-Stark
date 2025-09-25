@@ -74,10 +74,6 @@ export class StoreController {
     try {
       const { id } = req.params;
 
-      if (!id) {
-        return res.status(400).json({ error: 'Item ID is required' });
-      }
-
       const item = await StoreService.getStoreItem(id);
 
       res.json({
@@ -120,23 +116,6 @@ export class StoreController {
   static async createStoreItem(req, res) {
     try {
       const itemData = req.body;
-
-      // Validate required fields
-      const requiredFields = [
-        'name',
-        'description',
-        'price',
-        'type',
-        'image_url',
-      ];
-      const missingFields = requiredFields.filter(field => !itemData[field]);
-
-      if (missingFields.length > 0) {
-        return res.status(400).json({
-          error: 'Missing required fields',
-          missingFields: missingFields,
-        });
-      }
 
       const newItem = await StoreService.createStoreItem(itemData);
 
@@ -182,14 +161,6 @@ export class StoreController {
     try {
       const { id } = req.params;
       const updateData = req.body;
-
-      if (!id) {
-        return res.status(400).json({ error: 'Item ID is required' });
-      }
-
-      if (!updateData || Object.keys(updateData).length === 0) {
-        return res.status(400).json({ error: 'Update data is required' });
-      }
 
       const updatedItem = await StoreService.updateStoreItem(id, updateData);
 
@@ -243,10 +214,6 @@ export class StoreController {
     try {
       const { id } = req.params;
 
-      if (!id) {
-        return res.status(400).json({ error: 'Item ID is required' });
-      }
-
       const deletedItem = await StoreService.deleteStoreItem(id);
 
       res.json({
@@ -291,20 +258,6 @@ export class StoreController {
     try {
       const { id } = req.params;
       const { stock } = req.body;
-
-      if (!id) {
-        return res.status(400).json({ error: 'Item ID is required' });
-      }
-
-      if (stock === undefined || stock === null) {
-        return res.status(400).json({ error: 'Stock value is required' });
-      }
-
-      if (typeof stock !== 'number' || stock < 0) {
-        return res
-          .status(400)
-          .json({ error: 'Stock must be a non-negative number' });
-      }
 
       const updatedItem = await StoreService.updateItemStock(id, stock);
 
@@ -388,18 +341,6 @@ export class StoreController {
   static async getStoreItemsByType(req, res) {
     try {
       const { type } = req.params;
-
-      if (!type) {
-        return res.status(400).json({ error: 'Item type is required' });
-      }
-
-      const validTypes = ['fish', 'decoration', 'food', 'other'];
-      if (!validTypes.includes(type)) {
-        return res.status(400).json({
-          error: 'Invalid item type',
-          validTypes: validTypes,
-        });
-      }
 
       const items = await StoreService.getStoreItems({ type });
 
