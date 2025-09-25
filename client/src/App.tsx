@@ -12,7 +12,7 @@ import LoadingPage from './pages/loading';
 // Main Game Pages
 import GamePage from './pages/game';
 import AquariumsPage from './pages/aquariums';
-import StoragePage from './pages/storage';
+import StorePage from './pages/store';
 import TradingMarketPage from './pages/trading-market';
 import BreedingLaboratoryPage from './pages/breeding-laboratory';
 import SettingsPage from './pages/settings';
@@ -53,7 +53,7 @@ function App() {
           {/* Main Game Routes */}
           <Route path='/game' element={<GamePage />} />
           <Route path='/aquariums' element={<AquariumsPage />} />
-          <Route path='/store' element={<StoragePage />} />
+          <Route path='/store' element={<StorePage />} />
           <Route path='/trading-market' element={<TradingMarketPage />} />
           <Route
             path='/breeding-laboratory'

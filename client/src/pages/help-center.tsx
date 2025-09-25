@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
-import { featuredTopics } from '@/data/help-center-data';
 import { HelpCenterSidebar } from '@/components';
 import { HelpMainContent } from '@/components';
 import { BubblesBackground } from '@/components';
+import { featuredTopics } from '@/constants';
 import { useBubbles } from '@/hooks';
 import { PageHeader } from '@/components';
 import { LayoutFooter } from '@/components';

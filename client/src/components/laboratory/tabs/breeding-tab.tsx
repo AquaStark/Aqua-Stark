@@ -8,7 +8,7 @@ import { FishSelection } from '@/components';
 import { BreedingTank } from '@/components';
 import { FishDetails } from '@/components';
 import type { Fish } from '@/types';
-import { breedingResults } from '@/data/fish-data';
+import { breedingResults } from '@/constants';
 import { cn } from '@/lib/utils';
 
 interface BreedingTabProps {

@@ -9,7 +9,7 @@ import { ListingModal } from '@/components';
 import { useMarketStore } from '@/store/market-store';
 import { Button } from '@/components';
 import { Search, Filter, X, Plus, Coins } from 'lucide-react';
-import { mockFishData } from '@/data/market-data';
+import { mockFishData } from '@/constants';
 import '@/styles/market.css';
 import { LayoutFooter } from '@/components';
 import { PageHeader } from '@/components';

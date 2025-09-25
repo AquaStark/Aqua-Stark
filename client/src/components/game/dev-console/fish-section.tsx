@@ -10,7 +10,7 @@ import {
   DevConsoleSelect,
 } from './dev-console-form';
 import { InlineResponse, ResponsePanelState } from './response-panel';
-import { FISH_SPECIES } from '@/systems/data-transformation-system';
+import { FISH_SPECIES } from '@/constants';
 
 interface FishSectionProps {
   // Form state

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DirtSpotType } from '@/types';
+import { DirtSpotType } from '@/constants';
 
 interface DirtSpotProps {
   spot: DirtSpotType;

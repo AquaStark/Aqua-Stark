@@ -7,7 +7,7 @@ import {
   bundles,
   decorationBundles,
 } from '@/data/mock-store';
-import { foodData, specialFoodBundles } from '@/data/market-data';
+import { foodData, specialFoodBundles } from '@/constants';
 import { ItemType } from '@/data/mock-game';
 import {
   ShopItem,

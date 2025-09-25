@@ -1,4 +1,4 @@
-import { MOCK_AQUARIUMS } from '@/data/game-data';
+import { MOCK_AQUARIUMS } from '@/constants';
 import { AquariumData } from '@/types';
 import { useDojoSDK } from '@dojoengine/sdk/react';
 import { useState } from 'react';

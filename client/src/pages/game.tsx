@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { GameHeader } from '@/components';
 import { AquariumTabs } from '@/components';
 import { TipsPopup } from '@/components';
-import { INITIAL_GAME_STATE } from '@/data/game-data';
+import { INITIAL_GAME_STATE } from '@/constants';
 import { useFishStats } from '@/hooks';
 import { GameMenu } from '@/components';
 import { useBubbles } from '@/hooks';
@@ -24,7 +24,7 @@ import { useAccount } from '@starknet-react/core';
 import { useFish } from '@/hooks';
 import { useNavigate } from 'react-router-dom';
 import { FeedingDebugPanel } from '@/components';
-import { fishCollection as fullFishList } from '@/data/fish-data';
+import { fishCollection as fullFishList } from '@/constants';
 import {
   Utensils,
   ShoppingBag,

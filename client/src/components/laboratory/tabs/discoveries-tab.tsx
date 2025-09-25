@@ -5,8 +5,8 @@ import { Search, Filter, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { BreedingResult } from '@/types';
 
-import { breedingResults } from '@/data/fish-data';
-import { fishCollection } from '@/data/fish-data';
+import { breedingResults } from '@/constants';
+import { fishCollection } from '@/constants';
 
 export function DiscoveriesTab() {
   return (
