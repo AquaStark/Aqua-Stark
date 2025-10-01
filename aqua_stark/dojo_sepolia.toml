@@ -4,7 +4,7 @@ description = "The official Dojo Starter guide, the quickest and most streamline
 cover_uri = "file://assets/cover.png"
 icon_uri = "file://assets/icon.png"
 website = "https://github.com/dojoengine/dojo-starter"
-seed = "ajidokwuuuuuuuss"
+seed = "ajidokwuuuuuuusns"
 
 [world.socials]
 x = "https://x.com/ohayo_dojo"
@@ -16,18 +16,15 @@ telegram = "https://t.me/dojoengine"
 default = "aqua_stark"
 
 [env]
-rpc_url = "http://localhost:5050/"
-# Default account for katana with seed = 0
-account_address = "0x127fd5f1fe78a71f8bcd1fec63e3fe2f0486b6ecd5c86a0466c3a21fa5cfcec"
-private_key = "0xc5b2fcab997346f3ea1c00b002ecf6f382c5f9c9659a3894eb783c5320f912"
-# world_address = "0x037a99da65fb03c5692317efddfeb0ed67dba643ce34e6ccd1179a1894dc5f83"
-world_block = 2 
+rpc_url = "" # env: STARKNET_RPC_URL
+# account_address = "" # env: DOJO_ACCOUNT_ADDRESS  
+# private_key = ""     # env: DOJO_PRIVATE_KEY
+# world_address = ""   # env: DOJO_WORLD_ADDRESS
 
 [init_call_args]
 "aqua_stark-ShopCatalog" = [
   "0x0" # shop catalog owner
 ]
-
 
 [writers]
 "aqua_stark" = ["aqua_stark-AquaStark", "aqua_stark-ShopCatalog"]
