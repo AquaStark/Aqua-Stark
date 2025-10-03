@@ -1,7 +1,8 @@
 // API Configuration for Aqua Stark Backend
 // Centralized configuration to avoid hardcoding URLs throughout the frontend
 
-import { ENV_CONFIG } from './environment';
+import { ENV_CONFIG } from '@/constants';
+import { RequestData } from '../types/api-types';
 
 export const API_CONFIG = {
   // Backend base URL - change this for different environments
@@ -96,7 +97,11 @@ export class ApiClient {
     return response.json();
   }
 
-  static async post<T>(url: string, data: any, playerId?: string): Promise<T> {
+  static async post<T>(
+    url: string,
+    data: RequestData,
+    playerId?: string
+  ): Promise<T> {
     const response = await fetch(url, {
       method: 'POST',
       headers: createHeaders(playerId),
@@ -110,7 +115,11 @@ export class ApiClient {
     return response.json();
   }
 
-  static async put<T>(url: string, data: any, playerId?: string): Promise<T> {
+  static async put<T>(
+    url: string,
+    data: RequestData,
+    playerId?: string
+  ): Promise<T> {
     const response = await fetch(url, {
       method: 'PUT',
       headers: createHeaders(playerId),

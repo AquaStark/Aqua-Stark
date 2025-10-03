@@ -12,9 +12,7 @@ interface RecentDiscoveriesProps {
   discoveries: Discovery[];
 }
 
-export default function RecentDiscoveries({
-  discoveries,
-}: RecentDiscoveriesProps) {
+export function RecentDiscoveries({ discoveries }: RecentDiscoveriesProps) {
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
       case 'Common':

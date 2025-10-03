@@ -1,7 +1,7 @@
-import type { Fish, Transaction } from '@/types/market';
+import type { MarketplaceFish, Transaction } from '@/types/shop-types';
 import { SpecialBundle } from './mock-store';
 
-export const mockFishData: Fish[] = [
+export const mockFishData: MarketplaceFish[] = [
   {
     id: 1,
     name: 'Azure Shimmer',

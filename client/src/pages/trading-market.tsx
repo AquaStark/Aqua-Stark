@@ -1,19 +1,19 @@
 'use client';
 
-import { BubblesBackground } from '@/components/bubble-background';
-import { FilterPanel } from '@/components/market/filter-panel';
-import { FishCard } from '@/components/market/fish-card';
-import { BidModal } from '@/components/market/bid-modal';
-import { OfferModal } from '@/components/market/offer-modal';
-import { ListingModal } from '@/components/market/listing-modal';
+import { BubblesBackground } from '@/components';
+import { MarketFilterPanel } from '@/components';
+import { MarketFishCard } from '@/components';
+import { BidModal } from '@/components';
+import { OfferModal } from '@/components';
+import { ListingModal } from '@/components';
 import { useMarketStore } from '@/store/market-store';
 import { Button } from '@/components/ui/button';
 import { Search, Filter, X, Plus, Coins } from 'lucide-react';
-import { mockFishData } from '@/data/market-data';
+import { mockFishData } from '@/constants';
 import '@/styles/market.css';
-import { Footer } from '@/components/layout/footer';
-import { PageHeader } from '@/components/layout/page-header';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { LayoutFooter } from '@/components';
+import { PageHeader } from '@/components';
+import { useBubbles } from '@/hooks';
 import '@/styles/market.css';
 import { useState } from 'react';
 
@@ -50,11 +50,8 @@ export default function MarketPage() {
       );
       if (!hasMatchingTrait) return false;
     }
-    if (
-      (filters as any).search &&
-      !fish.name.toLowerCase().includes((filters as any).search.toLowerCase())
-    )
-      return false;
+    const q = filters.search?.trim().toLowerCase();
+    if (q && !fish.name.toLowerCase().includes(q)) return false;
     return true;
   });
 
@@ -78,6 +75,7 @@ export default function MarketPage() {
         Rare: 3,
         Epic: 4,
         Legendary: 5,
+        Special: 6,
       };
       return rarityOrder[b.rarity] - rarityOrder[a.rarity];
     }
@@ -167,13 +165,13 @@ export default function MarketPage() {
           </div>
         </div>
 
-        {showFilters && <FilterPanel />}
+        {showFilters && <MarketFilterPanel />}
 
         {/* if tab is browse */}
         {activeTab === 'browse' && (
           <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6 w-full'>
             {sortedFish.map(fish => (
-              <FishCard key={fish.id} fish={fish} />
+              <MarketFishCard key={fish.id} fish={fish} />
             ))}
 
             {sortedFish.length === 0 && (
@@ -193,7 +191,7 @@ export default function MarketPage() {
             {sortedFish
               .filter(fish => fish.auction)
               .map(fish => (
-                <FishCard key={fish.id} fish={fish} />
+                <MarketFishCard key={fish.id} fish={fish} />
               ))}
 
             {sortedFish.filter(fish => fish.auction).length === 0 && (
@@ -213,7 +211,7 @@ export default function MarketPage() {
             {sortedFish
               .filter(fish => fish.listed)
               .map(fish => (
-                <FishCard key={fish.id} fish={fish} />
+                <MarketFishCard key={fish.id} fish={fish} />
               ))}
 
             {sortedFish.filter(fish => fish.listed).length === 0 && (
@@ -233,7 +231,7 @@ export default function MarketPage() {
             {sortedFish
               .filter(fish => fish.exchange)
               .map(fish => (
-                <FishCard key={fish.id} fish={fish} />
+                <MarketFishCard key={fish.id} fish={fish} />
               ))}
 
             {sortedFish.filter(fish => fish.exchange).length === 0 && (
@@ -248,7 +246,7 @@ export default function MarketPage() {
         )}
       </main>
 
-      <Footer />
+      <LayoutFooter />
 
       <BidModal />
       <OfferModal />

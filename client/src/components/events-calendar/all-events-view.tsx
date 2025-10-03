@@ -9,8 +9,8 @@ import {
   Sparkles,
   Users,
 } from 'lucide-react';
-import { EventCard } from './event-card';
-import { CalendarEvent, EventClickHandler } from '@/types/events';
+import { EventCard } from '@/components';
+import { CalendarEvent, EventClickHandler } from '@/types';
 
 // Moved utility function directly into component
 function formatDate(dateString: string): string {

@@ -1,9 +1,6 @@
-interface AquariumStatsProps {
-  totalAquariums: number;
-  totalFish: number;
-  premiumAquariums: number;
-  averageHealth: number;
-}
+import type { AquariumStats } from '@/types';
+
+type AquariumStatsProps = AquariumStats;
 
 export function AquariumStats({
   totalAquariums,

@@ -1,6 +1,6 @@
-import type { Category, FeaturedTopic } from '@/types/help-types';
-import HelpCategories from '@/components/help-center/help-categories';
-import FeaturedTopics from '@/components/help-center/featured-topics';
+import type { Category, FeaturedTopic } from '@/types';
+import { HelpCategories } from '@/components/help-center/help-categories';
+import { FeaturedTopics } from '@/components/help-center/featured-topics';
 
 interface HelpCenterSidebarProps {
   categories: Category[];
@@ -10,7 +10,7 @@ interface HelpCenterSidebarProps {
   onFeaturedTopicClick: (categoryId: string, topicId: string) => void;
 }
 
-export default function HelpCenterSidebar({
+export function HelpCenterSidebar({
   categories,
   featuredTopics,
   activeCategory,

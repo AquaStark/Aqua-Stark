@@ -1,27 +1,8 @@
-export type FishStateType = 'idle' | 'swimming' | 'eating' | 'rejecting';
-export interface Fish {
-  id: number;
-  name: string;
-  image: string;
-  rarity: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | 'Legendary';
-  generation: number;
-  level: number;
-  hunger: number;
-  state: FishStateType;
-  lastRejection?: number;
-  traits: {
-    color: string;
-    pattern: string;
-    fins: string;
-    size: string;
-    special?: string;
-  };
-  breedingCooldown?: string;
-  parents?: {
-    father: number;
-    mother: number;
-  };
-}
+import type { UIFish, FishState } from './fish-types';
+
+// Legacy aliases kept for backwards compatibility across the app
+export type FishStateType = FishState;
+export type Fish = UIFish;
 
 export interface BreedingPair {
   father: Fish | null;

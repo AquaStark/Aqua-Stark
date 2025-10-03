@@ -1,8 +1,47 @@
 import { MinigameService } from '../services/minigameService.js';
+import { loggingMiddleware } from '../middleware/logging.js';
 
-// Minigame controller for handling HTTP requests related to game sessions
+/**
+ * Minigame Controller
+ *
+ * Handles HTTP requests related to minigame operations including session management,
+ * scoring, leaderboards, achievements, and game statistics.
+ *
+ * Supported game types:
+ * - flappy_fish: Navigate fish through obstacles
+ * - angry_fish: Launch fish to hit targets
+ * - fish_racing: Race fish against others
+ * - bubble_pop: Pop bubbles to earn points
+ * - fish_memory: Match fish pairs in memory game
+ *
+ * All methods follow a consistent response format:
+ * - Success: { success: true, data: result, message?: string }
+ * - Error: { error: string }
+ *
+ * @class MinigameController
+ */
 export class MinigameController {
-  // Create a new game session
+  /**
+   * Create a new game session
+   *
+   * Creates a new minigame session for the authenticated player.
+   * Validates the game type against supported games.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.body - Request body
+   * @param {string} req.body.gameType - Type of game to start
+   * @param {Object} req.user - Authenticated user data
+   * @param {string} req.user.walletAddress - Player's wallet address
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with created session data
+   *
+   * @example
+   * // POST /api/minigames/sessions
+   * // Body: { gameType: "flappy_fish" }
+   * // Response: { success: true, data: { sessionId: "123", ... }, message: "Game session created for flappy_fish" }
+   */
   static async createGameSession(req, res) {
     try {
       const { gameType } = req.body;
@@ -34,17 +73,47 @@ export class MinigameController {
         message: `Game session created for ${gameType}`,
       });
     } catch (error) {
-      console.error('Error in createGameSession:', error);
+      loggingMiddleware.logControllerError(
+        'MinigameController',
+        'createGameSession',
+        error,
+        {
+          gameType: req.body?.gameType,
+          walletAddress: req.user?.walletAddress,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
 
-  // End game session with final score
+  /**
+   * End game session with final score
+   *
+   * Ends an active game session and records the final score.
+   * Calculates XP earned based on game type and score.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.sessionId - Game session ID from URL
+   * @param {Object} req.body - Request body
+   * @param {number} req.body.finalScore - Final score achieved
+   * @param {string} req.body.gameType - Game type for XP calculation
+   * @param {Object} req.user - Authenticated user data
+   * @param {string} req.user.walletAddress - Player's wallet address
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with ended session data
+   *
+   * @example
+   * // PUT /api/minigames/sessions/123/end
+   * // Body: { finalScore: 1500, gameType: "flappy_fish" }
+   * // Response: { success: true, data: { ... }, message: "Game ended! Score: 1500, XP earned: 75" }
+   */
   static async endGameSession(req, res) {
     try {
       const { sessionId } = req.params;
       const { finalScore, gameType } = req.body;
-      const { walletAddress: _walletAddress } = req.user;
 
       if (!sessionId || finalScore === undefined || !gameType) {
         return res.status(400).json({
@@ -52,199 +121,270 @@ export class MinigameController {
         });
       }
 
-      if (finalScore < 0) {
-        return res
-          .status(400)
-          .json({ error: 'Final score must be non-negative' });
-      }
-
-      // Calculate XP based on game type and score
-      const xpEarned = MinigameService.calculateXP(gameType, finalScore);
-
-      const endedSession = await MinigameService.endGameSession(
+      const session = await MinigameService.endGameSession(
         sessionId,
         finalScore,
-        xpEarned
+        gameType
       );
 
       res.json({
         success: true,
-        data: endedSession,
-        message: `Game ended! Score: ${finalScore}, XP earned: ${xpEarned}`,
+        data: session,
+        message: 'Game session ended successfully',
       });
     } catch (error) {
-      console.error('Error in endGameSession:', error);
+      loggingMiddleware.logControllerError(
+        'MinigameController',
+        'endGameSession',
+        error,
+        {
+          sessionId: req.params?.sessionId,
+          finalScore: req.body?.finalScore,
+          gameType: req.body?.gameType,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
 
-  // Get player statistics
+  /**
+   * Get player statistics
+   *
+   * Retrieves comprehensive statistics for the authenticated player across all games.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.user - Authenticated user data
+   * @param {string} req.user.walletAddress - Player's wallet address
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with player statistics
+   *
+   * @example
+   * // GET /api/minigames/stats
+   * // Response: { success: true, data: { totalGames: 25, totalScore: 15000, ... } }
+   */
   static async getPlayerStats(req, res) {
     try {
-      const { walletAddress: _walletAddress } = req.user;
+      const { playerId } = req.params;
 
-      if (!_walletAddress) {
-        return res.status(400).json({ error: 'Wallet address is required' });
-      }
-
-      const stats = await MinigameService.getPlayerStats(_walletAddress);
+      const stats = await MinigameService.getPlayerStats(playerId);
 
       res.json({ success: true, data: stats });
     } catch (error) {
-      console.error('Error in getPlayerStats:', error);
+      loggingMiddleware.logControllerError(
+        'MinigameController',
+        'getPlayerStats',
+        error,
+        {
+          playerId: req.params?.playerId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
 
-  // Get leaderboard for specific game type
+  /**
+   * Get leaderboard for specific game type
+   *
+   * Retrieves the leaderboard for a specific game type with optional limit.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.gameType - Game type for leaderboard
+   * @param {Object} req.query - Query parameters
+   * @param {number} [req.query.limit=10] - Maximum number of results to return
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with game leaderboard
+   *
+   * @example
+   * // GET /api/minigames/leaderboard/flappy_fish?limit=20
+   * // Response: { success: true, data: [{ rank: 1, player: "user1", score: 5000 }, ...] }
+   */
   static async getGameLeaderboard(req, res) {
     try {
       const { gameType } = req.params;
-      const { limit = 10 } = req.query;
 
-      if (!gameType) {
-        return res.status(400).json({ error: 'Game type is required' });
-      }
-
-      const validGameTypes = [
-        'flappy_fish',
-        'angry_fish',
-        'fish_racing',
-        'bubble_pop',
-        'fish_memory',
-      ];
-      if (!validGameTypes.includes(gameType)) {
-        return res.status(400).json({ error: 'Invalid game type' });
-      }
-
-      const leaderboard = await MinigameService.getLeaderboard(
-        gameType,
-        parseInt(limit)
-      );
+      const leaderboard = await MinigameService.getGameLeaderboard(gameType);
 
       res.json({ success: true, data: leaderboard });
     } catch (error) {
-      console.error('Error in getGameLeaderboard:', error);
+      loggingMiddleware.logControllerError(
+        'MinigameController',
+        'getGameLeaderboard',
+        error,
+        {
+          gameType: req.params?.gameType,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
 
-  // Get global leaderboard
+  /**
+   * Get global leaderboard
+   *
+   * Retrieves the global leaderboard across all game types with optional limit.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.query - Query parameters
+   * @param {number} [req.query.limit=20] - Maximum number of results to return
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with global leaderboard
+   *
+   * @example
+   * // GET /api/minigames/leaderboard/global?limit=50
+   * // Response: { success: true, data: [{ rank: 1, player: "user1", totalScore: 25000 }, ...] }
+   */
   static async getGlobalLeaderboard(req, res) {
     try {
-      const { limit = 20 } = req.query;
-
-      const leaderboard = await MinigameService.getGlobalLeaderboard(
-        parseInt(limit)
-      );
+      const leaderboard = await MinigameService.getGlobalLeaderboard();
 
       res.json({ success: true, data: leaderboard });
     } catch (error) {
-      console.error('Error in getGlobalLeaderboard:', error);
+      loggingMiddleware.logControllerError(
+        'MinigameController',
+        'getGlobalLeaderboard',
+        error
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
 
-  // Award bonus XP for achievements
+  /**
+   * Award bonus XP for achievements
+   *
+   * Awards bonus experience points for achieving specific milestones or accomplishments.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.body - Request body
+   * @param {string} req.body.achievement - Achievement name or description
+   * @param {number} req.body.bonusXP - Amount of bonus XP to award
+   * @param {Object} req.user - Authenticated user data
+   * @param {string} req.user.walletAddress - Player's wallet address
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with bonus XP session data
+   *
+   * @example
+   * // POST /api/minigames/bonus-xp
+   * // Body: { achievement: "First Perfect Game", bonusXP: 100 }
+   * // Response: { success: true, data: { ... }, message: "Bonus XP awarded for achievement: First Perfect Game" }
+   */
   static async awardBonusXP(req, res) {
     try {
-      const { achievement, bonusXP } = req.body;
-      const { walletAddress } = req.user;
+      const { playerId } = req.params;
+      const { bonusXP } = req.body;
 
-      if (!achievement || !bonusXP) {
-        return res
-          .status(400)
-          .json({ error: 'Achievement and bonus XP are required' });
+      if (!bonusXP || bonusXP <= 0) {
+        return res.status(400).json({
+          error: 'Valid bonus XP amount is required',
+        });
       }
 
-      if (bonusXP <= 0) {
-        return res.status(400).json({ error: 'Bonus XP must be positive' });
-      }
-
-      const bonusSession = await MinigameService.awardBonusXP(
-        walletAddress,
-        achievement,
-        bonusXP
-      );
+      const result = await MinigameService.awardBonusXP(playerId, bonusXP);
 
       res.json({
         success: true,
-        data: bonusSession,
-        message: `Bonus XP awarded for achievement: ${achievement}`,
+        data: result,
+        message: `Bonus XP awarded: +${bonusXP}`,
       });
     } catch (error) {
-      console.error('Error in awardBonusXP:', error);
+      loggingMiddleware.logControllerError(
+        'MinigameController',
+        'awardBonusXP',
+        error,
+        {
+          playerId: req.params?.playerId,
+          bonusXP: req.body?.bonusXP,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
 
-  // Get game session by ID
+  /**
+   * Get game session by ID
+   *
+   * Retrieves details of a specific game session.
+   * Currently returns placeholder data as implementation is pending.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.sessionId - Game session ID from URL
+   * @param {Object} req.user - Authenticated user data
+   * @param {string} req.user.walletAddress - Player's wallet address
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with session details
+   *
+   * @example
+   * // GET /api/minigames/sessions/123
+   * // Response: { success: true, data: { sessionId: "123", status: "active" }, message: "Session details retrieved" }
+   */
   static async getGameSession(req, res) {
     try {
       const { sessionId } = req.params;
-      const { walletAddress: _walletAddress } = req.user;
 
-      if (!sessionId) {
-        return res.status(400).json({ error: 'Session ID is required' });
+      const session = await MinigameService.getGameSession(sessionId);
+
+      if (!session) {
+        return res.status(404).json({ error: 'Game session not found' });
       }
 
-      // This would need to be implemented in the service
-      // For now, we'll return a placeholder
-      res.json({
-        success: true,
-        data: { sessionId, status: 'active' },
-        message: 'Session details retrieved',
-      });
+      res.json({ success: true, data: session });
     } catch (error) {
-      console.error('Error in getGameSession:', error);
+      loggingMiddleware.logControllerError(
+        'MinigameController',
+        'getGameSession',
+        error,
+        {
+          sessionId: req.params?.sessionId,
+        }
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }
 
-  // Get available game types
+  /**
+   * Get available game types
+   *
+   * Returns a list of all available minigame types with their metadata.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with array of game types
+   *
+   * @example
+   * // GET /api/minigames/types
+   * // Response: { success: true, data: [
+   * //   { id: "flappy_fish", name: "Flappy Fish", description: "...", baseXP: 10, difficulty: "medium" },
+   * //   ...
+   * // ]}
+   */
   static async getGameTypes(req, res) {
     try {
-      const gameTypes = [
-        {
-          id: 'flappy_fish',
-          name: 'Flappy Fish',
-          description: 'Navigate your fish through obstacles',
-          baseXP: 10,
-          difficulty: 'medium',
-        },
-        {
-          id: 'angry_fish',
-          name: 'Angry Fish',
-          description: 'Launch your fish to hit targets',
-          baseXP: 15,
-          difficulty: 'hard',
-        },
-        {
-          id: 'fish_racing',
-          name: 'Fish Racing',
-          description: 'Race your fish against others',
-          baseXP: 20,
-          difficulty: 'easy',
-        },
-        {
-          id: 'bubble_pop',
-          name: 'Bubble Pop',
-          description: 'Pop bubbles to earn points',
-          baseXP: 8,
-          difficulty: 'easy',
-        },
-        {
-          id: 'fish_memory',
-          name: 'Fish Memory',
-          description: 'Match fish pairs in memory game',
-          baseXP: 12,
-          difficulty: 'medium',
-        },
-      ];
+      const gameTypes = await MinigameService.getGameTypes();
 
-      res.json({ success: true, data: gameTypes });
+      res.json({
+        success: true,
+        data: gameTypes,
+        count: gameTypes.length,
+      });
     } catch (error) {
-      console.error('Error in getGameTypes:', error);
+      loggingMiddleware.logControllerError(
+        'MinigameController',
+        'getGameTypes',
+        error
+      );
       res.status(500).json({ error: 'Internal server error' });
     }
   }

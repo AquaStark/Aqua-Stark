@@ -1,11 +1,11 @@
-import { useExperience } from '@/hooks/use-experience';
+import { useExperience } from '@/hooks';
 
 interface ExperienceBarProps {
   currentLevel: number;
   currentExperience: number;
 }
 
-const ExperienceBar: React.FC<ExperienceBarProps> = ({
+export const ExperienceBar: React.FC<ExperienceBarProps> = ({
   currentLevel,
   currentExperience,
 }) => {
@@ -59,5 +59,3 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
     </div>
   );
 };
-
-export default ExperienceBar;

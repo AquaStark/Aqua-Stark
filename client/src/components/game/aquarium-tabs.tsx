@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { MOCK_AQUARIUMS } from '@/data/game-data';
+import { MOCK_AQUARIUMS } from '@/constants';
 
 interface AquariumTabProps {
   name: string;
@@ -48,6 +48,7 @@ export function AquariumTabs({
   return (
     <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/90 to-transparent z-20 p-4'>
       <div className='flex justify-between items-end'>
+        {/* Left side - Aquarium tabs */}
         <div className='flex gap-2'>
           {aquariums.map(aquarium => (
             <AquariumTab
@@ -64,6 +65,9 @@ export function AquariumTabs({
             onClick={() => onAquariumSelect()}
           />
         </div>
+
+        {/* Right side - Empty space for balance */}
+        <div className='w-32'></div>
       </div>
     </div>
   );

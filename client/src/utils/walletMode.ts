@@ -1,4 +1,4 @@
-import { getWalletConfig, WALLET_MODES, type WalletMode } from '../config';
+import { getWalletConfig, WALLET_MODES, type WalletMode } from '@/constants';
 
 /**
  * Utility functions for managing wallet modes

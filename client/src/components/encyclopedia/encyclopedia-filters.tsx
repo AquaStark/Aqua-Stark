@@ -22,7 +22,7 @@ const filterCategories = {
   discoveryStatus: ['All', 'Discovered', 'Undiscovered'],
 };
 
-export default function EncyclopediaFilters({
+export function EncyclopediaFilters({
   showFilters,
   filters,
   setFilters,

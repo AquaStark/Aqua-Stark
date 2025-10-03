@@ -1,4 +1,4 @@
-import { FishCardComponent } from '@/components/landing/fish-card';
+import { FishCardComponent } from '@/components';
 
 export function FeaturedFish() {
   return (

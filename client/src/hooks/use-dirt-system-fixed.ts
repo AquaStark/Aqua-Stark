@@ -10,7 +10,19 @@ import {
   getDirtTypeConfig,
   calculateSpotIntensity,
   calculateSpotAge,
-} from '@/types/dirt';
+} from '@/types';
+
+/**
+ * @file use-dirt-system-fixed.ts
+ * @description
+ * A custom React hook for managing a dynamic "dirt" system within a virtual
+ * environment, such as a game or simulation. It handles the spawning, aging,
+ * cleaning, and removal of dirt spots, while also tracking various analytics
+ * and system metrics. This hook is designed to be highly configurable and
+ * provides a comprehensive API for controlling the system's behavior and state.
+ *
+ * @category Hooks
+ */
 
 const DEFAULT_CONFIG: DirtSystemConfig = {
   spawnInterval: 30000, // 30 seconds
@@ -36,6 +48,40 @@ const DEFAULT_CONFIG: DirtSystemConfig = {
   },
 };
 
+/**
+ * A custom hook for managing a dynamic dirt simulation system.
+ *
+ * This hook handles the complete lifecycle of dirt spots, from spawning to removal.
+ * It provides a robust API for controlling the system, including methods for
+ * manually spawning or removing spots, toggling the spawner, and getting real-time
+ * analytics and cleanliness metrics. The system is designed to be modular and
+ * configurable through the `config` object.
+ *
+ * @param {Partial<DirtSystemConfig>} [config={}] - Optional configuration to override default settings.
+ * @returns {{
+ * spots: DirtSpot[],
+ * isSpawnerActive: boolean,
+ * totalSpotsCreated: number,
+ * totalSpotsRemoved: number,
+ * cleanlinessScore: number,
+ * config: Readonly<DirtSystemConfig>,
+ * averageSpotAge: number,
+ * totalCleaningClicks: number,
+ * efficiency: number,
+ * dirtTypeStats: DirtSystemState['dirtTypeStats'],
+ * removeDirtSpot: (spotId: number) => void,
+ * forceSpawnSpot: (type?: DirtType) => boolean,
+ * toggleSpawner: () => void,
+ * clearAllSpots: () => void,
+ * updateAquariumBounds: (bounds: Pick<DirtSystemConfig['aquariumBounds'], 'width' | 'height'>) => void,
+ * updateConfig: (newConfig: Partial<DirtSystemConfig>) => void,
+ * handleSpotClick: (spotId: number, clickPosition: { x: number; y: number }) => void,
+ * getAnalytics: () => DirtSystemAnalytics,
+ * getSpotsByType: (type: DirtType) => DirtSpot[],
+ * getDirtCoverage: () => number,
+ * addEventListener: (listener: (event: DirtSystemEvent) => void) => () => void,
+ * }} An object containing the current state, configuration, and a set of handler functions.
+ */
 export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
   const [localConfig, setLocalConfig] = useState<DirtSystemConfig>(() => ({
     ...DEFAULT_CONFIG,
@@ -84,6 +130,11 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     }
   }, []);
 
+  /**
+   * Adds a new event listener to the dirt system.
+   * @param {(event: DirtSystemEvent) => void} listener - The function to call when an event is dispatched.
+   * @returns {() => void} A function to unsubscribe the listener.
+   */
   const addEventListener = useCallback(
     (listener: (event: DirtSystemEvent) => void) => {
       eventListenersRef.current.push(listener);
@@ -213,7 +264,12 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     };
   }
 
-  // Force spawn function for debugging
+  /**
+   * Forces the immediate spawning of a new dirt spot, bypassing the spawn interval.
+   * The new spot is added only if the maximum number of spots has not been reached.
+   * @param {DirtType} [type] - Optional dirt type to spawn. If not provided, a random type is selected.
+   * @returns {boolean} True if a new spot was spawned, false otherwise.
+   */
   const forceSpawnSpot = useCallback(
     (type?: DirtType) => {
       let didSpawn = false;
@@ -273,7 +329,10 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     ]
   );
 
-  // Remove dirt spot with enhanced tracking
+  /**
+   * Removes a dirt spot from the system by its ID.
+   * @param {number} spotId - The unique ID of the dirt spot to remove.
+   */
   const removeDirtSpot = useCallback(
     (spotId: number) => {
       setState(prev => {
@@ -335,7 +394,11 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     new Map()
   );
 
-  // Handle spot clicks (for difficulty mechanics)
+  /**
+   * Handles a click event on a dirt spot, updating its click count and potentially scheduling its removal.
+   * @param {number} spotId - The ID of the clicked dirt spot.
+   * @param {{ x: number; y: number }} clickPosition - The coordinates of the click.
+   */
   const handleSpotClick = useCallback(
     (spotId: number, clickPosition: { x: number; y: number }) => {
       setState(prev => {
@@ -380,7 +443,9 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     [dispatchEvent, removeDirtSpot]
   );
 
-  // Toggle spawner
+  /**
+   * Toggles the active state of the dirt spawner, enabling or disabling automatic spawning.
+   */
   const toggleSpawner = useCallback(() => {
     setState((prev: DirtSystemState) => {
       const newState = { ...prev, isSpawnerActive: !prev.isSpawnerActive };
@@ -394,7 +459,9 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     });
   }, [dispatchEvent]);
 
-  // Clear all spots
+  /**
+   * Removes all dirt spots from the system instantly, resetting the cleanliness score to 100.
+   */
   const clearAllSpots = useCallback(() => {
     setState((prev: DirtSystemState) => {
       const clearedCount = prev.spots.length;
@@ -463,7 +530,10 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     });
   }, [finalConfig]);
 
-  // Analytics
+  /**
+   * Retrieves a snapshot of the current system analytics.
+   * @returns {DirtSystemAnalytics} An object with performance metrics.
+   */
   const getAnalytics = useCallback((): DirtSystemAnalytics => {
     const sessionDuration = (Date.now() - state.sessionStartTime) / 1000 / 60; // minutes
     const spotsPerMinute =
@@ -492,7 +562,11 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     };
   }, [state]);
 
-  // Get spots by type
+  /**
+   * Filters and returns an array of dirt spots of a specific type.
+   * @param {DirtType} type - The dirt type to filter by.
+   * @returns {DirtSpot[]} An array of matching dirt spots.
+   */
   const getSpotsByType = useCallback(
     (type: DirtType) => {
       return state.spots.filter(spot => spot.type === type);
@@ -500,7 +574,10 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     [state.spots]
   );
 
-  // Calculate dirt coverage percentage
+  /**
+   * Calculates the current dirt coverage percentage based on the size of all active spots.
+   * @returns {number} The dirt coverage percentage (0-100).
+   */
   const getDirtCoverage = useCallback(() => {
     const totalArea =
       finalConfig.aquariumBounds.width * finalConfig.aquariumBounds.height;
@@ -617,9 +694,12 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     };
   }, [finalConfig.enableAging, updateSpotAging]);
 
-  // Update aquarium bounds
+  /**
+   * Updates the boundaries of the aquarium. This is useful for responsive designs.
+   * @param {Pick<DirtSystemConfig['aquariumBounds'], 'width' | 'height'>} bounds - The new width and height of the aquarium.
+   */
   const updateAquariumBounds = useCallback(
-    (bounds: DirtSystemConfig['aquariumBounds']) => {
+    (bounds: Pick<DirtSystemConfig['aquariumBounds'], 'width' | 'height'>) => {
       setLocalConfig(prev => ({
         ...prev,
         aquariumBounds: { ...prev.aquariumBounds, ...bounds },
@@ -628,7 +708,10 @@ export function useDirtSystemFixed(config: Partial<DirtSystemConfig> = {}) {
     []
   );
 
-  // Update configuration
+  /**
+   * Updates the system's configuration with new values.
+   * @param {Partial<DirtSystemConfig>} newConfig - An object containing the configuration properties to update.
+   */
   const updateConfig = useCallback((newConfig: Partial<DirtSystemConfig>) => {
     setLocalConfig(prev => ({ ...prev, ...newConfig }));
   }, []);

@@ -1,14 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Footer } from '@/components/layout/footer';
-import { PageHeader } from '@/components/layout/page-header';
+import { LayoutFooter } from '@/components';
+import { PageHeader } from '@/components';
 import { Tabs } from '@/components/ui/tabs';
-import EncyclopediaTabs from '@/components/encyclopedia/encyclopedia-tabs';
-import { useEncyclopedia } from '@/hooks/use-encyclopedia';
-import { BubblesBackground } from '@/components/bubble-background';
-import { useBubbles } from '@/hooks/use-bubbles';
-import { ComingSoonModal } from '@/components/ui/coming-soon-modal';
+import { EncyclopediaTabs } from '@/components';
+import { useEncyclopedia } from '@/hooks';
+import { BubblesBackground } from '@/components';
+import { useBubbles } from '@/hooks';
+import { ComingSoonModal } from '@/components';
 
 export default function EncyclopediaPage() {
   const [showComingSoon, setShowComingSoon] = useState(false);
@@ -48,7 +48,7 @@ export default function EncyclopediaPage() {
         </Tabs>
       </main>
 
-      <Footer />
+      <LayoutFooter />
 
       {/* Modal Coming Soon */}
       <ComingSoonModal

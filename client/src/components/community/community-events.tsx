@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { useCommunity } from '@/hooks/use-community';
+import { useCommunity } from '@/hooks';
 import {
   Filter,
   Calendar,
@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { FilterPanel } from './filter-panels/events';
 
-export default function CommunityEvents() {
+export function CommunityEvents() {
   const { showFilters, setShowFilters, eventFilters, sortedEvents } =
     useCommunity();
 

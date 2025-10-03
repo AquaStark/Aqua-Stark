@@ -1,14 +1,12 @@
 'use client';
 
 import React, { useRef, useState, useCallback, useEffect } from 'react';
-import type { FishType } from '@/types/game';
-import { useFishMovement } from '@/hooks/use-fish-movement';
+import type { FishType, FoodItem, Fish } from '@/types';
+import { useFishMovement } from '@/hooks';
 import { FishDisplay } from './fish-display';
-import { Food } from '@/components/food/Food';
-import { FoodParticles } from '@/components/food/FoodParticles';
-import type { FoodItem } from '@/types/food';
-import { Fish } from '@/types/fish';
-import { useFoodSystem } from '@/hooks/use-food-system';
+import { Food } from '@/components';
+import { FoodParticles } from '@/components';
+import { useFoodSystem } from '@/hooks';
 
 interface FeedingSystemProps {
   isFeeding: boolean;

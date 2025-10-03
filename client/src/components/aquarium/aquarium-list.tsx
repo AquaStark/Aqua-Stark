@@ -1,19 +1,6 @@
-import { AquariumCard } from './aquarium-card';
+import { AquariumCard } from '@/components';
 
-import type { Aquarium as AquariumCardType } from './aquarium-card';
-
-interface Aquarium extends Omit<AquariumCardType, 'fishes'> {
-  id: number;
-  name: string;
-  image: string;
-  level: number;
-  type: string;
-  health: number;
-  lastVisited: string;
-  fishCount: string;
-  rating: number;
-  isPremium?: boolean;
-}
+import type { Aquarium, Fish } from '@/types';
 
 interface AquariumListProps {
   aquariums: Aquarium[];
@@ -40,7 +27,10 @@ export function AquariumList({
           {aquariums.map(aquarium => (
             <AquariumCard
               key={aquarium.id}
-              aquarium={{ ...aquarium, fishes: (aquarium as any).fishes ?? [] }}
+              aquarium={{
+                ...aquarium,
+                fishes: (aquarium as Partial<{ fishes: Fish[] }>).fishes ?? [],
+              }}
               onSelect={() => onSelectAquarium?.(aquarium)}
             />
           ))}

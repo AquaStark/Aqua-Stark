@@ -1,37 +1,65 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import type { FishType } from '@/types/game';
-import type { FoodItem } from '@/types/food';
+import type { FishType, FoodItem } from '@/types';
 
+/**
+ * Configuration parameters that define a fish's movement characteristics.
+ */
 interface MovementParams {
+  /** Base swimming speed in pixels per second */
   speed: number;
+  /** Rate at which the fish can change direction */
   turnRate: number;
+  /** Parameters for darting behavior (sudden fast movements) */
   darting: {
+    /** Probability of darting behavior occurring per frame */
     probability: number;
+    /** Multiplier applied to base speed during darting */
     speedMultiplier: number;
+    /** Duration of darting behavior in seconds */
     duration: number;
   };
+  /** Parameters for hovering behavior (slow, floating movement) */
   hovering: {
+    /** Probability of hovering behavior occurring per frame */
     probability: number;
+    /** Duration of hovering behavior in seconds */
     duration: number;
+    /** Intensity multiplier for hovering movement */
     intensity: number;
   };
+  /** Padding distance from aquarium boundaries to prevent fish from getting stuck */
   boundaryPadding: number;
+  /** Radius in pixels within which fish can detect food */
   foodDetectionRadius: number;
+  /** Speed multiplier when moving toward food */
   feedingSpeed: number;
+  /** Minimum distance to target position to prevent excessive circling */
   minTargetDistance: number;
+  /** Cooldown time in seconds between direction changes */
   directionChangeCooldown: number;
+  /** Base energy level that affects swimming speed and behavior */
   baseEnergyLevel: number;
+  /** Amount of random variation in swimming patterns */
   swimmingVariation: number;
+  /** How likely the fish is to investigate food and explore */
   curiosityLevel: number;
 }
 
+/**
+ * Current state of an individual fish's movement simulation.
+ */
 interface FishMovementState {
+  /** Unique identifier for the fish */
   id: number;
+  /** Current position in pixel coordinates */
   position: { x: number; y: number };
+  /** Current velocity vector */
   velocity: { x: number; y: number };
+  /** Current target position the fish is moving toward */
   targetPosition: { x: number; y: number };
+  /** Current behavioral state affecting movement patterns */
   behaviorState:
     | 'idle'
     | 'darting'
@@ -40,31 +68,100 @@ interface FishMovementState {
     | 'feeding'
     | 'exploring'
     | 'playful';
+  /** Timer for current behavior state duration */
   behaviorTimer: number;
+  /** Whether the fish is facing left (for sprite rendering) */
   facingLeft: boolean;
+  /** Timestamp of last direction change to enforce cooldown */
   lastDirectionChangeTime: number;
+  /** Timer to detect if fish is stuck in one position */
   stuckTimer: number;
+  /** ID of currently targeted food item */
   targetFoodId?: number;
+  /** Cooldown timer after feeding to prevent immediate re-feeding */
   feedingCooldown: number;
+  /** Current direction change cooldown timer */
   directionChangeCooldown: number;
+  /** Last recorded X velocity for direction change detection */
   lastVelocityX: number;
+  /** Current energy level affecting speed and behavior */
   energyLevel: number;
+  /** Timer for exploration behavior cycles */
   explorationTimer: number;
+  /** Timer for playfulness behavior cycles */
   playfulnessTimer: number;
+  /** Current swimming pattern type */
   swimmingPattern: 'straight' | 'zigzag' | 'circular' | 'spiral';
+  /** Timer for swimming pattern duration */
   patternTimer: number;
-  // Add new fields to prevent feeding loops
+  /** ID of the last food item consumed to prevent targeting the same food repeatedly */
   lastFoodConsumedId?: number;
+  /** Number of consecutive feeding attempts on the same target */
   feedingAttempts: number;
+  /** Maximum allowed feeding attempts before giving up on a target */
   maxFeedingAttempts: number;
 }
 
+/**
+ * Options for configuring the fish movement simulation.
+ */
 interface UseFishMovementOptions {
+  /** Dimensions of the aquarium container */
   aquariumBounds: { width: number; height: number };
+  /** Current food items in the aquarium */
   foods?: FoodItem[];
+  /** Callback function invoked when a fish consumes food */
   onFoodConsumed?: (foodId: number) => void;
 }
 
+/**
+ * Custom hook that simulates realistic fish movement behaviors in an aquarium.
+ *
+ * This hook handles complex fish AI including:
+ * - Natural swimming patterns (straight, zigzag, circular, spiral)
+ * - Behavioral states (exploring, darting, hovering, feeding, playful)
+ * - Food detection and consumption with collision detection
+ * - Boundary avoidance and wall bouncing
+ * - Energy management affecting speed and behavior
+ * - Direction-based sprite flipping (facingLeft)
+ *
+ * The simulation runs at 60fps using requestAnimationFrame and automatically
+ * converts between percentage-based positions (for UI) and pixel-based positions (for physics).
+ *
+ * @param {FishType[]} initialFish - Array of fish data to initialize the simulation.
+ * @param {UseFishMovementOptions} options - Configuration options for the simulation.
+ * @param {Object} options.aquariumBounds - Dimensions of the aquarium container.
+ * @param {FoodItem[]} [options.foods=[]] - Current food items available in the aquarium.
+ * @param {(foodId: number) => void} [options.onFoodConsumed] - Callback when food is consumed.
+ *
+ * @returns {Array<{ id: number; position: { x: number; y: number }; facingLeft: boolean; behaviorState: string }>}
+ * An array of fish movement states with positions normalized to percentages (0-100).
+ *
+ * @example
+ * ```tsx
+ * const fishMovement = useFishMovement(fishData, {
+ *   aquariumBounds: { width: 800, height: 600 },
+ *   foods: currentFoods,
+ *   onFoodConsumed: (foodId) => {
+ *     // Update food state or player stats
+ *     removeFood(foodId);
+ *   }
+ * });
+ *
+ * return (
+ *   <Aquarium width={800} height={600}>
+ *     {fishMovement.map(fish => (
+ *       <FishSprite
+ *         key={fish.id}
+ *         position={fish.position}
+ *         facingLeft={fish.facingLeft}
+ *         behavior={fish.behaviorState}
+ *       />
+ *     ))}
+ *   </Aquarium>
+ * );
+ * ```
+ */
 export function useFishMovement(
   initialFish: FishType[],
   options: UseFishMovementOptions
@@ -79,6 +176,12 @@ export function useFishMovement(
   const lastUpdateTimeRef = useRef<number>(Date.now());
   const animationFrameRef = useRef<number | null>(null);
 
+  /**
+   * Initializes the movement state for a new fish based on its type and aquarium bounds.
+   *
+   * @param {FishType} fish - The fish data to initialize.
+   * @returns {FishMovementState} The initialized movement state.
+   */
   function initializeFishState(fish: FishType): FishMovementState {
     const angle = Math.random() * Math.PI * 2;
     const speed = 35 + Math.random() * 25;
@@ -126,6 +229,12 @@ export function useFishMovement(
     };
   }
 
+  /**
+   * Generates movement parameters based on fish rarity and characteristics.
+   *
+   * @param {FishType} fish - The fish type to generate parameters for.
+   * @returns {MovementParams} Configured movement parameters.
+   */
   function generateMovementParams(fish: FishType): MovementParams {
     const isExotic =
       fish.rarity.toLowerCase().includes('legendary') ||
@@ -156,6 +265,13 @@ export function useFishMovement(
     };
   }
 
+  /**
+   * Finds the nearest unconsumed food item within detection radius.
+   *
+   * @param {{ x: number; y: number }} fishPixelPos - Current fish position in pixels.
+   * @param {number} detectionRadius - Maximum distance to search for food.
+   * @returns {FoodItem | null} The nearest food item or null if none found.
+   */
   function findNearestFood(
     fishPixelPos: { x: number; y: number },
     detectionRadius: number
@@ -184,6 +300,12 @@ export function useFishMovement(
     return nearestFood;
   }
 
+  /**
+   * Checks if the fish has reached its target food item for consumption.
+   *
+   * @param {FishMovementState} fishState - Current fish movement state.
+   * @returns {boolean} True if the fish is close enough to consume the food.
+   */
   function checkFoodReached(fishState: FishMovementState): boolean {
     if (!fishState.targetFoodId) return false;
 
@@ -209,6 +331,13 @@ export function useFishMovement(
     return distance <= collisionRadius;
   }
 
+  /**
+   * Generates a safe target position that maintains minimum distance from current position.
+   *
+   * @param {{ x: number; y: number }} currentPos - Current position in pixels.
+   * @param {number} minDistance - Minimum distance the new target should be from current position.
+   * @returns {{ x: number; y: number }} A safe target position within aquarium bounds.
+   */
   function getSafeTargetPosition(
     currentPos: { x: number; y: number },
     minDistance: number
@@ -252,6 +381,13 @@ export function useFishMovement(
     };
   }
 
+  /**
+   * Applies the current swimming pattern to modify the base velocity vector.
+   *
+   * @param {FishMovementState} state - Current fish movement state.
+   * @param {{ x: number; y: number }} baseVelocity - Base velocity vector to modify.
+   * @returns {{ x: number; y: number }} Modified velocity vector with pattern applied.
+   */
   function applySwimmingPattern(
     state: FishMovementState,
     baseVelocity: { x: number; y: number }
@@ -297,6 +433,13 @@ export function useFishMovement(
     return modifiedVelocity;
   }
 
+  /**
+   * Updates all fish movement states based on elapsed time and current conditions.
+   *
+   * @param {FishMovementState[]} prevStates - Previous fish movement states.
+   * @param {number} deltaTime - Time elapsed since last update in seconds.
+   * @returns {FishMovementState[]} Updated fish movement states.
+   */
   function updateFishStates(
     prevStates: FishMovementState[],
     deltaTime: number

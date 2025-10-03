@@ -8,7 +8,7 @@ interface CollectionProgressProps {
   data: ProgressData;
 }
 
-export default function CollectionProgress({ data }: CollectionProgressProps) {
+export function CollectionProgress({ data }: CollectionProgressProps) {
   return (
     <div>
       <h2 className='mb-3 text-xl font-bold text-white'>Collection Progress</h2>

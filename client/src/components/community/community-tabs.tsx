@@ -2,10 +2,10 @@
 
 import { CalendarDays, Image, MessageSquare, Users } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import CommunityGallery from './community-gallery';
-import CommunityFriends from './community-friends';
-import CommunityForum from './community-forum';
-import CommunityEvents from './community-events';
+import { CommunityGallery } from '@/components';
+import { CommunityFriends } from '@/components';
+import { CommunityForum } from '@/components';
+import { CommunityEvents } from '@/components';
 
 interface CommunityTabsProps {
   activeTab: string;

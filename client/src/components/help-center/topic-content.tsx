@@ -1,8 +1,8 @@
 'use client';
 
 import { X } from 'lucide-react';
-import type { Category, Topic } from '@/types/help-types';
-import { renderTopicContent } from '@/components/help-center/content-renderer';
+import type { Category, Topic } from '@/types';
+import { RenderTopicContent } from '@/components';
 
 interface TopicContentProps {
   category?: Category;
@@ -10,7 +10,7 @@ interface TopicContentProps {
   onClose: () => void;
 }
 
-export default function TopicContent({ topic, onClose }: TopicContentProps) {
+export function TopicContent({ topic, onClose }: TopicContentProps) {
   return (
     <div>
       <div className='flex items-center justify-between mb-6'>
@@ -26,7 +26,7 @@ export default function TopicContent({ topic, onClose }: TopicContentProps) {
 
       <div className='text-white space-y-6'>
         <h3 className='text-3xl font-bold'>{topic.title}</h3>
-        <div className='text-blue-100'>{renderTopicContent(topic)}</div>
+        <div className='text-blue-100'>{RenderTopicContent(topic)}</div>
       </div>
     </div>
   );

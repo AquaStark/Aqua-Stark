@@ -6,7 +6,7 @@ import { mockFriends, mockSuggestions } from '@/data/mock-community';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 
-export default function CommunityFriends() {
+export function CommunityFriends() {
   const [searchQuery, setSearchQuery] = useState('');
   const filteredUsers = mockFriends.filter(user => {
     if (!user.username.toLowerCase().includes(searchQuery.toLowerCase())) {

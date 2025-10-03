@@ -15,6 +15,7 @@ import {
   Sparkles,
   Flame,
 } from 'lucide-react';
+import { CalendarEvent } from '@/types';
 
 // Moved utility function directly into component
 function formatDate(dateString: string): string {
@@ -25,8 +26,6 @@ function formatDate(dateString: string): string {
     year: 'numeric',
   });
 }
-
-import { CalendarEvent } from '@/types/events';
 
 interface EventDetailsModalProps {
   event: CalendarEvent;

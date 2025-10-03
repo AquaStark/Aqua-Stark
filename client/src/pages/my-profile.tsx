@@ -7,12 +7,12 @@ import {
   ProfileCard,
   ProfileTabs,
   FishCollection,
-  Achievements,
+  ProfileAchievements,
   PurchaseHistory,
   PlayerStatistics,
   BubblesBackground,
 } from '@/components/profile';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 
 export default function MyProfile() {
   const [activeTab, setActiveTab] = useState('collection');
@@ -73,7 +73,9 @@ export default function MyProfile() {
           {activeTab === 'collection' && (
             <FishCollection fishCollection={fishCollection} />
           )}
-          {activeTab === 'achievements' && <Achievements stats={stats} />}
+          {activeTab === 'achievements' && (
+            <ProfileAchievements stats={stats} />
+          )}
           {activeTab === 'purchase' && <PurchaseHistory />}
           <PlayerStatistics playerStats={playerStats} />
         </div>

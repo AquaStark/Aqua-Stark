@@ -1,7 +1,7 @@
 import { Habitat } from '@/data/encyclopedia-habitat';
 import { Check } from 'lucide-react';
 
-export default function HabitatCard({ habitat }: { habitat: Habitat }) {
+export function HabitatCard({ habitat }: { habitat: Habitat }) {
   return (
     <div className='bg-[#014eaa] backdrop-blur-sm rounded-lg text-white shadow-md'>
       <div

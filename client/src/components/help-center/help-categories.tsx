@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import type { Category } from '@/types/help-types';
+import type { Category } from '@/types';
 
 interface HelpCategoriesProps {
   categories: Category[];
@@ -9,7 +9,7 @@ interface HelpCategoriesProps {
   onCategoryClick: (categoryId: string) => void;
 }
 
-export default function HelpCategories({
+export function HelpCategories({
   categories,
   activeCategory,
   onCategoryClick,

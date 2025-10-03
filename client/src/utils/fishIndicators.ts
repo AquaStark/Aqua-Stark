@@ -4,7 +4,7 @@ import type {
   FishIndicatorState,
   IndicatorValue,
   HappinessWeights,
-} from '@/types/fishIndicators';
+} from '@/types';
 
 export const DEFAULT_OPTIONS: FishIndicatorOptions = {
   tickMs: 1000,

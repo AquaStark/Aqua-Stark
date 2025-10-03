@@ -1,15 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { ConnectButton } from '@/components/ui/connect-button';
+import { ConnectButton } from '@/components';
 import { LogOut } from 'lucide-react';
 import { useAccount, useDisconnect } from '@starknet-react/core';
-import { toast } from 'sonner';
+import { useNotifications } from '@/hooks';
 
 export function Navbar() {
   const [activeButton, setActiveButton] = useState<string | null>(null);
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+  const { info } = useNotifications();
 
   const handleDisconnectWallet = async () => {
     try {
@@ -26,7 +27,7 @@ export function Navbar() {
         window.location.href = '/store';
         break;
       case 'tutorial':
-        toast.info('Tutorial coming soon!');
+        info('Tutorial coming soon!');
         break;
       case 'settings':
         window.location.href = '/settings';

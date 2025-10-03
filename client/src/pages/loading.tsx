@@ -1,7 +1,7 @@
 'use client';
 
 import { useNavigate } from 'react-router-dom';
-import { LoadingScreen } from '@/components/loading/loading-screen';
+import { LoadingScreen } from '@/components';
 
 export default function LoadingPage() {
   const navigate = useNavigate();

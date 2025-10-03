@@ -2,16 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import { useAccount } from '@starknet-react/core';
-import { usePlayer } from '@/hooks/dojo/usePlayer';
-import { usePlayerValidation } from '@/hooks/usePlayerValidation';
-import { PageHeader } from '@/components/layout/page-header';
-import { Footer } from '@/components/layout/footer';
+import { usePlayer } from '@/hooks';
+import { usePlayerValidation } from '@/hooks';
+import { PageHeader } from '@/components';
+import { LayoutFooter } from '@/components';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { BubblesBackground } from '@/components/bubble-background';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { BubblesBackground } from '@/components';
+import { useBubbles } from '@/hooks';
+import { ErrorWithMessage } from '@/types';
 
 export default function Start() {
   const { account } = useAccount();
@@ -121,7 +122,8 @@ export default function Start() {
       console.error('Registration error:', error);
 
       // Check for specific error types
-      const errorMessage = (error as any)?.message || error?.toString() || '';
+      const errorMessage =
+        (error as ErrorWithMessage)?.message || error?.toString() || '';
 
       if (
         errorMessage.includes('USERNAME ALREADY TAKEN') ||
@@ -285,7 +287,7 @@ export default function Start() {
       </main>
 
       {/* Sticky, blurred footer */}
-      <Footer className='bg-blue-900/60 backdrop-blur-md border-t border-blue-400/30 fixed bottom-0 left-0 w-full z-40' />
+      <LayoutFooter className='bg-blue-900/60 backdrop-blur-md border-t border-blue-400/30 fixed bottom-0 left-0 w-full z-40' />
     </div>
   );
 }

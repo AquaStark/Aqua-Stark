@@ -11,26 +11,52 @@
     "lint:fix": "eslint src/ --fix",
     "format": "prettier --write src/",
     "format:check": "prettier --check src/",
+    "docs": "jsdoc -c jsdoc.json",
+    "docs:serve": "npx http-server docs/controllers -p 3002",
+    "docs:auto": "npm run docs && npm run docs:serve",
     "audit": "npm audit --audit-level=moderate",
     "audit:fix": "npm audit fix",
-    "validate": "npm run lint && npm run format:check"
+    "validate": "npm run lint && npm run format:check",
+    "docs:validate": "node scripts/validate-docs.js",
+    "docs:generate": "node scripts/generate-docs.js",
+    "docs:build": "npm run docs:validate && npm run docs:generate",
+    "metadata:update": "node scripts/update-service-metadata.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "helmet": "^7.1.0",
-    "compression": "^1.7.4",
-    "morgan": "^1.10.0",
-    "dotenv": "^16.3.1",
-    "ws": "^8.14.2",
-    "redis": "^4.6.10",
     "@supabase/supabase-js": "^2.38.4",
-    "jsonwebtoken": "^9.0.2"
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "pino": "^9.9.5",
+    "redis": "^4.6.10",
+    "ws": "^8.14.2",
+    "zod": "^4.1.7"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2",
     "eslint": "^8.55.0",
-    "prettier": "^3.1.0"
+    "nodemon": "^3.0.2",
+    "pino-pretty": "^13.1.1",
+    "prettier": "^3.1.0",
+    "supabase": "^2.40.7",
+    "jsdoc": "^4.0.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "eslint-plugin-jsdoc": "^48.0.2"
+  },
+  "lint-staged": {
+    "src/controllers/*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "keywords": [
     "aqua-stark",
@@ -41,6 +67,9 @@
     "redis",
     "websocket"
   ],
+  "engines": {
+    "node": ">=16"
+  },
   "author": "Aqua Stark Team",
   "license": "MIT"
 }

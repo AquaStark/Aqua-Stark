@@ -1,8 +1,8 @@
-import type { ContentSection, Topic } from '@/types/help-types';
+import type { ContentSection, Topic } from '@/types';
 import { UtensilsCrossed } from 'lucide-react';
 import { getIcon } from '@/components/help-center/icon-mapper';
 
-export function renderTopicContent(topic: Topic) {
+export function RenderTopicContent(topic: Topic) {
   return (
     <div className='space-y-6'>
       {topic.sections.map((section, index) => (

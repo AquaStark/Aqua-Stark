@@ -5,15 +5,17 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { BubblesBackground } from '@/components/bubble-background';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { BubblesBackground } from '@/components';
+import { useBubbles } from '@/hooks';
 import { FishCard } from '@/components/ui/fish-card/fish-card';
-import { useAquarium } from '@/hooks/dojo/useAquarium';
+import { useAquarium } from '@/hooks/dojo';
 import { useAccount } from '@starknet-react/core';
 import { toast } from 'sonner';
-import { useFish } from '@/hooks/dojo/useFish';
+import { useFish } from '@/hooks';
 import { CairoCustomEnum } from 'starknet';
 import { SpeciesEnum } from '@/typescript/models.gen';
+import { WalletAccount } from '@/types';
+// Removed unused import
 
 // This map connects your frontend IDs to Cairo enum variants
 const fishEnumMap: Record<number, SpeciesEnum> = {
@@ -91,7 +93,7 @@ export default function Onboarding() {
   };
 
   //  Create Aquarium
-  const createNewAquarium = async (account: any) => {
+  const createNewAquarium = async (account: WalletAccount) => {
     toast.success('Aquarium created successfully!');
 
     const aquariums = await getPlayerAquariums(account.address);
@@ -100,7 +102,7 @@ export default function Onboarding() {
   };
 
   const createNewFish = async (
-    account: any,
+    account: WalletAccount,
     aquariumId: bigint,
     fishId: number,
     order: string
@@ -112,7 +114,7 @@ export default function Onboarding() {
         return null;
       }
 
-      const tx = await newFish(account, aquariumId, speciesenum);
+      const tx = await newFish(account as any, aquariumId, speciesenum);
 
       return { success: true, transactionHash: tx.transaction_hash };
     } catch (error: unknown) {
@@ -139,14 +141,14 @@ export default function Onboarding() {
     }
 
     try {
-      const aquariumId = await createNewAquarium(account);
+      const aquariumId = await createNewAquarium(account as any);
       if (!aquariumId) throw new Error("Couldn't create aquarium");
 
       for (let i = 0; i < 2; i++) {
         const order = i === 0 ? 'First' : 'Second';
 
         const result = await createNewFish(
-          account,
+          account as any,
           BigInt(aquariumId),
           selectedFish[i],
           order

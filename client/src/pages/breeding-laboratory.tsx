@@ -5,12 +5,12 @@ import { LaboratoryTabs } from '@/components/laboratory/laboratory-tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Beaker, Search } from 'lucide-react';
-import { BubblesBackground } from '@/components/bubble-background';
+import { BubblesBackground } from '@/components';
 import { fishCollection } from '@/data/fish-data';
 import '@/styles/laboratory.css';
-import { Footer } from '@/components/layout/footer';
-import { PageHeader } from '@/components/layout/page-header';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { LayoutFooter } from '@/components';
+import { PageHeader } from '@/components';
+import { useBubbles } from '@/hooks';
 
 export default function LaboratoryPage() {
   const [activeTab, setActiveTab] = useState('breeding');
@@ -64,7 +64,7 @@ export default function LaboratoryPage() {
       </main>
 
       <div className='relative z-10 mt-auto'>
-        <Footer />
+        <LayoutFooter />
       </div>
     </div>
   );

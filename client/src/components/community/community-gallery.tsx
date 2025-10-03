@@ -6,10 +6,10 @@ import {
   ShareIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useCommunity } from '@/hooks/use-community';
+import { useCommunity } from '@/hooks';
 import { FilterPanel } from './filter-panels/gallery';
 
-function CommunityGallery() {
+export function CommunityGallery() {
   const { sortedAquariums, filters, showFilters, setShowFilters } =
     useCommunity();
 
@@ -139,5 +139,3 @@ function CommunityGallery() {
     </div>
   );
 }
-
-export default CommunityGallery;

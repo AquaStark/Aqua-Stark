@@ -1,11 +1,11 @@
 'use client';
 
-import { BubblesBackground } from '@/components/bubble-background';
-import { FeaturedFish } from '@/components/landing/featured-fish';
-import { Footer } from '@/components/landing/footer';
+import { BubblesBackground } from '@/components';
+import { FeaturedFish } from '@/components';
+import { Footer } from '@/components';
 import { HeroSection } from '@/components/landing/hero-section';
 import { Navbar } from '@/components/landing/navbar';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 
 export default function LandingPage() {
   // Bubbles configuration for background effect

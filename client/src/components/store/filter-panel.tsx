@@ -21,7 +21,7 @@ interface FilterPanelProps {
   onClose: () => void;
 }
 
-export function FilterPanel({
+export function StoreFilterPanel({
   priceRange,
   categories,
   updatePriceRange,

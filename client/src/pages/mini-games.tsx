@@ -1,10 +1,10 @@
 'use client';
 
-import { PageHeader } from '@/components/layout/page-header';
-import { Footer } from '@/components/layout/footer';
-import { SelectedFishPanel } from '@/components/mini-games/selected-fish-panel';
-import { GameGrid } from '@/components/mini-games/game-grid';
-import { useGames } from '@/hooks/use-games';
+import { PageHeader } from '@/components';
+import { LayoutFooter } from '@/components';
+import { SelectedFishPanel } from '@/components';
+import { GameGrid } from '@/components';
+import { useGames } from '@/hooks';
 
 export default function GamesPage() {
   const {
@@ -41,7 +41,7 @@ export default function GamesPage() {
         <GameGrid games={allGames} onGameSelect={handleGameClick} />
       </main>
 
-      <Footer />
+      <LayoutFooter />
     </div>
   );
 }

@@ -1,21 +1,11 @@
 import { motion } from 'framer-motion';
-import BundleItem from '@/components/store/bundle-item';
+import { BundleItem } from '@/components';
 import { Package, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+import { ShopBundle } from '@/types/shop-types';
 
 interface BundleGridProps {
-  bundles: Array<{
-    id: string;
-    name: string;
-    image: string;
-    price: number;
-    originalPrice: number;
-    discount: string;
-    tag: string;
-    rarity: string;
-    items: string[];
-    description: string;
-  }>;
+  bundles: ShopBundle[];
 }
 
 export function BundleGrid({ bundles }: BundleGridProps) {

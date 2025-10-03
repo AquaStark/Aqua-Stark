@@ -1,10 +1,14 @@
 import { useAccount, useConnect, useDisconnect } from '@starknet-react/core';
+import { WalletConnector } from '@/types';
+import { useNotifications, useLocalStorage } from '@/hooks';
 
 export function WalletConnection() {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
-  const handleConnect = async (connector: any) => {
+  const { error } = useNotifications();
+  const { set } = useLocalStorage('aqua-');
+  const handleConnect = async (connector: WalletConnector) => {
     try {
       await connect({ connector });
       // Initialize gaming session
@@ -13,11 +17,12 @@ export function WalletConnection() {
         permissions: ['game_actions', 'asset_transfer'],
         expiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
       };
-      localStorage.setItem('aqua-stark-session', JSON.stringify(sessionData));
-    } catch (error) {
-      console.error('Wallet connection failed:', error);
+      // Store session data using unified storage helper
+      set('aqua-stark-session', sessionData, { forceJsonStringify: true });
+    } catch (err) {
+      console.error('Wallet connection failed:', err);
       // Add user-friendly error feedback
-      alert('Failed to connect wallet. Please try again.');
+      error('Failed to connect wallet. Please try again.');
     }
   };
 

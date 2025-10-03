@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useBubbles } from '@/hooks/use-bubbles';
+import { useBubbles } from '@/hooks';
 import { BubblesBackground } from '@/components/bubble-background';
 
 interface LoadingScreenProps {
@@ -8,6 +8,10 @@ interface LoadingScreenProps {
   duration?: number;
   showTips?: boolean;
   customText?: string;
+  customSteps?: LoadingStep[];
+  progress?: number;
+  currentStep?: string;
+  isComplete?: boolean;
 }
 
 interface LoadingStep {
@@ -39,10 +43,23 @@ export function LoadingScreen({
   duration = 8000,
   showTips = true,
   customText,
+  customSteps,
+  progress: externalProgress,
+  currentStep: externalCurrentStep,
+  isComplete: externalIsComplete,
 }: LoadingScreenProps) {
-  const [progress, setProgress] = useState(0);
-  const [currentText, setCurrentText] = useState('Initializing AquaStark...');
+  const [internalProgress, setInternalProgress] = useState(0);
+  const [internalCurrentText, setInternalCurrentText] = useState(
+    'Initializing AquaStark...'
+  );
   const [currentTip, setCurrentTip] = useState(LOADING_TIPS[0]);
+
+  // Use external values if provided, otherwise use internal state
+  const progress =
+    externalProgress !== undefined ? externalProgress : internalProgress;
+  const currentText = externalCurrentStep || internalCurrentText;
+  const isComplete =
+    externalIsComplete !== undefined ? externalIsComplete : false;
 
   // Enhanced bubbles for loading screen
   const bubbles = useBubbles({
@@ -55,11 +72,18 @@ export function LoadingScreen({
     interval: 800,
   });
 
-  // Progress simulation
+  // Progress simulation (only if external progress is not provided)
   useEffect(() => {
-    const steps = customText
-      ? [{ progress: 100, text: customText, duration }]
-      : DEFAULT_LOADING_STEPS;
+    if (externalProgress !== undefined) {
+      // External progress is being managed, don't run internal simulation
+      return;
+    }
+
+    const steps =
+      customSteps ||
+      (customText
+        ? [{ progress: 100, text: customText, duration }]
+        : DEFAULT_LOADING_STEPS);
     const startTime = Date.now();
 
     const updateProgress = () => {
@@ -89,8 +113,8 @@ export function LoadingScreen({
           .slice(0, steps.indexOf(targetStep))
           .reduce((sum, step) => sum + step.progress, 0);
 
-      setProgress(Math.min(currentProgress, 100));
-      setCurrentText(targetStep.text);
+      setInternalProgress(Math.min(currentProgress, 100));
+      setInternalCurrentText(targetStep.text);
 
       if (progressRatio < 1) {
         requestAnimationFrame(updateProgress);
@@ -102,7 +126,16 @@ export function LoadingScreen({
     };
 
     requestAnimationFrame(updateProgress);
-  }, [duration, customText, onComplete]);
+  }, [customText, customSteps, duration, onComplete, externalProgress]);
+
+  // Handle external completion
+  useEffect(() => {
+    if (isComplete && onComplete) {
+      setTimeout(() => {
+        onComplete();
+      }, 1000);
+    }
+  }, [isComplete, onComplete]);
 
   // Rotate tips
   useEffect(() => {

@@ -2,11 +2,11 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Heart, Dna, Sparkles, FileText } from 'lucide-react';
-import { BreedingTab } from '@/components/laboratory/tabs/breeding-tab';
-import { GeneticsTab } from '@/components/laboratory/tabs/genetics-tab';
-import { DiscoveriesTab } from '@/components/laboratory/tabs/discoveries-tab';
-import { GenealogyTab } from '@/components/laboratory/tabs/genealogy-tab';
-import type { Fish } from '@/types/fish';
+import { BreedingTab } from '@/components';
+import { GeneticsTab } from '@/components';
+import { DiscoveriesTab } from '@/components';
+import { GenealogyTab } from '@/components';
+import type { Fish } from '@/types';
 
 interface LaboratoryTabsProps {
   activeTab: string;

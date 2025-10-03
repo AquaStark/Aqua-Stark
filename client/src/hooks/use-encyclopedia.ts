@@ -1,7 +1,26 @@
+/**
+ * @file use-encyclopedia.ts
+ * @description Custom hook for managing the state and logic of a fish encyclopedia.
+ * It handles filtering, sorting, and displaying fish species data.
+ * @category Hooks
+ */
+
 import { useState } from 'react';
 import { fishSpecies } from '@/data/encyclopedia-data';
 import type { FishSpecies } from '@/data/encyclopedia-data';
+import { useDebounce } from './use-debounce';
 
+/**
+ * @typedef {object} EncyclopediaFilters
+ * @property {string} search - The search query string for filtering by name or scientific name.
+ * @property {string[]} rarity - An array of rarity levels to filter by.
+ * @property {string[]} habitat - An array of habitats to filter by.
+ * @property {string[]} diet - An array of diets to filter by.
+ * @property {string[]} temperament - An array of temperaments to filter by.
+ * @property {string[]} careLevel - An array of care levels to filter by.
+ * @property {'all' | 'discovered' | 'undiscovered'} discovered - The discovery status to filter by.
+ * @property {'name' | 'rarity' | 'recent'} sort - The criteria for sorting the fish list.
+ */
 export interface EncyclopediaFilters {
   search: string;
   rarity: string[];
@@ -13,6 +32,32 @@ export interface EncyclopediaFilters {
   sort: 'name' | 'rarity' | 'recent';
 }
 
+/**
+ * @function useEncyclopedia
+ * @description
+ * A custom hook for managing the state and logic of an interactive encyclopedia
+ * of fish species. It provides functionalities for filtering, sorting,
+ * and viewing details of different fish.
+ *
+ * @returns {{
+ * activeTab: string,
+ * setActiveTab: (tab: string) => void,
+ * selectedFish: FishSpecies | null,
+ * setSelectedFish: (fish: FishSpecies | null) => void,
+ * showFishDetails: boolean,
+ * setShowFishDetails: (show: boolean) => void,
+ * showFilters: boolean,
+ * setShowFilters: (show: boolean) => void,
+ * filters: EncyclopediaFilters,
+ * setFilters: (filters: EncyclopediaFilters) => void,
+ * filteredFish: FishSpecies[],
+ * sortedFish: FishSpecies[],
+ * discoveredSpecies: number,
+ * totalSpecies: number,
+ * handleFishClick: (fish: FishSpecies) => void,
+ * resetFilters: () => void,
+ * }} An object containing the encyclopedia's state and functions to interact with it.
+ */
 export const useEncyclopedia = () => {
   const [activeTab, setActiveTab] = useState('catalog');
   const [selectedFish, setSelectedFish] = useState<FishSpecies | null>(null);
@@ -29,11 +74,24 @@ export const useEncyclopedia = () => {
     sort: 'name',
   });
 
+  // Debounce search query for better performance
+  const { debouncedValue: debouncedSearch } = useDebounce(filters.search, {
+    delay: 300,
+  });
+
+  /**
+   * @function filteredFish
+   * @description
+   * Filters the main `fishSpecies` array based on the current filters state.
+   * The search filter is debounced for performance.
+   *
+   * @returns {FishSpecies[]} An array of fish species that match all active filters.
+   */
   const filteredFish = fishSpecies.filter(fish => {
     if (
-      filters.search &&
-      !fish.name.toLowerCase().includes(filters.search.toLowerCase()) &&
-      !fish.scientificName.toLowerCase().includes(filters.search.toLowerCase())
+      debouncedSearch &&
+      !fish.name.toLowerCase().includes(debouncedSearch.toLowerCase()) &&
+      !fish.scientificName.toLowerCase().includes(debouncedSearch.toLowerCase())
     ) {
       return false;
     }
@@ -58,6 +116,13 @@ export const useEncyclopedia = () => {
     return true;
   });
 
+  /**
+   * @function sortedFish
+   * @description
+   * Sorts the `filteredFish` array based on the current sorting criteria.
+   *
+   * @returns {FishSpecies[]} A sorted array of fish species.
+   */
   const sortedFish = [...filteredFish].sort((a, b) => {
     switch (filters.sort) {
       case 'name': {
@@ -88,14 +153,41 @@ export const useEncyclopedia = () => {
     }
   });
 
+  /**
+   * @function discoveredSpecies
+   * @description
+   * Calculates the number of discovered fish species.
+   *
+   * @returns {number} The count of discovered species.
+   */
   const discoveredSpecies = fishSpecies.filter(fish => fish.discovered).length;
+
+  /**
+   * @function totalSpecies
+   * @description
+   * Gets the total number of fish species available.
+   *
+   * @returns {number} The total count of fish species.
+   */
   const totalSpecies = fishSpecies.length;
 
+  /**
+   * @function handleFishClick
+   * @description
+   * Sets the selected fish and shows the details panel.
+   *
+   * @param {FishSpecies} fish - The fish species to display details for.
+   */
   const handleFishClick = (fish: FishSpecies) => {
     setSelectedFish(fish);
     setShowFishDetails(true);
   };
 
+  /**
+   * @function resetFilters
+   * @description
+   * Resets all filters to their default state.
+   */
   const resetFilters = () => {
     setFilters({
       search: '',

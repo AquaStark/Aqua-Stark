@@ -15,7 +15,7 @@ import {
   Palette,
   Trophy,
 } from 'lucide-react';
-import type { IconType } from '@/types/help-types';
+import type { IconType } from '@/types';
 
 export function getIcon(
   iconType: IconType,
