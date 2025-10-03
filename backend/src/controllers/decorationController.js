@@ -1,9 +1,36 @@
 import { DecorationService } from '../services/decorationService.js';
 import { loggingMiddleware } from '../middleware/logging.js';
 
-// Decoration controller for handling HTTP requests related to decoration operations
+/**
+ * Decoration Controller
+ *
+ * Handles HTTP requests related to aquarium decoration operations including
+ * state management, placement, positioning, visibility, and bulk operations.
+ *
+ * All methods follow a consistent response format:
+ * - Success: { success: true, data: result, message?: string }
+ * - Error: { error: string }
+ *
+ * @class DecorationController
+ */
 export class DecorationController {
-  // Get decoration state
+  /**
+   * Get decoration state
+   *
+   * Retrieves the current state of a specific decoration.
+   * The resource is pre-validated by ownership middleware.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.resource - Pre-validated decoration resource from middleware
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with decoration state data
+   *
+   * @example
+   * // GET /api/decorations/123/state
+   * // Response: { success: true, data: { decorationId: "123", positionX: 100, ... } }
+   */
   static async getDecorationState(req, res) {
     try {
       // Resource is already validated by ownership middleware
@@ -23,7 +50,27 @@ export class DecorationController {
     }
   }
 
-  // Create new decoration state
+  /**
+   * Create new decoration state
+   *
+   * Creates a new decoration state for a player, optionally associating it with an aquarium.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.body - Request body
+   * @param {string} req.body.decorationId - Unique decoration identifier
+   * @param {string} [req.body.aquariumId] - Optional aquarium ID to associate with
+   * @param {Object} req.user - Authenticated user data
+   * @param {string} req.user.playerId - Authenticated player's ID
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with created decoration data
+   *
+   * @example
+   * // POST /api/decorations
+   * // Body: { decorationId: "123", aquariumId: "456" }
+   * // Response: { success: true, data: { ... }, message: "Decoration state created successfully" }
+   */
   static async createDecorationState(req, res) {
     try {
       const { decorationId, aquariumId } = req.body;
@@ -54,7 +101,26 @@ export class DecorationController {
     }
   }
 
-  // Get all decorations for a player
+  /**
+   * Get all decorations for a player
+   *
+   * Retrieves all decorations belonging to a specific player.
+   * Players can only access their own decorations.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.playerId - Player ID from URL
+   * @param {Object} req.user - Authenticated user data
+   * @param {string} req.user.playerId - Authenticated player's ID
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with array of player's decorations
+   *
+   * @example
+   * // GET /api/players/123/decorations
+   * // Response: { success: true, data: [{ decorationId: "456", type: "plant", ... }, ...] }
+   */
   static async getPlayerDecorations(req, res) {
     try {
       const { playerId } = req.params;
@@ -82,7 +148,23 @@ export class DecorationController {
     }
   }
 
-  // Get decorations for a specific aquarium
+  /**
+   * Get decorations in a specific aquarium
+   *
+   * Retrieves all decorations currently placed in a specific aquarium.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.aquariumId - Aquarium ID from URL
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with array of aquarium decorations
+   *
+   * @example
+   * // GET /api/aquariums/456/decorations
+   * // Response: { success: true, data: [{ decorationId: "123", positionX: 100, ... }, ...] }
+   */
   static async getAquariumDecorations(req, res) {
     try {
       const { aquariumId } = req.params;
@@ -110,7 +192,29 @@ export class DecorationController {
     }
   }
 
-  // Place decoration in aquarium
+  /**
+   * Place decoration in aquarium
+   *
+   * Places a decoration at a specific position in an aquarium with optional rotation.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.decorationId - Decoration ID from URL
+   * @param {Object} req.body - Request body
+   * @param {string} req.body.aquariumId - Aquarium ID to place decoration in
+   * @param {number} req.body.positionX - X coordinate position
+   * @param {number} req.body.positionY - Y coordinate position
+   * @param {number} [req.body.rotationDegrees=0] - Rotation angle in degrees
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with placed decoration data
+   *
+   * @example
+   * // PUT /api/decorations/123/place
+   * // Body: { aquariumId: "456", positionX: 100, positionY: 200, rotationDegrees: 45 }
+   * // Response: { success: true, data: { ... }, message: "Decoration placed successfully" }
+   */
   static async placeDecoration(req, res) {
     try {
       const { decorationId } = req.params;
@@ -148,7 +252,23 @@ export class DecorationController {
     }
   }
 
-  // Remove decoration from aquarium
+  /**
+   * Remove decoration from aquarium
+   *
+   * Removes a decoration from its current aquarium placement.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.decorationId - Decoration ID from URL
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with removed decoration data
+   *
+   * @example
+   * // DELETE /api/decorations/123
+   * // Response: { success: true, data: { ... }, message: "Decoration removed successfully" }
+   */
   static async removeDecoration(req, res) {
     try {
       const { decorationId } = req.params;
@@ -173,7 +293,28 @@ export class DecorationController {
     }
   }
 
-  // Update decoration position
+  /**
+   * Update decoration position
+   *
+   * Updates the position and rotation of a decoration within its aquarium.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.decorationId - Decoration ID from URL
+   * @param {Object} req.body - Request body
+   * @param {number} req.body.positionX - New X coordinate position
+   * @param {number} req.body.positionY - New Y coordinate position
+   * @param {number} [req.body.rotationDegrees=0] - New rotation angle in degrees
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with updated decoration data
+   *
+   * @example
+   * // PUT /api/decorations/123/position
+   * // Body: { positionX: 150, positionY: 250, rotationDegrees: 90 }
+   * // Response: { success: true, data: { ... }, message: "Decoration position updated successfully" }
+   */
   static async updateDecorationPosition(req, res) {
     try {
       const { decorationId } = req.params;
@@ -214,7 +355,23 @@ export class DecorationController {
     }
   }
 
-  // Toggle decoration visibility
+  /**
+   * Toggle decoration visibility
+   *
+   * Toggles the visibility state of a decoration (show/hide).
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.decorationId - Decoration ID from URL
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with updated decoration data
+   *
+   * @example
+   * // PUT /api/decorations/123/visibility
+   * // Response: { success: true, data: { ... }, message: "Decoration visibility enabled" }
+   */
   static async toggleDecorationVisibility(req, res) {
     try {
       const { decorationId } = req.params;
@@ -242,7 +399,27 @@ export class DecorationController {
     }
   }
 
-  // Move decoration to new position
+  /**
+   * Move decoration between aquariums
+   *
+   * Moves a decoration from one aquarium to another.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.decorationId - Decoration ID from URL
+   * @param {Object} req.body - Request body
+   * @param {string} req.body.fromAquariumId - Source aquarium ID
+   * @param {string} req.body.toAquariumId - Destination aquarium ID
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with moved decoration data
+   *
+   * @example
+   * // PUT /api/decorations/123/move
+   * // Body: { fromAquariumId: "456", toAquariumId: "789" }
+   * // Response: { success: true, data: { ... }, message: "Decoration moved successfully" }
+   */
   static async moveDecoration(req, res) {
     try {
       const { decorationId } = req.params;
@@ -280,7 +457,26 @@ export class DecorationController {
     }
   }
 
-  // Get player decoration statistics
+  /**
+   * Get decoration statistics for a player
+   *
+   * Retrieves aggregated statistics about a player's decorations.
+   * Players can only access their own decoration statistics.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.params - Request parameters
+   * @param {string} req.params.playerId - Player ID from URL
+   * @param {Object} req.user - Authenticated user data
+   * @param {string} req.user.playerId - Authenticated player's ID
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with decoration statistics
+   *
+   * @example
+   * // GET /api/players/123/decorations/stats
+   * // Response: { success: true, data: { totalDecorations: 15, byType: {...}, ... } }
+   */
   static async getPlayerDecorationStats(req, res) {
     try {
       const { playerId } = req.params;
@@ -310,7 +506,34 @@ export class DecorationController {
     }
   }
 
-  // Bulk update decoration positions
+  /**
+   * Bulk update decoration positions
+   *
+   * Updates positions for multiple decorations in a single request.
+   * Useful for drag-and-drop operations. Validates ownership of all decorations.
+   *
+   * @static
+   * @async
+   * @param {Object} req - Express request object
+   * @param {Object} req.body - Request body
+   * @param {Array} req.body.decorations - Array of decoration updates
+   * @param {string} req.body.decorations[].decorationId - Decoration ID
+   * @param {number} req.body.decorations[].positionX - New X position
+   * @param {number} req.body.decorations[].positionY - New Y position
+   * @param {number} [req.body.decorations[].rotationDegrees=0] - New rotation
+   * @param {Object} req.user - Authenticated user data
+   * @param {string} req.user.playerId - Authenticated player's ID
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with updated decorations array
+   *
+   * @example
+   * // PUT /api/decorations/bulk-update
+   * // Body: { decorations: [
+   * //   { decorationId: "123", positionX: 100, positionY: 200 },
+   * //   { decorationId: "456", positionX: 150, positionY: 250, rotationDegrees: 45 }
+   * // ]}
+   * // Response: { success: true, data: [...], message: "2 decorations updated successfully" }
+   */
   static async bulkUpdatePositions(req, res) {
     try {
       const { updates } = req.body;
