@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { MarketFilters } from '@/types/shop-types';
 import { useMarketStore } from '@/store/market-store';
 
-export function FilterPanel() {
+export function MarketFilterPanel() {
   const { filters, setFilters, resetFilters } = useMarketStore();
 
   return (

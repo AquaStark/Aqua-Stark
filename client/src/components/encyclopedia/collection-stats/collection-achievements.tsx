@@ -13,7 +13,7 @@ interface CollectionAchievementsProps {
   achievements: Achievement[];
 }
 
-export default function CollectionAchievements({
+export function CollectionAchievements({
   achievements,
 }: CollectionAchievementsProps) {
   return (

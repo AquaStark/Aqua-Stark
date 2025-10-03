@@ -10,10 +10,7 @@ interface BreakdownSectionProps {
   items: BreakdownItem[];
 }
 
-export default function BreakdownSection({
-  title,
-  items,
-}: BreakdownSectionProps) {
+export function BreakdownSection({ title, items }: BreakdownSectionProps) {
   return (
     <div>
       <h3 className='mb-4 text-lg font-bold text-white'>{title}</h3>

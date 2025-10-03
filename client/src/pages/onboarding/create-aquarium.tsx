@@ -5,14 +5,14 @@ import { useState, useEffect } from 'react';
 import { CairoCustomEnum } from 'starknet';
 import { useAquarium } from '@/hooks/dojo';
 import { useFish } from '@/hooks';
-import { PageHeader } from '@/components/layout/page-header';
-import { Footer } from '@/components/layout/footer';
-import { BubblesBackground } from '@/components/bubble-background';
+import { PageHeader } from '@/components';
+import { LayoutFooter } from '@/components';
+import { BubblesBackground } from '@/components';
 import { useBubbles } from '@/hooks';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
-import { ComingSoonModal } from '@/components/ui/coming-soon-modal';
+import { ComingSoonModal } from '@/components';
 
 const fishImages: Record<string, string> = {
   AngelFish: '/fish/fish1.png',
@@ -181,7 +181,7 @@ export default function CreateAquarium() {
         </div>
       </main>
 
-      <Footer className='bg-blue-900/60 backdrop-blur-md border-t border-blue-400/30 fixed bottom-0 left-0 w-full' />
+      <LayoutFooter className='bg-blue-900/60 backdrop-blur-md border-t border-blue-400/30 fixed bottom-0 left-0 w-full' />
 
       {/* Modal Coming Soon */}
       <ComingSoonModal

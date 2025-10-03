@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
+import { Card } from '@/components';
+import { Switch } from '@/components';
 
 import {
   Select,
@@ -13,10 +13,10 @@ import {
 } from '@/components/ui/select';
 import { Volume2, Eye, Bell, Globe, Palette, Zap } from 'lucide-react';
 
-import { BubblesBackground } from '@/components/bubble-background';
-import { PageHeader } from '@/components/layout/page-header';
+import { BubblesBackground } from '@/components';
+import { PageHeader } from '@/components';
 
-import { Footer } from '@/components/layout/footer';
+import { LayoutFooter } from '@/components';
 
 import { useSettings } from '@/hooks';
 import { SettingsState } from '@/hooks/use-settings';
@@ -271,7 +271,7 @@ const SettingsPage = () => {
         </div>
       </main>
 
-      <Footer />
+      <LayoutFooter />
     </div>
   );
 };

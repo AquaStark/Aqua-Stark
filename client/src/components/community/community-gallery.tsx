@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { useCommunity } from '@/hooks';
 import { FilterPanel } from './filter-panels/gallery';
 
-function CommunityGallery() {
+export function CommunityGallery() {
   const { sortedAquariums, filters, showFilters, setShowFilters } =
     useCommunity();
 
@@ -139,5 +139,3 @@ function CommunityGallery() {
     </div>
   );
 }
-
-export default CommunityGallery;

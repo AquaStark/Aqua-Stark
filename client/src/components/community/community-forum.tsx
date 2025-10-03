@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Search, Sparkles, Eye, MessageSquare } from 'lucide-react';
 import { popularCategories, recentDiscussions } from '@/data/mock-community';
 
-export default function CommunityForum() {
+export function CommunityForum() {
   const [searchQuery, setSearchQuery] = useState('');
   const [category, setCategory] = useState('');
   const filteredDiscussions = recentDiscussions.filter(topic => {

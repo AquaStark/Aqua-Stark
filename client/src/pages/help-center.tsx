@@ -2,16 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
+import { HelpCenterSidebar } from '@/components';
+import { HelpMainContent } from '@/components';
+import { BubblesBackground } from '@/components';
 import { featuredTopics } from '@/constants';
-import HelpCenterSidebar from '@/components/help-center/help-sidebar';
-import HelpMainContent from '@/components/help-center/help-main-content';
-import { BubblesBackground } from '@/components/bubble-background';
 import { useBubbles } from '@/hooks';
-import { PageHeader } from '@/components/layout/page-header';
-import { Footer } from '@/components/layout/footer';
+import { PageHeader } from '@/components';
+import { LayoutFooter } from '@/components';
 import { Input } from '@/components/ui/input';
 import { useHelpCenter } from '@/hooks';
-import { ComingSoonModal } from '@/components/ui/coming-soon-modal';
+import { ComingSoonModal } from '@/components';
 
 function HelpCenter() {
   const [showComingSoon, setShowComingSoon] = useState(false);
@@ -75,7 +75,7 @@ function HelpCenter() {
         />
       </main>
 
-      <Footer />
+      <LayoutFooter />
 
       {/* Modal Coming Soon */}
       <ComingSoonModal

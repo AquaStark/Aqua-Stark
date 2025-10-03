@@ -5,7 +5,7 @@ interface ExperienceBarProps {
   currentExperience: number;
 }
 
-const ExperienceBar: React.FC<ExperienceBarProps> = ({
+export const ExperienceBar: React.FC<ExperienceBarProps> = ({
   currentLevel,
   currentExperience,
 }) => {
@@ -59,5 +59,3 @@ const ExperienceBar: React.FC<ExperienceBarProps> = ({
     </div>
   );
 };
-
-export default ExperienceBar;

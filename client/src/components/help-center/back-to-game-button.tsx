@@ -1,7 +1,7 @@
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export default function BackToGameButton() {
+export function BackToGameButton() {
   return (
     <Link to={'/game'}>
       <button
