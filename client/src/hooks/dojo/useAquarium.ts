@@ -1,31 +1,40 @@
-import * as models from '@/typescript/models.gen';
 import { useDojoSDK } from '@dojoengine/sdk/react';
 import { useCallback } from 'react';
 import { Account, AccountInterface, BigNumberish } from 'starknet';
 
 /**
- * Custom React hook that provides methods to interact with the AquaStark client.
+ * Custom React hook that provides methods to interact with the Aquarium client.
  *
- * Exposes functions to create aquariums, add fish or decorations, move entities between aquariums,
- * and query aquarium or player-related information.
+ * Exposes functions to create/update/clean aquariums, add/remove/move entities,
+ * and query aquarium details and status.
  *
  * @returns {Object} An object containing methods for managing aquariums:
  * - `createAquariumId(account)`
  * - `getAquarium(id)`
  * - `newAquarium(account, owner, maxCapacity, maxDecorations)`
- * - `addFishToAquarium(account, fish, aquariumId)`
- * - `addDecorationToAquarium(account, decoration, aquariumId)`
- * - `getPlayerAquariums(playerAddress)`
- * - `getPlayerAquariumCount(playerAddress)`
+ * - `updateAquariumSettings(account, aquariumId, maxCapacity, maxDecorations)`
+ * - `cleanAquarium(account, aquariumId, amount)`
+ * - `updateAquariumCleanliness(account, aquariumId, hoursPassed)`
+ * - `addFishToAquarium(account, fishId, aquariumId)`
+ * - `removeFishFromAquarium(account, aquariumId, fishId)`
+ * - `addDecorationToAquarium(account, decorationId, aquariumId)`
+ * - `removeDecorationFromAquarium(account, aquariumId, decorationId)`
  * - `moveFishToAquarium(account, fishId, fromAquariumId, toAquariumId)`
  * - `moveDecorationToAquarium(account, decorationId, fromAquariumId, toAquariumId)`
+ * - `getPlayerAquariums(playerAddress)`
+ * - `getPlayerAquariumCount(playerAddress)`
+ * - `getAquariumCleanliness(aquariumId)`
+ * - `getAquariumCapacity(aquariumId)`
+ * - `getAquariumFishCount(aquariumId)`
+ * - `isAquariumFull(aquariumId)`
  * - `getAquariumOwner(aquariumId)`
  *
  * @example
  * const {
  *   newAquarium,
  *   getAquarium,
- *   addFishToAquarium
+ *   addFishToAquarium,
+ *   cleanAquarium
  * } = useAquarium();
  *
  * // Create a new aquarium
@@ -35,7 +44,10 @@ import { Account, AccountInterface, BigNumberish } from 'starknet';
  * const aquarium = await getAquarium(1);
  *
  * // Add a fish to an aquarium
- * await addFishToAquarium(account, fishModel, 1);
+ * await addFishToAquarium(account, 1, 1);
+ *
+ * // Clean an aquarium
+ * await cleanAquarium(account, 1, 5);
  */
 export const useAquarium = () => {
   const { client } = useDojoSDK();
@@ -47,7 +59,7 @@ export const useAquarium = () => {
    */
   const createAquariumId = useCallback(
     async (account: Account | AccountInterface) => {
-      return await client.AquaStark.createAquariumId(account);
+      return await client.Aquarium.createAquariumId(account);
     },
     [client]
   );
@@ -55,11 +67,11 @@ export const useAquarium = () => {
   /**
    * Retrieves aquarium data by its ID.
    * @param {BigNumberish} id - Aquarium ID.
-   * @returns {Promise<any>} Aquarium data.
+   * @returns {Promise<models.Aquarium>} Aquarium data.
    */
   const getAquarium = useCallback(
     async (id: BigNumberish) => {
-      return await client.AquaStark.getAquarium(id);
+      return await client.Aquarium.get_aquarium(id);
     },
     [client]
   );
@@ -70,7 +82,7 @@ export const useAquarium = () => {
    * @param {string} owner - Address of the aquarium owner.
    * @param {BigNumberish} maxCapacity - Maximum number of fish.
    * @param {BigNumberish} maxDecorations - Maximum number of decorations.
-   * @returns {Promise<any>} The created aquarium data.
+   * @returns {Promise<BigNumberish>} The created aquarium ID.
    */
   const newAquarium = useCallback(
     async (
@@ -79,7 +91,7 @@ export const useAquarium = () => {
       maxCapacity: BigNumberish,
       maxDecorations: BigNumberish
     ) => {
-      return await client.AquaStark.newAquarium(
+      return await client.Aquarium.create_aquarium(
         account,
         owner,
         maxCapacity,
@@ -90,44 +102,149 @@ export const useAquarium = () => {
   );
 
   /**
-   * Adds a fish to an existing aquarium.
+   * Updates settings for an existing aquarium.
    * @param {Account | AccountInterface} account - User account instance.
-   * @param {models.Fish} fish - Fish object to add.
    * @param {BigNumberish} aquariumId - Aquarium ID.
+   * @param {BigNumberish} maxCapacity - New maximum number of fish.
+   * @param {BigNumberish} maxDecorations - New maximum number of decorations.
    * @returns {Promise<any>} Result of the transaction.
    */
-  const addFishToAquarium = useCallback(
+  const updateAquariumSettings = useCallback(
     async (
       account: Account | AccountInterface,
-      fish: models.Fish,
-      aquariumId: BigNumberish
+      aquariumId: BigNumberish,
+      maxCapacity: BigNumberish,
+      maxDecorations: BigNumberish
     ) => {
-      return await client.AquaStark.addFishToAquarium(
+      return await client.Aquarium.update_aquarium_settings(
         account,
-        fish,
-        aquariumId
+        aquariumId,
+        maxCapacity,
+        maxDecorations
       );
     },
     [client]
   );
 
   /**
-   * Adds a decoration to an existing aquarium.
+   * Cleans an aquarium by a specified amount.
    * @param {Account | AccountInterface} account - User account instance.
-   * @param {models.Decoration} decoration - Decoration object to add.
+   * @param {BigNumberish} aquariumId - Aquarium ID.
+   * @param {BigNumberish} amount - Cleaning amount.
+   * @returns {Promise<any>} Result of the transaction.
+   */
+  const cleanAquarium = useCallback(
+    async (
+      account: Account | AccountInterface,
+      aquariumId: BigNumberish,
+      amount: BigNumberish
+    ) => {
+      return await client.Aquarium.clean_aquarium(account, aquariumId, amount);
+    },
+    [client]
+  );
+
+  /**
+   * Updates the cleanliness of an aquarium based on hours passed.
+   * @param {Account | AccountInterface} account - User account instance.
+   * @param {BigNumberish} aquariumId - Aquarium ID.
+   * @param {BigNumberish} hoursPassed - Hours passed since last update.
+   * @returns {Promise<any>} Result of the transaction.
+   */
+  const updateAquariumCleanliness = useCallback(
+    async (
+      account: Account | AccountInterface,
+      aquariumId: BigNumberish,
+      hoursPassed: BigNumberish
+    ) => {
+      return await client.Aquarium.update_aquarium_cleanliness(account, aquariumId, hoursPassed);
+    },
+    [client]
+  );
+
+  /**
+   * Adds a fish to an existing aquarium by ID.
+   * @param {Account | AccountInterface} account - User account instance.
+   * @param {BigNumberish} fishId - Fish ID to add.
+   * @param {BigNumberish} aquariumId - Aquarium ID.
+   * @returns {Promise<any>} Result of the transaction.
+   */
+  const addFishToAquarium = useCallback(
+    async (
+      account: Account | AccountInterface,
+      fishId: BigNumberish,
+      aquariumId: BigNumberish
+    ) => {
+      return await client.Aquarium.add_fish_to_aquarium(
+        account,
+        aquariumId,
+        fishId
+      );
+    },
+    [client]
+  );
+
+  /**
+   * Removes a fish from an existing aquarium.
+   * @param {Account | AccountInterface} account - User account instance.
+   * @param {BigNumberish} aquariumId - Aquarium ID.
+   * @param {BigNumberish} fishId - Fish ID to remove.
+   * @returns {Promise<any>} Result of the transaction.
+   */
+  const removeFishFromAquarium = useCallback(
+    async (
+      account: Account | AccountInterface,
+      aquariumId: BigNumberish,
+      fishId: BigNumberish
+    ) => {
+      return await client.Aquarium.remove_fish_from_aquarium(
+        account,
+        aquariumId,
+        fishId
+      );
+    },
+    [client]
+  );
+
+  /**
+   * Adds a decoration to an existing aquarium by ID.
+   * @param {Account | AccountInterface} account - User account instance.
+   * @param {BigNumberish} decorationId - Decoration ID to add.
    * @param {BigNumberish} aquariumId - Aquarium ID.
    * @returns {Promise<any>} Result of the transaction.
    */
   const addDecorationToAquarium = useCallback(
     async (
       account: Account | AccountInterface,
-      decoration: models.Decoration,
+      decorationId: BigNumberish,
       aquariumId: BigNumberish
     ) => {
-      return await client.AquaStark.addDecorationToAquarium(
+      return await client.Aquarium.add_decoration_to_aquarium(
         account,
-        decoration,
-        aquariumId
+        aquariumId,
+        decorationId
+      );
+    },
+    [client]
+  );
+
+  /**
+   * Removes a decoration from an existing aquarium.
+   * @param {Account | AccountInterface} account - User account instance.
+   * @param {BigNumberish} aquariumId - Aquarium ID.
+   * @param {BigNumberish} decorationId - Decoration ID to remove.
+   * @returns {Promise<any>} Result of the transaction.
+   */
+  const removeDecorationFromAquarium = useCallback(
+    async (
+      account: Account | AccountInterface,
+      aquariumId: BigNumberish,
+      decorationId: BigNumberish
+    ) => {
+      return await client.Aquarium.remove_decoration_from_aquarium(
+        account,
+        aquariumId,
+        decorationId
       );
     },
     [client]
@@ -136,11 +253,11 @@ export const useAquarium = () => {
   /**
    * Retrieves all aquariums owned by a player.
    * @param {string} playerAddress - Address of the player.
-   * @returns {Promise<any>} List of aquariums.
+   * @returns {Promise<models.Aquarium[]>} List of aquariums.
    */
   const getPlayerAquariums = useCallback(
     async (playerAddress: string) => {
-      return await client.AquaStark.getPlayerAquariums(playerAddress);
+      return await client.Aquarium.getPlayerAquariums(playerAddress);
     },
     [client]
   );
@@ -152,7 +269,7 @@ export const useAquarium = () => {
    */
   const getPlayerAquariumCount = useCallback(
     async (playerAddress: string) => {
-      return await client.AquaStark.getPlayerAquariumCount(playerAddress);
+      return await client.Aquarium.getPlayerAquariumCount(playerAddress);
     },
     [client]
   );
@@ -172,7 +289,7 @@ export const useAquarium = () => {
       fromAquariumId: BigNumberish,
       toAquariumId: BigNumberish
     ) => {
-      return await client.AquaStark.moveFishToAquarium(
+      return await client.Aquarium.moveFishToAquarium(
         account,
         fishId,
         fromAquariumId,
@@ -197,12 +314,60 @@ export const useAquarium = () => {
       fromAquariumId: BigNumberish,
       toAquariumId: BigNumberish
     ) => {
-      return await client.AquaStark.moveDecorationToAquarium(
+      return await client.Aquarium.moveDecorationToAquarium(
         account,
         decorationId,
         fromAquariumId,
         toAquariumId
       );
+    },
+    [client]
+  );
+
+  /**
+   * Retrieves the cleanliness level of an aquarium.
+   * @param {BigNumberish} aquariumId - Aquarium ID.
+   * @returns {Promise<number>} Cleanliness level.
+   */
+  const getAquariumCleanliness = useCallback(
+    async (aquariumId: BigNumberish) => {
+      return await client.Aquarium.get_aquarium_cleanliness(aquariumId);
+    },
+    [client]
+  );
+
+  /**
+   * Retrieves the capacity of an aquarium.
+   * @param {BigNumberish} aquariumId - Aquarium ID.
+   * @returns {Promise<number>} Capacity.
+   */
+  const getAquariumCapacity = useCallback(
+    async (aquariumId: BigNumberish) => {
+      return await client.Aquarium.get_aquarium_capacity(aquariumId);
+    },
+    [client]
+  );
+
+  /**
+   * Retrieves the number of fish in an aquarium.
+   * @param {BigNumberish} aquariumId - Aquarium ID.
+   * @returns {Promise<number>} Fish count.
+   */
+  const getAquariumFishCount = useCallback(
+    async (aquariumId: BigNumberish) => {
+      return await client.Aquarium.get_aquarium_fish_count(aquariumId);
+    },
+    [client]
+  );
+
+  /**
+   * Checks if an aquarium is full.
+   * @param {BigNumberish} aquariumId - Aquarium ID.
+   * @returns {Promise<boolean>} Full status.
+   */
+  const isAquariumFull = useCallback(
+    async (aquariumId: BigNumberish) => {
+      return await client.Aquarium.is_aquarium_full(aquariumId);
     },
     [client]
   );
@@ -214,7 +379,7 @@ export const useAquarium = () => {
    */
   const getAquariumOwner = useCallback(
     async (aquariumId: BigNumberish) => {
-      return await client.AquaStark.getAquariumOwner(aquariumId);
+      return await client.Aquarium.get_aquarium_owner(aquariumId);
     },
     [client]
   );
@@ -223,12 +388,21 @@ export const useAquarium = () => {
     createAquariumId,
     getAquarium,
     newAquarium,
+    updateAquariumSettings,
+    cleanAquarium,
+    updateAquariumCleanliness,
     addFishToAquarium,
+    removeFishFromAquarium,
     addDecorationToAquarium,
+    removeDecorationFromAquarium,
     getPlayerAquariums,
     getPlayerAquariumCount,
     moveFishToAquarium,
     moveDecorationToAquarium,
+    getAquariumCleanliness,
+    getAquariumCapacity,
+    getAquariumFishCount,
+    isAquariumFull,
     getAquariumOwner,
   };
 };
