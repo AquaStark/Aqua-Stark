@@ -8,14 +8,17 @@ import { BubblesBackground } from '@/components';
 import { PageHeader } from '@/components';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { useAquarium } from '@/hooks/dojo';
+import { useAquarium, useAquaAuction, useFishSystemEnhanced } from '@/hooks/dojo';
 import * as models from '@/typescript/models.gen';
+import { Link } from 'react-router-dom';
 
 export default function AquariumDemo() {
   const { account, address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const aquarium = useAquarium();
   const { getAquarium }  = useAquarium()
+  const aquaAuction = useAquaAuction();
+  const fishSystem = useFishSystemEnhanced();
   // console.log("this is aquarium", aquarium)
   const bubbles = useBubbles();
 
@@ -206,6 +209,35 @@ export default function AquariumDemo() {
       onClick: () => handleRequest(() => aquarium.getAquariumOwner(+fields.aquariumId), 'getAquariumOwner'),
       color: 'bg-cyan-600 hover:bg-cyan-700',
     },
+    // Fish System Functions
+    {
+      label: 'New Fish',
+      onClick: () => handleRequest(() => 
+        fishSystem.newFish(account, BigInt(fields.aquariumId), { variant: parseInt(fields.fishSpecies), activeVariant: parseInt(fields.fishSpecies) }), 'newFish'),
+      color: 'bg-green-600 hover:bg-green-700',
+    },
+    {
+      label: 'Get Fish',
+      onClick: () => handleRequest(() => fishSystem.getFish(BigInt(fields.fishId)), 'getFish'),
+      color: 'bg-purple-600 hover:bg-purple-700',
+    },
+    {
+      label: 'Get Player Fishes',
+      onClick: () => handleRequest(() => fishSystem.getPlayerFishes(fields.playerAddress || address), 'getPlayerFishes'),
+      color: 'bg-purple-600 hover:bg-purple-700',
+    },
+    // Auction Functions
+    {
+      label: 'Get Active Auctions',
+      onClick: () => handleRequest(() => aquaAuction.getActiveAuctions(), 'getActiveAuctions'),
+      color: 'bg-orange-600 hover:bg-orange-700',
+    },
+    {
+      label: 'Start Auction',
+      onClick: () => handleRequest(() => 
+        aquaAuction.startAuction(account, BigInt(fields.fishId), BigInt(3600), BigInt(100)), 'startAuction'),
+      color: 'bg-orange-600 hover:bg-orange-700',
+    },
   ];
 
   return (
@@ -225,6 +257,15 @@ export default function AquariumDemo() {
           <span>
             Connected as: <span className='font-mono'>{address.slice(0, 6)}...{address.slice(-4)}</span>
           </span>
+          <Link to='/enhanced-demo'>
+            <Button
+              variant='outline'
+              className='text-blue-200 border-blue-400/50 hover:bg-blue-700/50'
+              onClick={() => window.location.href = '/enhanced-demo'}
+            >
+              Enhanced Demo 🚀
+            </Button>
+          </Link>
           <Button onClick={handleDisconnectWallet} variant='ghost' className='text-blue-200'>
             Disconnect
           </Button>
