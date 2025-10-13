@@ -406,7 +406,7 @@ export default function GamePage() {
 
       {/* Tips and Action Menu */}
       {!isWallpaperMode && (
-        <div className='absolute bottom-0 right-4 mb-4 z-30 flex items-end gap-12 hidden sm:flex'>
+        <div className='absolute bottom-0 right-4 mb-4 z-30 hidden sm:flex sm:items-end sm:gap-12'>
           {/* Action Menu with tooltips on hover - Moved more to the left */}
           <div className='flex items-center gap-2 -ml-8'>
             {/* Feed button */}
