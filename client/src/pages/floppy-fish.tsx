@@ -16,7 +16,7 @@ export default function FloppyFishGamePage() {
           backText='Back to Arcade'
           rightContent={null}
         />
-        <main className='relative z-10 max-w-3xl mx-auto px-4 py-8 flex flex-col gap-8 items-center'>
+        <main className='relative z-10 w-full max-w-4xl mx-auto px-2 sm:px-4 py-4 sm:py-8 flex flex-col gap-4 sm:gap-8 items-center'>
           <FloppyFishGame selectedFish={selectedFish} />
         </main>
         <LayoutFooter />

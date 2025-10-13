@@ -17,21 +17,21 @@ export function GameHeader({
   isCleaningMode = false,
 }: GameHeaderProps) {
   return (
-    <div className='absolute top-0 left-0 right-0 flex justify-between items-center p-4 z-50'>
-      <div className='flex items-center gap-4'>
+    <div className='absolute top-0 left-0 right-0 flex justify-between items-center p-2 sm:p-4 z-50'>
+      <div className='flex items-center gap-2 sm:gap-4'>
         <img
           src='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Aqua_Stark-removebg-preview-ubKSrqYo7jzOH5qXqxEw4CyRHXIjfq.png'
           alt='Aqua Stark Logo'
           width={120}
           height={50}
-          className='drop-shadow-lg'
+          className='drop-shadow-lg w-20 h-8 sm:w-24 sm:h-10 md:w-32 md:h-12 object-contain'
         />
       </div>
 
-      <div className='flex items-center gap-4 bg-blue-900/40 backdrop-blur-sm p-3 rounded-xl'>
-        <div className='flex items-center gap-2 mr-4 bg-blue-800/50 px-3 py-1 rounded-lg'>
-          <Fish className='text-blue-200 h-5 w-5' />
-          <span className='text-white font-bold'>2/10</span>
+      <div className='flex items-center gap-1 sm:gap-2 md:gap-4 bg-blue-900/40 backdrop-blur-sm p-2 sm:p-3 rounded-xl'>
+        <div className='flex items-center gap-1 sm:gap-2 mr-2 sm:mr-4 bg-blue-800/50 px-2 sm:px-3 py-1 rounded-lg'>
+          <Fish className='text-blue-200 h-4 w-4 sm:h-5 sm:w-5' />
+          <span className='text-white font-bold text-xs sm:text-sm'>2/10</span>
         </div>
 
         <GameStatusBar

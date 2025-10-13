@@ -170,7 +170,7 @@ export default function StorePage() {
       <CheckoutModal />
 
       <main className='relative z-10'>
-        <div className='px-2 sm:px-4 py-2 sm:py-4 mx-auto max-w-6xl'>
+        <div className='px-2 sm:px-4 py-2 sm:py-4 mx-auto max-w-6xl w-full'>
           <StoreOriginal />
         </div>
       </main>

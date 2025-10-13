@@ -222,7 +222,7 @@ export default function AquariumsPage() {
       <BubblesBackground bubbles={bubbles} className='pointer-events-none' />
 
       <div className='relative z-10 flex flex-col min-h-screen w-full'>
-        <div className=' w-full'>
+        <div className='w-full px-2 sm:px-4'>
           <PageHeader
             title='My Aquariums'
             backTo='/game'
