@@ -28,7 +28,7 @@ export function GameHeader({
         />
       </div>
 
-      <div className='flex items-center gap-1 sm:gap-2 md:gap-4 bg-blue-900/40 backdrop-blur-sm p-2 sm:p-3 rounded-xl'>
+      <div className='flex items-center gap-1 sm:gap-2 md:gap-4 bg-blue-900/40 backdrop-blur-sm p-1 sm:p-2 md:p-3 rounded-xl'>
         <div className='flex items-center gap-1 sm:gap-2 mr-2 sm:mr-4 bg-blue-800/50 px-2 sm:px-3 py-1 rounded-lg'>
           <Fish className='text-blue-200 h-4 w-4 sm:h-5 sm:w-5' />
           <span className='text-white font-bold text-xs sm:text-sm'>2/10</span>

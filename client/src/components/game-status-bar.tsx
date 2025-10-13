@@ -65,7 +65,7 @@ export function GameStatusBar({
   }, [value, animated]);
 
   return (
-    <div className='relative flex items-center gap-1 sm:gap-2 md:gap-3 min-w-[120px] sm:min-w-[180px] md:min-w-[250px]'>
+    <div className='relative flex items-center gap-1 sm:gap-2 md:gap-3 min-w-[80px] sm:min-w-[120px] md:min-w-[180px] lg:min-w-[250px]'>
       <div
         className={cn(
           'relative z-10 flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-br shadow-lg',
