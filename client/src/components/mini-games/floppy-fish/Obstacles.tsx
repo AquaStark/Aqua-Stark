@@ -23,7 +23,8 @@ export function Obstacles({
           <img
             src='/mini-games/element-up.webp'
             alt='Column Top'
-            className='absolute'
+            className='absolute select-none pointer-events-none'
+            draggable={false}
             style={{
               left: col.x * scale,
               top: 0,
@@ -32,13 +33,18 @@ export function Obstacles({
               objectFit: 'cover', // Changed from "fill" to maintain aspect ratio
               objectPosition: 'bottom', // Align to bottom for top pipe
               zIndex: 5,
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+              MozUserSelect: 'none',
+              msUserSelect: 'none',
             }}
           />
           {/* Bottom column */}
           <img
             src='/mini-games/element-down.webp'
             alt='Column Bottom'
-            className='absolute'
+            className='absolute select-none pointer-events-none'
+            draggable={false}
             style={{
               left: col.x * scale,
               top: (col.gapY + GAP_HEIGHT) * scale,
@@ -47,6 +53,10 @@ export function Obstacles({
               objectFit: 'cover', // Changed from "fill" to maintain aspect ratio
               objectPosition: 'top', // Align to top for bottom pipe
               zIndex: 5,
+              userSelect: 'none',
+              WebkitUserSelect: 'none',
+              MozUserSelect: 'none',
+              msUserSelect: 'none',
             }}
           />
         </Fragment>
