@@ -5,6 +5,7 @@ import { GameHeader } from '@/components';
 import { AquariumTabs } from '@/components';
 import { TipsPopup } from '@/components';
 import { OrientationLock } from '@/components/ui';
+import { MobileMenu } from '@/components/game/mobile-menu';
 import { INITIAL_GAME_STATE } from '@/constants';
 import { useFishStats } from '@/hooks';
 import { GameMenu } from '@/components';
@@ -562,6 +563,39 @@ export default function GamePage() {
         onCleanSpot={dirtSystem.cleanDirtSpot}
         isSpongeMode={isCleaningMode}
         isDebugMode={false}
+      />
+
+      {/* Mobile Menu */}
+      <MobileMenu
+        aquariums={aquariums}
+        selectedAquarium={selectedAquarium}
+        onAquariumSelect={handleAquariumChange}
+        isFeeding={feedingSystem.isFeeding}
+        timeRemaining={feedingSystem.timeRemaining}
+        onStartFeeding={feedingSystem.startFeeding}
+        onStopFeeding={feedingSystem.stopFeeding}
+        onItemClick={(itemId) => {
+          switch (itemId) {
+            case 'clean':
+              handleToggleCleaningMode();
+              break;
+            case 'shop':
+              navigate('/store');
+              break;
+            case 'collection':
+              navigate('/aquariums');
+              break;
+            case 'games':
+              navigate('/mini-games');
+              break;
+            case 'rewards':
+              navigate('/achievements');
+              break;
+            case 'tips':
+              handleTipsToggle();
+              break;
+          }
+        }}
       />
       </div>
     </OrientationLock>

@@ -47,7 +47,7 @@ export function AquariumTabs({
   onAquariumSelect,
 }: AquariumTabsProps) {
   return (
-    <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/90 to-transparent z-20 p-2 sm:p-4'>
+    <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/90 to-transparent z-20 p-2 sm:p-4 hidden sm:block'>
       <div className='flex justify-between items-end'>
         {/* Left side - Aquarium tabs */}
         <div className='flex gap-1 sm:gap-2 overflow-x-auto scrollbar-hide'>
