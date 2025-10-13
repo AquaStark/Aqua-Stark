@@ -7,7 +7,7 @@ export default function FloppyFishGamePage() {
   const { selectedFish } = useGames();
 
   return (
-    <div className='relative min-h-screen bg-gradient-to-b from-blue-600 to-blue-950 overflow-hidden'>
+    <div className='relative min-h-screen bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-800 overflow-hidden'>
       <PageHeader
         title='Floppy Fish Minigame'
         backTo='/mini-games'
