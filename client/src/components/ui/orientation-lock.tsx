@@ -61,19 +61,19 @@ export function OrientationLock({ children, className = '' }: OrientationLockPro
 
         {/* Title */}
         <h1 className="text-2xl font-bold text-white mb-4 select-none">
-          Gira tu dispositivo
+          Rotate your device
         </h1>
 
         {/* Description */}
         <p className="text-white/90 text-lg mb-6 select-none">
-          Para una mejor experiencia de juego, por favor gira tu dispositivo a modo horizontal
+          For the best gaming experience, please rotate your device to landscape mode
         </p>
 
         {/* Instructions */}
         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
           <p className="text-white/80 text-sm select-none">
             📱 → 📱<br />
-            Gira tu teléfono 90° hacia la izquierda o derecha
+            Rotate your phone 90° to the left or right
           </p>
         </div>
 
