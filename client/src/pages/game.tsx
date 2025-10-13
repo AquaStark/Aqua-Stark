@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { GameHeader } from '@/components';
 import { AquariumTabs } from '@/components';
 import { TipsPopup } from '@/components';
+import { OrientationLock } from '@/components/ui';
 import { INITIAL_GAME_STATE } from '@/constants';
 import { useFishStats } from '@/hooks';
 import { GameMenu } from '@/components';
@@ -327,9 +328,10 @@ export default function GamePage() {
     .filter((fish): fish is NonNullable<typeof fish> => fish !== null);
 
   return (
-    <div
-      className={`relative w-full h-screen overflow-hidden bg-[#005C99] ${isWallpaperMode ? 'wallpaper-mode' : ''}`}
-    >
+    <OrientationLock>
+      <div
+        className={`relative w-full h-screen overflow-hidden bg-[#005C99] ${isWallpaperMode ? 'wallpaper-mode' : ''}`}
+      >
       {/* Background */}
       <img
         src='/backgrounds/background2.png'
@@ -561,6 +563,7 @@ export default function GamePage() {
         isSpongeMode={isCleaningMode}
         isDebugMode={false}
       />
-    </div>
+      </div>
+    </OrientationLock>
   );
 }
