@@ -29,7 +29,10 @@ export function PageHeader({
     >
       <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mx-auto font-sans max-w-7xl'>
         <div className='flex flex-col sm:flex-row sm:items-center'>
-          <Link to={backTo} className='flex items-center mb-2 sm:mb-0 select-none'>
+          <Link
+            to={backTo}
+            className='flex items-center mb-2 sm:mb-0 select-none'
+          >
             <Button
               variant='ghost'
               className='flex items-center mr-0 sm:mr-2 text-xs text-white rounded-full hover:bg-blue-500/50 px-3 py-1 sm:px-4 sm:py-2 select-none'

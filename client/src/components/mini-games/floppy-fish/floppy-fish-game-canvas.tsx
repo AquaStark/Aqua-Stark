@@ -53,7 +53,8 @@ export function FloppyFishGameCanvas({
         style={{
           width: GAME_WIDTH * scale,
           height: GAME_HEIGHT * scale,
-          backgroundImage: "url('/background-decorations/background-floppy.png')",
+          backgroundImage:
+            "url('/background-decorations/background-floppy.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}

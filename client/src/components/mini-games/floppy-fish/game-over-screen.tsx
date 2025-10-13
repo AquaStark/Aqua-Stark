@@ -19,8 +19,12 @@ export function GameOverScreen({ score, onRestart }: GameOverScreenProps) {
 
   return (
     <div className='absolute inset-0 flex flex-col items-center justify-center bg-blue-900/90 rounded-xl z-40 select-none'>
-      <div className='text-white text-3xl font-bold mb-4 select-none'>Game Over</div>
-      <div className='text-blue-200 text-lg mb-6 select-none'>Score: {score}</div>
+      <div className='text-white text-3xl font-bold mb-4 select-none'>
+        Game Over
+      </div>
+      <div className='text-blue-200 text-lg mb-6 select-none'>
+        Score: {score}
+      </div>
       <button
         className='bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-md font-semibold text-lg select-none'
         onClick={onRestart}
