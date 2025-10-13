@@ -4,6 +4,7 @@ import { PageHeader } from '@/components';
 import { LayoutFooter } from '@/components';
 import { SelectedFishPanel } from '@/components';
 import { GameGrid } from '@/components';
+import { OrientationLock } from '@/components/ui';
 import { useGames } from '@/hooks';
 
 export default function GamesPage() {
@@ -16,7 +17,8 @@ export default function GamesPage() {
   } = useGames();
 
   return (
-    <div className='relative min-h-screen bg-gradient-to-b from-blue-600 to-blue-950'>
+    <OrientationLock>
+      <div className='relative min-h-screen bg-gradient-to-b from-blue-600 to-blue-950'>
       <PageHeader
         title='Aqua Stark Arcade'
         backTo='/game'
@@ -42,6 +44,7 @@ export default function GamesPage() {
       </main>
 
       <LayoutFooter />
-    </div>
+      </div>
+    </OrientationLock>
   );
 }

@@ -8,6 +8,7 @@ import { OfferModal } from '@/components';
 import { ListingModal } from '@/components';
 import { useMarketStore } from '@/store/market-store';
 import { Button } from '@/components/ui/button';
+import { OrientationLock } from '@/components/ui';
 import { Search, Filter, X, Plus, Coins } from 'lucide-react';
 import { mockFishData } from '@/constants';
 import '@/styles/market.css';
@@ -86,7 +87,8 @@ export default function MarketPage() {
   });
 
   return (
-    <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
+    <OrientationLock>
+      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
       <BubblesBackground bubbles={bubbles} />
 
       <PageHeader
@@ -251,6 +253,7 @@ export default function MarketPage() {
       <BidModal />
       <OfferModal />
       <ListingModal />
-    </div>
+      </div>
+    </OrientationLock>
   );
 }
