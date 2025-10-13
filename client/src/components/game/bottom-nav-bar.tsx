@@ -84,7 +84,7 @@ export function BottomNavBar({
       : 0;
 
   return (
-    <div className='hidden sm:flex items-center gap-1 sm:gap-2 md:gap-4 overflow-x-auto scrollbar-hide'>
+    <div className='flex items-center gap-1 sm:gap-2 md:gap-4 overflow-x-auto scrollbar-hide'>
       {/* Feed button section with special handling for feeding state */}
       <motion.div
         className='flex flex-col items-center gap-1 relative'

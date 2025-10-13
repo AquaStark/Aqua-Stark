@@ -5,7 +5,6 @@ import { GameHeader } from '@/components';
 import { AquariumTabs } from '@/components';
 import { TipsPopup } from '@/components';
 import { OrientationLock } from '@/components/ui';
-import { MobileMenu } from '@/components/game/mobile-menu';
 import { INITIAL_GAME_STATE } from '@/constants';
 import { useFishStats } from '@/hooks';
 import { GameMenu } from '@/components';
@@ -406,7 +405,7 @@ export default function GamePage() {
 
       {/* Tips and Action Menu */}
       {!isWallpaperMode && (
-        <div className='absolute bottom-0 right-4 mb-4 z-30 hidden sm:flex sm:items-end sm:gap-12'>
+        <div className='absolute bottom-0 right-4 mb-4 z-30 flex items-end gap-12'>
           {/* Action Menu with tooltips on hover - Moved more to the left */}
           <div className='flex items-center gap-2 -ml-8'>
             {/* Feed button */}
@@ -565,38 +564,6 @@ export default function GamePage() {
         isDebugMode={false}
       />
 
-      {/* Mobile Menu */}
-      <MobileMenu
-        aquariums={aquariums}
-        selectedAquarium={selectedAquarium}
-        onAquariumSelect={handleAquariumChange}
-        isFeeding={feedingSystem.isFeeding}
-        timeRemaining={feedingSystem.timeRemaining}
-        onStartFeeding={feedingSystem.startFeeding}
-        onStopFeeding={feedingSystem.stopFeeding}
-        onItemClick={(itemId) => {
-          switch (itemId) {
-            case 'clean':
-              handleToggleCleaningMode();
-              break;
-            case 'shop':
-              navigate('/store');
-              break;
-            case 'collection':
-              navigate('/aquariums');
-              break;
-            case 'games':
-              navigate('/mini-games');
-              break;
-            case 'rewards':
-              navigate('/achievements');
-              break;
-            case 'tips':
-              handleTipsToggle();
-              break;
-          }
-        }}
-      />
       </div>
     </OrientationLock>
   );
