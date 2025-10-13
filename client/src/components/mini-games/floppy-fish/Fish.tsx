@@ -28,7 +28,8 @@ export function Fish({
     <img
       src={fishImage}
       alt={selectedFish.name}
-      className='absolute'
+      className='absolute select-none pointer-events-none'
+      draggable={false}
       style={{
         left: FISH_X * scale,
         top: fishY * scale,
@@ -36,6 +37,10 @@ export function Fish({
         height: FISH_SIZE * scale,
         transition: started ? 'none' : 'top 0.3s',
         filter: gameOver ? 'grayscale(1)' : 'none',
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        MozUserSelect: 'none',
+        msUserSelect: 'none',
       }}
     />
   );

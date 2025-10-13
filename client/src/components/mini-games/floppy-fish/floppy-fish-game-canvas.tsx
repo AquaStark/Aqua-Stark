@@ -49,11 +49,12 @@ export function FloppyFishGameCanvas({
       {/* Game Canvas */}
       <div
         ref={gameAreaRef}
-        className='relative bg-blue-900/20 border border-blue-600/30 rounded-2xl overflow-hidden cursor-pointer'
+        className='relative bg-black/10 border border-white/20 rounded-2xl overflow-hidden cursor-pointer shadow-2xl select-none'
         style={{
           width: GAME_WIDTH * scale,
           height: GAME_HEIGHT * scale,
-          backgroundImage: "url('/mini-games/background.webp')",
+          backgroundImage:
+            "url('/background-decorations/background-floppy.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
