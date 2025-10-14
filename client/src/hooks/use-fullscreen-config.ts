@@ -27,14 +27,14 @@ export function useFullscreenConfig() {
         enabled: true,
         supported: true,
         permissions: {
-          fullscreen: 'granted'
+          fullscreen: 'granted',
         },
         features: {
           orientationLock: true,
           fullscreenAPI: true,
-          mobileFullscreen: true
-        }
-      }
+          mobileFullscreen: true,
+        },
+      },
     };
 
     setConfig(defaultConfig);
@@ -50,7 +50,7 @@ export function useFullscreenConfig() {
     features: config?.fullscreen.features ?? {
       orientationLock: true,
       fullscreenAPI: true,
-      mobileFullscreen: true
-    }
+      mobileFullscreen: true,
+    },
   };
 }
