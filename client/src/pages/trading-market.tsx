@@ -89,170 +89,170 @@ export default function MarketPage() {
   return (
     <OrientationLock>
       <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
-      <BubblesBackground bubbles={bubbles} />
+        <BubblesBackground bubbles={bubbles} />
 
-      <PageHeader
-        title='Trading Market'
-        backTo='/game'
-        backText='Back to Game'
-        rightContent={
-          <div className='flex items-center gap-2'>
-            <div className='flex items-center bg-blue-700/50 rounded-full px-4 py-2 border border-blue-400/50'>
-              <Coins className='text-yellow-400 mr-2' size={20} />
-              <span className='text-white font-bold'>12,500</span>
+        <PageHeader
+          title='Trading Market'
+          backTo='/game'
+          backText='Back to Game'
+          rightContent={
+            <div className='flex items-center gap-2'>
+              <div className='flex items-center bg-blue-700/50 rounded-full px-4 py-2 border border-blue-400/50'>
+                <Coins className='text-yellow-400 mr-2' size={20} />
+                <span className='text-white font-bold'>12,500</span>
+              </div>
+            </div>
+          }
+        />
+
+        <main className='relative z-20 flex flex-col items-center px-4 py-8 mx-auto max-w-7xl'>
+          <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 w-full'>
+            <div className='relative w-full md:w-96'>
+              <input
+                type='text'
+                placeholder='Search fish...'
+                className='w-full bg-blue-800/50 backdrop-blur-sm border border-blue-700/50 rounded-full px-4 py-2 pl-10 text-white placeholder:text-blue-300'
+                value={filters.search ?? ''}
+                onChange={e => setFilters({ search: e.target.value })}
+              />
+              <Search
+                className='absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-300'
+                size={18}
+              />
+            </div>
+
+            <div className='flex items-center gap-2 w-full md:w-auto'>
+              <Button
+                variant='outline'
+                className='border-blue-600/50 !text-blue-100 bg-blue-600 hover:bg-blue-700/50'
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                {showFilters ? (
+                  <>
+                    <X className='mr-2 h-4 w-4' />
+                    Hide Filters
+                  </>
+                ) : (
+                  <>
+                    <Filter className='mr-2 h-4 w-4' />
+                    Show Filters
+                  </>
+                )}
+              </Button>
+
+              <Button
+                className='border border-blue-600/50 bg-blue-600 hover:bg-blue-700/50 text-white'
+                onClick={() => setShowListingModal(true)}
+              >
+                <Plus className='mr-2 h-4 w-4' />
+                List Fish
+              </Button>
+
+              <div className='flex items-center bg-blue-800/50 backdrop-blur-sm rounded-full p-1 border border-blue-700/50'>
+                {['browse', 'auctions', 'my listings', 'history'].map(tab => (
+                  <button
+                    key={tab}
+                    type='button'
+                    className={`px-3 py-1 rounded-full text-sm ${
+                      activeTab === tab
+                        ? 'bg-blue-600 text-white'
+                        : 'text-blue-300 hover:text-white'
+                    }`}
+                    onClick={() => setActiveTab(tab)}
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        }
-      />
 
-      <main className='relative z-20 flex flex-col items-center px-4 py-8 mx-auto max-w-7xl'>
-        <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 w-full'>
-          <div className='relative w-full md:w-96'>
-            <input
-              type='text'
-              placeholder='Search fish...'
-              className='w-full bg-blue-800/50 backdrop-blur-sm border border-blue-700/50 rounded-full px-4 py-2 pl-10 text-white placeholder:text-blue-300'
-              value={filters.search ?? ''}
-              onChange={e => setFilters({ search: e.target.value })}
-            />
-            <Search
-              className='absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-300'
-              size={18}
-            />
-          </div>
+          {showFilters && <MarketFilterPanel />}
 
-          <div className='flex items-center gap-2 w-full md:w-auto'>
-            <Button
-              variant='outline'
-              className='border-blue-600/50 !text-blue-100 bg-blue-600 hover:bg-blue-700/50'
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              {showFilters ? (
-                <>
-                  <X className='mr-2 h-4 w-4' />
-                  Hide Filters
-                </>
-              ) : (
-                <>
-                  <Filter className='mr-2 h-4 w-4' />
-                  Show Filters
-                </>
+          {/* if tab is browse */}
+          {activeTab === 'browse' && (
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6 w-full'>
+              {sortedFish.map(fish => (
+                <MarketFishCard key={fish.id} fish={fish} />
+              ))}
+
+              {sortedFish.length === 0 && (
+                <div className='col-span-full text-center py-12'>
+                  <h3 className='text-xl text-white mb-2'>No fish found</h3>
+                  <p className='text-blue-300'>
+                    Try adjusting your filters or search criteria
+                  </p>
+                </div>
               )}
-            </Button>
-
-            <Button
-              className='border border-blue-600/50 bg-blue-600 hover:bg-blue-700/50 text-white'
-              onClick={() => setShowListingModal(true)}
-            >
-              <Plus className='mr-2 h-4 w-4' />
-              List Fish
-            </Button>
-
-            <div className='flex items-center bg-blue-800/50 backdrop-blur-sm rounded-full p-1 border border-blue-700/50'>
-              {['browse', 'auctions', 'my listings', 'history'].map(tab => (
-                <button
-                  key={tab}
-                  type='button'
-                  className={`px-3 py-1 rounded-full text-sm ${
-                    activeTab === tab
-                      ? 'bg-blue-600 text-white'
-                      : 'text-blue-300 hover:text-white'
-                  }`}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </button>
-              ))}
             </div>
-          </div>
-        </div>
+          )}
 
-        {showFilters && <MarketFilterPanel />}
+          {/* if tab is auctions */}
+          {activeTab === 'auctions' && (
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6 w-full'>
+              {sortedFish
+                .filter(fish => fish.auction)
+                .map(fish => (
+                  <MarketFishCard key={fish.id} fish={fish} />
+                ))}
 
-        {/* if tab is browse */}
-        {activeTab === 'browse' && (
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6 w-full'>
-            {sortedFish.map(fish => (
-              <MarketFishCard key={fish.id} fish={fish} />
-            ))}
+              {sortedFish.filter(fish => fish.auction).length === 0 && (
+                <div className='col-span-full text-center py-12'>
+                  <h3 className='text-xl text-white mb-2'>No auctions found</h3>
+                  <p className='text-blue-300'>
+                    Try adjusting your filters or search criteria
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
-            {sortedFish.length === 0 && (
-              <div className='col-span-full text-center py-12'>
-                <h3 className='text-xl text-white mb-2'>No fish found</h3>
-                <p className='text-blue-300'>
-                  Try adjusting your filters or search criteria
-                </p>
-              </div>
-            )}
-          </div>
-        )}
+          {/* if tab is my listings */}
+          {activeTab === 'my listings' && (
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6 w-full'>
+              {sortedFish
+                .filter(fish => fish.listed)
+                .map(fish => (
+                  <MarketFishCard key={fish.id} fish={fish} />
+                ))}
 
-        {/* if tab is auctions */}
-        {activeTab === 'auctions' && (
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6 w-full'>
-            {sortedFish
-              .filter(fish => fish.auction)
-              .map(fish => (
-                <MarketFishCard key={fish.id} fish={fish} />
-              ))}
+              {sortedFish.filter(fish => fish.listed).length === 0 && (
+                <div className='col-span-full text-center py-12'>
+                  <h3 className='text-xl text-white mb-2'>No listings found</h3>
+                  <p className='text-blue-300'>
+                    Try adjusting your filters or search criteria
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
 
-            {sortedFish.filter(fish => fish.auction).length === 0 && (
-              <div className='col-span-full text-center py-12'>
-                <h3 className='text-xl text-white mb-2'>No auctions found</h3>
-                <p className='text-blue-300'>
-                  Try adjusting your filters or search criteria
-                </p>
-              </div>
-            )}
-          </div>
-        )}
+          {/* if tab is history */}
+          {activeTab === 'history' && (
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6 w-full'>
+              {sortedFish
+                .filter(fish => fish.exchange)
+                .map(fish => (
+                  <MarketFishCard key={fish.id} fish={fish} />
+                ))}
 
-        {/* if tab is my listings */}
-        {activeTab === 'my listings' && (
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6 w-full'>
-            {sortedFish
-              .filter(fish => fish.listed)
-              .map(fish => (
-                <MarketFishCard key={fish.id} fish={fish} />
-              ))}
+              {sortedFish.filter(fish => fish.exchange).length === 0 && (
+                <div className='col-span-full text-center py-12'>
+                  <h3 className='text-xl text-white mb-2'>No history found</h3>
+                  <p className='text-blue-300'>
+                    Try adjusting your filters or search criteria
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </main>
 
-            {sortedFish.filter(fish => fish.listed).length === 0 && (
-              <div className='col-span-full text-center py-12'>
-                <h3 className='text-xl text-white mb-2'>No listings found</h3>
-                <p className='text-blue-300'>
-                  Try adjusting your filters or search criteria
-                </p>
-              </div>
-            )}
-          </div>
-        )}
+        <LayoutFooter />
 
-        {/* if tab is history */}
-        {activeTab === 'history' && (
-          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6 w-full'>
-            {sortedFish
-              .filter(fish => fish.exchange)
-              .map(fish => (
-                <MarketFishCard key={fish.id} fish={fish} />
-              ))}
-
-            {sortedFish.filter(fish => fish.exchange).length === 0 && (
-              <div className='col-span-full text-center py-12'>
-                <h3 className='text-xl text-white mb-2'>No history found</h3>
-                <p className='text-blue-300'>
-                  Try adjusting your filters or search criteria
-                </p>
-              </div>
-            )}
-          </div>
-        )}
-      </main>
-
-      <LayoutFooter />
-
-      <BidModal />
-      <OfferModal />
-      <ListingModal />
+        <BidModal />
+        <OfferModal />
+        <ListingModal />
       </div>
     </OrientationLock>
   );
