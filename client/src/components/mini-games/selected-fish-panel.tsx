@@ -23,7 +23,9 @@ export function SelectedFishPanel({
           />
         </div>
         <div>
-          <h2 className='text-white text-sm sm:text-base md:text-lg font-bold'>Your Fish</h2>
+          <h2 className='text-white text-sm sm:text-base md:text-lg font-bold'>
+            Your Fish
+          </h2>
           <p className='text-blue-200 text-xs sm:text-sm'>
             {selectedFish.name}
           </p>

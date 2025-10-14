@@ -55,7 +55,9 @@ export function Navbar() {
         <button
           onClick={() => handleNavClick('store')}
           className={`px-2 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-lg bg-gradient-to-b from-emerald-400 to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 shadow-md sm:shadow-lg transform hover:scale-105 transition-all duration-200 border-1 sm:border-2 border-emerald-300 flex items-center justify-center ${
-            activeButton === 'store' ? 'scale-105 ring-1 sm:ring-2 ring-emerald-300' : ''
+            activeButton === 'store'
+              ? 'scale-105 ring-1 sm:ring-2 ring-emerald-300'
+              : ''
           }`}
           title='Visit Store'
         >
