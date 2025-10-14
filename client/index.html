@@ -3,11 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/icons/fish.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="theme-color" content="#005C99" />
     <title>Aqua Stark</title>
   </head>
-  <body>
-    <div id="root"></div>
+  <body
+    style="margin: 0; padding: 0; overflow: hidden; height: 100vh; width: 100vw"
+  >
+    <div id="root" style="height: 100vh; width: 100vw; overflow: hidden"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

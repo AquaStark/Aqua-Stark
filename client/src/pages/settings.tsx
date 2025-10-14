@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Card } from '@/components';
 import { Switch } from '@/components';
 import { OrientationLock } from '@/components/ui';
+import { Button } from '@/components/ui/button';
 
 import {
   Select,
@@ -12,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Volume2, Eye, Bell, Globe, Palette, Zap } from 'lucide-react';
+import { Volume2, Eye, Bell, Globe, Palette, Zap, Monitor } from 'lucide-react';
 
 import { BubblesBackground } from '@/components';
 import { PageHeader } from '@/components';
@@ -269,6 +270,27 @@ const SettingsPage = () => {
                     }
                     disabled={isLoading}
                   />
+                </SettingsItem>
+
+                <SettingsItem
+                  icon={<Monitor className='h-6 w-6 text-white' />}
+                  title='Fullscreen Prompt'
+                  description='Reset fullscreen prompt preferences to show the modal again.'
+                >
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    onClick={() => {
+                      localStorage.removeItem('aqua-stark-fullscreen-prompted');
+                      localStorage.removeItem('aqua-stark-fullscreen-declined');
+                      alert(
+                        'Fullscreen prompt preferences reset! The modal will show again on next visit.'
+                      );
+                    }}
+                    className='border-blue-400/50 text-blue-200 hover:bg-blue-700/50'
+                  >
+                    Reset
+                  </Button>
                 </SettingsItem>
               </div>
             </Card>

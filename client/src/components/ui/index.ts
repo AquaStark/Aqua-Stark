@@ -11,6 +11,8 @@ export { CompatabilityGuide } from './CompatabilityGuide';
 export { Container } from './container';
 export * from './dialog';
 export { ErrorBoundary } from './error-boundary';
+export { FullscreenButton } from './fullscreen-button';
+export { FullscreenModal } from './fullscreen-modal';
 export { HabitatCard } from './HabitatCard';
 export { Input } from './input';
 export { Label, labelVariants } from './label';
