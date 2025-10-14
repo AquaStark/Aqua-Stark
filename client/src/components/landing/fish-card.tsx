@@ -18,31 +18,31 @@ export function FishCardComponent({
   };
 
   return (
-    <div className='bg-blue-900/80 backdrop-blur-sm rounded-lg sm:rounded-xl md:rounded-2xl overflow-hidden shadow-lg sm:shadow-xl border border-blue-400 transform hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl h-full flex flex-col relative z-10'>
-      <div className='p-1.5 sm:p-2 md:p-3 flex flex-col items-center justify-between h-full text-center'>
-        <h3 className='text-xs sm:text-sm md:text-base lg:text-lg font-bold text-white mb-1 drop-shadow-md'>
+    <div className='bg-blue-900/80 backdrop-blur-sm rounded-md sm:rounded-lg md:rounded-xl overflow-hidden shadow-md sm:shadow-lg border border-blue-400 transform hover:scale-[1.02] transition-all duration-300 hover:shadow-xl h-full flex flex-col relative z-10'>
+      <div className='p-1 sm:p-1.5 md:p-2 flex flex-col items-center justify-between h-full text-center'>
+        <h3 className='text-xs sm:text-sm md:text-base font-bold text-white mb-0.5 sm:mb-1 drop-shadow-md'>
           {name}
         </h3>
 
-        <div className='relative w-full aspect-square bg-gradient-to-b from-blue-600/30 to-blue-900/80 rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center overflow-hidden mb-1.5 sm:mb-2'>
-          <div className='absolute inset-0 border border-blue-300/50 rounded-lg sm:rounded-xl md:rounded-2xl' />
+        <div className='relative w-full aspect-square bg-gradient-to-b from-blue-600/30 to-blue-900/80 rounded-md sm:rounded-lg md:rounded-xl flex items-center justify-center overflow-hidden mb-1 sm:mb-1.5'>
+          <div className='absolute inset-0 border border-blue-300/50 rounded-md sm:rounded-lg md:rounded-xl' />
           <FishTank>
             <img
               src={image || '/placeholder.svg'}
               alt={name}
-              className='object-contain w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 transition-transform duration-500 hover:scale-110'
+              className='object-contain w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 transition-transform duration-500 hover:scale-110'
             />
           </FishTank>
         </div>
 
-        <p className='text-xs text-white/80 mb-1.5 sm:mb-2 px-1'>
+        <p className='text-xs text-white/80 mb-1 sm:mb-1.5 px-0.5 sm:px-1'>
           A curious aquatic specimen with unique traits and vibrant colors.
           Perfect for your aquarium.
         </p>
       </div>
 
       <div
-        className={`w-full p-1 sm:p-1.5 md:p-2 text-center text-xs font-bold ${rarityColors[rarity]} bg-blue-200/10 rounded-b-lg sm:rounded-b-xl md:rounded-b-2xl`}
+        className={`w-full p-0.5 sm:p-1 md:p-1.5 text-center text-xs font-bold ${rarityColors[rarity]} bg-blue-200/10 rounded-b-md sm:rounded-b-lg md:rounded-b-xl`}
       >
         <span className='capitalize'>{rarity}</span>
       </div>

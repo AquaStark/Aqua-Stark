@@ -41,12 +41,12 @@ export function Navbar() {
   };
 
   return (
-    <nav className='relative z-10 flex justify-between items-center px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-b from-black/20 to-transparent h-full'>
+    <nav className='relative z-10 flex justify-between items-center px-2 sm:px-4 md:px-6 py-1 sm:py-2 md:py-3 bg-gradient-to-b from-black/20 to-transparent h-full'>
       <div className='flex items-center'>
         <img
           src='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Aqua_Stark-removebg-preview-ubKSrqYo7jzOH5qXqxEw4CyRHXIjfq.png'
           alt='Aqua Stark Logo'
-          className='h-20 sm:h-24 md:h-28 lg:h-32 w-auto drop-shadow-2xl'
+          className='h-12 sm:h-16 md:h-20 lg:h-24 w-auto drop-shadow-2xl'
         />
       </div>
 
@@ -54,8 +54,8 @@ export function Navbar() {
       <div className='hidden lg:flex items-center gap-4 absolute left-1/2 transform -translate-x-1/2'>
         <button
           onClick={() => handleNavClick('store')}
-          className={`px-3 py-2 rounded-lg bg-gradient-to-b from-emerald-400 to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 shadow-lg transform hover:scale-105 transition-all duration-200 border-2 border-emerald-300 flex items-center justify-center ${
-            activeButton === 'store' ? 'scale-105 ring-2 ring-emerald-300' : ''
+          className={`px-2 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-lg bg-gradient-to-b from-emerald-400 to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 shadow-md sm:shadow-lg transform hover:scale-105 transition-all duration-200 border-1 sm:border-2 border-emerald-300 flex items-center justify-center ${
+            activeButton === 'store' ? 'scale-105 ring-1 sm:ring-2 ring-emerald-300' : ''
           }`}
           title='Visit Store'
         >
