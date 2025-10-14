@@ -60,9 +60,22 @@ export function FullscreenDebug() {
         const hasBeenPrompted = localStorage.getItem(
           'aqua-stark-fullscreen-prompted'
         );
-        if (!hasBeenPrompted) {
-          setShowNotification(true);
-        }
+        console.log('Desktop fullscreen check:', {
+          isSupported,
+          isEnabled,
+          isFullscreen,
+          hasBeenPrompted,
+          isMobile,
+        });
+
+        // For debugging, always show notification on desktop for now
+        // Remove this line in production
+        setShowNotification(true);
+
+        // Original logic (commented out for debugging)
+        // if (!hasBeenPrompted) {
+        //   setShowNotification(true);
+        // }
       }, 1000);
 
       return () => clearTimeout(timer);
@@ -102,27 +115,54 @@ export function FullscreenDebug() {
     setShowNotification(false);
   };
 
-  // Don't show notification on mobile (auto fullscreen)
-  if (isMobile || !showNotification) return null;
+  // Debug function to clear localStorage
+  const clearFullscreenPrompt = () => {
+    localStorage.removeItem('aqua-stark-fullscreen-prompted');
+    localStorage.removeItem('aqua-stark-fullscreen-declined');
+    console.log('Fullscreen prompt data cleared');
+  };
 
+  // Don't show notification on mobile (auto fullscreen)
+  if (isMobile) return null;
+
+  // Show debug info and notification
   return (
-    <div className='fixed top-4 left-1/2 transform -translate-x-1/2 z-[9999] bg-blue-900/95 backdrop-blur-sm border border-blue-400/50 rounded-lg px-4 py-3 shadow-lg'>
-      <div className='flex items-center gap-3'>
-        <Maximize className='h-5 w-5 text-blue-300' />
-        <span className='text-white font-medium'>Go Full Screen?</span>
+    <>
+      {/* Debug info */}
+      <div className='fixed top-4 right-4 z-[9999] bg-black/80 text-white p-2 rounded text-xs max-w-xs'>
+        <div>Mobile: {isMobile ? 'Yes' : 'No'}</div>
+        <div>Supported: {isSupported ? 'Yes' : 'No'}</div>
+        <div>Enabled: {isEnabled ? 'Yes' : 'No'}</div>
+        <div>Fullscreen: {isFullscreen ? 'Yes' : 'No'}</div>
         <button
-          onClick={handleAccept}
-          className='bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors'
+          onClick={clearFullscreenPrompt}
+          className='mt-1 bg-red-600 hover:bg-red-700 px-2 py-1 rounded text-xs'
         >
-          Yes
-        </button>
-        <button
-          onClick={handleDecline}
-          className='text-blue-300 hover:text-white transition-colors'
-        >
-          <X className='h-4 w-4' />
+          Clear Data
         </button>
       </div>
-    </div>
+
+      {/* Fullscreen notification */}
+      {showNotification && (
+        <div className='fixed top-4 left-1/2 transform -translate-x-1/2 z-[9999] bg-blue-900/95 backdrop-blur-sm border border-blue-400/50 rounded-lg px-4 py-3 shadow-lg'>
+          <div className='flex items-center gap-3'>
+            <Maximize className='h-5 w-5 text-blue-300' />
+            <span className='text-white font-medium'>Go Full Screen?</span>
+            <button
+              onClick={handleAccept}
+              className='bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors'
+            >
+              Yes
+            </button>
+            <button
+              onClick={handleDecline}
+              className='text-blue-300 hover:text-white transition-colors'
+            >
+              <X className='h-4 w-4' />
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
