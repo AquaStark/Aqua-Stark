@@ -38,6 +38,7 @@ export { useFishStats } from './use-fish-stats';
 export { useFoodSystem } from './use-food-system';
 export { useFullscreen } from './use-fullscreen';
 export { useFullscreenConfig } from './use-fullscreen-config';
+export { useFullscreenPrompt } from './use-fullscreen-prompt';
 export { useGames } from './use-games';
 export { useHelpCenter } from './use-help-center';
 export { useLoadingNavigation } from './use-loading-navigation';

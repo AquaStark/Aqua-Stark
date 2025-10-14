@@ -1,6 +1,8 @@
 import { Route, Routes } from 'react-router-dom';
 import { StarknetProvider } from './providers/StarknetProvider';
 import { ErrorBoundary } from './components';
+import { FullscreenModal } from './components/ui/fullscreen-modal';
+import { useFullscreenPrompt } from './hooks/use-fullscreen-prompt';
 
 // Landing & Onboarding Pages
 import LandingPage from './pages/landing';
@@ -39,6 +41,8 @@ import Error404Page from './pages/404';
 import { Game } from './Game';
 
 function App() {
+  const { showPrompt, hidePrompt, acceptFullscreen, declineFullscreen } = useFullscreenPrompt();
+
   return (
     <ErrorBoundary>
       <StarknetProvider>
@@ -85,6 +89,13 @@ function App() {
           <Route path='/test-game' element={<Game />} />
           <Route path='*' element={<Error404Page />} />
         </Routes>
+        
+        {/* Fullscreen Modal */}
+        <FullscreenModal
+          isOpen={showPrompt}
+          onClose={hidePrompt}
+          onAccept={acceptFullscreen}
+        />
       </StarknetProvider>
     </ErrorBoundary>
   );
