@@ -18,7 +18,6 @@ interface FullscreenConfig {
 export function useFullscreenConfig() {
   const [config, setConfig] = useState<FullscreenConfig | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Use default config without backend dependency
@@ -44,7 +43,6 @@ export function useFullscreenConfig() {
   return {
     config,
     loading,
-    error,
     isFullscreenEnabled: config?.fullscreen.enabled ?? true,
     isFullscreenSupported: config?.fullscreen.supported ?? true,
     features: config?.fullscreen.features ?? {
