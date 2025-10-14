@@ -26,14 +26,18 @@ export function BottomInfoPanel({
           draggable={false}
         />
         <div className='text-center sm:text-left'>
-          <div className='text-white font-bold text-sm sm:text-base'>{selectedFish.name}</div>
+          <div className='text-white font-bold text-sm sm:text-base'>
+            {selectedFish.name}
+          </div>
           <div className='text-cyan-200 text-xs'>
             Exp: {selectedFish.experienceMultiplier}x
           </div>
         </div>
       </div>
       <div className='flex flex-row sm:flex-col items-center sm:items-end gap-3 sm:gap-1'>
-        <div className='text-white font-bold text-sm sm:text-base'>Score: {score}</div>
+        <div className='text-white font-bold text-sm sm:text-base'>
+          Score: {score}
+        </div>
         <div className='text-cyan-200 text-xs'>Best: {bestScore}</div>
       </div>
     </div>

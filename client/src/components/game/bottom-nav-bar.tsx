@@ -139,7 +139,9 @@ export function BottomNavBar({
         </div>
 
         {/* Feed button label */}
-        <span className='text-xs text-white/80 font-medium hidden sm:block'>Feed</span>
+        <span className='text-xs text-white/80 font-medium hidden sm:block'>
+          Feed
+        </span>
 
         {/* Timer display during feeding */}
         {isFeeding && timeRemaining > 0 && (

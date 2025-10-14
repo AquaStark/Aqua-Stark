@@ -73,7 +73,9 @@ export function GameStatusBar({
         )}
       >
         {typeof icon === 'string' ? (
-          <span className='text-sm sm:text-lg md:text-xl drop-shadow-md'>{icon}</span>
+          <span className='text-sm sm:text-lg md:text-xl drop-shadow-md'>
+            {icon}
+          </span>
         ) : (
           icon
         )}
