@@ -39,11 +39,11 @@ export function FloppyFishGameCanvas({
 
   // Calculate scale to fit the game in the available space with better mobile support
   const isMobile = window.innerWidth < 768;
-  const containerWidth = isMobile 
-    ? Math.min(window.innerWidth * 0.95, GAME_WIDTH) 
+  const containerWidth = isMobile
+    ? Math.min(window.innerWidth * 0.95, GAME_WIDTH)
     : Math.min(window.innerWidth * 0.8, 800);
-  const containerHeight = isMobile 
-    ? Math.min(window.innerHeight * 0.7, GAME_HEIGHT) 
+  const containerHeight = isMobile
+    ? Math.min(window.innerHeight * 0.7, GAME_HEIGHT)
     : Math.min(window.innerHeight * 0.6, 600);
   const scaleX = containerWidth / GAME_WIDTH;
   const scaleY = containerHeight / GAME_HEIGHT;
