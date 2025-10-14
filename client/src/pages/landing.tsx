@@ -43,25 +43,25 @@ export default function LandingPage() {
           <BubblesBackground bubbles={bubbles} />
         </div>
 
-        {/* Top navbar/HUD - Compact */}
-        <div className='relative z-30 h-16 sm:h-20 md:h-24 lg:h-28'>
+        {/* Top navbar/HUD - Ultra compact on mobile */}
+        <div className='relative z-30 h-10 sm:h-12 md:h-16 lg:h-20'>
           <Navbar />
         </div>
 
-        {/* Main content - Centered and positioned higher */}
-        <div className='relative z-20 flex flex-col justify-center items-center px-2 sm:px-4 pt-4 sm:pt-6 md:pt-8 min-h-[calc(100vh-5rem)] lg:min-h-[calc(100vh-8rem)]'>
-          {/* Hero section */}
-          <div className='flex items-center justify-center py-2 sm:py-4 md:py-6'>
+        {/* Main content - Ultra compact on mobile */}
+        <div className='relative z-20 flex flex-col justify-center items-center px-0.5 sm:px-1 md:px-2 lg:px-4 pt-1 sm:pt-2 md:pt-4 min-h-[calc(100vh-2.5rem)] sm:min-h-[calc(100vh-3rem)] md:min-h-[calc(100vh-4rem)] lg:min-h-[calc(100vh-5rem)]'>
+          {/* Hero section - Ultra small on mobile */}
+          <div className='flex items-center justify-center py-0.5 sm:py-1 md:py-2'>
             <HeroSection />
           </div>
 
-          {/* Featured fish section */}
-          <div className='flex items-center justify-center py-2 sm:py-4 md:py-6'>
+          {/* Featured fish section - Ultra small on mobile */}
+          <div className='flex items-center justify-center py-0.5 sm:py-1 md:py-2'>
             <FeaturedFish />
           </div>
 
-          {/* Footer */}
-          <div className='py-2 sm:py-4 mt-auto'>
+          {/* Footer - Ultra small on mobile */}
+          <div className='py-0.5 sm:py-1 md:py-2 mt-auto'>
             <Footer />
           </div>
         </div>

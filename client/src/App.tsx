@@ -40,6 +40,9 @@ import Error404Page from './pages/404';
 // Extra Game Test
 import { Game } from './Game';
 
+// Debug Component
+import { FullscreenDebug } from './components/debug/fullscreen-debug';
+
 function App() {
   const { showPrompt, hidePrompt, acceptFullscreen } = useFullscreenPrompt();
 
@@ -96,6 +99,9 @@ function App() {
           onClose={hidePrompt}
           onAccept={acceptFullscreen}
         />
+
+        {/* Debug Component - Remove in production */}
+        <FullscreenDebug />
       </StarknetProvider>
     </ErrorBoundary>
   );
