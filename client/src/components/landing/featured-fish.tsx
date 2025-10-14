@@ -8,7 +8,7 @@ export function FeaturedFish() {
           Featured Fish
         </h2>
 
-        <div className='grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-0.5 sm:gap-1 md:gap-2 w-full max-w-xl'>
+        <div className='grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-0.5 sm:gap-1 md:gap-2 w-full max-w-xl items-center justify-items-center'>
           <FishCardComponent
             name='REDGLOW'
             image='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish3-LOteAGqWGR4lDQ8VBBAlRSUByZL2KX.png'
