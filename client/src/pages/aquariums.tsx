@@ -8,6 +8,7 @@ import { AquariumList } from '@/components';
 import { PurchaseModal } from '@/components';
 import { CreateAquariumButton } from '@/components';
 import { BubblesBackground } from '@/components';
+import { OrientationLock } from '@/components/ui';
 import { useBubbles } from '@/hooks';
 import { Search, Filter } from 'lucide-react';
 import { useActiveAquarium } from '../store/active-aquarium';
@@ -216,11 +217,12 @@ export default function AquariumsPage() {
   );
 
   return (
-    <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900'>
+    <OrientationLock>
+      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900'>
       <BubblesBackground bubbles={bubbles} className='pointer-events-none' />
 
       <div className='relative z-10 flex flex-col min-h-screen w-full'>
-        <div className=' w-full'>
+        <div className='w-full px-2 sm:px-4'>
           <PageHeader
             title='My Aquariums'
             backTo='/game'
@@ -324,6 +326,7 @@ export default function AquariumsPage() {
           coinBalance={coinBalance}
         />
       )}
-    </div>
+      </div>
+    </OrientationLock>
   );
 }

@@ -65,15 +65,15 @@ export function GameStatusBar({
   }, [value, animated]);
 
   return (
-    <div className='relative flex items-center gap-3 min-w-[250px]'>
+    <div className='relative flex items-center gap-1 sm:gap-2 md:gap-3 min-w-[80px] sm:min-w-[120px] md:min-w-[180px] lg:min-w-[250px]'>
       <div
         className={cn(
-          'relative z-10 flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br shadow-lg',
+          'relative z-10 flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-br shadow-lg',
           color
         )}
       >
         {typeof icon === 'string' ? (
-          <span className='text-xl drop-shadow-md'>{icon}</span>
+          <span className='text-sm sm:text-lg md:text-xl drop-shadow-md'>{icon}</span>
         ) : (
           icon
         )}
@@ -81,12 +81,12 @@ export function GameStatusBar({
 
       <div className='flex-1'>
         {label && (
-          <div className='mb-1 text-sm font-bold text-white drop-shadow-md'>
+          <div className='mb-1 text-xs sm:text-sm font-bold text-white drop-shadow-md hidden sm:block'>
             {label}
           </div>
         )}
 
-        <div className='relative w-full h-5'>
+        <div className='relative w-full h-3 sm:h-4 md:h-5'>
           <div className='absolute inset-0 overflow-hidden border-2 rounded-full shadow-inner bg-blue-950/70 border-blue-800/50'>
             <div className='absolute inset-0 border-t-2 rounded-full border-white/10'></div>
           </div>
@@ -131,7 +131,7 @@ export function GameStatusBar({
           </div>
 
           {showPercentage && (
-            <div className='absolute font-bold text-white transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 drop-shadow-md'>
+            <div className='absolute font-bold text-white transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 drop-shadow-md text-xs sm:text-sm'>
               {Math.round(displayValue)}%
             </div>
           )}

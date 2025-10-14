@@ -15,6 +15,7 @@ export { HabitatCard } from './HabitatCard';
 export { Input } from './input';
 export { Label, labelVariants } from './label';
 export { MetricDisplay } from './metric-display';
+export { OrientationLock } from './orientation-lock';
 export { PlayButton } from './play-button';
 export { ProgressBar } from './progress-bar';
 export { Progress } from './progress';

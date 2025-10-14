@@ -3,6 +3,7 @@ import { BubblesBackground } from '@/components/bubble-background';
 import { useBubbles } from '@/hooks';
 import { PageHeader } from '@/components';
 import { LayoutFooter } from '@/components';
+import { OrientationLock } from '@/components/ui';
 import { Trophy } from 'lucide-react';
 import { AchievementsTabs } from '@/components';
 import { ComingSoonModal } from '@/components';
@@ -18,7 +19,8 @@ export default function AchievementsPage() {
   }, []);
 
   return (
-    <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900'>
+    <OrientationLock>
+      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900'>
       {/* Background with bubbles */}
       <BubblesBackground
         bubbles={bubbles}
@@ -59,6 +61,7 @@ export default function AchievementsPage() {
         description="The achievements system is being built. Soon you'll unlock badges, rewards, and track your progress in Aqua Stark."
         closable={false}
       />
-    </div>
+      </div>
+    </OrientationLock>
   );
 }

@@ -10,6 +10,7 @@ import { CartSidebar } from '@/components/store/cart-sidebar';
 import { CheckoutModal } from '@/components/store/checkout-modal';
 import { useCartStore } from '@/store/use-cart-store';
 import { Button } from '@/components/ui/button';
+import { OrientationLock } from '@/components/ui';
 import { ShoppingCart } from 'lucide-react';
 import { LoadingScreen } from '@/components/loading/loading-screen';
 
@@ -142,7 +143,8 @@ export default function StorePage() {
 
   // Show store once loading is complete
   return (
-    <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
+    <OrientationLock>
+      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
       <BubblesBackground bubbles={bubbles} />
 
       <PageHeader
@@ -168,12 +170,13 @@ export default function StorePage() {
       <CheckoutModal />
 
       <main className='relative z-10'>
-        <div className='px-2 sm:px-4 py-2 sm:py-4 mx-auto max-w-6xl'>
+        <div className='px-2 sm:px-4 py-2 sm:py-4 mx-auto max-w-6xl w-full'>
           <StoreOriginal />
         </div>
       </main>
 
       <LayoutFooter />
-    </div>
+      </div>
+    </OrientationLock>
   );
 }

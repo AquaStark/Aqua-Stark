@@ -15,7 +15,7 @@ function AquariumTab({ name, active, icon, onClick }: AquariumTabProps) {
     <button
       onClick={onClick}
       className={cn(
-        'game-button px-6 py-3 rounded-t-xl font-bold transition-all duration-200 flex items-center',
+        'game-button px-2 sm:px-4 md:px-6 py-2 sm:py-3 rounded-t-xl font-bold transition-all duration-200 flex items-center text-xs sm:text-sm md:text-base',
         active
           ? 'bg-gradient-to-b from-blue-400 to-blue-600 text-white translate-y-0'
           : 'bg-blue-800/50 text-white/70 hover:bg-blue-700/50 translate-y-2'
@@ -25,11 +25,12 @@ function AquariumTab({ name, active, icon, onClick }: AquariumTabProps) {
       aria-controls={`${name.toLowerCase()}-panel`}
     >
       {icon && (
-        <span className='mr-2' aria-hidden='true'>
+        <span className='mr-1 sm:mr-2' aria-hidden='true'>
           {icon}
         </span>
       )}
-      {name}
+      <span className='hidden sm:inline'>{name}</span>
+      <span className='sm:hidden'>{name.split(' ')[0]}</span>
     </button>
   );
 }
@@ -46,10 +47,10 @@ export function AquariumTabs({
   onAquariumSelect,
 }: AquariumTabsProps) {
   return (
-    <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/90 to-transparent z-20 p-4'>
+    <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/90 to-transparent z-20 p-2 sm:p-4'>
       <div className='flex justify-between items-end'>
         {/* Left side - Aquarium tabs */}
-        <div className='flex gap-2'>
+        <div className='flex gap-1 sm:gap-2 overflow-x-auto scrollbar-hide'>
           {aquariums.map(aquarium => (
             <AquariumTab
               key={aquarium.id}
@@ -61,13 +62,13 @@ export function AquariumTabs({
           <AquariumTab
             name='View All'
             active={selectedAquarium.id === 0}
-            icon={<Grid className='h-4 w-4 mr-1' />}
+            icon={<Grid className='h-3 w-3 sm:h-4 sm:w-4' />}
             onClick={() => onAquariumSelect()}
           />
         </div>
 
         {/* Right side - Empty space for balance */}
-        <div className='w-32'></div>
+        <div className='w-16 sm:w-32'></div>
       </div>
     </div>
   );

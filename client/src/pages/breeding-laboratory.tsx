@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { LaboratoryTabs } from '@/components/laboratory/laboratory-tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { OrientationLock } from '@/components/ui';
 import { Beaker, Search } from 'lucide-react';
 import { BubblesBackground } from '@/components';
 import { fishCollection } from '@/data/fish-data';
@@ -26,7 +27,8 @@ export default function LaboratoryPage() {
     : fishCollection;
 
   return (
-    <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background flex flex-col'>
+    <OrientationLock>
+      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background flex flex-col'>
       <BubblesBackground bubbles={bubbles} />
 
       <PageHeader
@@ -66,6 +68,7 @@ export default function LaboratoryPage() {
       <div className='relative z-10 mt-auto'>
         <LayoutFooter />
       </div>
-    </div>
+      </div>
+    </OrientationLock>
   );
 }
