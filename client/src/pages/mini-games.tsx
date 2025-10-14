@@ -26,9 +26,9 @@ export default function GamesPage() {
           rightContent={null}
         />
 
-        <main className='relative z-10 w-full max-w-7xl mx-auto px-1 sm:px-2 md:px-4 py-2 sm:py-3 md:py-4 lg:py-6 flex flex-col gap-2 sm:gap-3 md:gap-4 lg:gap-6'>
-          {/* Fish panel - more compact on mobile */}
-          <div className='px-1 sm:px-2'>
+        <main className='relative z-10 w-full max-w-7xl mx-auto px-0.5 sm:px-1 md:px-2 lg:px-4 py-1 sm:py-2 md:py-3 lg:py-4 flex flex-col gap-1 sm:gap-2 md:gap-3 lg:gap-4'>
+          {/* Fish panel - ultra compact on mobile */}
+          <div className='px-0.5 sm:px-1'>
             <SelectedFishPanel
               selectedFish={selectedFish}
               onChangeFish={() => {
@@ -43,9 +43,9 @@ export default function GamesPage() {
               availableFish={availableFish}
             />
           </div>
-
+          
           {/* Game grid - takes most of the space */}
-          <div className='flex-1 px-1 sm:px-2'>
+          <div className='flex-1 px-0.5 sm:px-1'>
             <GameGrid games={allGames} onGameSelect={handleGameClick} />
           </div>
         </main>

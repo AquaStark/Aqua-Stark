@@ -41,12 +41,12 @@ export function Navbar() {
   };
 
   return (
-    <nav className='relative z-10 flex justify-between items-center px-2 sm:px-4 md:px-6 py-1 sm:py-2 md:py-3 bg-gradient-to-b from-black/20 to-transparent h-full'>
+    <nav className='relative z-10 flex justify-between items-center px-1 sm:px-2 md:px-4 lg:px-6 py-0.5 sm:py-1 md:py-2 bg-gradient-to-b from-black/20 to-transparent h-full'>
       <div className='flex items-center'>
         <img
           src='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Aqua_Stark-removebg-preview-ubKSrqYo7jzOH5qXqxEw4CyRHXIjfq.png'
           alt='Aqua Stark Logo'
-          className='h-12 sm:h-16 md:h-20 lg:h-24 w-auto drop-shadow-2xl'
+          className='h-8 sm:h-12 md:h-16 lg:h-20 w-auto drop-shadow-2xl'
         />
       </div>
 
