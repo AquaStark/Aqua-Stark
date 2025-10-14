@@ -39,54 +39,54 @@ function HelpCenter() {
   return (
     <OrientationLock>
       <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
-      <BubblesBackground bubbles={bubbles} />
+        <BubblesBackground bubbles={bubbles} />
 
-      <PageHeader
-        title='Aqua Stark Help Center'
-        backTo='/game'
-        backText='Back to Game'
-        rightContent={
-          <div className='relative w-full max-w-sm'>
-            <Search className='absolute right-3 top-2.5 h-5 w-5 text-blue-300' />
-            <Input
-              type='text'
-              placeholder='Search help topics...'
-              className='pr-10 bg-blue-800 border-blue-700 text-white placeholder:text-blue-300'
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-            />
-          </div>
-        }
-      />
-
-      <main className='relative z-20 mx-auto container flex flex-col md:flex-row px-4 py-8 gap-8 max-w-7xl'>
-        <HelpCenterSidebar
-          categories={currentCategory ? [currentCategory] : []}
-          featuredTopics={featuredTopics}
-          activeCategory={activeCategory}
-          onCategoryClick={handleCategoryClick}
-          onFeaturedTopicClick={handleFeaturedTopicClick}
+        <PageHeader
+          title='Aqua Stark Help Center'
+          backTo='/game'
+          backText='Back to Game'
+          rightContent={
+            <div className='relative w-full max-w-sm'>
+              <Search className='absolute right-3 top-2.5 h-5 w-5 text-blue-300' />
+              <Input
+                type='text'
+                placeholder='Search help topics...'
+                className='pr-10 bg-blue-800 border-blue-700 text-white placeholder:text-blue-300'
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
+            </div>
+          }
         />
 
-        <HelpMainContent
-          currentCategory={currentCategory}
-          currentTopic={currentTopic}
-          activeTopic={activeTopic}
-          onTopicClick={handleTopicClick}
-          onClose={handleClose}
+        <main className='relative z-20 mx-auto container flex flex-col md:flex-row px-4 py-8 gap-8 max-w-7xl'>
+          <HelpCenterSidebar
+            categories={currentCategory ? [currentCategory] : []}
+            featuredTopics={featuredTopics}
+            activeCategory={activeCategory}
+            onCategoryClick={handleCategoryClick}
+            onFeaturedTopicClick={handleFeaturedTopicClick}
+          />
+
+          <HelpMainContent
+            currentCategory={currentCategory}
+            currentTopic={currentTopic}
+            activeTopic={activeTopic}
+            onTopicClick={handleTopicClick}
+            onClose={handleClose}
+          />
+        </main>
+
+        <LayoutFooter />
+
+        {/* Modal Coming Soon */}
+        <ComingSoonModal
+          isOpen={showComingSoon}
+          onClose={() => setShowComingSoon(false)}
+          title='Help Center Under Development'
+          description="The help center is being built. Soon you'll have access to comprehensive guides, FAQs, and support resources."
+          closable={false}
         />
-      </main>
-
-      <LayoutFooter />
-
-      {/* Modal Coming Soon */}
-      <ComingSoonModal
-        isOpen={showComingSoon}
-        onClose={() => setShowComingSoon(false)}
-        title='Help Center Under Development'
-        description="The help center is being built. Soon you'll have access to comprehensive guides, FAQs, and support resources."
-        closable={false}
-      />
       </div>
     </OrientationLock>
   );
