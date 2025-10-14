@@ -6,23 +6,90 @@ export function FullscreenDebug() {
   const { isFullscreen, enterFullscreen, isSupported, isEnabled } =
     useFullscreen();
   const [showNotification, setShowNotification] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
+  // Detect if device is mobile
   useEffect(() => {
-    // Show notification after 1 second if conditions are met
-    const timer = setTimeout(() => {
+    const checkMobile = () => {
+      const mobile =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        );
+      const isTouchDevice =
+        'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isSmallScreen = window.innerWidth <= 768;
+
+      setIsMobile(mobile || (isTouchDevice && isSmallScreen));
+    };
+
+    checkMobile();
+
+    // Listen for orientation changes
+    const handleOrientationChange = () => {
+      setTimeout(checkMobile, 100); // Small delay to let orientation settle
+    };
+
+    window.addEventListener('orientationchange', handleOrientationChange);
+    window.addEventListener('resize', handleOrientationChange);
+
+    return () => {
+      window.removeEventListener('orientationchange', handleOrientationChange);
+      window.removeEventListener('resize', handleOrientationChange);
+    };
+  }, []);
+
+  // Auto fullscreen logic
+  useEffect(() => {
+    const attemptFullscreen = async () => {
       if (isSupported && isEnabled && !isFullscreen) {
-        // Check if user hasn't been prompted before
+        try {
+          await enterFullscreen();
+        } catch (error) {
+          console.log('Fullscreen failed:', error);
+        }
+      }
+    };
+
+    if (isMobile) {
+      // On mobile, always try to go fullscreen automatically
+      const timer = setTimeout(attemptFullscreen, 500);
+      return () => clearTimeout(timer);
+    } else {
+      // On desktop, show notification if not prompted before
+      const timer = setTimeout(() => {
         const hasBeenPrompted = localStorage.getItem(
           'aqua-stark-fullscreen-prompted'
         );
         if (!hasBeenPrompted) {
           setShowNotification(true);
         }
-      }
-    }, 1000);
+      }, 1000);
 
-    return () => clearTimeout(timer);
-  }, [isSupported, isEnabled, isFullscreen]);
+      return () => clearTimeout(timer);
+    }
+  }, [isSupported, isEnabled, isFullscreen, isMobile, enterFullscreen]);
+
+  // Listen for orientation changes on mobile to re-trigger fullscreen
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const handleOrientationChange = async () => {
+      // Wait a bit for orientation to settle
+      setTimeout(async () => {
+        if (isSupported && isEnabled && !isFullscreen) {
+          try {
+            await enterFullscreen();
+          } catch (error) {
+            console.log('Fullscreen on orientation change failed:', error);
+          }
+        }
+      }, 300);
+    };
+
+    window.addEventListener('orientationchange', handleOrientationChange);
+    return () =>
+      window.removeEventListener('orientationchange', handleOrientationChange);
+  }, [isMobile, isSupported, isEnabled, isFullscreen, enterFullscreen]);
 
   const handleAccept = async () => {
     localStorage.setItem('aqua-stark-fullscreen-prompted', 'true');
@@ -35,7 +102,8 @@ export function FullscreenDebug() {
     setShowNotification(false);
   };
 
-  if (!showNotification) return null;
+  // Don't show notification on mobile (auto fullscreen)
+  if (isMobile || !showNotification) return null;
 
   return (
     <div className='fixed top-4 left-1/2 transform -translate-x-1/2 z-[9999] bg-blue-900/95 backdrop-blur-sm border border-blue-400/50 rounded-lg px-4 py-3 shadow-lg'>
