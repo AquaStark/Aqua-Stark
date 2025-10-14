@@ -43,7 +43,7 @@ export default function GamesPage() {
               availableFish={availableFish}
             />
           </div>
-          
+
           {/* Game grid - takes most of the space */}
           <div className='flex-1 px-0.5 sm:px-1'>
             <GameGrid games={allGames} onGameSelect={handleGameClick} />

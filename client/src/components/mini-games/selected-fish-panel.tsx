@@ -26,9 +26,7 @@ export function SelectedFishPanel({
           <h2 className='text-white text-xs sm:text-sm md:text-base font-bold'>
             Your Fish
           </h2>
-          <p className='text-blue-200 text-xs'>
-            {selectedFish.name}
-          </p>
+          <p className='text-blue-200 text-xs'>{selectedFish.name}</p>
         </div>
       </div>
       <button
