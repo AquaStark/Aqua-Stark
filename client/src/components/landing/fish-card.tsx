@@ -18,7 +18,7 @@ export function FishCardComponent({
   };
 
   return (
-    <div className='bg-blue-900/80 backdrop-blur-sm rounded-sm sm:rounded-md md:rounded-lg overflow-hidden shadow-sm sm:shadow-md border border-blue-400 transform hover:scale-[1.02] transition-all duration-300 hover:shadow-lg h-full flex flex-col relative z-10'>
+    <div className='bg-blue-900/80 backdrop-blur-sm rounded-sm sm:rounded-md md:rounded-lg overflow-hidden shadow-sm sm:shadow-md border border-blue-400 transform hover:scale-[1.02] transition-all duration-300 hover:shadow-lg h-full flex flex-col relative z-10 scale-80 sm:scale-100'>
       <div className='p-0.5 sm:p-1 md:p-1.5 flex flex-col items-center justify-between h-full text-center'>
         <h3 className='text-xs sm:text-sm font-bold text-white mb-0.5 drop-shadow-md'>
           {name}
@@ -30,7 +30,7 @@ export function FishCardComponent({
             <img
               src={image || '/placeholder.svg'}
               alt={name}
-              className='object-contain w-3 h-3 sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 transition-transform duration-500 hover:scale-110'
+              className='object-contain w-3 h-3 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 transition-transform duration-500 hover:scale-110'
             />
           </FishTank>
         </div>
