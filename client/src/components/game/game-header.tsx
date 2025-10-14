@@ -29,33 +29,35 @@ export function GameHeader({
         />
       </div>
 
-      <div className='flex items-center gap-1 sm:gap-2 md:gap-4 bg-blue-900/40 backdrop-blur-sm p-1 sm:p-2 md:p-3 rounded-xl'>
-        <div className='flex items-center gap-1 sm:gap-2 mr-2 sm:mr-4 bg-blue-800/50 px-2 sm:px-3 py-1 rounded-lg'>
+      <div className='flex items-center gap-1 sm:gap-2 md:gap-4 bg-blue-900/40 backdrop-blur-sm p-2 sm:p-2 md:p-3 rounded-xl overflow-x-auto'>
+        <div className='flex items-center gap-1 sm:gap-2 mr-2 sm:mr-4 bg-blue-800/50 px-2 sm:px-3 py-1 rounded-lg flex-shrink-0'>
           <Fish className='text-blue-200 h-4 w-4 sm:h-5 sm:w-5' />
           <span className='text-white font-bold text-xs sm:text-sm'>2/10</span>
         </div>
 
-        <GameStatusBar
-          icon='🌟'
-          value={happiness}
-          color='from-yellow-400 to-yellow-600'
-          label='Happiness'
-        />
-        <GameStatusBar
-          icon='🍖'
-          value={food}
-          color='from-orange-400 to-orange-600'
-          label='Hunger'
-        />
-        <GameStatusBar
-          icon='⚡'
-          value={energy}
-          color='from-blue-400 to-blue-600'
-          label='Energy'
-        />
+        <div className='flex items-center gap-1 sm:gap-2 flex-shrink-0'>
+          <GameStatusBar
+            icon='🌟'
+            value={happiness}
+            color='from-yellow-400 to-yellow-600'
+            label='Happiness'
+          />
+          <GameStatusBar
+            icon='🍖'
+            value={food}
+            color='from-orange-400 to-orange-600'
+            label='Hunger'
+          />
+          <GameStatusBar
+            icon='⚡'
+            value={energy}
+            color='from-blue-400 to-blue-600'
+            label='Energy'
+          />
+        </div>
 
         <FullscreenButton
-          className='ml-2 sm:ml-4 text-white hover:bg-blue-500/50'
+          className='ml-2 sm:ml-4 text-white hover:bg-blue-500/50 flex-shrink-0'
           variant='ghost'
           size='sm'
         />
