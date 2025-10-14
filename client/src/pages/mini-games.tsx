@@ -26,21 +26,28 @@ export default function GamesPage() {
           rightContent={null}
         />
 
-        <main className='relative z-10 w-full max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6 lg:py-8 flex flex-col gap-4 sm:gap-6 lg:gap-8'>
-          <SelectedFishPanel
-            selectedFish={selectedFish}
-            onChangeFish={() => {
-              // Aquí luego se abrirá un modal o dropdown
-              // Por ahora solo cambiamos al siguiente pez para prueba
-              const currentIndex = availableFish.findIndex(
-                f => f.id === selectedFish.id
-              );
-              const nextIndex = (currentIndex + 1) % availableFish.length;
-              setSelectedFish(availableFish[nextIndex]);
-            }}
-            availableFish={availableFish}
-          />
-          <GameGrid games={allGames} onGameSelect={handleGameClick} />
+        <main className='relative z-10 w-full max-w-7xl mx-auto px-1 sm:px-2 md:px-4 py-2 sm:py-3 md:py-4 lg:py-6 flex flex-col gap-2 sm:gap-3 md:gap-4 lg:gap-6'>
+          {/* Fish panel - more compact on mobile */}
+          <div className='px-1 sm:px-2'>
+            <SelectedFishPanel
+              selectedFish={selectedFish}
+              onChangeFish={() => {
+                // Aquí luego se abrirá un modal o dropdown
+                // Por ahora solo cambiamos al siguiente pez para prueba
+                const currentIndex = availableFish.findIndex(
+                  f => f.id === selectedFish.id
+                );
+                const nextIndex = (currentIndex + 1) % availableFish.length;
+                setSelectedFish(availableFish[nextIndex]);
+              }}
+              availableFish={availableFish}
+            />
+          </div>
+          
+          {/* Game grid - takes most of the space */}
+          <div className='flex-1 px-1 sm:px-2'>
+            <GameGrid games={allGames} onGameSelect={handleGameClick} />
+          </div>
         </main>
 
         <LayoutFooter />
