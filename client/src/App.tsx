@@ -41,8 +41,7 @@ import Error404Page from './pages/404';
 import { Game } from './Game';
 
 function App() {
-  const { showPrompt, hidePrompt, acceptFullscreen, declineFullscreen } =
-    useFullscreenPrompt();
+  const { showPrompt, hidePrompt, acceptFullscreen } = useFullscreenPrompt();
 
   return (
     <ErrorBoundary>

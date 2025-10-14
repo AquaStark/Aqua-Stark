@@ -18,12 +18,7 @@ export function useFullscreen(): UseFullscreenReturn {
 
   useEffect(() => {
     // Check if fullscreen API is supported (combine with backend config)
-    const browserSupported = !!(
-      document.fullscreenEnabled ||
-      (document as any).webkitFullscreenEnabled ||
-      (document as any).mozFullScreenEnabled ||
-      (document as any).msFullscreenEnabled
-    );
+    // Note: browserSupported is used for internal logic but not exposed
 
     // Check initial fullscreen state
     const checkFullscreen = () => {
@@ -75,7 +70,7 @@ export function useFullscreen(): UseFullscreenReturn {
     } catch (error) {
       console.error('Error entering fullscreen:', error);
     }
-  }, [isSupported]);
+  }, [isSupported, isFullscreenEnabled]);
 
   const exitFullscreen = useCallback(async () => {
     if (!isSupported || !isFullscreenEnabled) return;
@@ -93,7 +88,7 @@ export function useFullscreen(): UseFullscreenReturn {
     } catch (error) {
       console.error('Error exiting fullscreen:', error);
     }
-  }, [isSupported]);
+  }, [isSupported, isFullscreenEnabled]);
 
   const toggleFullscreen = useCallback(async () => {
     if (isFullscreen) {
