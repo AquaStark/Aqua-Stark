@@ -12,9 +12,16 @@
 html,
 body {
   font-family: 'Poppins-ExtraBold', sans-serif;
-  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -35,7 +42,10 @@ html {
   scrollbar-width: none;
   -ms-overflow-style: none;
   height: 100vh;
-  position: relative;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 
 .landing-page::-webkit-scrollbar {
@@ -97,6 +107,45 @@ html {
   }
   50% {
     background-position: 100% 50%;
+  }
+}
+
+/* Full screen styles */
+:fullscreen {
+  background-color: #005C99;
+}
+
+:-webkit-full-screen {
+  background-color: #005C99;
+}
+
+:-moz-full-screen {
+  background-color: #005C99;
+}
+
+:-ms-fullscreen {
+  background-color: #005C99;
+}
+
+/* Full screen button styles */
+.fullscreen-button {
+  transition: all 0.3s ease;
+}
+
+.fullscreen-button:hover {
+  transform: scale(1.1);
+}
+
+/* Mobile full screen optimizations */
+@media screen and (max-width: 768px) {
+  html, body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
 }
 

@@ -1,5 +1,6 @@
 import { Fish } from 'lucide-react';
 import { GameStatusBar } from '@/components';
+import { FullscreenButton } from '@/components/ui/fullscreen-button';
 
 interface GameHeaderProps {
   happiness: number;
@@ -51,6 +52,12 @@ export function GameHeader({
           value={energy}
           color='from-blue-400 to-blue-600'
           label='Energy'
+        />
+        
+        <FullscreenButton 
+          className="ml-2 sm:ml-4 text-white hover:bg-blue-500/50" 
+          variant="ghost"
+          size="sm"
         />
       </div>
 

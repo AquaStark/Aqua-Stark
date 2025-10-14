@@ -36,6 +36,8 @@ export { useExperience } from './use-experience';
 export { useFishMovement } from './use-fish-movement';
 export { useFishStats } from './use-fish-stats';
 export { useFoodSystem } from './use-food-system';
+export { useFullscreen } from './use-fullscreen';
+export { useFullscreenConfig } from './use-fullscreen-config';
 export { useGames } from './use-games';
 export { useHelpCenter } from './use-help-center';
 export { useLoadingNavigation } from './use-loading-navigation';
