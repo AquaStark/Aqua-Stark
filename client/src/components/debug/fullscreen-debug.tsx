@@ -53,14 +53,34 @@ export function FullscreenDebug() {
     if (isMobile) {
       // On mobile, always try to go fullscreen automatically
       const timer = setTimeout(attemptFullscreen, 500);
-      return () => clearTimeout(timer);
+
+      // Also try on first user interaction (required for iOS)
+      const handleFirstInteraction = async () => {
+        await attemptFullscreen();
+        document.removeEventListener('touchstart', handleFirstInteraction);
+        document.removeEventListener('click', handleFirstInteraction);
+      };
+
+      document.addEventListener('touchstart', handleFirstInteraction);
+      document.addEventListener('click', handleFirstInteraction);
+
+      return () => {
+        clearTimeout(timer);
+        document.removeEventListener('touchstart', handleFirstInteraction);
+        document.removeEventListener('click', handleFirstInteraction);
+      };
     } else {
-      // On desktop, show notification if not prompted before
+      // On desktop, show notification only once if not prompted before
       const timer = setTimeout(() => {
         const hasBeenPrompted = localStorage.getItem(
           'aqua-stark-fullscreen-prompted'
         );
-        if (!hasBeenPrompted) {
+        const hasBeenDeclined = localStorage.getItem(
+          'aqua-stark-fullscreen-declined'
+        );
+
+        // Only show notification if never prompted and never declined
+        if (!hasBeenPrompted && !hasBeenDeclined) {
           setShowNotification(true);
         }
       }, 1000);
@@ -98,7 +118,7 @@ export function FullscreenDebug() {
   };
 
   const handleDecline = () => {
-    localStorage.setItem('aqua-stark-fullscreen-prompted', 'true');
+    localStorage.setItem('aqua-stark-fullscreen-declined', 'true');
     setShowNotification(false);
   };
 

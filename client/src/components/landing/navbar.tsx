@@ -2,15 +2,17 @@
 
 import { useState } from 'react';
 import { ConnectButton } from '@/components';
-import { LogOut } from 'lucide-react';
+import { LogOut, Maximize } from 'lucide-react';
 import { useAccount, useDisconnect } from '@starknet-react/core';
 import { useNotifications } from '@/hooks';
+import { useFullscreen } from '@/hooks/use-fullscreen';
 
 export function Navbar() {
   const [activeButton, setActiveButton] = useState<string | null>(null);
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const { info } = useNotifications();
+  const { isFullscreen, toggleFullscreen, isSupported } = useFullscreen();
 
   const handleDisconnectWallet = async () => {
     try {
@@ -51,65 +53,80 @@ export function Navbar() {
       </div>
 
       {/* Navigation Menu - Centered and fixed width */}
-      <div className='hidden lg:flex items-center gap-4 absolute left-1/2 transform -translate-x-1/2'>
+      <div className='flex items-center gap-1 sm:gap-2 md:gap-3 lg:gap-4 absolute left-1/2 transform -translate-x-1/2'>
         <button
           onClick={() => handleNavClick('store')}
-          className={`px-2 sm:px-3 py-1 sm:py-2 rounded-md sm:rounded-lg bg-gradient-to-b from-emerald-400 to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 shadow-md sm:shadow-lg transform hover:scale-105 transition-all duration-200 border-1 sm:border-2 border-emerald-300 flex items-center justify-center ${
+          className={`px-1 sm:px-2 md:px-3 py-0.5 sm:py-1 md:py-2 rounded-sm sm:rounded-md md:rounded-lg bg-gradient-to-b from-emerald-400 to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 shadow-md sm:shadow-lg transform hover:scale-105 transition-all duration-200 border border-emerald-300 flex items-center justify-center ${
             activeButton === 'store'
               ? 'scale-105 ring-1 sm:ring-2 ring-emerald-300'
               : ''
           }`}
           title='Visit Store'
         >
-          <span className='text-white text-xs font-bold whitespace-nowrap'>
+          <span className='text-white text-[8px] sm:text-xs font-bold whitespace-nowrap'>
             Store
           </span>
         </button>
 
         <button
           onClick={() => handleNavClick('tutorial')}
-          className={`px-3 py-2 rounded-lg bg-gradient-to-b from-cyan-400 to-cyan-600 hover:from-cyan-500 hover:to-cyan-700 shadow-lg transform hover:scale-105 transition-all duration-200 border-2 border-cyan-300 flex items-center justify-center ${
-            activeButton === 'tutorial' ? 'scale-105 ring-2 ring-cyan-300' : ''
+          className={`px-1 sm:px-2 md:px-3 py-0.5 sm:py-1 md:py-2 rounded-sm sm:rounded-md md:rounded-lg bg-gradient-to-b from-cyan-400 to-cyan-600 hover:from-cyan-500 hover:to-cyan-700 shadow-md sm:shadow-lg transform hover:scale-105 transition-all duration-200 border border-cyan-300 flex items-center justify-center ${
+            activeButton === 'tutorial'
+              ? 'scale-105 ring-1 sm:ring-2 ring-cyan-300'
+              : ''
           }`}
           title='Tutorial'
         >
-          <span className='text-white text-xs font-bold whitespace-nowrap'>
+          <span className='text-white text-[8px] sm:text-xs font-bold whitespace-nowrap'>
             Tutorial
           </span>
         </button>
 
         <button
           onClick={() => handleNavClick('settings')}
-          className={`px-3 py-2 rounded-lg bg-gradient-to-b from-violet-400 to-violet-600 hover:from-violet-500 hover:to-violet-700 shadow-lg transform hover:scale-105 transition-all duration-200 border-2 border-violet-300 flex items-center justify-center ${
+          className={`px-1 sm:px-2 md:px-3 py-0.5 sm:py-1 md:py-2 rounded-sm sm:rounded-md md:rounded-lg bg-gradient-to-b from-violet-400 to-violet-600 hover:from-violet-500 hover:to-violet-700 shadow-md sm:shadow-lg transform hover:scale-105 transition-all duration-200 border border-violet-300 flex items-center justify-center ${
             activeButton === 'settings'
-              ? 'scale-105 ring-2 ring-violet-300'
+              ? 'scale-105 ring-1 sm:ring-2 ring-violet-300'
               : ''
           }`}
           title='Settings'
         >
-          <span className='text-white text-xs font-bold whitespace-nowrap'>
+          <span className='text-white text-[8px] sm:text-xs font-bold whitespace-nowrap'>
             Settings
           </span>
         </button>
 
         <button
           onClick={() => handleNavClick('credits')}
-          className={`px-3 py-2 rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 shadow-lg transform hover:scale-105 transition-all duration-200 border-2 border-amber-300 flex items-center justify-center ${
-            activeButton === 'credits' ? 'scale-105 ring-2 ring-amber-300' : ''
+          className={`px-1 sm:px-2 md:px-3 py-0.5 sm:py-1 md:py-2 rounded-sm sm:rounded-md md:rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 shadow-md sm:shadow-lg transform hover:scale-105 transition-all duration-200 border border-amber-300 flex items-center justify-center ${
+            activeButton === 'credits'
+              ? 'scale-105 ring-1 sm:ring-2 ring-amber-300'
+              : ''
           }`}
           title='Credits'
         >
-          <span className='text-white text-xs font-bold whitespace-nowrap'>
+          <span className='text-white text-[8px] sm:text-xs font-bold whitespace-nowrap'>
             Credits
           </span>
         </button>
       </div>
 
-      <div className='flex gap-2 sm:gap-3 items-center'>
+      <div className='flex gap-1 sm:gap-2 md:gap-3 items-center'>
+        {/* Fullscreen Button */}
+        {isSupported && (
+          <button
+            onClick={toggleFullscreen}
+            className='px-1 sm:px-2 py-0.5 sm:py-1 rounded-sm sm:rounded-md bg-gradient-to-b from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 shadow-md sm:shadow-lg transform hover:scale-105 transition-all duration-200 border border-blue-300 flex items-center justify-center'
+            title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+          >
+            <Maximize className='w-3 h-3 sm:w-4 sm:h-4 text-white' />
+          </button>
+        )}
+
         {isConnected ? (
-          <div className='flex items-center gap-2 sm:gap-3'>
-            <div className='bg-blue-600/40 backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1 sm:py-2 border border-blue-400/50'>
-              <span className='text-white text-xs sm:text-sm font-bold tracking-wide'>
+          <div className='flex items-center gap-1 sm:gap-2 md:gap-3'>
+            <div className='bg-blue-600/40 backdrop-blur-sm rounded-lg px-1 sm:px-2 md:px-3 py-0.5 sm:py-1 md:py-2 border border-blue-400/50'>
+              <span className='text-white text-[8px] sm:text-xs md:text-sm font-bold tracking-wide'>
                 {address
                   ? `${address.slice(0, 6)}...${address.slice(-4)}`
                   : 'Connected'}
@@ -117,10 +134,10 @@ export function Navbar() {
             </div>
             <button
               onClick={handleDisconnectWallet}
-              className='px-3 py-2 rounded-lg bg-gradient-to-b from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 shadow-lg transform hover:scale-105 transition-all duration-200 border-2 border-red-300 flex items-center justify-center'
+              className='px-1 sm:px-2 md:px-3 py-0.5 sm:py-1 md:py-2 rounded-sm sm:rounded-md md:rounded-lg bg-gradient-to-b from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 shadow-md sm:shadow-lg transform hover:scale-105 transition-all duration-200 border border-red-300 flex items-center justify-center'
               title='Disconnect Wallet'
             >
-              <LogOut className='w-4 h-4 text-white' />
+              <LogOut className='w-3 h-3 sm:w-4 sm:h-4 text-white' />
             </button>
           </div>
         ) : (

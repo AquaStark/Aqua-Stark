@@ -26,8 +26,25 @@ export function GameStatusBar({
   const [displayValue, setDisplayValue] = useState(value);
   const [isIncreasing, setIsIncreasing] = useState(false);
   const [isDecreasing, setIsDecreasing] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const prevValueRef = useRef(value);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const width = window.innerWidth;
+      const isMobileDevice =
+        width <= 640 ||
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        );
+      setIsMobile(isMobileDevice);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const percentage = Math.min(Math.max(0, (value / maxValue) * 100), 100);
 
@@ -65,15 +82,24 @@ export function GameStatusBar({
   }, [value, animated]);
 
   return (
-    <div className='relative flex items-center gap-1 sm:gap-2 md:gap-3 min-w-[80px] sm:min-w-[120px] md:min-w-[180px] lg:min-w-[250px]'>
+    <div className='relative flex items-center gap-1 sm:gap-2 md:gap-3 min-w-[70px] sm:min-w-[120px] md:min-w-[180px] lg:min-w-[250px]'>
       <div
         className={cn(
-          'relative z-10 flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-br shadow-lg',
+          'relative z-10 flex items-center justify-center w-6 h-6 xs:w-6 xs:h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-br shadow-lg',
           color
         )}
+        style={{
+          width: isMobile ? '32px' : undefined,
+          height: isMobile ? '32px' : undefined,
+        }}
       >
         {typeof icon === 'string' ? (
-          <span className='text-sm sm:text-lg md:text-xl drop-shadow-md'>
+          <span
+            className='text-base xs:text-base sm:text-lg md:text-xl drop-shadow-md'
+            style={{
+              fontSize: isMobile ? '20px' : undefined,
+            }}
+          >
             {icon}
           </span>
         ) : (
@@ -83,7 +109,13 @@ export function GameStatusBar({
 
       <div className='flex-1'>
         {label && (
-          <div className='mb-1 text-xs sm:text-sm font-bold text-white drop-shadow-md hidden sm:block'>
+          <div
+            className='mb-0.5 sm:mb-1 text-[10px] xs:text-[10px] sm:text-sm font-bold text-white drop-shadow-md'
+            style={{
+              fontSize: isMobile ? '12px' : undefined,
+              display: isMobile ? 'block' : undefined,
+            }}
+          >
             {label}
           </div>
         )}
@@ -133,7 +165,7 @@ export function GameStatusBar({
           </div>
 
           {showPercentage && (
-            <div className='absolute font-bold text-white transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 drop-shadow-md text-xs sm:text-sm'>
+            <div className='absolute font-bold text-white transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 drop-shadow-md text-[9px] sm:text-sm'>
               {Math.round(displayValue)}%
             </div>
           )}
