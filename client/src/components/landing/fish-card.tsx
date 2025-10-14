@@ -30,12 +30,12 @@ export function FishCardComponent({
             <img
               src={image || '/placeholder.svg'}
               alt={name}
-              className='object-contain w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 transition-transform duration-500 hover:scale-110'
+              className='object-contain w-4 h-4 sm:w-8 sm:h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 transition-transform duration-500 hover:scale-110'
             />
           </FishTank>
         </div>
 
-        <p className='text-xs text-white/80 mb-0.5 sm:mb-1 px-0.5 text-center leading-tight'>
+        <p className='text-xs text-white/80 mb-0.5 sm:mb-1 px-0.5 text-center leading-tight hidden sm:block'>
           A curious aquatic specimen with unique traits and vibrant colors.
           Perfect for your aquarium.
         </p>
