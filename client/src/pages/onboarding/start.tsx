@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { BubblesBackground } from '@/components';
+import { OrientationLock } from '@/components/ui';
 import { useBubbles } from '@/hooks';
 import { ErrorWithMessage } from '@/types';
 
@@ -156,7 +157,8 @@ export default function Start() {
   };
 
   return (
-    <div className='relative min-h-screen w-full overflow-hidden flex flex-col justify-between'>
+    <OrientationLock>
+      <div className='relative min-h-screen w-full overflow-hidden flex flex-col justify-between'>
       {/* Oceanic background image and gradient overlays */}
       <div className='absolute inset-0 -z-10'>
         <img
@@ -288,6 +290,7 @@ export default function Start() {
 
       {/* Sticky, blurred footer */}
       <LayoutFooter className='bg-blue-900/60 backdrop-blur-md border-t border-blue-400/30 fixed bottom-0 left-0 w-full z-40' />
-    </div>
+      </div>
+    </OrientationLock>
   );
 }

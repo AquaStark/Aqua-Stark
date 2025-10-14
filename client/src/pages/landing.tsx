@@ -5,6 +5,7 @@ import { FeaturedFish } from '@/components';
 import { Footer } from '@/components';
 import { HeroSection } from '@/components/landing/hero-section';
 import { Navbar } from '@/components/landing/navbar';
+import { OrientationLock } from '@/components/ui';
 import { useBubbles } from '@/hooks';
 
 export default function LandingPage() {
@@ -20,10 +21,11 @@ export default function LandingPage() {
   });
 
   return (
-    <div
-      className='relative min-h-screen w-full overflow-x-hidden landing-page'
-      style={{ height: '100vh' }}
-    >
+    <OrientationLock>
+      <div
+        className='relative min-h-screen w-full overflow-x-hidden landing-page'
+        style={{ height: '100vh' }}
+      >
       {/* Background image */}
       <div
         className='fixed inset-0 bg-cover bg-center bg-no-repeat'
@@ -63,6 +65,7 @@ export default function LandingPage() {
           <Footer />
         </div>
       </div>
-    </div>
+      </div>
+    </OrientationLock>
   );
 }

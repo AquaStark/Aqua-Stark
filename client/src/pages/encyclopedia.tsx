@@ -9,6 +9,7 @@ import { useEncyclopedia } from '@/hooks';
 import { BubblesBackground } from '@/components';
 import { useBubbles } from '@/hooks';
 import { ComingSoonModal } from '@/components';
+import { OrientationLock } from '@/components/ui';
 
 export default function EncyclopediaPage() {
   const [showComingSoon, setShowComingSoon] = useState(false);
@@ -23,7 +24,8 @@ export default function EncyclopediaPage() {
   }, []);
 
   return (
-    <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
+    <OrientationLock>
+      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
       <BubblesBackground bubbles={bubbles} />
 
       <PageHeader
@@ -58,6 +60,7 @@ export default function EncyclopediaPage() {
         description="The fish encyclopedia is being built. Soon you'll discover and learn about all the amazing fish species in Aqua Stark."
         closable={false}
       />
-    </div>
+      </div>
+    </OrientationLock>
   );
 }

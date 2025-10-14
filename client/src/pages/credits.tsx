@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { BubblesBackground } from '@/components';
 import { useBubbles } from '@/hooks';
 import { creditsData } from '@/data/mock-credits';
+import { OrientationLock } from '@/components/ui';
 
 export default function Credits() {
   const navigate = useNavigate();
@@ -45,7 +46,8 @@ export default function Credits() {
   };
 
   return (
-    <div className='relative h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900'>
+    <OrientationLock>
+      <div className='relative h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900'>
       <BubblesBackground bubbles={bubbles} />
 
       <div className='absolute top-6 left-6 z-50'>
@@ -171,6 +173,7 @@ export default function Credits() {
           }
         }
       `}</style>
-    </div>
+      </div>
+    </OrientationLock>
   );
 }

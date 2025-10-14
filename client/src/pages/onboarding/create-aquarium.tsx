@@ -8,6 +8,7 @@ import { useFish } from '@/hooks';
 import { PageHeader } from '@/components';
 import { LayoutFooter } from '@/components';
 import { BubblesBackground } from '@/components';
+import { OrientationLock } from '@/components/ui';
 import { useBubbles } from '@/hooks';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -78,7 +79,8 @@ export default function CreateAquarium() {
   };
 
   return (
-    <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900'>
+    <OrientationLock>
+      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900'>
       <div className='water-movement'></div>
       <PageHeader
         title='Purchase Aquarium'
@@ -191,6 +193,7 @@ export default function CreateAquarium() {
         description="The aquarium creation system is being built. Soon you'll be able to purchase and customize your own aquariums with unique fish."
         closable={false}
       />
-    </div>
+      </div>
+    </OrientationLock>
   );
 }

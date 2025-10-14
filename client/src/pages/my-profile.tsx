@@ -13,6 +13,7 @@ import {
   BubblesBackground,
 } from '@/components/profile';
 import { useBubbles } from '@/hooks';
+import { OrientationLock } from '@/components/ui';
 
 export default function MyProfile() {
   const [activeTab, setActiveTab] = useState('collection');
@@ -44,7 +45,8 @@ export default function MyProfile() {
   } = mockProfileData;
 
   return (
-    <div className='min-h-screen bg-blue-700 text-white relative overflow-hidden'>
+    <OrientationLock>
+      <div className='min-h-screen bg-blue-700 text-white relative overflow-hidden'>
       {/* Background bubbles */}
       <BubblesBackground
         bubbles={bubbles}
@@ -80,6 +82,7 @@ export default function MyProfile() {
           <PlayerStatistics playerStats={playerStats} />
         </div>
       </div>
-    </div>
+      </div>
+    </OrientationLock>
   );
 }

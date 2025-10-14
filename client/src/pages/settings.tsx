@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Card } from '@/components';
 import { Switch } from '@/components';
+import { OrientationLock } from '@/components/ui';
 
 import {
   Select,
@@ -69,7 +70,8 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className='min-h-screen overflow-hidden relative bg-gradient-to-b from-blue-500 to-blue-900 animated-background flex flex-col'>
+    <OrientationLock>
+      <div className='min-h-screen overflow-hidden relative bg-gradient-to-b from-blue-500 to-blue-900 animated-background flex flex-col'>
       <BubblesBackground bubbles={[]} />
       <PageHeader title='Settings' backTo='/game' />
 
@@ -272,7 +274,8 @@ const SettingsPage = () => {
       </main>
 
       <LayoutFooter />
-    </div>
+      </div>
+    </OrientationLock>
   );
 };
 

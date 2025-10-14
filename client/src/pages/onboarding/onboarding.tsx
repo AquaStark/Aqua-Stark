@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BubblesBackground } from '@/components';
+import { OrientationLock } from '@/components/ui';
 import { useBubbles } from '@/hooks';
 import { FishCard } from '@/components/ui/fish-card/fish-card';
 import { useAquarium } from '@/hooks/dojo';
@@ -170,7 +171,8 @@ export default function Onboarding() {
     }
   };
   return (
-    <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-400 via-blue-600 to-blue-800'>
+    <OrientationLock>
+      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-400 via-blue-600 to-blue-800'>
       {/* Ambient lights */}
       <div className='absolute top-10 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-cyan-300/10 rounded-full blur-2xl' />
       <div className='absolute bottom-10 right-10 w-[350px] h-[350px] bg-yellow-300/10 rounded-full blur-2xl' />
@@ -243,6 +245,7 @@ export default function Onboarding() {
           </p>
         </motion.div>
       </main>
-    </div>
+      </div>
+    </OrientationLock>
   );
 }

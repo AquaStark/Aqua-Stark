@@ -12,6 +12,7 @@ import { LayoutFooter } from '@/components';
 import { Input } from '@/components/ui/input';
 import { useHelpCenter } from '@/hooks';
 import { ComingSoonModal } from '@/components';
+import { OrientationLock } from '@/components/ui';
 
 function HelpCenter() {
   const [showComingSoon, setShowComingSoon] = useState(false);
@@ -36,7 +37,8 @@ function HelpCenter() {
   }, []);
 
   return (
-    <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
+    <OrientationLock>
+      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
       <BubblesBackground bubbles={bubbles} />
 
       <PageHeader
@@ -85,7 +87,8 @@ function HelpCenter() {
         description="The help center is being built. Soon you'll have access to comprehensive guides, FAQs, and support resources."
         closable={false}
       />
-    </div>
+      </div>
+    </OrientationLock>
   );
 }
 

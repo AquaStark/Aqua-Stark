@@ -9,6 +9,7 @@ import { PageHeader } from '@/components';
 import { LayoutFooter } from '@/components';
 import { CommunityTabs } from '@/components';
 import { ComingSoonModal } from '@/components';
+import { OrientationLock } from '@/components/ui';
 
 export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState('gallery');
@@ -21,7 +22,8 @@ export default function CommunityPage() {
   }, []);
 
   return (
-    <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background text-white/80'>
+    <OrientationLock>
+      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background text-white/80'>
       <BubblesBackground bubbles={bubbles} />
 
       <PageHeader
@@ -52,6 +54,7 @@ export default function CommunityPage() {
         description="The community functionality is being built. Soon you'll be able to connect with other players, share your fish, and participate in community events."
         closable={false}
       />
-    </div>
+      </div>
+    </OrientationLock>
   );
 }
