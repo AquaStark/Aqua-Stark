@@ -35,7 +35,20 @@ const server = http.createServer(app);
 const gameWebSocket = new GameWebSocket(server);
 
 // Middleware
-app.use(helmet()); // Security headers
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable CSP for fullscreen
+  crossOriginEmbedderPolicy: false
+})); // Security headers
+
+// Full screen headers
+app.use((req, res, next) => {
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'fullscreen=(self)');
+  next();
+});
+
 app.use(compression()); // Compress responses
 app.use(morgan('combined')); // Logging
 
@@ -62,6 +75,24 @@ app.get('/health', (req, res) => {
     status: 'healthy',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
+  });
+});
+
+// Full screen configuration endpoint
+app.get('/api/v1/fullscreen-config', (req, res) => {
+  res.json({
+    fullscreen: {
+      enabled: true,
+      supported: true,
+      permissions: {
+        fullscreen: 'granted'
+      },
+      features: {
+        orientationLock: true,
+        fullscreenAPI: true,
+        mobileFullscreen: true
+      }
+    }
   });
 });
 

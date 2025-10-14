@@ -112,19 +112,19 @@ html {
 
 /* Full screen styles */
 :fullscreen {
-  background-color: #005C99;
+  background-color: #005c99;
 }
 
 :-webkit-full-screen {
-  background-color: #005C99;
+  background-color: #005c99;
 }
 
 :-moz-full-screen {
-  background-color: #005C99;
+  background-color: #005c99;
 }
 
 :-ms-fullscreen {
-  background-color: #005C99;
+  background-color: #005c99;
 }
 
 /* Full screen button styles */
@@ -138,7 +138,8 @@ html {
 
 /* Mobile full screen optimizations */
 @media screen and (max-width: 768px) {
-  html, body {
+  html,
+  body {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;

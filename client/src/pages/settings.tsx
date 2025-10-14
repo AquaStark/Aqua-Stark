@@ -278,14 +278,16 @@ const SettingsPage = () => {
                   description='Reset fullscreen prompt preferences to show the modal again.'
                 >
                   <Button
-                    variant="outline"
-                    size="sm"
+                    variant='outline'
+                    size='sm'
                     onClick={() => {
                       localStorage.removeItem('aqua-stark-fullscreen-prompted');
                       localStorage.removeItem('aqua-stark-fullscreen-declined');
-                      alert('Fullscreen prompt preferences reset! The modal will show again on next visit.');
+                      alert(
+                        'Fullscreen prompt preferences reset! The modal will show again on next visit.'
+                      );
                     }}
-                    className="border-blue-400/50 text-blue-200 hover:bg-blue-700/50"
+                    className='border-blue-400/50 text-blue-200 hover:bg-blue-700/50'
                   >
                     Reset
                   </Button>

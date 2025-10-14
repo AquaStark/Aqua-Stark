@@ -29,7 +29,7 @@ export function useFullscreenConfig() {
         const response = await request('/api/v1/fullscreen-config', {
           method: 'GET',
         });
-        
+
         if (response.ok) {
           const data = await response.json();
           setConfig(data);
@@ -44,14 +44,14 @@ export function useFullscreenConfig() {
             enabled: true,
             supported: true,
             permissions: {
-              fullscreen: 'granted'
+              fullscreen: 'granted',
             },
             features: {
               orientationLock: true,
               fullscreenAPI: true,
-              mobileFullscreen: true
-            }
-          }
+              mobileFullscreen: true,
+            },
+          },
         });
       } finally {
         setLoading(false);
@@ -70,7 +70,7 @@ export function useFullscreenConfig() {
     features: config?.fullscreen.features ?? {
       orientationLock: true,
       fullscreenAPI: true,
-      mobileFullscreen: true
-    }
+      mobileFullscreen: true,
+    },
   };
 }

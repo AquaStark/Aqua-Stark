@@ -10,12 +10,13 @@ interface FullscreenButtonProps {
   size?: 'sm' | 'default' | 'lg';
 }
 
-export function FullscreenButton({ 
-  className = '', 
+export function FullscreenButton({
+  className = '',
   variant = 'ghost',
-  size = 'default'
+  size = 'default',
 }: FullscreenButtonProps) {
-  const { isFullscreen, toggleFullscreen, isSupported, enterFullscreen } = useFullscreen();
+  const { isFullscreen, toggleFullscreen, isSupported, enterFullscreen } =
+    useFullscreen();
   const [showModal, setShowModal] = useState(false);
 
   if (!isSupported) {
@@ -51,9 +52,9 @@ export function FullscreenButton({
         title={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
       >
         {isFullscreen ? (
-          <Minimize className="h-4 w-4" />
+          <Minimize className='h-4 w-4' />
         ) : (
-          <Maximize className="h-4 w-4" />
+          <Maximize className='h-4 w-4' />
         )}
       </Button>
 

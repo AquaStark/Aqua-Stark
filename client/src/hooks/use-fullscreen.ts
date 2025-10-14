@@ -12,7 +12,8 @@ interface UseFullscreenReturn {
 
 export function useFullscreen(): UseFullscreenReturn {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const { isFullscreenEnabled, isFullscreenSupported, features } = useFullscreenConfig();
+  const { isFullscreenEnabled, isFullscreenSupported, features } =
+    useFullscreenConfig();
   const isSupported = isFullscreenSupported && features.fullscreenAPI;
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export function useFullscreen(): UseFullscreenReturn {
       'fullscreenchange',
       'webkitfullscreenchange',
       'mozfullscreenchange',
-      'MSFullscreenChange'
+      'MSFullscreenChange',
     ];
 
     events.forEach(event => {
@@ -61,7 +62,7 @@ export function useFullscreen(): UseFullscreenReturn {
 
     try {
       const element = document.documentElement;
-      
+
       if (element.requestFullscreen) {
         await element.requestFullscreen();
       } else if ((element as any).webkitRequestFullscreen) {
@@ -108,6 +109,6 @@ export function useFullscreen(): UseFullscreenReturn {
     enterFullscreen,
     exitFullscreen,
     isSupported,
-    isEnabled: isFullscreenEnabled
+    isEnabled: isFullscreenEnabled,
   };
 }
