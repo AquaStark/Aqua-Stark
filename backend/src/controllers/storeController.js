@@ -7,13 +7,15 @@ import { loggingMiddleware } from '../middleware/logging.js';
  * @class StoreController
  * @author Aqua Stark Team
  * @version 1.0.0
- * @since 2025-01-XX
+ * @since 1.0.0
  */
 export class StoreController {
   /**
    * Get all store items with optional filters
+   *
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with store items
    */
   static async getStoreItems(req, res) {
     try {
@@ -67,8 +69,10 @@ export class StoreController {
 
   /**
    * Get a specific store item by ID
+   *
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with store item
    */
   static async getStoreItem(req, res) {
     try {
@@ -110,8 +114,10 @@ export class StoreController {
 
   /**
    * Create a new store item
+   *
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with created item
    */
   static async createStoreItem(req, res) {
     try {
@@ -154,8 +160,10 @@ export class StoreController {
 
   /**
    * Update an existing store item
+   *
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with updated item
    */
   static async updateStoreItem(req, res) {
     try {
@@ -207,8 +215,10 @@ export class StoreController {
 
   /**
    * Delete a store item (soft delete)
+   *
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with deletion result
    */
   static async deleteStoreItem(req, res) {
     try {
@@ -251,8 +261,10 @@ export class StoreController {
 
   /**
    * Update item stock
+   *
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with updated stock
    */
   static async updateItemStock(req, res) {
     try {
@@ -304,8 +316,10 @@ export class StoreController {
 
   /**
    * Get store statistics
+   *
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with store statistics
    */
   static async getStoreStats(req, res) {
     try {
@@ -335,8 +349,10 @@ export class StoreController {
 
   /**
    * Get store items by type
+   *
    * @param {Object} req - Express request object
    * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with items by type
    */
   static async getStoreItemsByType(req, res) {
     try {

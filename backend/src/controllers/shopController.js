@@ -1,6 +1,11 @@
 import { ShopService } from '../services/shopService.js';
 import { logger } from '../../utils/logger.js';
 
+/**
+ * Shop Controller for handling HTTP requests related to shop operations
+ *
+ * @class ShopController
+ */
 export class ShopController {
   /**
    * Get all shop items with filtering and pagination
@@ -272,7 +277,7 @@ export class ShopController {
       if (error.message.includes('already exists')) statusCode = 409;
       else if (error.message.includes('validation')) statusCode = 400;
 
-      res.status(500).json({
+      res.status(statusCode).json({
         success: false,
         error: 'Failed to create shop item',
         message: error.message,
