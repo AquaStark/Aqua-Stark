@@ -1,5 +1,5 @@
 import { supabase, supabaseAdmin, TABLES } from '../config/supabase.js';
-import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
+import { redisClient, CACHE_KEYS } from '../config/redis.js';
 
 /**
  * DirtService - Handles aquarium cleanliness and dirt system operations
