@@ -47,7 +47,12 @@ export const useShopCatalog = () => {
       stock: BigNumberish,
       description: string
     ) => {
-      return await client.ShopCatalog.add_new_item(account, price, stock, description);
+      return await client.ShopCatalog.add_new_item(
+        account,
+        price,
+        stock,
+        description
+      );
     },
     [client]
   );
@@ -69,7 +74,13 @@ export const useShopCatalog = () => {
       stock: BigNumberish,
       description: string
     ) => {
-      return await client.ShopCatalog.update_item(account, id, price, stock, description);
+      return await client.ShopCatalog.update_item(
+        account,
+        id,
+        price,
+        stock,
+        description
+      );
     },
     [client]
   );

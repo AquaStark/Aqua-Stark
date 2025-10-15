@@ -24,7 +24,11 @@ export const useShopCatalog = () => {
   }, [client]);
 
   const addNewItem = useCallback(
-    async (price: BigNumberish, stock: BigNumberish, description: BigNumberish) => {
+    async (
+      price: BigNumberish,
+      stock: BigNumberish,
+      description: BigNumberish
+    ) => {
       ensureClientReady();
       return await client.ShopCatalog.addNewItem(price, stock, description);
     },
@@ -45,7 +49,12 @@ export const useShopCatalog = () => {
   );
 
   const updateItem = useCallback(
-    async (id: BigNumberish, price: BigNumberish, stock: BigNumberish, description: BigNumberish) => {
+    async (
+      id: BigNumberish,
+      price: BigNumberish,
+      stock: BigNumberish,
+      description: BigNumberish
+    ) => {
       ensureClientReady();
       return await client.ShopCatalog.updateItem(id, price, stock, description);
     },
@@ -72,7 +81,11 @@ export const useDailyChallenge = () => {
   }, [client]);
 
   const createChallenge = useCallback(
-    async (account: Account | AccountInterface, day: BigNumberish, seed: BigNumberish) => {
+    async (
+      account: Account | AccountInterface,
+      day: BigNumberish,
+      seed: BigNumberish
+    ) => {
       ensureClientReady();
       return await client.daily_challenge.createChallenge(account, day, seed);
     },
@@ -90,7 +103,10 @@ export const useDailyChallenge = () => {
   const completeChallenge = useCallback(
     async (account: Account | AccountInterface, challengeId: BigNumberish) => {
       ensureClientReady();
-      return await client.daily_challenge.completeChallenge(account, challengeId);
+      return await client.daily_challenge.completeChallenge(
+        account,
+        challengeId
+      );
     },
     [client, ensureClientReady]
   );
@@ -294,27 +310,27 @@ export const useGameEnhanced = () => {
     getAquariumOwner,
     getPlayerAquariums,
     getPlayerAquariumCount,
-    
+
     // Fish functions
     getFish,
     getFishOwner,
     getPlayerFishes,
     getPlayerFishCount,
-    
+
     // Decoration functions
     getDecoration,
     getDecorationOwner,
     getPlayerDecorations,
     getPlayerDecorationCount,
-    
+
     // Player functions
     getPlayer,
     isVerified,
-    
+
     // Listing functions
     getListing,
     listFish,
-    
+
     // Genealogy functions
     getParents,
     getFishAncestor,

@@ -93,8 +93,8 @@ function App() {
           <Route path='/test-game' element={<Game />} />
           <Route path='*' element={<Error404Page />} />
 
-            {/* test page */}
-          <Route path="/demo" element={<AquariumDemo />} /> 
+          {/* test page */}
+          <Route path='/demo' element={<AquariumDemo />} />
         </Routes>
 
         {/* Fullscreen Modal */}

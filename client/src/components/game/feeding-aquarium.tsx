@@ -87,11 +87,7 @@ export function FeedingAquarium({
   const handleContainerClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       const rect = containerRef.current?.getBoundingClientRect();
-      handleFeedClick(
-        event.clientX,
-        event.clientY,
-        rect
-      );
+      handleFeedClick(event.clientX, event.clientY, rect);
     },
     [handleFeedClick, isFeeding]
   );

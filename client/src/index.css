@@ -736,14 +736,12 @@
     auto !important;
 }
 
-
 /* Alternative sponge cursor with different sizes */
 .cursor-sponge-alt {
   cursor:
     url('/dirt/sponge.png') 12 12,
     pointer !important;
 }
-
 
 /* Simple sponge cursor with smaller hotspot */
 .cursor-sponge-simple {
@@ -752,7 +750,6 @@
     crosshair !important;
 }
 
-
 /* Try different cursor sizes */
 .cursor-sponge-32 {
   cursor:
@@ -760,12 +757,10 @@
     crosshair !important;
 }
 
-
 /* Try with auto hotspot */
 .cursor-sponge-auto {
   cursor: url('/dirt/sponge.png'), crosshair !important;
 }
-
 
 /* Fallback sponge cursor using CSS */
 .cursor-sponge-css {

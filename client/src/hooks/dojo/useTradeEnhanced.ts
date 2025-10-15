@@ -1,6 +1,12 @@
 import { useDojoSDK } from '@dojoengine/sdk/react';
 import { useCallback } from 'react';
-import { Account, AccountInterface, BigNumberish, CairoCustomEnum, CairoOption } from 'starknet';
+import {
+  Account,
+  AccountInterface,
+  BigNumberish,
+  CairoCustomEnum,
+  CairoOption,
+} from 'starknet';
 import { DojoClient } from '@/types';
 
 /**
@@ -15,7 +21,7 @@ function validateDojoClient(client: DojoClient): void {
 /**
  * React hook for Trade contract interactions.
  * Provides methods for managing fish trading offers, accepting trades, and querying trade information.
- * 
+ *
  * @returns Object containing all Trade functions
  */
 export const useTradeEnhanced = () => {
@@ -53,9 +59,17 @@ export const useTradeEnhanced = () => {
   );
 
   const acceptTradeOffer = useCallback(
-    async (account: Account | AccountInterface, offerId: BigNumberish, offeredFishId: BigNumberish) => {
+    async (
+      account: Account | AccountInterface,
+      offerId: BigNumberish,
+      offeredFishId: BigNumberish
+    ) => {
       ensureClientReady();
-      return await client.Trade.acceptTradeOffer(account, offerId, offeredFishId);
+      return await client.Trade.acceptTradeOffer(
+        account,
+        offerId,
+        offeredFishId
+      );
     },
     [client, ensureClientReady]
   );
@@ -143,17 +157,17 @@ export const useTradeEnhanced = () => {
     acceptTradeOffer,
     cancelTradeOffer,
     cleanupExpiredOffers,
-    
+
     // Trade Queries
     getTradeOffer,
     getActiveTradeOffers,
     getAllActiveOffers,
     getOffersForFish,
-    
+
     // Fish Lock Status
     isFishLocked,
     getFishLockStatus,
-    
+
     // Trade Statistics
     getTotalTradesCount,
     getUserTradeCount,

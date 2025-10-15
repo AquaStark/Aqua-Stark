@@ -28,7 +28,7 @@ interface FishDisplayProps {
 
 export function FishDisplay({ fish, cleanlinessScore }: FishDisplayProps) {
   return (
-    <div 
+    <div
       className='relative w-full h-full'
       style={{ pointerEvents: 'none' }} // NUNCA interceptar clicks
     >

@@ -52,11 +52,11 @@ export const useTransactionHistory = () => {
    * @returns {Promise<BigNumberish>} The new event type ID.
    */
   const registerEventType = useCallback(
-    async (
-      account: Account | AccountInterface,
-      eventName: string
-    ) => {
-      return await client.TransactionHistory.register_event_type(account, eventName);
+    async (account: Account | AccountInterface, eventName: string) => {
+      return await client.TransactionHistory.register_event_type(
+        account,
+        eventName
+      );
     },
     [client]
   );
@@ -76,7 +76,12 @@ export const useTransactionHistory = () => {
       player: string,
       payload: string[]
     ) => {
-      return await client.TransactionHistory.log_event(account, eventTypeId, player, payload);
+      return await client.TransactionHistory.log_event(
+        account,
+        eventTypeId,
+        player,
+        payload
+      );
     },
     [client]
   );
@@ -104,7 +109,9 @@ export const useTransactionHistory = () => {
    */
   const getEventTypeDetails = useCallback(
     async (eventTypeId: BigNumberish) => {
-      return await client.TransactionHistory.get_event_type_details(eventTypeId);
+      return await client.TransactionHistory.get_event_type_details(
+        eventTypeId
+      );
     },
     [client]
   );
@@ -163,7 +170,12 @@ export const useTransactionHistory = () => {
       eventTypeId: BigNumberish,
       payload: string[]
     ) => {
-      return await client.TransactionHistory.initiate_transaction(account, player, eventTypeId, payload);
+      return await client.TransactionHistory.initiate_transaction(
+        account,
+        player,
+        eventTypeId,
+        payload
+      );
     },
     [client]
   );
@@ -179,7 +191,10 @@ export const useTransactionHistory = () => {
       account: Account | AccountInterface,
       transactionId: BigNumberish
     ) => {
-      return await client.TransactionHistory.process_transaction(account, transactionId);
+      return await client.TransactionHistory.process_transaction(
+        account,
+        transactionId
+      );
     },
     [client]
   );
@@ -197,7 +212,11 @@ export const useTransactionHistory = () => {
       transactionId: BigNumberish,
       confirmationHash: string
     ) => {
-      return await client.TransactionHistory.confirm_transaction(account, transactionId, confirmationHash);
+      return await client.TransactionHistory.confirm_transaction(
+        account,
+        transactionId,
+        confirmationHash
+      );
     },
     [client]
   );
@@ -209,7 +228,9 @@ export const useTransactionHistory = () => {
    */
   const getTransactionStatus = useCallback(
     async (transactionId: BigNumberish) => {
-      return await client.TransactionHistory.get_transaction_status(transactionId);
+      return await client.TransactionHistory.get_transaction_status(
+        transactionId
+      );
     },
     [client]
   );
@@ -221,7 +242,9 @@ export const useTransactionHistory = () => {
    */
   const isTransactionConfirmed = useCallback(
     async (transactionId: BigNumberish) => {
-      return await client.TransactionHistory.is_transaction_confirmed(transactionId);
+      return await client.TransactionHistory.is_transaction_confirmed(
+        transactionId
+      );
     },
     [client]
   );

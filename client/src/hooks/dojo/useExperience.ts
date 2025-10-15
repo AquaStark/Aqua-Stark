@@ -108,11 +108,11 @@ export const useExperience = () => {
    * @returns {Promise<any>} Result of the transaction.
    */
   const initializePlayerExperience = useCallback(
-    async (
-      account: Account | AccountInterface,
-      player: string
-    ) => {
-      return await client.Experience.initialize_player_experience(account, player);
+    async (account: Account | AccountInterface, player: string) => {
+      return await client.Experience.initialize_player_experience(
+        account,
+        player
+      );
     },
     [client]
   );
@@ -148,10 +148,7 @@ export const useExperience = () => {
    * @returns {Promise<any>} Result of the transaction.
    */
   const claimLevelReward = useCallback(
-    async (
-      account: Account | AccountInterface,
-      level: BigNumberish
-    ) => {
+    async (account: Account | AccountInterface, level: BigNumberish) => {
       return await client.Experience.claim_level_reward(account, level);
     },
     [client]

@@ -48,7 +48,12 @@ export const useTransaction = () => {
       eventTypeId: BigNumberish,
       payload: string[]
     ) => {
-      return await client.Transaction.initiate_transaction(account, player, eventTypeId, payload);
+      return await client.Transaction.initiate_transaction(
+        account,
+        player,
+        eventTypeId,
+        payload
+      );
     },
     [client]
   );
@@ -64,7 +69,10 @@ export const useTransaction = () => {
       account: Account | AccountInterface,
       transactionId: BigNumberish
     ) => {
-      return await client.Transaction.process_transaction(account, transactionId);
+      return await client.Transaction.process_transaction(
+        account,
+        transactionId
+      );
     },
     [client]
   );
@@ -82,7 +90,11 @@ export const useTransaction = () => {
       transactionId: BigNumberish,
       confirmationHash: string
     ) => {
-      return await client.Transaction.confirm_transaction(account, transactionId, confirmationHash);
+      return await client.Transaction.confirm_transaction(
+        account,
+        transactionId,
+        confirmationHash
+      );
     },
     [client]
   );

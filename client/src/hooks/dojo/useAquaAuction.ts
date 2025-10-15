@@ -15,7 +15,7 @@ function validateDojoClient(client: DojoClient): void {
 /**
  * Custom React hook for AquaAuction contract interactions.
  * Provides methods for managing fish auctions including starting, bidding, and ending auctions.
- * 
+ *
  * @returns Object containing auction-related functions
  */
 export const useAquaAuction = () => {
@@ -69,7 +69,11 @@ export const useAquaAuction = () => {
    * @returns Promise with transaction result
    */
   const placeBid = useCallback(
-    async (account: Account | AccountInterface, auctionId: BigNumberish, amount: BigNumberish) => {
+    async (
+      account: Account | AccountInterface,
+      auctionId: BigNumberish,
+      amount: BigNumberish
+    ) => {
       ensureClientReady();
       return await client.AquaAuction.placeBid(account, auctionId, amount);
     },
@@ -92,7 +96,12 @@ export const useAquaAuction = () => {
       reservePrice: BigNumberish
     ) => {
       ensureClientReady();
-      return await client.AquaAuction.startAuction(account, fishId, durationSecs, reservePrice);
+      return await client.AquaAuction.startAuction(
+        account,
+        fishId,
+        durationSecs,
+        reservePrice
+      );
     },
     [client, ensureClientReady]
   );
