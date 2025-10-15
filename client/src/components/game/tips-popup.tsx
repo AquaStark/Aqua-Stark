@@ -11,6 +11,12 @@ interface TipsPopupProps {
 export function TipsPopup({ show, onClose, onToggle }: TipsPopupProps) {
   const popupRef = useRef<HTMLDivElement>(null);
 
+  const handleToggleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onToggle();
+  };
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -41,8 +47,8 @@ export function TipsPopup({ show, onClose, onToggle }: TipsPopupProps) {
       <GameButton
         icon='💡'
         text='Tips'
-        color='from-yellow-400 to-yellow-600 cursor-pointer z-50'
-        onClick={onToggle}
+        color='from-yellow-400 to-yellow-600 cursor-pointer z-60'
+        onClick={handleToggleClick}
         aria-expanded={show}
         aria-haspopup='dialog'
         aria-label='Toggle Tips Panel'
@@ -51,7 +57,7 @@ export function TipsPopup({ show, onClose, onToggle }: TipsPopupProps) {
       {show && (
         <div
           ref={popupRef}
-          className='absolute bottom-16 right-0 w-64 bg-blue-600/90 backdrop-blur-md rounded-2xl p-4 border-2 border-blue-400/50 shadow-xl animate-in fade-in slide-in-from-bottom-5 duration-300 z-50'
+          className='absolute bottom-16 right-0 w-64 bg-blue-600/90 backdrop-blur-md rounded-2xl p-4 border-2 border-blue-400/50 shadow-xl animate-in fade-in slide-in-from-bottom-5 duration-300 z-60'
           role='dialog'
           aria-label='Daily Tip'
         >
