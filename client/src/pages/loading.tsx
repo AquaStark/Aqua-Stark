@@ -2,6 +2,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import { LoadingScreen } from '@/components';
+import { OrientationLock } from '@/components/ui';
 
 export default function LoadingPage() {
   const navigate = useNavigate();
@@ -11,10 +12,12 @@ export default function LoadingPage() {
   };
 
   return (
-    <LoadingScreen
-      onComplete={handleComplete}
-      duration={5000}
-      showTips={true}
-    />
+    <OrientationLock>
+      <LoadingScreen
+        onComplete={handleComplete}
+        duration={5000}
+        showTips={true}
+      />
+    </OrientationLock>
   );
 }

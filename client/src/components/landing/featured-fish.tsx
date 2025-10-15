@@ -2,13 +2,13 @@ import { FishCardComponent } from '@/components';
 
 export function FeaturedFish() {
   return (
-    <section className='w-full px-2 sm:px-4 md:px-6 lg:px-8 py-1 sm:py-2 md:py-3 lg:py-4 relative z-10'>
-      <div className='max-w-6xl mx-auto flex flex-col items-center'>
-        <h2 className='text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold text-white text-center mb-2 sm:mb-3 md:mb-4 drop-shadow-lg'>
+    <section className='w-full px-1 sm:px-2 md:px-4 lg:px-6 py-1 sm:py-2 md:py-3 relative z-10'>
+      <div className='max-w-4xl mx-auto flex flex-col items-center'>
+        <h2 className='text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-extrabold text-white text-center mb-1 sm:mb-2 md:mb-3 drop-shadow-lg'>
           Featured Fish
         </h2>
 
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4 w-full max-w-3xl'>
+        <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-1 sm:gap-2 md:gap-3 lg:gap-4 w-full items-center justify-items-center'>
           <FishCardComponent
             name='REDGLOW'
             image='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/fish3-LOteAGqWGR4lDQ8VBBAlRSUByZL2KX.png'

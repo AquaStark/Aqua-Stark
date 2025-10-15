@@ -23,28 +23,31 @@ export function PageHeader({
   return (
     <nav
       className={cn(
-        'relative z-10 p-4 bg-blue-700 border-b-2 border-blue-400/50',
+        'relative z-10 p-3 sm:p-4 bg-blue-700 border-b-2 border-blue-400/50 select-none',
         className
       )}
     >
       <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mx-auto font-sans max-w-7xl'>
         <div className='flex flex-col sm:flex-row sm:items-center'>
-          <Link to={backTo} className='flex items-center mb-2 sm:mb-0'>
+          <Link
+            to={backTo}
+            className='flex items-center mb-1 sm:mb-0 select-none touch-manipulation'
+          >
             <Button
               variant='ghost'
-              className='flex items-center mr-0 sm:mr-2 text-xs text-white rounded-full hover:bg-blue-500/50 px-3 py-1 sm:px-4 sm:py-2'
+              className='flex items-center mr-0 sm:mr-2 text-xs text-white rounded-full hover:bg-blue-500/50 px-2 sm:px-3 md:px-4 py-1 sm:py-2 select-none touch-manipulation h-8 sm:h-9'
             >
-              <ArrowLeft className='mr-1 sm:mr-2' width={16} />
-              <span className='text-xs'>{backText}</span>
+              <ArrowLeft className='mr-1 sm:mr-2' width={14} height={14} />
+              <span className='text-xs select-none'>{backText}</span>
             </Button>
           </Link>
-          <h3 className='text-base sm:text-lg font-semibold text-white'>
+          <h3 className='text-sm sm:text-base md:text-lg font-semibold text-white select-none leading-tight'>
             {title}
           </h3>
         </div>
 
         {rightContent && (
-          <div className='flex items-center gap-2 mt-2 sm:mt-0'>
+          <div className='flex items-center gap-1 sm:gap-2 mt-1 sm:mt-0 select-none'>
             {rightContent}
           </div>
         )}

@@ -8,6 +8,7 @@ import { AquariumList } from '@/components';
 import { PurchaseModal } from '@/components';
 import { CreateAquariumButton } from '@/components';
 import { BubblesBackground } from '@/components';
+import { OrientationLock } from '@/components/ui';
 import { useBubbles } from '@/hooks';
 import { Search, Filter } from 'lucide-react';
 import { useActiveAquarium } from '../store/active-aquarium';
@@ -216,114 +217,120 @@ export default function AquariumsPage() {
   );
 
   return (
-    <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900'>
-      <BubblesBackground bubbles={bubbles} className='pointer-events-none' />
+    <OrientationLock>
+      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900'>
+        <BubblesBackground bubbles={bubbles} className='pointer-events-none' />
 
-      <div className='relative z-10 flex flex-col min-h-screen w-full'>
-        <div className=' w-full'>
-          <PageHeader
-            title='My Aquariums'
-            backTo='/game'
-            backText=''
-            rightContent={
-              <div className='flex gap-32 md:gap-64'>
-                {headerRightContent}
-                <div className='flex flex-col sm:flex-row items-center justify-between b-6 gap-4'>
-                  <div className='relative w-full max-w-md'>
-                    <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                      <Search className='h-5 w-5 text-blue-200' />
+        <div className='relative z-10 flex flex-col min-h-screen w-full'>
+          <div className='w-full px-2 sm:px-4'>
+            <PageHeader
+              title='My Aquariums'
+              backTo='/game'
+              backText=''
+              rightContent={
+                <div className='flex gap-32 md:gap-64'>
+                  {headerRightContent}
+                  <div className='flex flex-col sm:flex-row items-center justify-between b-6 gap-4'>
+                    <div className='relative w-full max-w-md'>
+                      <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
+                        <Search className='h-5 w-5 text-blue-200' />
+                      </div>
+                      <input
+                        type='text'
+                        placeholder='Search aquariums...'
+                        value={searchQuery}
+                        onChange={e => setSearchQuery(e.target.value)}
+                        className='bg-blue-600/30 border border-blue-400/30 text-white placeholder-blue-200 rounded-lg pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300'
+                        aria-label='Search aquariums'
+                        role='searchbox'
+                      />
                     </div>
-                    <input
-                      type='text'
-                      placeholder='Search aquariums...'
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      className='bg-blue-600/30 border border-blue-400/30 text-white placeholder-blue-200 rounded-lg pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300'
-                      aria-label='Search aquariums'
-                      role='searchbox'
-                    />
+                    <button
+                      className='bg-blue-600/30 border border-blue-400/30 text-white rounded-lg px-4 py-2 flex items-center w-full sm:w-auto justify-center'
+                      aria-label='Filter Aquariums'
+                    >
+                      <Filter className='h-5 w-5 mr-2' aria-hidden='true' />
+                      Filter
+                    </button>
                   </div>
-                  <button
-                    className='bg-blue-600/30 border border-blue-400/30 text-white rounded-lg px-4 py-2 flex items-center w-full sm:w-auto justify-center'
-                    aria-label='Filter Aquariums'
-                  >
-                    <Filter className='h-5 w-5 mr-2' aria-hidden='true' />
-                    Filter
-                  </button>
                 </div>
+              }
+            />
+          </div>
+
+          <main className='flex-grow mx-auto max-w-7xl px-4 py-8 w-full'>
+            {error && (
+              <div className='bg-red-600/30 border border-red-400/30 rounded-lg p-4 mb-6'>
+                <div className='text-red-200 text-sm'>Error</div>
+                <div className='text-white'>{error}</div>
               </div>
-            }
-          />
-        </div>
+            )}
 
-        <main className='flex-grow mx-auto max-w-7xl px-4 py-8 w-full'>
-          {error && (
-            <div className='bg-red-600/30 border border-red-400/30 rounded-lg p-4 mb-6'>
-              <div className='text-red-200 text-sm'>Error</div>
-              <div className='text-white'>{error}</div>
-            </div>
-          )}
-
-          {loading ? (
-            <div className='flex justify-center items-center py-12'>
-              <div className='text-white text-lg'>Loading aquariums...</div>
-            </div>
-          ) : (
-            <>
-              <AquariumStats
-                totalAquariums={aquariums.length}
-                totalFish={aquariums.reduce(
-                  (acc, curr) => acc + curr.fishes.length,
-                  0
-                )}
-                premiumAquariums={aquariums.filter(a => a.isPremium).length}
-                averageHealth={
-                  aquariums.length > 0
-                    ? Math.round(
-                        aquariums.reduce((acc, curr) => acc + curr.health, 0) /
-                          aquariums.length
-                      )
-                    : 0
-                }
-              />
-
-              {aquariums.length === 0 ? (
-                <div className='text-center py-12'>
-                  <div className='text-white text-xl mb-4'>
-                    No aquariums found
-                  </div>
-                  <div className='text-blue-200 mb-6'>
-                    {account?.address
-                      ? 'Create your first aquarium to get started!'
-                      : 'Connect your wallet to view your aquariums'}
-                  </div>
-                </div>
-              ) : (
-                <AquariumList
-                  aquariums={filteredAquariums}
-                  onSelectAquarium={aquarium =>
-                    handleSelectAquarium(aquarium as any)
+            {loading ? (
+              <div className='flex justify-center items-center py-12'>
+                <div className='text-white text-lg'>Loading aquariums...</div>
+              </div>
+            ) : (
+              <>
+                <AquariumStats
+                  totalAquariums={aquariums.length}
+                  totalFish={aquariums.reduce(
+                    (acc, curr) => acc + curr.fishes.length,
+                    0
+                  )}
+                  premiumAquariums={aquariums.filter(a => a.isPremium).length}
+                  averageHealth={
+                    aquariums.length > 0
+                      ? Math.round(
+                          aquariums.reduce(
+                            (acc, curr) => acc + curr.health,
+                            0
+                          ) / aquariums.length
+                        )
+                      : 0
                   }
                 />
-              )}
-            </>
-          )}
 
-          {account?.address && (
-            <CreateAquariumButton onClick={() => setShowPurchaseModal(true)} />
-          )}
-        </main>
+                {aquariums.length === 0 ? (
+                  <div className='text-center py-12'>
+                    <div className='text-white text-xl mb-4'>
+                      No aquariums found
+                    </div>
+                    <div className='text-blue-200 mb-6'>
+                      {account?.address
+                        ? 'Create your first aquarium to get started!'
+                        : 'Connect your wallet to view your aquariums'}
+                    </div>
+                  </div>
+                ) : (
+                  <AquariumList
+                    aquariums={filteredAquariums}
+                    onSelectAquarium={aquarium =>
+                      handleSelectAquarium(aquarium as any)
+                    }
+                  />
+                )}
+              </>
+            )}
 
-        <LayoutFooter />
+            {account?.address && (
+              <CreateAquariumButton
+                onClick={() => setShowPurchaseModal(true)}
+              />
+            )}
+          </main>
+
+          <LayoutFooter />
+        </div>
+
+        {showPurchaseModal && (
+          <PurchaseModal
+            onClose={() => setShowPurchaseModal(false)}
+            onPurchase={handleAddAquarium}
+            coinBalance={coinBalance}
+          />
+        )}
       </div>
-
-      {showPurchaseModal && (
-        <PurchaseModal
-          onClose={() => setShowPurchaseModal(false)}
-          onPurchase={handleAddAquarium}
-          coinBalance={coinBalance}
-        />
-      )}
-    </div>
+    </OrientationLock>
   );
 }

@@ -37,23 +37,29 @@ export function FloppyFishGameCanvas({
 
   const { gameAreaRef } = useInputHandler(jump, gameOver);
 
-  // Calculate scale to fit the game in the available space
-  const containerWidth = Math.min(window.innerWidth * 0.8, 800);
-  const containerHeight = Math.min(window.innerHeight * 0.6, 600);
+  // Calculate scale to fit the game in the available space with better mobile support
+  const isMobile = window.innerWidth < 768;
+  const containerWidth = isMobile
+    ? Math.min(window.innerWidth * 0.95, GAME_WIDTH)
+    : Math.min(window.innerWidth * 0.8, 800);
+  const containerHeight = isMobile
+    ? Math.min(window.innerHeight * 0.7, GAME_HEIGHT)
+    : Math.min(window.innerHeight * 0.6, 600);
   const scaleX = containerWidth / GAME_WIDTH;
   const scaleY = containerHeight / GAME_HEIGHT;
-  const scale = Math.min(scaleX, scaleY, 1.5); // Cap scale at 1.5 for better visibility
+  const scale = Math.min(scaleX, scaleY, isMobile ? 1.2 : 1.5); // Better mobile scaling
 
   return (
-    <div className='flex flex-col items-center justify-center w-full'>
+    <div className='flex flex-col items-center justify-center w-full px-2 sm:px-4'>
       {/* Game Canvas */}
       <div
         ref={gameAreaRef}
-        className='relative bg-blue-900/20 border border-blue-600/30 rounded-2xl overflow-hidden cursor-pointer'
+        className='relative bg-black/10 border border-white/20 rounded-2xl overflow-hidden cursor-pointer shadow-2xl select-none'
         style={{
           width: GAME_WIDTH * scale,
           height: GAME_HEIGHT * scale,
-          backgroundImage: "url('/mini-games/background.webp')",
+          backgroundImage:
+            "url('/background-decorations/background-floppy.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}

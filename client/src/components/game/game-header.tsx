@@ -1,5 +1,6 @@
 import { Fish } from 'lucide-react';
 import { GameStatusBar } from '@/components';
+import { FullscreenButton } from '@/components/ui/fullscreen-button';
 
 interface GameHeaderProps {
   happiness: number;
@@ -23,40 +24,48 @@ export function GameHeader({
   };
 
   return (
-    <div className='absolute top-0 left-0 right-0 flex justify-between items-center p-4 z-40'>
-      <div className='flex items-center gap-4'>
+    <div className='absolute top-0 left-0 right-0 flex justify-between items-center p-2 sm:p-4 z-50'>
+      <div className='flex items-center gap-2 sm:gap-4'>
         <img
           src='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Aqua_Stark-removebg-preview-ubKSrqYo7jzOH5qXqxEw4CyRHXIjfq.png'
           alt='Aqua Stark Logo'
           width={120}
           height={50}
-          className='drop-shadow-lg'
+          className='drop-shadow-lg w-20 h-8 sm:w-24 sm:h-10 md:w-32 md:h-12 object-contain'
         />
       </div>
 
-      <div className='flex items-center gap-4 bg-blue-900/40 backdrop-blur-sm p-3 rounded-xl'>
-        <div className='flex items-center gap-2 mr-4 bg-blue-800/50 px-3 py-1 rounded-lg'>
-          <Fish className='text-blue-200 h-5 w-5' />
-          <span className='text-white font-bold'>2/10</span>
+      <div className='flex items-center gap-1 sm:gap-2 md:gap-4 bg-blue-900/40 backdrop-blur-sm p-2 sm:p-2 md:p-3 rounded-xl overflow-x-auto'>
+        <div className='flex items-center gap-1 sm:gap-2 mr-2 sm:mr-4 bg-blue-800/50 px-2 sm:px-3 py-1 rounded-lg flex-shrink-0'>
+          <Fish className='text-blue-200 h-4 w-4 sm:h-5 sm:w-5' />
+          <span className='text-white font-bold text-xs sm:text-sm'>2/10</span>
         </div>
 
-        <GameStatusBar
-          icon='🌟'
-          value={happiness}
-          color='from-yellow-400 to-yellow-600'
-          label='Happiness'
-        />
-        <GameStatusBar
-          icon='🍖'
-          value={food}
-          color='from-orange-400 to-orange-600'
-          label='Hunger'
-        />
-        <GameStatusBar
-          icon='⚡'
-          value={energy}
-          color='from-blue-400 to-blue-600'
-          label='Energy'
+        <div className='flex items-center gap-1 sm:gap-2 flex-shrink-0'>
+          <GameStatusBar
+            icon='🌟'
+            value={happiness}
+            color='from-yellow-400 to-yellow-600'
+            label='Happiness'
+          />
+          <GameStatusBar
+            icon='🍖'
+            value={food}
+            color='from-orange-400 to-orange-600'
+            label='Hunger'
+          />
+          <GameStatusBar
+            icon='⚡'
+            value={energy}
+            color='from-blue-400 to-blue-600'
+            label='Energy'
+          />
+        </div>
+
+        <FullscreenButton
+          className='ml-2 sm:ml-4 text-white hover:bg-blue-500/50 flex-shrink-0'
+          variant='ghost'
+          size='sm'
         />
       </div>
 

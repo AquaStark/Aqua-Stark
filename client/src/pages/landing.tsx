@@ -5,6 +5,7 @@ import { FeaturedFish } from '@/components';
 import { Footer } from '@/components';
 import { HeroSection } from '@/components/landing/hero-section';
 import { Navbar } from '@/components/landing/navbar';
+import { OrientationLock } from '@/components/ui';
 import { useBubbles } from '@/hooks';
 
 export default function LandingPage() {
@@ -20,49 +21,51 @@ export default function LandingPage() {
   });
 
   return (
-    <div
-      className='relative min-h-screen w-full overflow-x-hidden landing-page'
-      style={{ height: '100vh' }}
-    >
-      {/* Background image */}
+    <OrientationLock>
       <div
-        className='fixed inset-0 bg-cover bg-center bg-no-repeat'
-        style={{
-          backgroundImage: 'url("/backgrounds/initaial-background.webp")',
-          filter: 'brightness(0.8)',
-        }}
-      />
+        className='relative min-h-screen w-full overflow-x-hidden landing-page'
+        style={{ height: '100vh' }}
+      >
+        {/* Background image */}
+        <div
+          className='fixed inset-0 bg-cover bg-center bg-no-repeat'
+          style={{
+            backgroundImage: 'url("/backgrounds/initaial-background.webp")',
+            filter: 'brightness(0.8)',
+          }}
+        />
 
-      {/* Water movement effect */}
-      <div className='fixed inset-0 water-movement'></div>
+        {/* Water movement effect */}
+        <div className='fixed inset-0 water-movement'></div>
 
-      {/* Bubbles background effect */}
-      <div className='fixed inset-0 pointer-events-none'>
-        <BubblesBackground bubbles={bubbles} />
-      </div>
-
-      {/* Top navbar/HUD - Compact */}
-      <div className='relative z-30 h-16 sm:h-20 md:h-24 lg:h-28'>
-        <Navbar />
-      </div>
-
-      {/* Main content - Centered and positioned higher */}
-      <div className='relative z-20 flex flex-col justify-center items-center px-2 sm:px-4 pt-4 sm:pt-6 md:pt-8 min-h-[calc(100vh-5rem)] lg:min-h-[calc(100vh-8rem)]'>
-        {/* Hero section */}
-        <div className='flex items-center justify-center py-2 sm:py-4 md:py-6'>
-          <HeroSection />
+        {/* Bubbles background effect */}
+        <div className='fixed inset-0 pointer-events-none'>
+          <BubblesBackground bubbles={bubbles} />
         </div>
 
-        {/* Featured fish section */}
-        <div className='flex items-center justify-center py-2 sm:py-4 md:py-6'>
-          <FeaturedFish />
+        {/* Top navbar/HUD - Ultra compact on mobile */}
+        <div className='relative z-30 h-10 sm:h-12 md:h-16 lg:h-20'>
+          <Navbar />
         </div>
 
-        {/* Footer */}
-        <div className='py-2 sm:py-4 mt-auto'>
-          <Footer />
+        {/* Main content - Ultra compact on mobile */}
+        <div className='relative z-20 flex flex-col justify-center items-center px-0.5 sm:px-1 md:px-2 lg:px-4 pt-1 sm:pt-2 md:pt-4 min-h-[calc(100vh-2.5rem)] sm:min-h-[calc(100vh-3rem)] md:min-h-[calc(100vh-4rem)] lg:min-h-[calc(100vh-5rem)]'>
+          {/* Hero section - Ultra small on mobile */}
+          <div className='flex items-center justify-center py-0.5 sm:py-1 md:py-2'>
+            <HeroSection />
+          </div>
+
+          {/* Featured fish section - Ultra small on mobile */}
+          <div className='flex items-center justify-center py-0.5 sm:py-1 md:py-2'>
+            <FeaturedFish />
+          </div>
+
+          {/* Footer - Ultra small on mobile */}
+          <div className='py-0.5 sm:py-1 md:py-2 mt-auto'>
+            <Footer />
+          </div>
         </div>
       </div>
-    </div>
+    </OrientationLock>
   );
 }

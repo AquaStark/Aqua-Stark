@@ -84,7 +84,7 @@ export function BottomNavBar({
       : 0;
 
   return (
-    <div className='flex items-center gap-4'>
+    <div className='flex items-center gap-1 sm:gap-2 md:gap-4 overflow-x-auto scrollbar-hide'>
       {/* Feed button section with special handling for feeding state */}
       <motion.div
         className='flex flex-col items-center gap-1 relative'
@@ -104,7 +104,7 @@ export function BottomNavBar({
             }
             tooltip={isFeeding ? 'Stop Feeding' : 'Feed Fish'}
             onClick={isFeeding ? onStopFeeding : onStartFeeding}
-            className={`w-12 h-12 transition-all duration-200 ease-out hover:shadow-lg active:scale-95 ${
+            className={`w-10 h-10 sm:w-12 sm:h-12 transition-all duration-200 ease-out hover:shadow-lg active:scale-95 ${
               isFeeding ? 'animate-pulse ring-2 ring-orange-400/50' : ''
             }`}
           />
@@ -139,7 +139,9 @@ export function BottomNavBar({
         </div>
 
         {/* Feed button label */}
-        <span className='text-xs text-white/80 font-medium'>Feed</span>
+        <span className='text-xs text-white/80 font-medium hidden sm:block'>
+          Feed
+        </span>
 
         {/* Timer display during feeding */}
         {isFeeding && timeRemaining > 0 && (
@@ -165,7 +167,7 @@ export function BottomNavBar({
             tooltip={item.label}
             onClick={() => handleItemClick(item.id)}
             className={cn(
-              'w-12 h-12 transition-all duration-200 ease-out',
+              'w-10 h-10 sm:w-12 sm:h-12 transition-all duration-200 ease-out',
               'hover:shadow-lg active:scale-95',
               'bg-blue-500/30 hover:bg-blue-500/50 backdrop-blur-sm text-white border border-blue-400/40 shadow-lg hover:shadow-blue-400/30',
               // Highlight active item with ring
@@ -173,7 +175,7 @@ export function BottomNavBar({
             )}
           />
           {/* Item label */}
-          <span className='text-xs text-white/80 font-medium'>
+          <span className='text-xs text-white/80 font-medium hidden sm:block'>
             {item.label}
           </span>
         </motion.div>

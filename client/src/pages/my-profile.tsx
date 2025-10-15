@@ -13,6 +13,7 @@ import {
   BubblesBackground,
 } from '@/components/profile';
 import { useBubbles } from '@/hooks';
+import { OrientationLock } from '@/components/ui';
 
 export default function MyProfile() {
   const [activeTab, setActiveTab] = useState('collection');
@@ -44,42 +45,44 @@ export default function MyProfile() {
   } = mockProfileData;
 
   return (
-    <div className='min-h-screen bg-blue-700 text-white relative overflow-hidden'>
-      {/* Background bubbles */}
-      <BubblesBackground
-        bubbles={bubbles}
-        className='absolute inset-0 z-0 pointer-events-none'
-      />
-
-      {/* Content container */}
-      <div
-        className={`relative z-10 max-w-4xl mx-auto px-4 py-6 transition-opacity duration-700 ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        <ProfileHeader currency={currency} />
-
-        <ProfileCard
-          username={username}
-          level={level}
-          joinDate={joinDate}
-          experience={experience}
-          stats={stats}
+    <OrientationLock>
+      <div className='min-h-screen bg-blue-700 text-white relative overflow-hidden'>
+        {/* Background bubbles */}
+        <BubblesBackground
+          bubbles={bubbles}
+          className='absolute inset-0 z-0 pointer-events-none'
         />
 
-        <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+        {/* Content container */}
+        <div
+          className={`relative z-10 max-w-4xl mx-auto px-4 py-6 transition-opacity duration-700 ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          <ProfileHeader currency={currency} />
 
-        <div className='animate-fadeIn transition-all duration-500'>
-          {activeTab === 'collection' && (
-            <FishCollection fishCollection={fishCollection} />
-          )}
-          {activeTab === 'achievements' && (
-            <ProfileAchievements stats={stats} />
-          )}
-          {activeTab === 'purchase' && <PurchaseHistory />}
-          <PlayerStatistics playerStats={playerStats} />
+          <ProfileCard
+            username={username}
+            level={level}
+            joinDate={joinDate}
+            experience={experience}
+            stats={stats}
+          />
+
+          <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+
+          <div className='animate-fadeIn transition-all duration-500'>
+            {activeTab === 'collection' && (
+              <FishCollection fishCollection={fishCollection} />
+            )}
+            {activeTab === 'achievements' && (
+              <ProfileAchievements stats={stats} />
+            )}
+            {activeTab === 'purchase' && <PurchaseHistory />}
+            <PlayerStatistics playerStats={playerStats} />
+          </div>
         </div>
       </div>
-    </div>
+    </OrientationLock>
   );
 }
