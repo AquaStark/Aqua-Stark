@@ -58,14 +58,14 @@ interface DirtSystemState {
  * @property {string} playerId - The unique identifier of the player.
  * @property {string} [authToken] - Optional authentication token for API requests.
  * @property {boolean} [autoRefresh=true] - If true, the hook will periodically fetch updates from the backend.
- * @property {number} [refreshInterval=1800000] - The interval in milliseconds for auto-refresh. Defaults to 30 minutes.
+ * @property {number} [refreshInterval=30000] - The interval in milliseconds for auto-refresh. Defaults to 30 seconds.
  */
 interface UseDirtSystemRealisticOptions {
   aquariumId: string;
   playerId: string;
   authToken?: string;
   autoRefresh?: boolean;
-  refreshInterval?: number; // in milliseconds (default: 30 minutes)
+  refreshInterval?: number; // in milliseconds (default: 30 seconds for testing)
 }
 
 /**
@@ -103,7 +103,7 @@ export function useDirtSystemRealistic({
   playerId,
   authToken,
   autoRefresh = true,
-  refreshInterval = 1800000, // 30 minutes (1800000 ms)
+  refreshInterval = 30000, // 30 seconds for testing (30000 ms)
 }: UseDirtSystemRealisticOptions) {
   const [state, setState] = useState<DirtSystemState>({
     spots: [],
