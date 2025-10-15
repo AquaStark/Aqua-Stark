@@ -6,9 +6,9 @@ import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
  * Implements realistic dirt accumulation based on time offline
  */
 export class DirtService {
-  // Default dirt system configuration (TESTING: using seconds instead of hours)
+  // Default dirt system configuration (PRODUCTION)
   static DEFAULT_CONFIG = {
-    grace_period_hours: 10, // 10 seconds grace period
+    grace_period_hours: 4, // 4 hours grace period
     dirt_multiplier: 30,
     max_dirt_level: 95,
     log_base: 10,
@@ -132,33 +132,33 @@ export class DirtService {
     const dirtConfig = { ...this.DEFAULT_CONFIG, ...config };
     const now = new Date();
     const lastCleaning = new Date(lastCleaningTime);
-    // TESTING: Using seconds instead of hours
-    const secondsSinceCleaning = (now - lastCleaning) / 1000;
+    // PRODUCTION: Using hours
+    const hoursSinceCleaning = (now - lastCleaning) / (1000 * 60 * 60);
 
-    // Grace period (in seconds)
-    if (secondsSinceCleaning <= dirtConfig.grace_period_hours) {
+    // Grace period (in hours)
+    if (hoursSinceCleaning <= dirtConfig.grace_period_hours) {
       return 0;
     }
 
-    // Logarithmic calculation (adjusted for seconds)
-    const adjustedSeconds =
-      secondsSinceCleaning - dirtConfig.grace_period_hours;
-    const logValue = Math.log10(adjustedSeconds / 2 + 1);
+    // Logarithmic calculation
+    const adjustedHours =
+      hoursSinceCleaning - dirtConfig.grace_period_hours;
+    const logValue = Math.log10(adjustedHours / 2 + 1);
     const calculatedDirt = dirtConfig.dirt_multiplier * logValue;
 
     return Math.min(dirtConfig.max_dirt_level, Math.max(0, calculatedDirt));
   }
 
   /**
-   * Calculate seconds since last cleaning (TESTING MODE)
+   * Calculate hours since last cleaning (PRODUCTION)
    * @param {string} lastCleaningTime - ISO timestamp
-   * @returns {number} Seconds since cleaning
+   * @returns {number} Hours since cleaning
    */
   static calculateHoursSinceCleaning(lastCleaningTime) {
     const now = new Date();
     const lastCleaning = new Date(lastCleaningTime);
-    // TESTING: Return seconds instead of hours
-    return (now - lastCleaning) / 1000;
+    // PRODUCTION: Return hours
+    return (now - lastCleaning) / (1000 * 60 * 60);
   }
 
   /**
@@ -224,6 +224,30 @@ export class DirtService {
       return result;
     } catch (error) {
       console.error('Error cleaning aquarium:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Clean individual dirt spot
+   * @param {string} aquariumId - Aquarium ID
+   * @param {number} spotId - Dirt spot ID
+   * @param {string} playerId - Player ID
+   * @returns {Object} Cleaning result
+   */
+  static async cleanDirtSpot(aquariumId, spotId, playerId) {
+    try {
+      // Simply call cleanAquarium with 'partial' type
+      // The spot ID is mainly for frontend tracking
+      const result = await this.cleanAquarium(aquariumId, playerId, 'partial');
+      
+      return {
+        ...result,
+        spot_id: spotId,
+        message: 'Dirt spot cleaned successfully',
+      };
+    } catch (error) {
+      console.error('Error cleaning dirt spot:', error);
       throw error;
     }
   }
