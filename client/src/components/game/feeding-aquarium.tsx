@@ -86,13 +86,14 @@ export function FeedingAquarium({
   // Handle container clicks for feeding
   const handleContainerClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
+      const rect = containerRef.current?.getBoundingClientRect();
       handleFeedClick(
         event.clientX,
         event.clientY,
-        containerRef.current?.getBoundingClientRect()
+        rect
       );
     },
-    [handleFeedClick]
+    [handleFeedClick, isFeeding]
   );
 
   // Keyboard accessibility: drop food at container center on Enter/Space
@@ -156,13 +157,14 @@ export function FeedingAquarium({
     <div
       ref={containerRef}
       className='relative w-full h-full fish-container overflow-hidden'
-      onClick={handleContainerClick}
-      onKeyDown={handleContainerKeyDown}
-      role='button'
-      tabIndex={0}
+      onClick={isFeeding ? handleContainerClick : undefined}
+      onKeyDown={isFeeding ? handleContainerKeyDown : undefined}
+      role={isFeeding ? 'button' : undefined}
+      tabIndex={isFeeding ? 0 : undefined}
       style={{
         cursor: isFeeding ? 'pointer' : 'default',
         userSelect: 'none',
+        pointerEvents: 'none', // NUNCA interceptar clicks - las manchas deben tener prioridad
       }}
     >
       <FishDisplay
