@@ -140,7 +140,7 @@ export function AquariumTabs({
                 isDirty={dirtSystem.isDirty}
                 needsCleaning={dirtSystem.needsCleaning}
                 onToggleCleaningMode={onToggleCleaningMode}
-                isCleaningMode={isCleaningMode}
+                isCleaningMode={isCleaningMode || false}
                 className='w-12 h-12'
               />
             </div>

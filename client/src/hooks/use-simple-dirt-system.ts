@@ -16,9 +16,6 @@ export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
   const [dirtLevel, setDirtLevel] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   
-  // Modo testing: true para desarrollo, false para producción
-  const isTestingMode = false; // Forzar modo producción
-  
   // Variable para almacenar el tiempo de la última limpieza
   const [lastCleaningTime, setLastCleaningTime] = useState<string>('');
   
@@ -26,7 +23,7 @@ export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
   const [spotCounter, setSpotCounter] = useState(0);
 
   // Generar manchas basadas en el tiempo real del backend
-  const generateSpotsFromBackend = useCallback((level: number, lastCleaningTime?: string) => {
+  const generateSpotsFromBackend = useCallback((_level: number, lastCleaningTime?: string) => {
     let hoursSinceCleaning = 0;
     if (lastCleaningTime) {
       const lastCleaning = new Date(lastCleaningTime);
@@ -130,18 +127,13 @@ export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
       });
 
       if (response.ok) {
-        const result = await response.json();
-        if (result.success) {
-          setDirtLevel(result.data.new_dirt_level);
-          
-          // Solo actualizar tiempo si se limpió COMPLETAMENTE
-          if (result.data.is_complete_cleaning) {
-            setSpotCounter(0);
-            setTimeout(() => {
-              fetchDirtStatus();
-            }, 1000);
-          }
-        }
+        await response.json();
+        setDirtLevel(prev => Math.max(0, prev - 10));
+        
+        // Actualizar después de limpiar
+        setTimeout(() => {
+          fetchDirtStatus();
+        }, 1000);
       } else {
         setDirtLevel(prev => Math.max(0, prev - 10));
       }
@@ -179,7 +171,7 @@ export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
       });
 
       if (response.ok) {
-        const result = await response.json();
+        await response.json();
       }
     } catch (error) {
       // Fallback silencioso

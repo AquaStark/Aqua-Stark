@@ -1,11 +1,10 @@
 'use client';
 
-import React from 'react';
 import { useSimpleDirtSystem } from '@/hooks/use-simple-dirt-system';
 import { SimpleDirtSpot } from '@/components/simple-dirt-spot';
 
 export default function SimpleDirtTest() {
-  const { spots, isSpongeMode, removeSpot, toggleSpongeMode } = useSimpleDirtSystem();
+  const { spots, isSpongeMode, removeSpot, cleanSpot, toggleSpongeMode } = useSimpleDirtSystem();
 
   return (
     <div className='relative w-full h-screen overflow-hidden bg-gradient-to-b from-blue-400 to-blue-800'>
@@ -19,6 +18,7 @@ export default function SimpleDirtTest() {
           size={spot.size}
           isSpongeMode={isSpongeMode}
           onRemove={removeSpot}
+          onClean={cleanSpot}
         />
       ))}
 

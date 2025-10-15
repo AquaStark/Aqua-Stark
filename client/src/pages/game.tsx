@@ -19,7 +19,6 @@ import { SimpleDirtSpot } from '@/components/simple-dirt-spot';
 // Importar todos los componentes originales
 import { GameHeader } from '@/components';
 import { AquariumTabs } from '@/components';
-import { TipsPopup } from '@/components';
 import { OrientationLock } from '@/components/ui';
 import { INITIAL_GAME_STATE } from '@/constants';
 import { GameMenu } from '@/components';

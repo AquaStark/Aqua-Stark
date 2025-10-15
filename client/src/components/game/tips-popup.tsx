@@ -11,12 +11,6 @@ interface TipsPopupProps {
 export function TipsPopup({ show, onClose, onToggle }: TipsPopupProps) {
   const popupRef = useRef<HTMLDivElement>(null);
 
-  const handleToggleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onToggle();
-  };
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
@@ -48,7 +42,7 @@ export function TipsPopup({ show, onClose, onToggle }: TipsPopupProps) {
         icon='💡'
         text='Tips'
         color='from-yellow-400 to-yellow-600 cursor-pointer z-60'
-        onClick={handleToggleClick}
+        onClick={onToggle}
         aria-expanded={show}
         aria-haspopup='dialog'
         aria-label='Toggle Tips Panel'
