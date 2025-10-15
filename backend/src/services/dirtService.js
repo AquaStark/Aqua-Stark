@@ -6,9 +6,9 @@ import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
  * Implements realistic dirt accumulation based on time offline
  */
 export class DirtService {
-  // Default dirt system configuration (PRODUCTION)
+  // Default dirt system configuration (TESTING: using seconds instead of hours)
   static DEFAULT_CONFIG = {
-    grace_period_hours: 4, // 4 hours grace period
+    grace_period_hours: 5, // 5 seconds grace period for testing
     dirt_multiplier: 30,
     max_dirt_level: 95,
     log_base: 10,
@@ -132,33 +132,33 @@ export class DirtService {
     const dirtConfig = { ...this.DEFAULT_CONFIG, ...config };
     const now = new Date();
     const lastCleaning = new Date(lastCleaningTime);
-    // PRODUCTION: Using hours
-    const hoursSinceCleaning = (now - lastCleaning) / (1000 * 60 * 60);
+    // TESTING: Using seconds instead of hours
+    const secondsSinceCleaning = (now - lastCleaning) / 1000;
 
-    // Grace period (in hours)
-    if (hoursSinceCleaning <= dirtConfig.grace_period_hours) {
+    // Grace period (in seconds)
+    if (secondsSinceCleaning <= dirtConfig.grace_period_hours) {
       return 0;
     }
 
-    // Logarithmic calculation
-    const adjustedHours =
-      hoursSinceCleaning - dirtConfig.grace_period_hours;
-    const logValue = Math.log10(adjustedHours / 2 + 1);
+    // Logarithmic calculation (adjusted for seconds)
+    const adjustedSeconds =
+      secondsSinceCleaning - dirtConfig.grace_period_hours;
+    const logValue = Math.log10(adjustedSeconds / 2 + 1);
     const calculatedDirt = dirtConfig.dirt_multiplier * logValue;
 
     return Math.min(dirtConfig.max_dirt_level, Math.max(0, calculatedDirt));
   }
 
   /**
-   * Calculate hours since last cleaning (PRODUCTION)
+   * Calculate seconds since last cleaning (TESTING MODE)
    * @param {string} lastCleaningTime - ISO timestamp
-   * @returns {number} Hours since cleaning
+   * @returns {number} Seconds since cleaning
    */
   static calculateHoursSinceCleaning(lastCleaningTime) {
     const now = new Date();
     const lastCleaning = new Date(lastCleaningTime);
-    // PRODUCTION: Return hours
-    return (now - lastCleaning) / (1000 * 60 * 60);
+    // TESTING: Return seconds instead of hours
+    return (now - lastCleaning) / 1000;
   }
 
   /**
