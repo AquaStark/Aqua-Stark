@@ -92,7 +92,11 @@ export const useTrade = () => {
       offerId: BigNumberish,
       offeredFishId: BigNumberish
     ) => {
-      return await client.Trade.accept_trade_offer(account, offerId, offeredFishId);
+      return await client.Trade.accept_trade_offer(
+        account,
+        offerId,
+        offeredFishId
+      );
     },
     [client]
   );
@@ -104,10 +108,7 @@ export const useTrade = () => {
    * @returns {Promise<boolean>} Success status.
    */
   const cancelTradeOffer = useCallback(
-    async (
-      account: Account | AccountInterface,
-      offerId: BigNumberish
-    ) => {
+    async (account: Account | AccountInterface, offerId: BigNumberish) => {
       return await client.Trade.cancel_trade_offer(account, offerId);
     },
     [client]

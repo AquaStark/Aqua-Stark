@@ -7,7 +7,6 @@ import {
   CairoCustomEnum,
 } from 'starknet';
 
-
 /**
  * Custom React hook for managing fish-related operations in the AquaStark ecosystem.
  * Provides methods for creating, retrieving, breeding, managing fish genealogy, and marketplace interactions.
@@ -217,10 +216,7 @@ export const useFish = () => {
    * @returns {Promise<any>} Result of the purchase transaction.
    */
   const purchaseFish = useCallback(
-    async (
-      account: Account | AccountInterface,
-      listingId: BigNumberish
-    ) => {
+    async (account: Account | AccountInterface, listingId: BigNumberish) => {
       return await client.AquaStark.purchaseFish(account, listingId);
     },
     [client]

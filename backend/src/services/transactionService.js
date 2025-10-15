@@ -3,7 +3,6 @@ import { logger } from '../../utils/logger.js';
 import { TransactionSchema } from '../../utils/validators.js';
 import { redisClient, CACHE_KEYS, CACHE_TTL } from '../config/redis.js';
 import { z } from 'zod';
-import e from 'express';
 
 const transactionIdSchema = z.string().min(1, 'transaction_id is required');
 const playerWalletSchema = z.string().min(1, 'player_wallet is required');

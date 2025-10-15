@@ -9,4 +9,8 @@ export { useAquaStarkEnhanced } from './useAquaStarkEnhanced';
 export { useFishSystemEnhanced } from './useFishSystemEnhanced';
 export { useTradeEnhanced } from './useTradeEnhanced';
 export { useSessionEnhanced } from './useSessionEnhanced';
-export { useShopCatalog, useDailyChallenge, useGameEnhanced } from './useAdditionalContracts';
+export {
+  useShopCatalog,
+  useDailyChallenge,
+  useGameEnhanced,
+} from './useAdditionalContracts';

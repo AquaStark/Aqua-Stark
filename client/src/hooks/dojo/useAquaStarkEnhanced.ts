@@ -15,7 +15,7 @@ function validateDojoClient(client: DojoClient): void {
 /**
  * Enhanced React hook for AquaStark contract interactions.
  * Provides comprehensive methods for managing transactions, events, players, and system-level operations.
- * 
+ *
  * @returns Object containing all AquaStark functions
  */
 export const useAquaStarkEnhanced = () => {
@@ -27,23 +27,44 @@ export const useAquaStarkEnhanced = () => {
 
   // Transaction Management
   const confirmTransaction = useCallback(
-    async (account: Account | AccountInterface, transactionId: BigNumberish, confirmationHash: BigNumberish) => {
+    async (
+      account: Account | AccountInterface,
+      transactionId: BigNumberish,
+      confirmationHash: BigNumberish
+    ) => {
       ensureClientReady();
-      return await client.AquaStark.confirmTransaction(account, transactionId, confirmationHash);
+      return await client.AquaStark.confirmTransaction(
+        account,
+        transactionId,
+        confirmationHash
+      );
     },
     [client, ensureClientReady]
   );
 
   const initiateTransaction = useCallback(
-    async (account: Account | AccountInterface, player: string, eventTypeId: BigNumberish, payload: Array<BigNumberish>) => {
+    async (
+      account: Account | AccountInterface,
+      player: string,
+      eventTypeId: BigNumberish,
+      payload: Array<BigNumberish>
+    ) => {
       ensureClientReady();
-      return await client.AquaStark.initiateTransaction(account, player, eventTypeId, payload);
+      return await client.AquaStark.initiateTransaction(
+        account,
+        player,
+        eventTypeId,
+        payload
+      );
     },
     [client, ensureClientReady]
   );
 
   const processTransaction = useCallback(
-    async (account: Account | AccountInterface, transactionId: BigNumberish) => {
+    async (
+      account: Account | AccountInterface,
+      transactionId: BigNumberish
+    ) => {
       ensureClientReady();
       return await client.AquaStark.processTransaction(account, transactionId);
     },
@@ -81,7 +102,14 @@ export const useAquaStarkEnhanced = () => {
       endTimestamp: CairoOption<string>
     ) => {
       ensureClientReady();
-      return await client.AquaStark.getTransactionHistory(player, eventTypeId, start, limit, startTimestamp, endTimestamp);
+      return await client.AquaStark.getTransactionHistory(
+        player,
+        eventTypeId,
+        start,
+        limit,
+        startTimestamp,
+        endTimestamp
+      );
     },
     [client, ensureClientReady]
   );
@@ -114,9 +142,19 @@ export const useAquaStarkEnhanced = () => {
   );
 
   const logEvent = useCallback(
-    async (account: Account | AccountInterface, eventTypeId: BigNumberish, player: string, payload: Array<BigNumberish>) => {
+    async (
+      account: Account | AccountInterface,
+      eventTypeId: BigNumberish,
+      player: string,
+      payload: Array<BigNumberish>
+    ) => {
       ensureClientReady();
-      return await client.AquaStark.logEvent(account, eventTypeId, player, payload);
+      return await client.AquaStark.logEvent(
+        account,
+        eventTypeId,
+        player,
+        payload
+      );
     },
     [client, ensureClientReady]
   );
@@ -164,9 +202,19 @@ export const useAquaStarkEnhanced = () => {
   );
 
   const newAquarium = useCallback(
-    async (account: Account | AccountInterface, owner: string, maxCapacity: BigNumberish, maxDecorations: BigNumberish) => {
+    async (
+      account: Account | AccountInterface,
+      owner: string,
+      maxCapacity: BigNumberish,
+      maxDecorations: BigNumberish
+    ) => {
       ensureClientReady();
-      return await client.AquaStark.newAquarium(account, owner, maxCapacity, maxDecorations);
+      return await client.AquaStark.newAquarium(
+        account,
+        owner,
+        maxCapacity,
+        maxDecorations
+      );
     },
     [client, ensureClientReady]
   );
@@ -206,7 +254,14 @@ export const useAquaStarkEnhanced = () => {
       rarity: BigNumberish
     ) => {
       ensureClientReady();
-      return await client.AquaStark.newDecoration(account, aquariumId, name, description, price, rarity);
+      return await client.AquaStark.newDecoration(
+        account,
+        aquariumId,
+        name,
+        description,
+        price,
+        rarity
+      );
     },
     [client, ensureClientReady]
   );
@@ -261,34 +316,34 @@ export const useAquaStarkEnhanced = () => {
     isTransactionConfirmed,
     getTransactionCount,
     getTransactionHistory,
-    
+
     // Event Management
     getAllEventTypes,
     getEventTypesCount,
     getEventTypeDetails,
     registerEventType,
     logEvent,
-    
+
     // Player Management
     register,
     getPlayer,
     isVerified,
     getUsernameFromAddress,
-    
+
     // Aquarium Management
     getAquarium,
     newAquarium,
     getAquariumOwner,
     getPlayerAquariums,
     getPlayerAquariumCount,
-    
+
     // Decoration Management
     newDecoration,
     getDecoration,
     getDecorationOwner,
     getPlayerDecorations,
     getPlayerDecorationCount,
-    
+
     // Fish Management
     getFishOwnerForAuction,
   };

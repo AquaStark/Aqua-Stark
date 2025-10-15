@@ -15,7 +15,7 @@ function validateDojoClient(client: DojoClient): void {
 /**
  * React hook for Session contract interactions.
  * Provides methods for managing user sessions including creation, validation, renewal, and revocation.
- * 
+ *
  * @returns Object containing all session management functions
  */
 export const useSessionEnhanced = () => {
@@ -27,17 +27,37 @@ export const useSessionEnhanced = () => {
 
   // Session Management
   const createSessionKey = useCallback(
-    async (account: Account | AccountInterface, duration: BigNumberish, maxTransactions: BigNumberish, sessionType: BigNumberish) => {
+    async (
+      account: Account | AccountInterface,
+      duration: BigNumberish,
+      maxTransactions: BigNumberish,
+      sessionType: BigNumberish
+    ) => {
       ensureClientReady();
-      return await client.session.createSessionKey(account, duration, maxTransactions, sessionType);
+      return await client.session.createSessionKey(
+        account,
+        duration,
+        maxTransactions,
+        sessionType
+      );
     },
     [client, ensureClientReady]
   );
 
   const renewSession = useCallback(
-    async (account: Account | AccountInterface, sessionId: BigNumberish, newDuration: BigNumberish, newMaxTx: BigNumberish) => {
+    async (
+      account: Account | AccountInterface,
+      sessionId: BigNumberish,
+      newDuration: BigNumberish,
+      newMaxTx: BigNumberish
+    ) => {
       ensureClientReady();
-      return await client.session.renewSession(account, sessionId, newDuration, newMaxTx);
+      return await client.session.renewSession(
+        account,
+        sessionId,
+        newDuration,
+        newMaxTx
+      );
     },
     [client, ensureClientReady]
   );
@@ -97,7 +117,7 @@ export const useSessionEnhanced = () => {
     renewSession,
     revokeSession,
     validateSession,
-    
+
     // Session Queries
     getSessionInfo,
     calculateRemainingTransactions,

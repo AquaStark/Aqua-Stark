@@ -1551,11 +1551,7 @@
       "init_calldata": [],
       "tag": "dojo_starter-actions",
       "selector": "0x7a1c71029f2d0b38e3ac89b09931d08b6e48417e079c289ff19a8698d0cba33",
-      "systems": [
-        "spawn",
-        "move",
-        "upgrade"
-      ]
+      "systems": ["spawn", "move", "upgrade"]
     }
   ],
   "libraries": [],

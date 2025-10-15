@@ -51,7 +51,12 @@ export const useSession = () => {
       maxTransactions: BigNumberish,
       sessionType: number
     ) => {
-      return await client.Session.create_session_key(account, duration, maxTransactions, sessionType);
+      return await client.Session.create_session_key(
+        account,
+        duration,
+        maxTransactions,
+        sessionType
+      );
     },
     [client]
   );
@@ -83,7 +88,12 @@ export const useSession = () => {
       newDuration: BigNumberish,
       newMaxTx: BigNumberish
     ) => {
-      return await client.Session.renew_session(account, sessionId, newDuration, newMaxTx);
+      return await client.Session.renew_session(
+        account,
+        sessionId,
+        newDuration,
+        newMaxTx
+      );
     },
     [client]
   );
@@ -95,10 +105,7 @@ export const useSession = () => {
    * @returns {Promise<boolean>} Success status.
    */
   const revokeSession = useCallback(
-    async (
-      account: Account | AccountInterface,
-      sessionId: string
-    ) => {
+    async (account: Account | AccountInterface, sessionId: string) => {
       return await client.Session.revoke_session(account, sessionId);
     },
     [client]

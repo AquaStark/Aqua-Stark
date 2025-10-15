@@ -21,8 +21,12 @@ export function CleanButton({
   className = '',
   disabled = false,
 }: CleanButtonProps) {
-  const handleCleanClick = () => {
-    if (isLoading || disabled) return;
+  const handleCleanClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isLoading || disabled) {
+      return;
+    }
     onToggleCleaningMode();
   };
 

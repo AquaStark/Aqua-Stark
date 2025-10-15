@@ -11,19 +11,23 @@ function validateDojoClient(client: DojoClient): void {
   if (!client) {
     throw new Error('Dojo SDK client is not initialized');
   }
-  
+
   console.log('Available contracts:', Object.keys(client));
-  
+
   if (!client.AquaStark) {
-    throw new Error(`AquaStark contract not found. Available contracts: ${Object.keys(client).join(', ')}`);
+    throw new Error(
+      `AquaStark contract not found. Available contracts: ${Object.keys(client).join(', ')}`
+    );
   }
-  
+
   const requiredMethods = ['getAquarium', 'newAquarium', 'getAquariumOwner'];
   const availableMethods = Object.keys(client.AquaStark);
-  
+
   requiredMethods.forEach(method => {
     if (!(method in client.AquaStark)) {
-      throw new Error(`Required method '${method}' not found in AquaStark contract. Available methods: ${availableMethods.join(', ')}`);
+      throw new Error(
+        `Required method '${method}' not found in AquaStark contract. Available methods: ${availableMethods.join(', ')}`
+      );
     }
   });
 }
@@ -93,8 +97,11 @@ export const useAquarium = () => {
    * @returns {Promise<any>} Throws error indicating method doesn't exist.
    */
   const createAquariumId = useCallback(
-    async (account: Account | AccountInterface) => {
-      throw new Error('createAquariumId method does not exist. Use newAquarium method instead.');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async (_account: Account | AccountInterface) => {
+      throw new Error(
+        'createAquariumId method does not exist. Use newAquarium method instead.'
+      );
     },
     [client]
   );
@@ -107,17 +114,17 @@ export const useAquarium = () => {
   const getAquarium = useCallback(
     async (id: BigNumberish) => {
       ensureClientReady();
-      
+
       console.log('getAquarium called with id:', id);
-      
+
       try {
         const result = await client.AquaStark.getAquarium(id);
         console.log('getAquarium result:', result);
         return result;
       } catch (error) {
         console.error('getAquarium error:', error);
-        return error
-        }
+        return error;
+      }
     },
     [client, ensureClientReady]
   );
@@ -146,7 +153,7 @@ export const useAquarium = () => {
     },
     [client]
   );
-// console.log('client: ', client);
+  // console.log('client: ', client);
   /**
    * Adds a fish to an existing aquarium via Game contract.
    * @param {Account | AccountInterface} account - User account instance.
@@ -160,11 +167,7 @@ export const useAquarium = () => {
       fish: models.Fish,
       aquariumId: BigNumberish
     ) => {
-      return await client.Game.addFishToAquarium(
-        account,
-        fish,
-        aquariumId
-      );
+      return await client.Game.addFishToAquarium(account, fish, aquariumId);
     },
     [client]
   );

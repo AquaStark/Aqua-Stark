@@ -13,7 +13,7 @@ import { SchemaType } from './typescript/models.gen';
 
 async function main() {
   console.log('Initializing Dojo SDK with config:', dojoConfig);
-  
+
   try {
     const sdk = await init<SchemaType>({
       client: {
@@ -29,12 +29,16 @@ async function main() {
         version: '1',
       },
     });
-    
+
     console.log('Dojo SDK initialized successfully:', sdk);
     console.log('setupWorld function:', setupWorld);
     ReactDOM.createRoot(document.getElementById('root')!).render(
       <React.StrictMode>
-        <DojoSdkProvider sdk={sdk} dojoConfig={dojoConfig} clientFn={setupWorld}>
+        <DojoSdkProvider
+          sdk={sdk}
+          dojoConfig={dojoConfig}
+          clientFn={setupWorld}
+        >
           <BrowserRouter>
             <App />
           </BrowserRouter>

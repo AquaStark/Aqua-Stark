@@ -8,6 +8,10 @@ export class DirtController {
   /**
    * Get aquarium dirt status
    * GET /api/v1/dirt/aquarium/:aquariumId
+   *
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with dirt status
    */
   static async getAquariumDirtStatus(req, res) {
     try {
@@ -52,6 +56,10 @@ export class DirtController {
   /**
    * Clean aquarium dirt
    * POST /api/v1/dirt/aquarium/:aquariumId/clean
+   *
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with cleaning result
    */
   static async cleanAquarium(req, res) {
     try {
@@ -102,6 +110,10 @@ export class DirtController {
   /**
    * Get all aquarium dirt statuses for a player
    * GET /api/v1/dirt/player/:playerId/aquariums
+   *
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with all aquarium dirt statuses
    */
   static async getPlayerAquariumDirtStatuses(req, res) {
     try {
@@ -140,6 +152,10 @@ export class DirtController {
   /**
    * Clean individual dirt spot
    * POST /api/v1/dirt/aquarium/:aquariumId/clean-spot
+   *
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with spot cleaning result
    */
   static async cleanDirtSpot(req, res) {
     try {
@@ -186,6 +202,10 @@ export class DirtController {
   /**
    * Initialize dirt system for aquarium
    * POST /api/v1/dirt/aquarium/:aquariumId/initialize
+   *
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with initialization result
    */
   static async initializeAquariumDirtSystem(req, res) {
     try {
@@ -228,6 +248,10 @@ export class DirtController {
   /**
    * Update aquarium dirt configuration
    * PUT /api/v1/dirt/aquarium/:aquariumId/config
+   *
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with updated configuration
    */
   static async updateAquariumDirtConfig(req, res) {
     try {
@@ -252,11 +276,7 @@ export class DirtController {
       }
 
       // Llamar al servicio para actualizar la configuración de dirt
-      const updatedConfig = await DirtService.updateAquariumDirtConfig(
-        aquariumId,
-        config,
-        playerId
-      );
+      await DirtService.updateAquariumDirtConfig(aquariumId, config, playerId);
 
       res.json({
         success: true,
@@ -287,6 +307,10 @@ export class DirtController {
   /**
    * Get player dirt statistics
    * GET /api/v1/dirt/player/:playerId/stats
+   *
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @returns {Promise<void>} JSON response with player dirt statistics
    */
   static async getPlayerDirtStats(req, res) {
     try {

@@ -210,6 +210,7 @@ export class FishController {
    */
   static async breedFish(req, res) {
     try {
+      // eslint-disable-next-line no-unused-vars
       const { parent1Id: _parent1Id, parent2Id: _parent2Id } = req.body;
 
       // This would be implemented when breeding is added

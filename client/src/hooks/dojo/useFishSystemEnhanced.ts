@@ -1,6 +1,11 @@
 import { useDojoSDK } from '@dojoengine/sdk/react';
 import { useCallback } from 'react';
-import { Account, AccountInterface, BigNumberish, CairoCustomEnum } from 'starknet';
+import {
+  Account,
+  AccountInterface,
+  BigNumberish,
+  CairoCustomEnum,
+} from 'starknet';
 import { DojoClient } from '@/types';
 import * as models from '@/typescript/models.gen';
 
@@ -16,7 +21,7 @@ function validateDojoClient(client: DojoClient): void {
 /**
  * Enhanced React hook for FishSystem contract interactions.
  * Provides comprehensive methods for managing fish including creation, breeding, trading, and querying.
- * 
+ *
  * @returns Object containing all FishSystem functions
  */
 export const useFishSystemEnhanced = () => {
@@ -28,7 +33,11 @@ export const useFishSystemEnhanced = () => {
 
   // Fish Creation and Management
   const newFish = useCallback(
-    async (account: Account | AccountInterface, aquariumId: BigNumberish, species: CairoCustomEnum) => {
+    async (
+      account: Account | AccountInterface,
+      aquariumId: BigNumberish,
+      species: CairoCustomEnum
+    ) => {
       ensureClientReady();
       return await client.FishSystem.newFish(account, aquariumId, species);
     },
@@ -36,24 +45,46 @@ export const useFishSystemEnhanced = () => {
   );
 
   const addFishToAquarium = useCallback(
-    async (account: Account | AccountInterface, fish: models.Fish, aquariumId: BigNumberish) => {
+    async (
+      account: Account | AccountInterface,
+      fish: models.Fish,
+      aquariumId: BigNumberish
+    ) => {
       ensureClientReady();
-      return await client.FishSystem.addFishToAquarium(account, fish, aquariumId);
+      return await client.FishSystem.addFishToAquarium(
+        account,
+        fish,
+        aquariumId
+      );
     },
     [client, ensureClientReady]
   );
 
   const moveFishToAquarium = useCallback(
-    async (account: Account | AccountInterface, fishId: BigNumberish, from: BigNumberish, to: BigNumberish) => {
+    async (
+      account: Account | AccountInterface,
+      fishId: BigNumberish,
+      from: BigNumberish,
+      to: BigNumberish
+    ) => {
       ensureClientReady();
-      return await client.FishSystem.moveFishToAquarium(account, fishId, from, to);
+      return await client.FishSystem.moveFishToAquarium(
+        account,
+        fishId,
+        from,
+        to
+      );
     },
     [client, ensureClientReady]
   );
 
   // Fish Breeding
   const breedFishes = useCallback(
-    async (account: Account | AccountInterface, parent1Id: BigNumberish, parent2Id: BigNumberish) => {
+    async (
+      account: Account | AccountInterface,
+      parent1Id: BigNumberish,
+      parent2Id: BigNumberish
+    ) => {
       ensureClientReady();
       return await client.FishSystem.breedFishes(account, parent1Id, parent2Id);
     },
@@ -149,24 +180,24 @@ export const useFishSystemEnhanced = () => {
     newFish,
     addFishToAquarium,
     moveFishToAquarium,
-    
+
     // Fish Breeding
     breedFishes,
-    
+
     // Fish Querying
     getFish,
     getFishOwner,
-    
+
     // Player Fish Management
     getPlayerFishes,
     getPlayerFishCount,
-    
+
     // Fish Genealogy
     getParents,
     getFishOffspring,
     getFishAncestor,
     getFishFamilyTree,
-    
+
     // Fish Trading
     listFish,
     purchaseFish,

@@ -1,66 +1,57 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { GameHeader } from '@/components';
-import { AquariumTabs } from '@/components';
-import { TipsPopup } from '@/components';
-import { OrientationLock } from '@/components/ui';
-import { INITIAL_GAME_STATE } from '@/constants';
-import { useFishStats } from '@/hooks';
-import { GameMenu } from '@/components';
-import { useBubbles } from '@/hooks';
-import { BubblesBackground } from '@/components';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { useAccount } from '@starknet-react/core';
 import { useActiveAquarium } from '../store/active-aquarium';
-import { initialAquariums } from '@/data/mock-aquarium';
-// import { useDirtSystemFixed as useDirtSystem } from '@/hooks';
-import { DirtOverlay } from '@/components';
-import { FeedingAquarium } from '@/components';
-import { useDirtSystemRealistic } from '@/hooks';
-import { CleanButton } from '@/components/dirt/clean-button';
+import { useFishStats } from '@/hooks';
+import { useBubbles } from '@/hooks';
 import { useFeedingSystem } from '@/systems/feeding-system';
 import { FishSpecies } from '@/types';
-import { useAccount } from '@starknet-react/core';
-// import { toast } from 'sonner';
 import { useFish } from '@/hooks';
-import { useNavigate } from 'react-router-dom';
-import { FeedingDebugPanel } from '@/components';
 import { fishCollection as fullFishList } from '@/constants';
-import {
-  Utensils,
-  ShoppingBag,
-  Package,
-  Gamepad2,
-  Trophy,
-  Timer,
-  Monitor,
-} from 'lucide-react';
+import { Monitor } from 'lucide-react';
 import { useAquarium } from '@/hooks';
+import { useSimpleDirtSystem } from '@/hooks/use-simple-dirt-system';
+import { SimpleDirtSpot } from '@/components/simple-dirt-spot';
+
+// Importar todos los componentes originales
+import { GameHeader } from '@/components';
+import { AquariumTabs } from '@/components';
+import { OrientationLock } from '@/components/ui';
+import { INITIAL_GAME_STATE } from '@/constants';
+import { GameMenu } from '@/components';
+import { BubblesBackground } from '@/components';
+import { FeedingAquarium } from '@/components';
+import { FeedingDebugPanel } from '@/components';
+import { initialAquariums } from '@/data/mock-aquarium';
 
 export default function GamePage() {
+  // Get account info first
+  const { account } = useAccount();
+
+  // All state hooks first
+  const [showMenu, setShowMenu] = useState(false);
+  const [showTips, setShowTips] = useState(false);
+  const [isWallpaperMode, setIsWallpaperMode] = useState(false);
+  const [isCleaningMode, setIsCleaningMode] = useState(false);
+  const [playerFishes, setPlayerFishes] = useState<unknown[]>([]);
+
+  // Other hooks
   const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
   const aquarium =
     initialAquariums.find(a => a.id.toString() === activeAquariumId) ||
     initialAquariums[0];
   const { happiness, food, energy } = useFishStats(INITIAL_GAME_STATE);
   const { selectedAquarium, handleAquariumChange, aquariums } = useAquarium();
-  const [showMenu, setShowMenu] = useState(false);
-  const [showTips, setShowTips] = useState(false);
-  const [isWallpaperMode, setIsWallpaperMode] = useState(false);
-  const [isCleaningMode, setIsCleaningMode] = useState(false);
   const navigate = useNavigate();
 
-  // Get account info first
-  const { account } = useAccount();
-
-  // Initialize realistic dirt system
-  const dirtSystem = useDirtSystemRealistic({
-    aquariumId: activeAquariumId || '1',
-    playerId: account?.address || 'demo-player',
-    authToken: undefined, // Add auth token when available
-    autoRefresh: true,
-    refreshInterval: 5000, // 5 seconds for testing
-  });
+  // Initialize simple dirt system with backend
+  const dirtSystem = useSimpleDirtSystem(
+    activeAquariumId || '1',
+    account?.address || 'demo-player'
+  );
 
   const bubbles = useBubbles({
     initialCount: 10,
@@ -83,7 +74,10 @@ export default function GamePage() {
     attractionRadius: 50,
   });
 
-  const handleTipsToggle = () => setShowTips(!showTips);
+  const handleTipsToggle = () => {
+    setShowTips(!showTips);
+  };
+
   const handleWallpaperToggle = () => {
     setIsWallpaperMode(!isWallpaperMode);
     // Close menu when entering wallpaper mode
@@ -95,7 +89,7 @@ export default function GamePage() {
   const handleToggleCleaningMode = () => {
     setIsCleaningMode(!isCleaningMode);
   };
-  const [playerFishes, setPlayerFishes] = useState<unknown[]>([]);
+
   const { getPlayerFishes } = useFish();
 
   useEffect(() => {
@@ -114,26 +108,7 @@ export default function GamePage() {
           pattern: fish.traits.pattern,
         }));
 
-        console.log(`Game.tsx::Mock fishes for testing`, mockFishes);
         setPlayerFishes(mockFishes);
-
-        // Original blockchain logic (commented for testing)
-        /*
-        if (!account) {
-          toast.error('Wallet not connected!');
-          return;
-        }
-
-        const fishes = await getPlayerFishes(account.address);
-        console.table(`Game.tsx::Player fishes`, fishes);
-
-        if (!fishes || fishes.length === 1) {
-          navigate('/onboarding');
-          return;
-        }
-
-        setPlayerFishes(fishes);
-        */
       } catch (err) {
         console.error('Error fetching fishes:', err);
       }
@@ -358,22 +333,31 @@ export default function GamePage() {
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 1 }}
           className='relative z-20 w-full h-full'
+          style={{
+            pointerEvents: dirtSystem.spots.length > 0 ? 'none' : 'auto', // NO interceptar clicks cuando hay manchas
+          }}
         >
           <FeedingAquarium
             fish={displayFish}
             fullFishList={fullFishList}
             feedingSystem={feedingSystem}
-            cleanlinessScore={dirtSystem.dirtLevel}
+            cleanlinessScore={100 - dirtSystem.dirtLevel}
           />
         </motion.div>
 
-        <DirtOverlay
-          spots={dirtSystem.spots}
-          onRemoveSpot={dirtSystem.removeDirtSpot}
-          onCleanSpot={dirtSystem.cleanDirtSpot}
-          isSpongeMode={isCleaningMode}
-          className='absolute inset-0 z-50'
-        />
+        {/* Simple Dirt Spots - SISTEMA QUE FUNCIONA */}
+        {dirtSystem.spots.map(spot => (
+          <SimpleDirtSpot
+            key={spot.id}
+            id={spot.id}
+            x={spot.x}
+            y={spot.y}
+            size={spot.size}
+            isSpongeMode={isCleaningMode}
+            onRemove={dirtSystem.removeSpot}
+            onClean={dirtSystem.cleanSpot}
+          />
+        ))}
 
         {/* Header */}
         {!isWallpaperMode && (
@@ -386,6 +370,7 @@ export default function GamePage() {
           />
         )}
 
+        {/* Game Menu */}
         {showMenu && !isWallpaperMode && (
           <GameMenu
             show={showMenu}
@@ -406,141 +391,23 @@ export default function GamePage() {
           />
         </div>
 
-        {/* Tips and Action Menu */}
-        {!isWallpaperMode && (
-          <div className='absolute bottom-0 right-4 mb-4 z-30 flex items-end gap-12'>
-            {/* Action Menu with tooltips on hover - Moved more to the left */}
-            <div className='flex items-center gap-2 -ml-8'>
-              {/* Feed button */}
-              <div className='relative group'>
-                <button
-                  onClick={
-                    feedingSystem.isFeeding
-                      ? feedingSystem.stopFeeding
-                      : () => feedingSystem.startFeeding(30000)
-                  }
-                  className={`game-button bg-gradient-to-b text-white rounded-xl relative group cursor-pointer w-12 h-12 ${
-                    feedingSystem.isFeeding
-                      ? 'from-orange-400 to-orange-600'
-                      : 'from-green-400 to-green-600'
-                  }`}
-                >
-                  <div className='flex items-center justify-center gap-2 w-full h-full'>
-                    {feedingSystem.isFeeding ? (
-                      <Timer className='h-5 w-5' />
-                    ) : (
-                      <Utensils className='h-5 w-5' />
-                    )}
-                  </div>
-                </button>
-
-                {/* Tooltip for Feed */}
-                <div className='absolute bottom-16 left-1/2 transform -translate-x-1/2 w-20 bg-blue-600/90 backdrop-blur-md rounded-lg p-2 border border-blue-400/50 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50'>
-                  <div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-600/90 transform rotate-45 border-r border-b border-blue-400/50'></div>
-                  <span className='text-white text-xs font-medium text-center block'>
-                    Feed
-                  </span>
-                </div>
-
-                {/* Timer display during feeding */}
-                {feedingSystem.isFeeding &&
-                  feedingSystem.getFeedingStatus().timeRemaining > 0 && (
-                    <div className='absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-orange-300 font-mono'>
-                      {Math.ceil(
-                        feedingSystem.getFeedingStatus().timeRemaining / 1000
-                      )}
-                      s
-                    </div>
-                  )}
-              </div>
-
-              {/* Clean Button */}
-              <div className='relative group'>
-                <CleanButton
-                  dirtLevel={dirtSystem.dirtLevel}
-                  isDirty={dirtSystem.isDirty}
-                  needsCleaning={dirtSystem.needsCleaning}
-                  onToggleCleaningMode={handleToggleCleaningMode}
-                  isCleaningMode={isCleaningMode}
-                  className='w-12 h-12'
-                />
-              </div>
-
-              {/* Other action items with tooltips */}
-              {[
-                {
-                  id: 'shop',
-                  label: 'Shop',
-                  icon: <ShoppingBag className='h-5 w-5' />,
-                  color: 'from-blue-400 to-blue-600',
-                },
-                {
-                  id: 'collection',
-                  label: 'Collection',
-                  icon: <Package className='h-5 w-5' />,
-                  color: 'from-teal-400 to-teal-600',
-                },
-                {
-                  id: 'games',
-                  label: 'Games',
-                  icon: <Gamepad2 className='h-5 w-5' />,
-                  color: 'from-pink-400 to-pink-600',
-                },
-                {
-                  id: 'rewards',
-                  label: 'Rewards',
-                  icon: <Trophy className='h-5 w-5' />,
-                  color: 'from-yellow-400 to-yellow-600',
-                },
-              ].map(item => (
-                <div key={item.id} className='relative group'>
-                  <button
-                    onClick={() => {
-                      // Handle different actions
-                      switch (item.id) {
-                        case 'shop':
-                          break;
-                        case 'collection':
-                          break;
-                        case 'games':
-                          break;
-                        case 'rewards':
-                          break;
-                      }
-                    }}
-                    className={`game-button bg-gradient-to-b text-white rounded-xl relative group cursor-pointer w-12 h-12 ${item.color}`}
-                  >
-                    <div className='flex items-center justify-center gap-2 w-full h-full'>
-                      {item.icon}
-                    </div>
-                  </button>
-
-                  {/* Tooltip for each button */}
-                  <div className='absolute bottom-16 left-1/2 transform -translate-x-1/2 w-20 bg-blue-600/90 backdrop-blur-md rounded-lg p-2 border border-blue-400/50 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50'>
-                    <div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-600/90 transform rotate-45 border-r border-b border-blue-400/50'></div>
-                    <span className='text-white text-xs font-medium text-center block'>
-                      {item.label}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Tips - Separated with more space */}
-            <TipsPopup
-              show={showTips}
-              onClose={() => setShowTips(false)}
-              onToggle={handleTipsToggle}
-            />
-          </div>
-        )}
-
-        {/* Tabs */}
+        {/* Tabs with integrated action buttons */}
         {!isWallpaperMode && (
           <AquariumTabs
             aquariums={aquariums}
             selectedAquarium={selectedAquarium}
             onAquariumSelect={handleAquariumChange}
+            feedingSystem={feedingSystem}
+            dirtSystem={{
+              dirtLevel: dirtSystem.dirtLevel,
+              isDirty: dirtSystem.dirtLevel > 10,
+              needsCleaning: dirtSystem.dirtLevel > 30,
+            }}
+            isCleaningMode={isCleaningMode}
+            onToggleCleaningMode={handleToggleCleaningMode}
+            showTips={showTips}
+            onTipsToggle={handleTipsToggle}
+            onTipsClose={() => setShowTips(false)}
           />
         )}
 
@@ -557,15 +424,6 @@ export default function GamePage() {
             <Monitor className='h-5 w-5' />
           </motion.button>
         )}
-
-        {/* Dirt Overlay */}
-        <DirtOverlay
-          spots={dirtSystem.spots}
-          onRemoveSpot={dirtSystem.removeDirtSpot}
-          onCleanSpot={dirtSystem.cleanDirtSpot}
-          isSpongeMode={isCleaningMode}
-          isDebugMode={false}
-        />
       </div>
     </OrientationLock>
   );
