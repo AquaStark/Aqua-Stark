@@ -13,6 +13,8 @@ import { useNavigate } from 'react-router-dom';
 import { BubblesBackground } from '@/components';
 import { OrientationLock } from '@/components/ui';
 import { useBubbles } from '@/hooks';
+import { useMobileDetection } from '@/hooks/use-mobile-detection';
+import { MobileStartView } from '@/components/mobile/mobile-start-view';
 import { ErrorWithMessage } from '@/types';
 
 export default function Start() {
@@ -25,6 +27,9 @@ export default function Start() {
   const [usernameError, setUsernameError] = useState('');
   const [usernameSuggestions, setUsernameSuggestions] = useState<string[]>([]);
   const navigate = useNavigate();
+
+  // Mobile detection
+  const { isMobile } = useMobileDetection();
 
   // Use enhanced bubbles config
   const bubbles = useBubbles({ initialCount: 12, maxBubbles: 30 });
@@ -97,21 +102,27 @@ export default function Start() {
     return suggestions.slice(0, 5); // Return max 5 suggestions
   };
 
-  const handleRegister = async () => {
-    if (!account) return toast.error('Connect your wallet first');
-    if (!validateUsername(username)) return;
+  const handleRegister = async (usernameToRegister?: string) => {
+    const finalUsername = usernameToRegister || username;
+    if (!account) {
+      toast.error('Connect your wallet first');
+      return;
+    }
+    if (!validateUsername(finalUsername)) {
+      return;
+    }
     try {
       setLoading(true);
 
       // Register player on-chain first
-      const tx = await registerPlayer(account, username.trim());
+      const tx = await registerPlayer(account, finalUsername.trim());
       toast.success('Player registered on-chain successfully!');
       setTxHash(tx.transaction_hash);
 
       // Create player in backend
       try {
         const playerId = account.address; // Use wallet address as player ID
-        await createBackendPlayer(playerId, account.address, username.trim());
+        await createBackendPlayer(playerId, account.address, finalUsername.trim());
         toast.success('Player synced to backend successfully!');
       } catch (backendError) {
         console.error('Backend sync error:', backendError);
@@ -134,7 +145,7 @@ export default function Start() {
           'Username is already taken. Please choose a different username.'
         );
         setUsernameError('Username is already taken');
-        setUsernameSuggestions(generateUsernameSuggestions(username));
+        setUsernameSuggestions(generateUsernameSuggestions(finalUsername));
       } else if (errorMessage.includes('multicall-failed')) {
         toast.error(
           'Transaction failed. Please try again with a different username.'
@@ -142,7 +153,7 @@ export default function Start() {
         setUsernameError(
           'Transaction failed. Please try a different username.'
         );
-        setUsernameSuggestions(generateUsernameSuggestions(username));
+        setUsernameSuggestions(generateUsernameSuggestions(finalUsername));
       } else {
         toast.error('Failed to register player. Please try again.');
         setUsernameError('Registration failed. Please try again.');
@@ -156,6 +167,19 @@ export default function Start() {
     navigate('/onboarding');
   };
 
+  // Render mobile view if device is detected as mobile
+  if (isMobile) {
+    return (
+      <MobileStartView
+        onRegister={handleRegister}
+        onContinue={handleContinue}
+        loading={loading}
+        txHash={txHash}
+      />
+    );
+  }
+
+  // Desktop/tablet view
   return (
     <OrientationLock>
       <div className='relative min-h-screen w-full overflow-hidden flex flex-col justify-between'>
@@ -178,7 +202,7 @@ export default function Start() {
         {/* Bubbles animation overlay */}
         <BubblesBackground bubbles={bubbles} className='z-10' />
 
-        {/* Page header (optional, can be removed for more immersion) */}
+        {/* Page header */}
         <PageHeader
           title='Start Your Journey'
           backTo='/'
@@ -186,7 +210,7 @@ export default function Start() {
           className='bg-blue-900/60 backdrop-blur-md border-b border-blue-400/30 z-30'
         />
 
-        <main className='flex flex-col items-center  gap-8 px-4 py-16 relative z-30 min-h-[80vh]'>
+        <main className='flex flex-col items-center gap-8 px-4 py-16 relative z-30 min-h-[80vh]'>
           <div className='flex flex-row items-center justify-center'>
             {/* Animated floating fish (decorative) */}
             <div className='w-64 sm:w-72 lg:w-80 animate-float hidden sm:block mr-20 z-20 pointer-events-none select-none'>
@@ -250,7 +274,7 @@ export default function Start() {
                 </div>
               )}
               <Button
-                onClick={handleRegister}
+                onClick={() => handleRegister()}
                 className='w-full bg-purple-600 hover:bg-purple-700 text-white font-bold shadow-lg shadow-purple-500/10'
                 disabled={loading}
                 aria-busy={loading}

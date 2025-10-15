@@ -805,3 +805,39 @@
   font-size: 20px;
   transform: translate(-50%, -50%);
 }
+
+/* Mobile-specific improvements */
+@media (max-width: 640px) {
+  /* Improve touch targets */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+  
+  /* Better mobile scrolling */
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
+  
+  /* Prevent zoom on input focus */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea,
+  select {
+    font-size: 16px;
+  }
+  
+  /* Better mobile button sizing */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve mobile form spacing */
+  .mobile-form-spacing {
+    padding: 1rem;
+    margin: 0.5rem;
+  }
+}
+

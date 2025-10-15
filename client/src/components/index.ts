@@ -66,6 +66,9 @@ export * from './market';
 // mini-games components
 export * from './mini-games';
 
+// mobile components
+export * from './mobile';
+
 // modal components
 export * from './modal';
 
