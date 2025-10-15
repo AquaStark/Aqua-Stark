@@ -26,7 +26,7 @@ export function DirtSpot({
     const id = spot.id || 0;
     const intId = Math.floor(Math.abs(id));
     const imageIndex = (intId % 3) + 1;
-    
+
     // RUTA CORRECTA: las imágenes están en /public/dirt/
     return `/dirt/dirt${imageIndex}.png`;
   };
@@ -72,7 +72,11 @@ export function DirtSpot({
       className={`absolute transform-gpu transition-all duration-300 select-none ${
         isSpongeMode ? 'cursor-sponge-simple' : 'cursor-pointer'
       } ${
-        isRemoving ? 'animate-pulse' : isHovered ? 'scale-110 drop-shadow-lg brightness-110 ring-4 ring-yellow-400 ring-opacity-50' : ''
+        isRemoving
+          ? 'animate-pulse'
+          : isHovered
+            ? 'scale-110 drop-shadow-lg brightness-110 ring-4 ring-yellow-400 ring-opacity-50'
+            : ''
       } ${className}`}
       style={{
         left: `${spot.position.x}px`,

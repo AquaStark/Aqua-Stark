@@ -30,17 +30,19 @@ import { initialAquariums } from '@/data/mock-aquarium';
 export default function GamePage() {
   // Get account info first
   const { account } = useAccount();
-  
+
   // All state hooks first
   const [showMenu, setShowMenu] = useState(false);
   const [showTips, setShowTips] = useState(false);
   const [isWallpaperMode, setIsWallpaperMode] = useState(false);
   const [isCleaningMode, setIsCleaningMode] = useState(false);
   const [playerFishes, setPlayerFishes] = useState<unknown[]>([]);
-  
+
   // Other hooks
   const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
-  const aquarium = initialAquariums.find(a => a.id.toString() === activeAquariumId) || initialAquariums[0];
+  const aquarium =
+    initialAquariums.find(a => a.id.toString() === activeAquariumId) ||
+    initialAquariums[0];
   const { happiness, food, energy } = useFishStats(INITIAL_GAME_STATE);
   const { selectedAquarium, handleAquariumChange, aquariums } = useAquarium();
   const navigate = useNavigate();
@@ -75,7 +77,7 @@ export default function GamePage() {
   const handleTipsToggle = () => {
     setShowTips(!showTips);
   };
-  
+
   const handleWallpaperToggle = () => {
     setIsWallpaperMode(!isWallpaperMode);
     // Close menu when entering wallpaper mode
@@ -422,7 +424,6 @@ export default function GamePage() {
             <Monitor className='h-5 w-5' />
           </motion.button>
         )}
-
       </div>
     </OrientationLock>
   );

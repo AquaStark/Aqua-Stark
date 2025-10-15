@@ -24,8 +24,8 @@ export default defineConfig({
     port: 5173,
     host: true,
     fs: {
-      allow: ['..']
-    }
+      allow: ['..'],
+    },
   },
   assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.svg'],
 });

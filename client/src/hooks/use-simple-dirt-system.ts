@@ -8,74 +8,85 @@ interface DirtSpot {
 }
 
 // API base URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
 
 export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
   const [spots, setSpots] = useState<DirtSpot[]>([]);
   const [isSpongeMode, setIsSpongeMode] = useState(false);
   const [dirtLevel, setDirtLevel] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Variable para almacenar el tiempo de la última limpieza
   const [lastCleaningTime, setLastCleaningTime] = useState<string>('');
-  
+
   // Contador independiente para manchas (se resetea al limpiar)
   const [spotCounter, setSpotCounter] = useState(0);
 
   // Generar manchas basadas en el tiempo real del backend
-  const generateSpotsFromBackend = useCallback((_level: number, lastCleaningTime?: string) => {
-    let hoursSinceCleaning = 0;
-    if (lastCleaningTime) {
-      const lastCleaning = new Date(lastCleaningTime);
-      const now = new Date();
-      hoursSinceCleaning = (now.getTime() - lastCleaning.getTime()) / (1000 * 60 * 60);
-    }
-
-    // PRODUCTION: 1 mancha cada hora después del período de gracia (4 horas)
-    const gracePeriod = 4; // 4 horas
-    const spotsPerHour = 1; // 1 mancha cada hora
-    const timeSinceGracePeriod = Math.max(0, hoursSinceCleaning - gracePeriod);
-    const expectedSpotCount = Math.min(8, Math.floor(timeSinceGracePeriod / spotsPerHour));
-
-    setSpots(prevSpots => {
-      const currentSpotCount = prevSpots.length;
-      
-      if (currentSpotCount >= expectedSpotCount) {
-        return prevSpots;
+  const generateSpotsFromBackend = useCallback(
+    (_level: number, lastCleaningTime?: string) => {
+      let hoursSinceCleaning = 0;
+      if (lastCleaningTime) {
+        const lastCleaning = new Date(lastCleaningTime);
+        const now = new Date();
+        hoursSinceCleaning =
+          (now.getTime() - lastCleaning.getTime()) / (1000 * 60 * 60);
       }
 
-      // Calcular cuántas manchas necesitamos agregar
-      const spotsToAdd = expectedSpotCount - currentSpotCount;
+      // PRODUCTION: 1 mancha cada hora después del período de gracia (4 horas)
+      const gracePeriod = 4; // 4 horas
+      const spotsPerHour = 1; // 1 mancha cada hora
+      const timeSinceGracePeriod = Math.max(
+        0,
+        hoursSinceCleaning - gracePeriod
+      );
+      const expectedSpotCount = Math.min(
+        8,
+        Math.floor(timeSinceGracePeriod / spotsPerHour)
+      );
 
-      // Márgenes para evitar header y footer
-      const SAFE_MARGINS = {
-        top: 100,
-        bottom: 120,
-        left: 50,
-        right: 50,
-      };
+      setSpots(prevSpots => {
+        const currentSpotCount = prevSpots.length;
 
-      const safeArea = {
-        width: window.innerWidth - SAFE_MARGINS.left - SAFE_MARGINS.right,
-        height: window.innerHeight - SAFE_MARGINS.top - SAFE_MARGINS.bottom,
-        startX: SAFE_MARGINS.left,
-        startY: SAFE_MARGINS.top,
-      };
+        if (currentSpotCount >= expectedSpotCount) {
+          return prevSpots;
+        }
 
-      // Agregar solo las manchas que faltan
-      const newSpots: DirtSpot[] = [...prevSpots];
-      for (let i = 0; i < spotsToAdd; i++) {
-        newSpots.push({
-          id: Date.now() + i + Math.random() * 1000, // ID único
-          x: Math.random() * safeArea.width + safeArea.startX,
-          y: Math.random() * safeArea.height + safeArea.startY,
-          size: Math.random() * 150 + 200, // Tamaño entre 200-350px (MUY GRANDE)
-        });
-      }
+        // Calcular cuántas manchas necesitamos agregar
+        const spotsToAdd = expectedSpotCount - currentSpotCount;
 
-      return newSpots;
-    });
-  }, []);
+        // Márgenes para evitar header y footer
+        const SAFE_MARGINS = {
+          top: 100,
+          bottom: 120,
+          left: 50,
+          right: 50,
+        };
+
+        const safeArea = {
+          width: window.innerWidth - SAFE_MARGINS.left - SAFE_MARGINS.right,
+          height: window.innerHeight - SAFE_MARGINS.top - SAFE_MARGINS.bottom,
+          startX: SAFE_MARGINS.left,
+          startY: SAFE_MARGINS.top,
+        };
+
+        // Agregar solo las manchas que faltan
+        const newSpots: DirtSpot[] = [...prevSpots];
+        for (let i = 0; i < spotsToAdd; i++) {
+          newSpots.push({
+            id: Date.now() + i + Math.random() * 1000, // ID único
+            x: Math.random() * safeArea.width + safeArea.startX,
+            y: Math.random() * safeArea.height + safeArea.startY,
+            size: Math.random() * 150 + 200, // Tamaño entre 200-350px (MUY GRANDE)
+          });
+        }
+
+        return newSpots;
+      });
+    },
+    []
+  );
 
   // Obtener estado del backend
   const fetchDirtStatus = useCallback(async () => {
@@ -85,9 +96,11 @@ export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
 
     try {
       setIsLoading(true);
-      
-      const response = await fetch(`${API_BASE_URL}/dirt/aquarium/${aquariumId}`);
-      
+
+      const response = await fetch(
+        `${API_BASE_URL}/dirt/aquarium/${aquariumId}`
+      );
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -95,12 +108,15 @@ export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
       const result = await response.json();
       if (result.success) {
         const dirtData = result.data;
-        
+
         setDirtLevel(dirtData.current_dirt_level);
         setLastCleaningTime(dirtData.last_cleaning_time);
-        
+
         // Generar manchas basadas en el tiempo real del backend
-        generateSpotsFromBackend(dirtData.current_dirt_level, dirtData.last_cleaning_time);
+        generateSpotsFromBackend(
+          dirtData.current_dirt_level,
+          dirtData.last_cleaning_time
+        );
       }
     } catch (error) {
       // Fallback a sistema local
@@ -111,36 +127,42 @@ export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
   }, [aquariumId, playerId, generateSpotsFromBackend]);
 
   // Limpiar mancha en el backend
-  const cleanSpot = useCallback(async (spotId: number) => {
-    if (!aquariumId || !playerId) {
-      setDirtLevel(prev => Math.max(0, prev - 10));
-      return;
-    }
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/dirt/aquarium/${aquariumId}/clean-spot`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ spotId: spotId }),
-      });
-
-      if (response.ok) {
-        await response.json();
+  const cleanSpot = useCallback(
+    async (spotId: number) => {
+      if (!aquariumId || !playerId) {
         setDirtLevel(prev => Math.max(0, prev - 10));
-        
-        // Actualizar después de limpiar
-        setTimeout(() => {
-          fetchDirtStatus();
-        }, 1000);
-      } else {
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/dirt/aquarium/${aquariumId}/clean-spot`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ spotId: spotId }),
+          }
+        );
+
+        if (response.ok) {
+          await response.json();
+          setDirtLevel(prev => Math.max(0, prev - 10));
+
+          // Actualizar después de limpiar
+          setTimeout(() => {
+            fetchDirtStatus();
+          }, 1000);
+        } else {
+          setDirtLevel(prev => Math.max(0, prev - 10));
+        }
+      } catch (error) {
         setDirtLevel(prev => Math.max(0, prev - 10));
       }
-    } catch (error) {
-      setDirtLevel(prev => Math.max(0, prev - 10));
-    }
-  }, [aquariumId, playerId, fetchDirtStatus]);
+    },
+    [aquariumId, playerId, fetchDirtStatus]
+  );
 
   // Remover mancha local
   const removeSpot = useCallback((id: number) => {
@@ -163,12 +185,15 @@ export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
     if (!aquariumId || !playerId) return;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/dirt/aquarium/${aquariumId}/initialize`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/dirt/aquarium/${aquariumId}/initialize`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (response.ok) {
         await response.json();
@@ -186,7 +211,7 @@ export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
       // Luego obtener el estado
       await fetchDirtStatus();
     };
-    
+
     loadInitialState();
   }, [initializeDirtSystem, fetchDirtStatus]);
 
@@ -201,30 +226,41 @@ export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
   useEffect(() => {
     const checkInterval = setInterval(() => {
       if (lastCleaningTime) {
-        const hoursSinceCleaning = (new Date().getTime() - new Date(lastCleaningTime).getTime()) / (1000 * 60 * 60);
+        const hoursSinceCleaning =
+          (new Date().getTime() - new Date(lastCleaningTime).getTime()) /
+          (1000 * 60 * 60);
         const gracePeriod = 4;
         const spotsPerHour = 1;
-        const timeSinceGracePeriod = Math.max(0, hoursSinceCleaning - gracePeriod);
-        const expectedSpots = Math.min(8, Math.floor(timeSinceGracePeriod / spotsPerHour));
-        
+        const timeSinceGracePeriod = Math.max(
+          0,
+          hoursSinceCleaning - gracePeriod
+        );
+        const expectedSpots = Math.min(
+          8,
+          Math.floor(timeSinceGracePeriod / spotsPerHour)
+        );
+
         if (expectedSpots > spots.length) {
           generateSpotsFromBackend(expectedSpots * 10, lastCleaningTime);
         }
       }
     }, 3600000); // Cada 1 hora (3600000 ms)
-    
+
     // Verificación con backend cada 30 minutos (sincronización)
     const backendInterval = setInterval(() => {
       fetchDirtStatus();
     }, 1800000); // 30 minutos (1800000 ms)
-    
+
     return () => {
       clearInterval(checkInterval);
       clearInterval(backendInterval);
     };
-  }, [spots.length, generateSpotsFromBackend, fetchDirtStatus, lastCleaningTime]);
-
-
+  }, [
+    spots.length,
+    generateSpotsFromBackend,
+    fetchDirtStatus,
+    lastCleaningTime,
+  ]);
 
   return {
     spots,

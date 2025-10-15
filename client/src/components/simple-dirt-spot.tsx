@@ -11,16 +11,20 @@ interface SimpleDirtSpotProps {
 }
 
 // Imágenes de suciedad disponibles
-const DIRT_IMAGES = [
-  '/dirt/dirt1.png',
-  '/dirt/dirt2.png',
-  '/dirt/dirt3.png',
-];
+const DIRT_IMAGES = ['/dirt/dirt1.png', '/dirt/dirt2.png', '/dirt/dirt3.png'];
 
-export function SimpleDirtSpot({ id, x, y, size, isSpongeMode, onRemove, onClean }: SimpleDirtSpotProps) {
+export function SimpleDirtSpot({
+  id,
+  x,
+  y,
+  size,
+  isSpongeMode,
+  onRemove,
+  onClean,
+}: SimpleDirtSpotProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isRemoving, setIsRemoving] = useState(false);
-  
+
   // Seleccionar una imagen aleatoria para esta mancha (se mantiene fija)
   const dirtImage = useMemo(() => {
     return DIRT_IMAGES[Math.floor(Math.random() * DIRT_IMAGES.length)];
@@ -39,14 +43,14 @@ export function SimpleDirtSpot({ id, x, y, size, isSpongeMode, onRemove, onClean
     }
 
     setIsRemoving(true);
-    
+
     try {
       // Limpiar en el backend
       await onClean(id);
     } catch (error) {
       console.error('Error cleaning spot:', error);
     }
-    
+
     // Remover localmente después de un delay
     setTimeout(() => {
       onRemove(id);
@@ -65,9 +69,7 @@ export function SimpleDirtSpot({ id, x, y, size, isSpongeMode, onRemove, onClean
     <div
       className={`absolute transition-all duration-300 ${
         isRemoving ? 'animate-pulse opacity-0' : ''
-      } ${
-        isHovered ? 'scale-110 drop-shadow-lg' : ''
-      } ${
+      } ${isHovered ? 'scale-110 drop-shadow-lg' : ''} ${
         isSpongeMode ? 'cursor-sponge-simple' : 'cursor-pointer'
       }`}
       style={{
@@ -88,7 +90,6 @@ export function SimpleDirtSpot({ id, x, y, size, isSpongeMode, onRemove, onClean
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-    >
-    </div>
+    ></div>
   );
 }

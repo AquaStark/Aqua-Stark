@@ -1,5 +1,13 @@
 import React from 'react';
-import { Grid, Utensils, Timer, ShoppingBag, Package, Gamepad2, Trophy } from 'lucide-react';
+import {
+  Grid,
+  Utensils,
+  Timer,
+  ShoppingBag,
+  Package,
+  Gamepad2,
+  Trophy,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MOCK_AQUARIUMS } from '@/constants';
 import { CleanButton } from '../dirt/clean-button';
@@ -71,7 +79,6 @@ export function AquariumTabs({
   onTipsToggle,
   onTipsClose,
 }: AquariumTabsProps) {
-
   return (
     <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/90 to-transparent z-40 p-2 sm:p-4'>
       <div className='flex justify-between items-end gap-4'>
@@ -98,16 +105,16 @@ export function AquariumTabs({
           {/* Feed button */}
           {feedingSystem && (
             <div className='relative group'>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      if (feedingSystem.isFeeding) {
-                        feedingSystem.stopFeeding();
-                      } else {
-                        feedingSystem.startFeeding(30000);
-                      }
-                    }}
+              <button
+                onClick={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (feedingSystem.isFeeding) {
+                    feedingSystem.stopFeeding();
+                  } else {
+                    feedingSystem.startFeeding(30000);
+                  }
+                }}
                 className={`game-button bg-gradient-to-b text-white rounded-xl relative group cursor-pointer w-12 h-12 ${
                   feedingSystem.isFeeding
                     ? 'from-orange-400 to-orange-600'
@@ -174,22 +181,22 @@ export function AquariumTabs({
             },
           ].map(item => (
             <div key={item.id} className='relative group'>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      // Handle different actions
-                      switch (item.id) {
-                        case 'shop':
-                          break;
-                        case 'collection':
-                          break;
-                        case 'games':
-                          break;
-                        case 'rewards':
-                          break;
-                      }
-                    }}
+              <button
+                onClick={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // Handle different actions
+                  switch (item.id) {
+                    case 'shop':
+                      break;
+                    case 'collection':
+                      break;
+                    case 'games':
+                      break;
+                    case 'rewards':
+                      break;
+                  }
+                }}
                 className={`game-button bg-gradient-to-b text-white rounded-xl relative group cursor-pointer w-12 h-12 ${item.color}`}
               >
                 <div className='flex items-center justify-center gap-2 w-full h-full'>

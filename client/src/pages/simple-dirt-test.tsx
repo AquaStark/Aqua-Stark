@@ -4,7 +4,8 @@ import { useSimpleDirtSystem } from '@/hooks/use-simple-dirt-system';
 import { SimpleDirtSpot } from '@/components/simple-dirt-spot';
 
 export default function SimpleDirtTest() {
-  const { spots, isSpongeMode, removeSpot, cleanSpot, toggleSpongeMode } = useSimpleDirtSystem();
+  const { spots, isSpongeMode, removeSpot, cleanSpot, toggleSpongeMode } =
+    useSimpleDirtSystem();
 
   return (
     <div className='relative w-full h-screen overflow-hidden bg-gradient-to-b from-blue-400 to-blue-800'>
@@ -32,20 +33,25 @@ export default function SimpleDirtTest() {
       </button>
 
       {/* Info de estado */}
-      <div className='absolute top-4 right-4 bg-black/80 text-white p-4 rounded-lg text-sm' style={{ zIndex: 10001 }}>
+      <div
+        className='absolute top-4 right-4 bg-black/80 text-white p-4 rounded-lg text-sm'
+        style={{ zIndex: 10001 }}
+      >
         <div className='font-bold mb-2'>Estado del Sistema:</div>
         <div>Manchas: {spots.length}</div>
         <div>Modo: {isSpongeMode ? '🧽 Esponja' : '👆 Normal'}</div>
         <div className='mt-2 text-xs text-gray-300'>
-          {isSpongeMode 
-            ? 'Haz clic en las manchas para limpiarlas' 
-            : 'Activa el modo esponja primero'
-          }
+          {isSpongeMode
+            ? 'Haz clic en las manchas para limpiarlas'
+            : 'Activa el modo esponja primero'}
         </div>
       </div>
 
       {/* Instrucciones */}
-      <div className='absolute bottom-4 left-4 bg-black/80 text-white p-4 rounded-lg text-sm max-w-md' style={{ zIndex: 10001 }}>
+      <div
+        className='absolute bottom-4 left-4 bg-black/80 text-white p-4 rounded-lg text-sm max-w-md'
+        style={{ zIndex: 10001 }}
+      >
         <div className='font-bold mb-2'>Instrucciones:</div>
         <div>1. Haz clic en "Activar Modo Esponja"</div>
         <div>2. Haz clic en las manchas marrones</div>
@@ -57,5 +63,3 @@ export default function SimpleDirtTest() {
     </div>
   );
 }
-
-

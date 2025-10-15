@@ -141,8 +141,7 @@ export class DirtService {
     }
 
     // Logarithmic calculation
-    const adjustedHours =
-      hoursSinceCleaning - dirtConfig.grace_period_hours;
+    const adjustedHours = hoursSinceCleaning - dirtConfig.grace_period_hours;
     const logValue = Math.log10(adjustedHours / 2 + 1);
     const calculatedDirt = dirtConfig.dirt_multiplier * logValue;
 
@@ -150,15 +149,15 @@ export class DirtService {
   }
 
   /**
-   * Calculate seconds since last cleaning (TESTING MODE)
+   * Calculate hours since last cleaning (PRODUCTION)
    * @param {string} lastCleaningTime - ISO timestamp
-   * @returns {number} Seconds since cleaning
+   * @returns {number} Hours since cleaning
    */
   static calculateHoursSinceCleaning(lastCleaningTime) {
     const now = new Date();
     const lastCleaning = new Date(lastCleaningTime);
-    // TESTING: Return seconds instead of hours
-    return (now - lastCleaning) / 1000;
+    // PRODUCTION: Return hours
+    return (now - lastCleaning) / (1000 * 60 * 60);
   }
 
   /**
@@ -240,7 +239,7 @@ export class DirtService {
       // Simply call cleanAquarium with 'partial' type
       // The spot ID is mainly for frontend tracking
       const result = await this.cleanAquarium(aquariumId, playerId, 'partial');
-      
+
       return {
         ...result,
         spot_id: spotId,

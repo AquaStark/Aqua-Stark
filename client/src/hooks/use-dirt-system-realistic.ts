@@ -103,7 +103,7 @@ export function useDirtSystemRealistic({
   playerId,
   authToken,
   autoRefresh = true,
-  refreshInterval = 30000, // 30 seconds for testing (30000 ms)
+  refreshInterval = 1800000, // 30 minutes (1800000 ms)
 }: UseDirtSystemRealisticOptions) {
   const [state, setState] = useState<DirtSystemState>({
     spots: [],
@@ -161,8 +161,8 @@ export function useDirtSystemRealistic({
       setState(prev => {
         // Regenerate spots based on current dirt level
         // If dirt level decreased significantly, regenerate spots
-        const shouldRegenerateSpots = 
-          prev.spots.length === 0 || 
+        const shouldRegenerateSpots =
+          prev.spots.length === 0 ||
           Math.abs(dirtData.current_dirt_level - prev.dirtLevel) > 10;
 
         let newSpots = prev.spots;
@@ -218,14 +218,14 @@ export function useDirtSystemRealistic({
    * @param {number} spotId - The unique ID of the dirt spot to be cleaned.
    * @returns {Promise<any>} A promise that resolves with the updated data from the backend.
    */
-      const cleanDirtSpot = useCallback(
-        async (spotId: number) => {
-          if (!aquariumId || !playerId) {
-            return;
-          }
+  const cleanDirtSpot = useCallback(
+    async (spotId: number) => {
+      if (!aquariumId || !playerId) {
+        return;
+      }
 
-          try {
-            setState(prev => ({ ...prev, isLoading: true, error: null }));
+      try {
+        setState(prev => ({ ...prev, isLoading: true, error: null }));
 
         const headers: HeadersInit = {
           'Content-Type': 'application/json',
@@ -235,46 +235,48 @@ export function useDirtSystemRealistic({
           headers.Authorization = `Bearer ${authToken}`;
         }
 
-            const response = await fetch(
-              `${API_BASE_URL}/dirt/aquarium/${aquariumId}/clean-spot`,
-              {
-                method: 'POST',
-                headers,
-                body: JSON.stringify({ spot_id: spotId }),
-              }
-            );
+        const response = await fetch(
+          `${API_BASE_URL}/dirt/aquarium/${aquariumId}/clean-spot`,
+          {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ spot_id: spotId }),
+          }
+        );
 
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-            const result = await response.json();
+        const result = await response.json();
 
-            if (!result.success) {
-              throw new Error(result.error || 'Failed to clean spot');
-            }
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to clean spot');
+        }
 
-            const cleaningData = result.data;
+        const cleaningData = result.data;
 
-            // Update state with cleaning results
-            setState(prev => {
-              const newSpots = prev.spots.filter(spot => spot.id !== spotId);
-              
-              return {
-                ...prev,
-                dirtLevel: cleaningData.new_dirt_level,
-                spots: newSpots, // Remover solo la mancha específica
-                isDirty: cleaningData.new_dirt_level > 10,
-                needsCleaning: cleaningData.new_dirt_level > 30,
-                cleanlinessStatus: getCleanlinessStatus(cleaningData.new_dirt_level),
-                cleaningStreak: cleaningData.cleaning_streak || prev.cleaningStreak,
-                totalCleanings: prev.totalCleanings + 1,
-                isLoading: false,
-                error: null,
-              };
-            });
+        // Update state with cleaning results
+        setState(prev => {
+          const newSpots = prev.spots.filter(spot => spot.id !== spotId);
 
-            return cleaningData;
+          return {
+            ...prev,
+            dirtLevel: cleaningData.new_dirt_level,
+            spots: newSpots, // Remover solo la mancha específica
+            isDirty: cleaningData.new_dirt_level > 10,
+            needsCleaning: cleaningData.new_dirt_level > 30,
+            cleanlinessStatus: getCleanlinessStatus(
+              cleaningData.new_dirt_level
+            ),
+            cleaningStreak: cleaningData.cleaning_streak || prev.cleaningStreak,
+            totalCleanings: prev.totalCleanings + 1,
+            isLoading: false,
+            error: null,
+          };
+        });
+
+        return cleaningData;
       } catch (error) {
         console.error('Error cleaning spot:', error);
         setState(prev => ({
@@ -408,13 +410,13 @@ function generateDirtSpotsFromLevel(dirtLevel: number): DirtSpot[] {
   const maxSpots = Math.min(8, Math.ceil(dirtLevel / 10)); // Max 8 spots, fewer but bigger
   const spotCount = Math.floor(maxSpots * (dirtLevel / 100));
 
-      // Márgenes para evitar header y footer
-      const SAFE_MARGINS = {
-        top: 100,    // Evitar header (altura aproximada)
-        bottom: 120, // Evitar footer (altura aproximada)
-        left: 50,   // Márgen izquierdo
-        right: 50,   // Márgen derecho
-      };
+  // Márgenes para evitar header y footer
+  const SAFE_MARGINS = {
+    top: 100, // Evitar header (altura aproximada)
+    bottom: 120, // Evitar footer (altura aproximada)
+    left: 50, // Márgen izquierdo
+    right: 50, // Márgen derecho
+  };
 
   // Área segura para las manchas - Solo en el área central
   const safeArea = {
@@ -424,7 +426,6 @@ function generateDirtSpotsFromLevel(dirtLevel: number): DirtSpot[] {
     startY: SAFE_MARGINS.top,
   };
 
-  
   for (let i = 0; i < spotCount; i++) {
     const spot: DirtSpot = {
       id: Date.now() + i,
