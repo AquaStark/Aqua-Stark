@@ -47,14 +47,6 @@ export default function AquariumDemo() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const checkTest = async () => {
-    const res = await aquarium.getAquarium(BigInt(fields.aquariumId));
-    console.log('this is the res', res);
-
-    alert(res);
-  };
-
   const handleRequest = async <T,>(request: () => Promise<T>, name: string) => {
     setLoading(true);
     setError(null);
@@ -268,7 +260,7 @@ export default function AquariumDemo() {
             fishSystem.newFish(account, BigInt(fields.aquariumId), {
               variant: parseInt(fields.fishSpecies),
               activeVariant: parseInt(fields.fishSpecies),
-            }),
+            } as any),
           'newFish'
         ),
       color: 'bg-green-600 hover:bg-green-700',

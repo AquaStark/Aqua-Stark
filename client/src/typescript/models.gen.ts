@@ -922,16 +922,16 @@ export const schema: SchemaType = {
 		},
 		ChallengeParticipation: {
 			challenge_id: 0,
-			participant: "",
-			joined: false,
-			completed: false,
-			reward_claimed: false,
-		},
-		Challenge_Counter: {
-			id: 0,
-			counter: 0,
-		},
-		DailyChallenge: {
+		participant: "",
+		joined: false,
+		completed: false,
+		reward_claimed: false,
+	},
+	ChallengeCounter: {
+		id: 0,
+		counter: 0,
+	},
+	DailyChallenge: {
 			challenge_id: 0,
 			challenge_type: 0,
 			param1: 0,
