@@ -15,17 +15,29 @@ import { toast } from 'sonner';
 
 // Temporary component exports until card components are added
 const CardHeader = ({ children }: { children: React.ReactNode }) => (
-  <div className="p-6">{children}</div>
+  <div className='p-6'>{children}</div>
 );
-const CardTitle = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <h3 className={className}>{children}</h3>
-);
-const CardDescription = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <p className={className}>{children}</p>
-);
-const CardContent = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={className}>{children}</div>
-);
+const CardTitle = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => <h3 className={className}>{children}</h3>;
+const CardDescription = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => <p className={className}>{children}</p>;
+const CardContent = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => <div className={className}>{children}</div>;
 import {
   useAquaAuction,
   useAquaStarkEnhanced,
