@@ -13,6 +13,8 @@ import { useAquarium } from '@/hooks/dojo';
 import { useAccount } from '@starknet-react/core';
 import { toast } from 'sonner';
 import { useFish } from '@/hooks';
+import { useMobileDetection } from '@/hooks/use-mobile-detection';
+import { MobileOnboardingView } from '@/components/mobile/mobile-onboarding-view';
 import { CairoCustomEnum } from 'starknet';
 import { SpeciesEnum } from '@/typescript/models.gen';
 import { WalletAccount } from '@/types';
@@ -81,6 +83,9 @@ export default function Onboarding() {
   const [selectedFish, setSelectedFish] = useState<number[]>([]);
   const { getPlayerAquariums } = useAquarium();
   const { newFish } = useFish();
+
+  // Mobile detection
+  const { isMobile } = useMobileDetection();
 
   const handleFishSelect = (fishId: number) => {
     setSelectedFish(prev => {
@@ -170,6 +175,12 @@ export default function Onboarding() {
       toast.error('Something went wrong while creating your aquarium.');
     }
   };
+  // Render mobile view if device is detected as mobile
+  if (isMobile) {
+    return <MobileOnboardingView />;
+  }
+
+  // Desktop/tablet view
   return (
     <OrientationLock>
       <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-400 via-blue-600 to-blue-800'>
