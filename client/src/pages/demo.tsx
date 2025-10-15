@@ -47,6 +47,7 @@ export default function AquariumDemo() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const checkTest = async () => {
     const res = await aquarium.getAquarium(BigInt(fields.aquariumId));
     console.log('this is the res', res);

@@ -97,7 +97,7 @@ export const useAquarium = () => {
    * @returns {Promise<any>} Throws error indicating method doesn't exist.
    */
   const createAquariumId = useCallback(
-    async (account: Account | AccountInterface) => {
+    async (_account: Account | AccountInterface) => {
       throw new Error(
         'createAquariumId method does not exist. Use newAquarium method instead.'
       );

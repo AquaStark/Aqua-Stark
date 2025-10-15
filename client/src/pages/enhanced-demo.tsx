@@ -17,7 +17,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import {
   useAquaAuction,
@@ -29,7 +28,6 @@ import {
   useDailyChallenge,
   useGameEnhanced,
 } from '@/hooks/dojo';
-import * as models from '@/typescript/models.gen';
 
 export default function EnhancedDemo() {
   const { account, address, isConnected } = useAccount();

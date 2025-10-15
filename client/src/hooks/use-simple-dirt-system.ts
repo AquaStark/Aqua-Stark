@@ -118,7 +118,7 @@ export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
           dirtData.last_cleaning_time
         );
       }
-    } catch (error) {
+    } catch {
       // Fallback a sistema local
       generateSpotsFromBackend(50);
     } finally {
@@ -157,7 +157,7 @@ export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
         } else {
           setDirtLevel(prev => Math.max(0, prev - 10));
         }
-      } catch (error) {
+      } catch {
         setDirtLevel(prev => Math.max(0, prev - 10));
       }
     },
@@ -198,7 +198,7 @@ export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
       if (response.ok) {
         await response.json();
       }
-    } catch (error) {
+    } catch {
       // Fallback silencioso
     }
   }, [aquariumId, playerId]);
