@@ -21,5 +21,11 @@ export default defineConfig({
   },
   server: {
     // https: true, // Comentado temporalmente
+    port: 5173,
+    host: true,
+    fs: {
+      allow: ['..']
+    }
   },
+  assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.svg'],
 });
