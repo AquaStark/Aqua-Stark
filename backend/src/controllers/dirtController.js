@@ -276,11 +276,7 @@ export class DirtController {
       }
 
       // Llamar al servicio para actualizar la configuración de dirt
-      await DirtService.updateAquariumDirtConfig(
-        aquariumId,
-        config,
-        playerId
-      );
+      await DirtService.updateAquariumDirtConfig(aquariumId, config, playerId);
 
       res.json({
         success: true,
