@@ -795,7 +795,7 @@ export interface SchemaType extends ISchemaType {
 		AuctionCounter: AuctionCounter,
 		FishOwnerA: FishOwnerA,
 		ChallengeParticipation: ChallengeParticipation,
-		ChallengeCounter: ChallengeCounter,
+		Challenge_Counter: Challenge_Counter,
 		DailyChallenge: DailyChallenge,
 		Decoration: Decoration,
 		DecorationCounter: DecorationCounter,
