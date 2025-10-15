@@ -27,18 +27,18 @@ export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
 
   // Generar manchas basadas en el tiempo real del backend
   const generateSpotsFromBackend = useCallback((level: number, lastCleaningTime?: string) => {
-    let hoursSinceCleaning = 0;
+    let secondsSinceCleaning = 0;
     if (lastCleaningTime) {
       const lastCleaning = new Date(lastCleaningTime);
       const now = new Date();
-      hoursSinceCleaning = (now.getTime() - lastCleaning.getTime()) / (1000 * 60 * 60);
+      secondsSinceCleaning = (now.getTime() - lastCleaning.getTime()) / 1000;
     }
 
-    // PRODUCCIÓN: 1 mancha cada hora después del período de gracia (4 horas)
-    const gracePeriod = 4; // 4 horas
-    const spotsPerHour = 1; // 1 mancha cada hora
-    const timeSinceGracePeriod = Math.max(0, hoursSinceCleaning - gracePeriod);
-    const expectedSpotCount = Math.min(8, Math.floor(timeSinceGracePeriod / spotsPerHour));
+    // TESTING: 1 mancha cada 5 segundos después del período de gracia (5s)
+    const gracePeriod = 5; // 5 segundos
+    const spotsPerInterval = 5; // 1 mancha cada 5 segundos
+    const timeSinceGracePeriod = Math.max(0, secondsSinceCleaning - gracePeriod);
+    const expectedSpotCount = Math.min(8, Math.floor(timeSinceGracePeriod / spotsPerInterval));
 
     setSpots(prevSpots => {
       const currentSpotCount = prevSpots.length;
@@ -205,26 +205,26 @@ export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
     }
   }, [spots.length, spotCounter]);
 
-  // PRODUCCIÓN: verificación cada hora para generar nuevas manchas
+  // TESTING: verificación cada 5 segundos para generar nuevas manchas
   useEffect(() => {
     const checkInterval = setInterval(() => {
       if (lastCleaningTime) {
-        const hoursSinceCleaning = (new Date().getTime() - new Date(lastCleaningTime).getTime()) / (1000 * 60 * 60);
-        const gracePeriod = 4;
-        const spotsPerHour = 1;
-        const timeSinceGracePeriod = Math.max(0, hoursSinceCleaning - gracePeriod);
-        const expectedSpots = Math.min(8, Math.floor(timeSinceGracePeriod / spotsPerHour));
+        const secondsSinceCleaning = (new Date().getTime() - new Date(lastCleaningTime).getTime()) / 1000;
+        const gracePeriod = 5;
+        const spotsPerInterval = 5;
+        const timeSinceGracePeriod = Math.max(0, secondsSinceCleaning - gracePeriod);
+        const expectedSpots = Math.min(8, Math.floor(timeSinceGracePeriod / spotsPerInterval));
         
         if (expectedSpots > spots.length) {
           generateSpotsFromBackend(expectedSpots * 10, lastCleaningTime);
         }
       }
-    }, 3600000); // Cada 1 hora (3600000 ms)
+    }, 5000); // Cada 5 segundos para testing
     
-    // Verificación con backend cada 30 minutos (sincronización)
+    // Verificación con backend cada 10 segundos (sincronización)
     const backendInterval = setInterval(() => {
       fetchDirtStatus();
-    }, 1800000); // 30 minutos (1800000 ms)
+    }, 10000); // 10 segundos para testing
     
     return () => {
       clearInterval(checkInterval);
