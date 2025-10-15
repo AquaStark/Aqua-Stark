@@ -736,11 +736,6 @@
     auto !important;
 }
 
-.cursor-sponge * {
-  cursor:
-    url('/dirt/sponge.png') 8 8,
-    auto !important;
-}
 
 /* Alternative sponge cursor with different sizes */
 .cursor-sponge-alt {
@@ -749,11 +744,6 @@
     pointer !important;
 }
 
-.cursor-sponge-alt * {
-  cursor:
-    url('/dirt/sponge.png') 12 12,
-    pointer !important;
-}
 
 /* Simple sponge cursor with smaller hotspot */
 .cursor-sponge-simple {
@@ -762,11 +752,6 @@
     crosshair !important;
 }
 
-.cursor-sponge-simple * {
-  cursor:
-    url('/dirt/sponge.png') 16 16,
-    crosshair !important;
-}
 
 /* Try different cursor sizes */
 .cursor-sponge-32 {
@@ -775,20 +760,12 @@
     crosshair !important;
 }
 
-.cursor-sponge-32 * {
-  cursor:
-    url('/dirt/sponge.png') 32 32,
-    crosshair !important;
-}
 
 /* Try with auto hotspot */
 .cursor-sponge-auto {
   cursor: url('/dirt/sponge.png'), crosshair !important;
 }
 
-.cursor-sponge-auto * {
-  cursor: url('/dirt/sponge.png'), crosshair !important;
-}
 
 /* Fallback sponge cursor using CSS */
 .cursor-sponge-css {
