@@ -24,13 +24,9 @@ export function DirtSpot({
   // Function to get dirt image based on spot properties
   const getDirtImage = () => {
     const id = spot.id || 0;
-
-    // Convert ID to integer to avoid decimal issues
     const intId = Math.floor(Math.abs(id));
-
-    // Use ID to create variation in image selection (1, 2, or 3)
     const imageIndex = (intId % 3) + 1;
-
+    
     // RUTA CORRECTA: las imágenes están en /public/dirt/
     return `/dirt/dirt${imageIndex}.png`;
   };
@@ -39,23 +35,23 @@ export function DirtSpot({
     e.preventDefault();
     e.stopPropagation();
 
-    if (isRemoving) return;
-
-    // Only allow cleaning in sponge mode
-    if (!isSpongeMode) return;
+    if (isRemoving) {
+      return;
+    }
+    if (!isSpongeMode) {
+      return;
+    }
 
     setIsRemoving(true);
 
-    // Call the clean function if provided
     if (onClean) {
       try {
         await onClean(spot.id);
       } catch (error) {
-        console.error('Error cleaning spot:', error);
+        console.error('Error cleaning:', error);
       }
     }
 
-    // Remove spot after a short delay
     setTimeout(() => {
       onRemove(spot.id);
     }, 300);
@@ -71,29 +67,19 @@ export function DirtSpot({
   const baseOpacity = spot.opacity || 0.8;
   const currentOpacity = Math.min(1, baseOpacity);
 
-  // CONSOLE LOG PARA DEBUG DE POSICIONES
-  console.log(`🎯 DIRT SPOT RENDER:`, {
-    id: spot.id,
-    position: spot.position,
-    size: spot.size,
-    left: `${spot.position.x}px`,
-    top: `${spot.position.y}px`,
-    transform: 'translate(-50%, -50%)',
-  });
-
   return (
     <div
       className={`absolute transform-gpu transition-all duration-300 select-none ${
-        isSpongeMode ? 'cursor-pointer' : 'cursor-default'
+        isSpongeMode ? 'cursor-sponge-simple' : 'cursor-pointer'
       } ${
-        isRemoving ? 'animate-pulse' : isHovered ? 'scale-105' : ''
+        isRemoving ? 'animate-pulse' : isHovered ? 'scale-110 drop-shadow-lg brightness-110 ring-4 ring-yellow-400 ring-opacity-50' : ''
       } ${className}`}
       style={{
         left: `${spot.position.x}px`,
         top: `${spot.position.y}px`,
         transform: 'translate(-50%, -50%)',
-        zIndex: isHovered ? 10 : 1,
-        pointerEvents: isSpongeMode ? 'auto' : 'none',
+        zIndex: 10000,
+        pointerEvents: 'auto', // SIEMPRE permitir hover y clicks
       }}
       onClick={handleClick}
       onMouseEnter={() => setIsHovered(true)}
@@ -112,11 +98,11 @@ export function DirtSpot({
           isRemoving ? 'scale-0 opacity-0' : ''
         }`}
         style={{
-          width: `${spot.size || 150}px`,
-          height: `${spot.size || 150}px`,
+          width: `${spot.size || 300}px`,
+          height: `${spot.size || 300}px`,
           opacity: currentOpacity,
           objectFit: 'contain',
-          filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+          filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))',
           display: 'block',
         }}
         onError={e => {
@@ -125,8 +111,8 @@ export function DirtSpot({
           target.style.display = 'none';
           const fallback = document.createElement('div');
           fallback.style.cssText = `
-            width: ${spot.size || 150}px;
-            height: ${spot.size || 150}px;
+            width: ${spot.size || 300}px;
+            height: ${spot.size || 300}px;
             background: linear-gradient(45deg, #8B4513, #A0522D);
             border-radius: 50%;
             opacity: ${currentOpacity};
@@ -140,7 +126,7 @@ export function DirtSpot({
       {/* Debug info */}
       {isDebugMode && (
         <div className='absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black/70 text-white text-xs px-2 py-1 rounded whitespace-nowrap'>
-          ID: {spot.id} | Size: {Math.round(spot.size || 150)}px
+          ID: {spot.id} | Size: {Math.round(spot.size || 300)}px
         </div>
       )}
     </div>
