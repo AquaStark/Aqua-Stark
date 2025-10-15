@@ -122,7 +122,11 @@ export default function Start() {
       // Create player in backend
       try {
         const playerId = account.address; // Use wallet address as player ID
-        await createBackendPlayer(playerId, account.address, finalUsername.trim());
+        await createBackendPlayer(
+          playerId,
+          account.address,
+          finalUsername.trim()
+        );
         toast.success('Player synced to backend successfully!');
       } catch (backendError) {
         console.error('Backend sync error:', backendError);

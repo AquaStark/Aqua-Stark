@@ -13,7 +13,12 @@ interface MobileStartViewProps {
   txHash: string;
 }
 
-export function MobileStartView({ onRegister, onContinue, loading, txHash }: MobileStartViewProps) {
+export function MobileStartView({
+  onRegister,
+  onContinue,
+  loading,
+  txHash,
+}: MobileStartViewProps) {
   const [username, setUsername] = useState('');
   const [usernameError, setUsernameError] = useState('');
   const [usernameSuggestions, setUsernameSuggestions] = useState<string[]>([]);
@@ -21,7 +26,9 @@ export function MobileStartView({ onRegister, onContinue, loading, txHash }: Mob
 
   // Focus input on mount
   useEffect(() => {
-    const input = document.getElementById('mobile-username-input') as HTMLInputElement | null;
+    const input = document.getElementById(
+      'mobile-username-input'
+    ) as HTMLInputElement | null;
     if (input) input.focus();
   }, []);
 
@@ -45,7 +52,9 @@ export function MobileStartView({ onRegister, onContinue, loading, txHash }: Mob
     }
 
     if (!/^[a-zA-Z0-9_-]+$/.test(value)) {
-      setUsernameError('Username can only contain letters, numbers, underscores, and hyphens');
+      setUsernameError(
+        'Username can only contain letters, numbers, underscores, and hyphens'
+      );
       return false;
     }
 
@@ -58,7 +67,6 @@ export function MobileStartView({ onRegister, onContinue, loading, txHash }: Mob
     validateUsername(value);
     setUsernameSuggestions([]);
   };
-
 
   const handleRegister = async () => {
     if (!validateUsername(username)) return;
@@ -102,7 +110,9 @@ export function MobileStartView({ onRegister, onContinue, loading, txHash }: Mob
             <span className='mr-1'>←</span>
             Back Home
           </button>
-          <h1 className='text-sm sm:text-base md:text-lg font-bold text-white'>Start Your Journey</h1>
+          <h1 className='text-sm sm:text-base md:text-lg font-bold text-white'>
+            Start Your Journey
+          </h1>
           <div className='w-12 sm:w-16' /> {/* Spacer */}
         </div>
       </div>
@@ -121,22 +131,22 @@ export function MobileStartView({ onRegister, onContinue, loading, txHash }: Mob
               role='presentation'
             />
           </div>
-          
+
           {/* Form card - much smaller */}
           <div className='relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl bg-gradient-to-b from-blue-900/70 to-blue-800/60 backdrop-blur-lg rounded-lg sm:rounded-xl px-2 sm:px-3 md:px-4 py-3 sm:py-4 md:py-5 border border-blue-400/30 shadow-[0_0_15px_2px_rgba(0,0,50,0.2)] overflow-hidden order-2 sm:order-2'>
             {/* Top highlight strip */}
             <div className='absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400/20 via-blue-300/30 to-purple-500/20' />
-            
+
             {/* Title - compact typography */}
             <h2 className='text-sm sm:text-base md:text-lg lg:text-xl font-extrabold uppercase tracking-wide mb-1 sm:mb-2 text-white drop-shadow'>
               Create Your Profile
             </h2>
-            
+
             {/* Description - compact typography */}
             <p className='mb-2 sm:mb-3 text-blue-100/90 text-xs drop-shadow leading-relaxed'>
               Pick a username to start exploring the world beneath the surface.
             </p>
-            
+
             {/* Input - compact sizing */}
             <Input
               id='mobile-username-input'
@@ -151,14 +161,14 @@ export function MobileStartView({ onRegister, onContinue, loading, txHash }: Mob
               aria-label='Username'
               disabled={loading}
             />
-            
+
             {/* Error message */}
             {usernameError && (
               <div className='text-red-400 text-xs mb-1 px-1'>
                 {usernameError}
               </div>
             )}
-            
+
             {/* Suggestions - compact layout */}
             {usernameSuggestions.length > 0 && (
               <div className='mb-2'>
@@ -178,7 +188,7 @@ export function MobileStartView({ onRegister, onContinue, loading, txHash }: Mob
                 </div>
               </div>
             )}
-            
+
             {/* Button - compact sizing */}
             <Button
               onClick={handleRegister}
@@ -226,9 +236,15 @@ export function MobileStartView({ onRegister, onContinue, loading, txHash }: Mob
         <div className='text-center text-blue-100 text-sm'>
           <p className='mb-2'>© 2025 Aqua Stark - All rights reserved</p>
           <div className='flex flex-wrap justify-center gap-2 sm:gap-3 text-sm'>
-            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>Polity and Privacy</span>
-            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>Terms of Service</span>
-            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>Contact</span>
+            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>
+              Polity and Privacy
+            </span>
+            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>
+              Terms of Service
+            </span>
+            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>
+              Contact
+            </span>
           </div>
         </div>
       </div>

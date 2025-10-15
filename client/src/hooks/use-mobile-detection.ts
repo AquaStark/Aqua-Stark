@@ -26,16 +26,17 @@ export function useMobileDetection(): MobileDetection {
       const userAgent = navigator.userAgent.toLowerCase();
 
       // Detectar dispositivos móviles por user agent
-      const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
+      const mobileRegex =
+        /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
       const tabletRegex = /ipad|android(?!.*mobile)|tablet/i;
-      
+
       const isMobileUA = mobileRegex.test(userAgent);
       const isTabletUA = tabletRegex.test(userAgent);
-      
+
       // Detectar por tamaño de pantalla
       const isMobileScreen = width <= 768;
       const isTabletScreen = width > 768 && width <= 1024;
-      
+
       // Combinar detección por user agent y tamaño de pantalla
       const isMobile = isMobileUA || (isMobileScreen && !isTabletUA);
       const isTablet = isTabletUA || (isTabletScreen && !isMobileUA);

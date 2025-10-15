@@ -186,7 +186,9 @@ export function MobileOnboardingView() {
             <span className='mr-1'>←</span>
             Back
           </button>
-          <h1 className='text-sm sm:text-base md:text-lg font-bold text-white'>Choose Your Fish</h1>
+          <h1 className='text-sm sm:text-base md:text-lg font-bold text-white'>
+            Choose Your Fish
+          </h1>
           <div className='w-12 sm:w-16' /> {/* Spacer */}
         </div>
       </div>
@@ -205,7 +207,8 @@ export function MobileOnboardingView() {
           </h1>
           <div className='bg-white/10 backdrop-blur-sm border border-white/20 px-2 sm:px-3 py-2 sm:py-3 rounded-lg sm:rounded-xl text-white/90 shadow-md max-w-xs sm:max-w-sm mx-auto'>
             <p className='text-xs sm:text-sm leading-relaxed'>
-              Choose 2 fish to start your aquatic adventure. Each fish has unique abilities and characteristics.
+              Choose 2 fish to start your aquatic adventure. Each fish has
+              unique abilities and characteristics.
             </p>
           </div>
         </motion.div>
@@ -225,20 +228,20 @@ export function MobileOnboardingView() {
               transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
               className='h-full'
             >
-              <div 
+              <div
                 className={`relative bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 cursor-pointer overflow-hidden transition-all duration-300 shadow-md h-full flex flex-col ${
                   selectedFish.includes(fish.id)
                     ? 'ring-2 ring-blue-300 scale-[1.02]'
                     : 'hover:scale-[1.015]'
                 }`}
                 onClick={() => handleFishSelect(fish.id)}
-                onKeyDown={(e) => {
+                onKeyDown={e => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
                     handleFishSelect(fish.id);
                   }
                 }}
-                role="button"
+                role='button'
                 tabIndex={0}
               >
                 {selectedFish.includes(fish.id) && (
@@ -269,7 +272,9 @@ export function MobileOnboardingView() {
                             src={fish.image}
                             alt={fish.name}
                             className='w-16 h-16 sm:w-24 sm:h-24 object-contain'
-                            style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}
+                            style={{
+                              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
+                            }}
                           />
                         </div>
                         <img
@@ -330,11 +335,19 @@ export function MobileOnboardingView() {
       {/* Mobile footer - at end of scroll */}
       <div className='relative z-30 p-2 sm:p-3 bg-blue-900/90 backdrop-blur-md border-t border-blue-400/50'>
         <div className='text-center text-blue-100 text-xs sm:text-sm'>
-          <p className='mb-1 sm:mb-2'>© 2025 Aqua Stark - All rights reserved</p>
+          <p className='mb-1 sm:mb-2'>
+            © 2025 Aqua Stark - All rights reserved
+          </p>
           <div className='flex flex-wrap justify-center gap-1 sm:gap-2 text-xs sm:text-sm'>
-            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 sm:px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>Polity and Privacy</span>
-            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 sm:px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>Terms of Service</span>
-            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 sm:px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>Contact</span>
+            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 sm:px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>
+              Polity and Privacy
+            </span>
+            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 sm:px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>
+              Terms of Service
+            </span>
+            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 sm:px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>
+              Contact
+            </span>
           </div>
         </div>
       </div>
