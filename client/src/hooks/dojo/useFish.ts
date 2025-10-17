@@ -9,13 +9,13 @@ import {
 
 /**
  * Custom React hook for managing fish-related operations in the AquaStark ecosystem.
- * Provides methods for creating, retrieving, breeding, and managing fish genealogy.
+ * Provides methods for creating, retrieving, breeding, managing fish genealogy, and marketplace interactions.
  *
  * @returns {object} Object containing fish management functions.
  *
  * @example
  * ```ts
- * const { newFish, breedFishes, getFishFamilyTree } = useFish();
+ * const { newFish, breedFishes, listFish, purchaseFish } = useFish();
  *
  * // Create a new fish
  * await newFish(account, aquariumId, species);
@@ -23,8 +23,11 @@ import {
  * // Breed two fishes
  * await breedFishes(account, parent1Id, parent2Id);
  *
- * // Get a fish family tree
- * const familyTree = await getFishFamilyTree(fishId);
+ * // List a fish for sale
+ * await listFish(account, fishId, price);
+ *
+ * // Purchase a listed fish
+ * await purchaseFish(account, listingId);
  * ```
  */
 export const useFish = () => {
@@ -47,7 +50,7 @@ export const useFish = () => {
    * Retrieves fish data by ID.
    *
    * @param {BigNumberish} id - Fish ID.
-   * @returns {Promise<any>} Fish data.
+   * @returns {Promise<models.Fish>} Fish data.
    */
   const getFish = useCallback(
     async (id: BigNumberish) => {
@@ -62,7 +65,7 @@ export const useFish = () => {
    * @param {Account | AccountInterface} account - StarkNet account instance.
    * @param {BigNumberish} aquariumId - Target aquarium ID.
    * @param {CairoCustomEnum} species - Fish species (Cairo enum).
-   * @returns {Promise<any>} Result of fish creation.
+   * @returns {Promise<models.Fish>} Result of fish creation.
    */
   const newFish = useCallback(
     async (
@@ -79,7 +82,7 @@ export const useFish = () => {
    * Retrieves all fishes owned by a player.
    *
    * @param {string} playerAddress - Address of the player.
-   * @returns {Promise<any[]>} Array of fish data.
+   * @returns {Promise<models.Fish[]>} Array of fish data.
    */
   const getPlayerFishes = useCallback(
     async (playerAddress: string) => {
@@ -107,7 +110,7 @@ export const useFish = () => {
    * @param {Account | AccountInterface} account - StarkNet account instance.
    * @param {BigNumberish} parent1Id - First parent fish ID.
    * @param {BigNumberish} parent2Id - Second parent fish ID.
-   * @returns {Promise<any>} Result of fish breeding.
+   * @returns {Promise<BigNumberish>} Offspring fish ID.
    */
   const breedFishes = useCallback(
     async (
@@ -137,7 +140,7 @@ export const useFish = () => {
    * Retrieves the parents of a fish.
    *
    * @param {BigNumberish} fishId - Fish ID.
-   * @returns {Promise<any[]>} Array containing parent fish data.
+   * @returns {Promise<[BigNumberish, BigNumberish]>} Tuple of parent fish IDs.
    */
   const getFishParents = useCallback(
     async (fishId: BigNumberish) => {
@@ -150,7 +153,7 @@ export const useFish = () => {
    * Retrieves the offspring of a fish.
    *
    * @param {BigNumberish} fishId - Fish ID.
-   * @returns {Promise<any[]>} Array of offspring fish data.
+   * @returns {Promise<models.Fish[]>} Array of offspring fish data.
    */
   const getFishOffspring = useCallback(
     async (fishId: BigNumberish) => {
@@ -163,12 +166,12 @@ export const useFish = () => {
    * Retrieves a specific ancestor of a fish by generation.
    *
    * @param {BigNumberish} fishId - Fish ID.
-   * @param {BigNumberish} generations - Number of generations back.
-   * @returns {Promise<any>} Ancestor fish data.
+   * @param {BigNumberish} generation - Number of generations back.
+   * @returns {Promise<models.FishParents>} Ancestor fish data.
    */
   const getFishAncestor = useCallback(
-    async (fishId: BigNumberish, generations: BigNumberish) => {
-      return await client.AquaStark.getFishAncestor(fishId, generations);
+    async (fishId: BigNumberish, generation: BigNumberish) => {
+      return await client.AquaStark.getFishAncestor(fishId, generation);
     },
     [client]
   );
@@ -177,11 +180,44 @@ export const useFish = () => {
    * Retrieves the entire family tree of a fish.
    *
    * @param {BigNumberish} fishId - Fish ID.
-   * @returns {Promise<any>} Full family tree data.
+   * @returns {Promise<models.FishParents[]>} Full family tree data.
    */
   const getFishFamilyTree = useCallback(
     async (fishId: BigNumberish) => {
       return await client.AquaStark.getFishFamilyTree(fishId);
+    },
+    [client]
+  );
+
+  /**
+   * Lists a fish for sale on the marketplace.
+   *
+   * @param {Account | AccountInterface} account - StarkNet account instance.
+   * @param {BigNumberish} fishId - Fish ID to list.
+   * @param {BigNumberish} price - Listing price.
+   * @returns {Promise<models.Listing>} Listing data.
+   */
+  const listFish = useCallback(
+    async (
+      account: Account | AccountInterface,
+      fishId: BigNumberish,
+      price: BigNumberish
+    ) => {
+      return await client.AquaStark.listFish(account, fishId, price);
+    },
+    [client]
+  );
+
+  /**
+   * Purchases a listed fish from the marketplace.
+   *
+   * @param {Account | AccountInterface} account - StarkNet account instance.
+   * @param {BigNumberish} listingId - ID of the listing to purchase.
+   * @returns {Promise<any>} Result of the purchase transaction.
+   */
+  const purchaseFish = useCallback(
+    async (account: Account | AccountInterface, listingId: BigNumberish) => {
+      return await client.AquaStark.purchaseFish(account, listingId);
     },
     [client]
   );
@@ -198,5 +234,7 @@ export const useFish = () => {
     getFishOffspring,
     getFishAncestor,
     getFishFamilyTree,
+    listFish,
+    purchaseFish,
   };
 };

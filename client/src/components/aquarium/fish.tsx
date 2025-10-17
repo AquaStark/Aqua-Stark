@@ -330,6 +330,7 @@ export function Fish({
           left: `${position.x}%`,
           top: `${position.y}%`,
           zIndex: visualEffects.zIndex,
+          pointerEvents: 'none', // NUNCA interceptar clicks - las manchas tienen prioridad
           ...style,
         }}
         transition={{

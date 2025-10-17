@@ -58,14 +58,14 @@ interface DirtSystemState {
  * @property {string} playerId - The unique identifier of the player.
  * @property {string} [authToken] - Optional authentication token for API requests.
  * @property {boolean} [autoRefresh=true] - If true, the hook will periodically fetch updates from the backend.
- * @property {number} [refreshInterval=30000] - The interval in milliseconds for auto-refresh. Defaults to 30 seconds.
+ * @property {number} [refreshInterval=1800000] - The interval in milliseconds for auto-refresh. Defaults to 30 minutes.
  */
 interface UseDirtSystemRealisticOptions {
   aquariumId: string;
   playerId: string;
   authToken?: string;
   autoRefresh?: boolean;
-  refreshInterval?: number; // in milliseconds
+  refreshInterval?: number; // in milliseconds (default: 30 minutes)
 }
 
 /**
@@ -103,7 +103,7 @@ export function useDirtSystemRealistic({
   playerId,
   authToken,
   autoRefresh = true,
-  refreshInterval = 30000, // 30 seconds
+  refreshInterval = 1800000, // 30 minutes (1800000 ms)
 }: UseDirtSystemRealisticOptions) {
   const [state, setState] = useState<DirtSystemState>({
     spots: [],
@@ -159,18 +159,21 @@ export function useDirtSystemRealistic({
       const dirtData = result.data;
 
       setState(prev => {
-        // Only generate new spots if we don't have any spots yet
+        // Regenerate spots based on current dirt level
+        // If dirt level decreased significantly, regenerate spots
+        const shouldRegenerateSpots =
+          prev.spots.length === 0 ||
+          Math.abs(dirtData.current_dirt_level - prev.dirtLevel) > 10;
+
         let newSpots = prev.spots;
-        if (prev.spots.length === 0) {
-          // FORZAR NIVEL DE SUCIEDAD PARA TESTING (el backend tiene período de gracia de 4 horas)
-          const forcedDirtLevel = Math.max(dirtData.current_dirt_level, 50); // Mínimo 50% para ver manchas
-          newSpots = generateDirtSpotsFromLevel(forcedDirtLevel);
+        if (shouldRegenerateSpots) {
+          newSpots = generateDirtSpotsFromLevel(dirtData.current_dirt_level);
         }
 
         return {
           ...prev,
           spots: newSpots,
-          dirtLevel: Math.max(dirtData.current_dirt_level, 50), // Mostrar nivel forzado
+          dirtLevel: dirtData.current_dirt_level,
           isDirty: dirtData.is_dirty,
           needsCleaning: dirtData.needs_cleaning,
           cleanlinessStatus: dirtData.cleanliness_status,
@@ -217,7 +220,9 @@ export function useDirtSystemRealistic({
    */
   const cleanDirtSpot = useCallback(
     async (spotId: number) => {
-      if (!aquariumId || !playerId) return;
+      if (!aquariumId || !playerId) {
+        return;
+      }
 
       try {
         setState(prev => ({ ...prev, isLoading: true, error: null }));
@@ -252,18 +257,24 @@ export function useDirtSystemRealistic({
         const cleaningData = result.data;
 
         // Update state with cleaning results
-        setState(prev => ({
-          ...prev,
-          dirtLevel: cleaningData.new_dirt_level,
-          spots: generateDirtSpotsFromLevel(cleaningData.new_dirt_level),
-          isDirty: cleaningData.new_dirt_level > 10,
-          needsCleaning: cleaningData.new_dirt_level > 30,
-          cleanlinessStatus: getCleanlinessStatus(cleaningData.new_dirt_level),
-          cleaningStreak: cleaningData.cleaning_streak || prev.cleaningStreak,
-          totalCleanings: prev.totalCleanings + 1,
-          isLoading: false,
-          error: null,
-        }));
+        setState(prev => {
+          const newSpots = prev.spots.filter(spot => spot.id !== spotId);
+
+          return {
+            ...prev,
+            dirtLevel: cleaningData.new_dirt_level,
+            spots: newSpots, // Remover solo la mancha específica
+            isDirty: cleaningData.new_dirt_level > 10,
+            needsCleaning: cleaningData.new_dirt_level > 30,
+            cleanlinessStatus: getCleanlinessStatus(
+              cleaningData.new_dirt_level
+            ),
+            cleaningStreak: cleaningData.cleaning_streak || prev.cleaningStreak,
+            totalCleanings: prev.totalCleanings + 1,
+            isLoading: false,
+            error: null,
+          };
+        });
 
         return cleaningData;
       } catch (error) {
@@ -399,12 +410,28 @@ function generateDirtSpotsFromLevel(dirtLevel: number): DirtSpot[] {
   const maxSpots = Math.min(8, Math.ceil(dirtLevel / 10)); // Max 8 spots, fewer but bigger
   const spotCount = Math.floor(maxSpots * (dirtLevel / 100));
 
+  // Márgenes para evitar header y footer
+  const SAFE_MARGINS = {
+    top: 100, // Evitar header (altura aproximada)
+    bottom: 120, // Evitar footer (altura aproximada)
+    left: 50, // Márgen izquierdo
+    right: 50, // Márgen derecho
+  };
+
+  // Área segura para las manchas - Solo en el área central
+  const safeArea = {
+    width: window.innerWidth - SAFE_MARGINS.left - SAFE_MARGINS.right,
+    height: window.innerHeight - SAFE_MARGINS.top - SAFE_MARGINS.bottom,
+    startX: SAFE_MARGINS.left,
+    startY: SAFE_MARGINS.top,
+  };
+
   for (let i = 0; i < spotCount; i++) {
     const spot: DirtSpot = {
       id: Date.now() + i,
       position: {
-        x: Math.random() * 1800 + 100, // Random position within aquarium bounds
-        y: Math.random() * 800 + 100,
+        x: Math.random() * safeArea.width + safeArea.startX, // Posición segura
+        y: Math.random() * safeArea.height + safeArea.startY, // Posición segura
       },
       type: getRandomDirtType(dirtLevel),
       size: getRandomSpotSize(),
@@ -471,8 +498,8 @@ function getRandomDirtType(dirtLevel: number): DirtType {
  * @returns {number} The size of the spot in pixels.
  */
 function getRandomSpotSize(): number {
-  // MUCHOS TAMAÑOS GRANDES Y VARIADOS
-  const sizes = [120, 150, 180, 200, 220, 250, 280, 300];
+  // TAMAÑOS MUY GRANDES PARA MÁXIMA VISIBILIDAD
+  const sizes = [200, 250, 300, 350, 400, 450];
   const randomIndex = Math.floor(Math.random() * sizes.length);
   return sizes[randomIndex];
 }

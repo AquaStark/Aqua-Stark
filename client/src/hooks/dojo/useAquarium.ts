@@ -1,7 +1,36 @@
 import * as models from '@/typescript/models.gen';
 import { useDojoSDK } from '@dojoengine/sdk/react';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Account, AccountInterface, BigNumberish } from 'starknet';
+import { DojoClient } from '@/types';
+
+/**
+ * Validates that the Dojo client is properly initialized and has the required contracts
+ */
+function validateDojoClient(client: DojoClient): void {
+  if (!client) {
+    throw new Error('Dojo SDK client is not initialized');
+  }
+
+  console.log('Available contracts:', Object.keys(client));
+
+  if (!client.AquaStark) {
+    throw new Error(
+      `AquaStark contract not found. Available contracts: ${Object.keys(client).join(', ')}`
+    );
+  }
+
+  const requiredMethods = ['getAquarium', 'newAquarium', 'getAquariumOwner'];
+  const availableMethods = Object.keys(client.AquaStark);
+
+  requiredMethods.forEach(method => {
+    if (!(method in client.AquaStark)) {
+      throw new Error(
+        `Required method '${method}' not found in AquaStark contract. Available methods: ${availableMethods.join(', ')}`
+      );
+    }
+  });
+}
 
 /**
  * Custom React hook that provides methods to interact with the AquaStark client.
@@ -9,17 +38,22 @@ import { Account, AccountInterface, BigNumberish } from 'starknet';
  * Exposes functions to create aquariums, add fish or decorations, move entities between aquariums,
  * and query aquarium or player-related information.
  *
+ * Note: Methods are routed to the appropriate contract namespaces:
+ * - AquaStark: Basic aquarium and player queries
+ * - Game: Game-specific operations (add/move entities)
+ * - FishSystem: Fish-specific operations
+ *
  * @returns {Object} An object containing methods for managing aquariums:
- * - `createAquariumId(account)`
- * - `getAquarium(id)`
- * - `newAquarium(account, owner, maxCapacity, maxDecorations)`
- * - `addFishToAquarium(account, fish, aquariumId)`
- * - `addDecorationToAquarium(account, decoration, aquariumId)`
- * - `getPlayerAquariums(playerAddress)`
- * - `getPlayerAquariumCount(playerAddress)`
- * - `moveFishToAquarium(account, fishId, fromAquariumId, toAquariumId)`
- * - `moveDecorationToAquarium(account, decorationId, fromAquariumId, toAquariumId)`
- * - `getAquariumOwner(aquariumId)`
+ * - `createAquariumId(account)` - Creates a new aquarium (via Game contract)
+ * - `getAquarium(id)` - Gets aquarium data
+ * - `newAquarium(account, owner, maxCapacity, maxDecorations)` - Creates new aquarium
+ * - `addFishToAquarium(account, fish, aquariumId)` - Adds fish via Game contract
+ * - `addDecorationToAquarium(account, decoration, aquariumId)` - Adds decoration via Game contract
+ * - `getPlayerAquariums(playerAddress)` - Gets player's aquariums
+ * - `getPlayerAquariumCount(playerAddress)` - Gets aquarium count
+ * - `moveFishToAquarium(account, fishId, fromAquariumId, toAquariumId)` - Moves fish via Game contract
+ * - `moveDecorationToAquarium(account, decorationId, fromAquariumId, toAquariumId)` - Moves decoration via Game contract
+ * - `getAquariumOwner(aquariumId)` - Gets aquarium owner
  *
  * @example
  * const {
@@ -40,14 +74,34 @@ import { Account, AccountInterface, BigNumberish } from 'starknet';
 export const useAquarium = () => {
   const { client } = useDojoSDK();
 
+  // Validate client on each render and when client changes
+  useEffect(() => {
+    if (client) {
+      try {
+        validateDojoClient(client);
+        console.log('Dojo client validation successful');
+      } catch (error) {
+        console.error('Dojo client validation failed:', error);
+      }
+    }
+  }, [client]);
+
+  // Validate client before any operation
+  const ensureClientReady = useCallback(() => {
+    validateDojoClient(client);
+  }, [client]);
   /**
-   * Creates a new aquarium ID.
+   * This method doesn't exist in the contracts. Use newAquarium instead.
+   * Keeping for backwards compatibility but will throw an error.
    * @param {Account | AccountInterface} account - User account instance.
-   * @returns {Promise<any>} The generated aquarium ID.
+   * @returns {Promise<any>} Throws error indicating method doesn't exist.
    */
   const createAquariumId = useCallback(
-    async (account: Account | AccountInterface) => {
-      return await client.AquaStark.createAquariumId(account);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async (_account: Account | AccountInterface) => {
+      throw new Error(
+        'createAquariumId method does not exist. Use newAquarium method instead.'
+      );
     },
     [client]
   );
@@ -59,9 +113,20 @@ export const useAquarium = () => {
    */
   const getAquarium = useCallback(
     async (id: BigNumberish) => {
-      return await client.AquaStark.getAquarium(id);
+      ensureClientReady();
+
+      console.log('getAquarium called with id:', id);
+
+      try {
+        const result = await client.AquaStark.getAquarium(id);
+        console.log('getAquarium result:', result);
+        return result;
+      } catch (error) {
+        console.error('getAquarium error:', error);
+        return error;
+      }
     },
-    [client]
+    [client, ensureClientReady]
   );
 
   /**
@@ -88,9 +153,9 @@ export const useAquarium = () => {
     },
     [client]
   );
-
+  // console.log('client: ', client);
   /**
-   * Adds a fish to an existing aquarium.
+   * Adds a fish to an existing aquarium via Game contract.
    * @param {Account | AccountInterface} account - User account instance.
    * @param {models.Fish} fish - Fish object to add.
    * @param {BigNumberish} aquariumId - Aquarium ID.
@@ -102,17 +167,13 @@ export const useAquarium = () => {
       fish: models.Fish,
       aquariumId: BigNumberish
     ) => {
-      return await client.AquaStark.addFishToAquarium(
-        account,
-        fish,
-        aquariumId
-      );
+      return await client.Game.addFishToAquarium(account, fish, aquariumId);
     },
     [client]
   );
 
   /**
-   * Adds a decoration to an existing aquarium.
+   * Adds a decoration to an existing aquarium via Game contract.
    * @param {Account | AccountInterface} account - User account instance.
    * @param {models.Decoration} decoration - Decoration object to add.
    * @param {BigNumberish} aquariumId - Aquarium ID.
@@ -124,7 +185,7 @@ export const useAquarium = () => {
       decoration: models.Decoration,
       aquariumId: BigNumberish
     ) => {
-      return await client.AquaStark.addDecorationToAquarium(
+      return await client.Game.addDecorationToAquarium(
         account,
         decoration,
         aquariumId
@@ -158,7 +219,7 @@ export const useAquarium = () => {
   );
 
   /**
-   * Moves a fish between aquariums.
+   * Moves a fish between aquariums via Game contract.
    * @param {Account | AccountInterface} account - User account instance.
    * @param {BigNumberish} fishId - ID of the fish.
    * @param {BigNumberish} fromAquariumId - Source aquarium ID.
@@ -172,7 +233,7 @@ export const useAquarium = () => {
       fromAquariumId: BigNumberish,
       toAquariumId: BigNumberish
     ) => {
-      return await client.AquaStark.moveFishToAquarium(
+      return await client.Game.moveFishToAquarium(
         account,
         fishId,
         fromAquariumId,
@@ -183,7 +244,7 @@ export const useAquarium = () => {
   );
 
   /**
-   * Moves a decoration between aquariums.
+   * Moves a decoration between aquariums via Game contract.
    * @param {Account | AccountInterface} account - User account instance.
    * @param {BigNumberish} decorationId - ID of the decoration.
    * @param {BigNumberish} fromAquariumId - Source aquarium ID.
@@ -197,7 +258,7 @@ export const useAquarium = () => {
       fromAquariumId: BigNumberish,
       toAquariumId: BigNumberish
     ) => {
-      return await client.AquaStark.moveDecorationToAquarium(
+      return await client.Game.moveDecorationToAquarium(
         account,
         decorationId,
         fromAquariumId,
