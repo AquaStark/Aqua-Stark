@@ -186,9 +186,7 @@ export function MobileOnboardingView() {
             <span className='mr-0.5'>←</span>
             Back
           </button>
-          <h1 className='text-xs font-bold text-white'>
-            Choose Your Fish
-          </h1>
+          <h1 className='text-xs font-bold text-white'>Choose Your Fish</h1>
           <div className='w-8' /> {/* Spacer */}
         </div>
       </div>
@@ -335,9 +333,7 @@ export function MobileOnboardingView() {
       {/* Mobile footer - at end of scroll */}
       <div className='relative z-30 p-1 bg-blue-900/90 backdrop-blur-md border-t border-blue-400/50'>
         <div className='text-center text-blue-100 text-xs'>
-          <p className='mb-1'>
-            © 2025 Aqua Stark - All rights reserved
-          </p>
+          <p className='mb-1'>© 2025 Aqua Stark - All rights reserved</p>
           <div className='flex flex-wrap justify-center gap-1 text-xs'>
             <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 py-0.5 rounded hover:bg-blue-500/20 transition-colors'>
               Polity and Privacy
