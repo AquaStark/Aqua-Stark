@@ -64,6 +64,7 @@ export const usePlayerValidation = () => {
    */
   const validatePlayer = useCallback(
     async (walletAddress: string): Promise<PlayerValidationResult> => {
+      console.log('🔍 validatePlayer called with:', walletAddress);
       setIsValidating(true);
 
       try {
@@ -71,10 +72,12 @@ export const usePlayerValidation = () => {
         let onChainPlayer: OnChainPlayerData | undefined;
 
         try {
+          console.log('📡 Calling getPlayer...');
           onChainPlayer = await getPlayer(walletAddress);
+          console.log('📦 getPlayer returned:', onChainPlayer);
         } catch (error) {
           // Player not found on-chain, continue with backend check
-          console.debug('Player not found on-chain:', error);
+          console.log('❌ Player not found on-chain:', error);
           // Could add specific error handling for different error types
         }
 
@@ -82,15 +85,17 @@ export const usePlayerValidation = () => {
         let backendPlayer: BackendPlayerData | undefined;
 
         try {
+          console.log('📡 Checking backend...');
           const url = buildApiUrl(API_CONFIG.ENDPOINTS.PLAYERS.GET_BY_WALLET, {
             walletAddress,
           });
           const response =
             await ApiClient.get<ApiResponse<BackendPlayerData>>(url);
           backendPlayer = response.data;
+          console.log('📦 Backend returned:', backendPlayer);
         } catch (error) {
           // Player not found in backend, continue with validation
-          console.debug('Player not found in backend:', error);
+          console.log('❌ Player not found in backend:', error);
           // Could add specific error handling for different error types
         }
 
@@ -98,6 +103,14 @@ export const usePlayerValidation = () => {
         const isOnChain = Boolean(onChainPlayer?.id);
         const isInBackend = Boolean(backendPlayer?.id);
         const exists = isOnChain || isInBackend;
+
+        console.log('🎯 Validation computed:', {
+          onChainPlayerId: onChainPlayer?.id,
+          backendPlayerId: backendPlayer?.id,
+          isOnChain,
+          isInBackend,
+          exists,
+        });
 
         return {
           exists,
@@ -107,7 +120,7 @@ export const usePlayerValidation = () => {
           backendData: backendPlayer,
         };
       } catch (error) {
-        console.error('Player validation failed:', error);
+        console.error('❌ Player validation failed:', error);
         // Could add user notification for validation failures
         return {
           exists: false,
@@ -169,7 +182,10 @@ export const usePlayerValidation = () => {
     async (onChainPlayer: OnChainPlayerData, walletAddress: string) => {
       try {
         // If player exists on-chain but not in backend, create backend entry
-        const playerId = onChainPlayer.id || walletAddress;
+        // Convert BigInt to string if necessary
+        const playerId = onChainPlayer.id
+          ? String(onChainPlayer.id)
+          : walletAddress;
         const username = onChainPlayer.username || `Player_${playerId}`;
 
         return await createBackendPlayer(playerId, walletAddress, username);

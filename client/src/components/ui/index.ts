@@ -6,6 +6,7 @@ export { CartridgeDemo } from './cartridge-demo';
 export { CartridgeHelpModal } from './cartridge-help-modal';
 export { CategoryButton } from './category-button';
 export { ConnectButton } from './connect-button';
+export { ConnectWalletModal } from '../modal/connect-wallet-modal';
 export { ComingSoonModal } from './coming-soon-modal';
 export { CompatabilityGuide } from './CompatabilityGuide';
 export { Container } from './container';

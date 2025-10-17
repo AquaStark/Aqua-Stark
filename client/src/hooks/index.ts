@@ -21,6 +21,7 @@
 // Top-level hooks
 export { useAquarium } from './use-aquarium';
 export { useBubbles } from './use-bubbles';
+export { usePulseAnimation } from './use-pulse-animation';
 export { useCartridgeConnection } from './use-cartridge-connection';
 export { useCartridgeSession } from './use-cartridge-session';
 export { useCommunity } from './use-community';

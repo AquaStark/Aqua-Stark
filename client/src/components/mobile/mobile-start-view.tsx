@@ -1,83 +1,23 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { BubblesBackground } from '@/components';
 import { useBubbles } from '@/hooks';
 
 interface MobileStartViewProps {
-  onRegister: (usernameToRegister?: string) => Promise<void>;
-  onContinue: () => void;
-  loading: boolean;
-  txHash: string;
+  onContinue: () => Promise<void>;
+  cartridgeUsername?: string;
+  isRegistering?: boolean;
+  registrationStep?: string;
 }
 
 export function MobileStartView({
-  onRegister,
   onContinue,
-  loading,
-  txHash,
+  cartridgeUsername,
+  isRegistering = false,
+  registrationStep = '',
 }: MobileStartViewProps) {
-  const [username, setUsername] = useState('');
-  const [usernameError, setUsernameError] = useState('');
-  const [usernameSuggestions, setUsernameSuggestions] = useState<string[]>([]);
   const bubbles = useBubbles({ initialCount: 8, maxBubbles: 20 });
-
-  // Focus input on mount
-  useEffect(() => {
-    const input = document.getElementById(
-      'mobile-username-input'
-    ) as HTMLInputElement | null;
-    if (input) input.focus();
-  }, []);
-
-  // Validate username format
-  const validateUsername = (value: string) => {
-    setUsernameError('');
-
-    if (!value.trim()) {
-      setUsernameError('Username is required');
-      return false;
-    }
-
-    if (value.length < 3) {
-      setUsernameError('Username must be at least 3 characters long');
-      return false;
-    }
-
-    if (value.length > 24) {
-      setUsernameError('Username must be less than 24 characters');
-      return false;
-    }
-
-    if (!/^[a-zA-Z0-9_-]+$/.test(value)) {
-      setUsernameError(
-        'Username can only contain letters, numbers, underscores, and hyphens'
-      );
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setUsername(value);
-    validateUsername(value);
-    setUsernameSuggestions([]);
-  };
-
-  const handleRegister = async () => {
-    if (!validateUsername(username)) return;
-    await onRegister(username);
-  };
-
-  const handleSuggestionClick = (suggestion: string) => {
-    setUsername(suggestion);
-    setUsernameError('');
-    setUsernameSuggestions([]);
-  };
 
   return (
     <div className='relative w-full h-screen overflow-y-auto flex flex-col'>
@@ -137,81 +77,40 @@ export function MobileStartView({
             {/* Top highlight strip */}
             <div className='absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400/20 via-blue-300/30 to-purple-500/20' />
 
-            {/* Title - compact typography */}
-            <h2 className='text-sm sm:text-base md:text-lg lg:text-xl font-extrabold uppercase tracking-wide mb-1 sm:mb-2 text-white drop-shadow'>
-              Create Your Profile
-            </h2>
+            {/* Cartridge greeting */}
+            <div className='mb-4 text-center bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-2'>
+              <h2 className='text-base sm:text-lg md:text-xl font-extrabold mb-1 text-cyan-300'>
+                Hello, {cartridgeUsername || 'Player'}! 👋
+              </h2>
+              <p className='text-cyan-100/70 text-xs'>Welcome from Cartridge</p>
+            </div>
 
-            {/* Description - compact typography */}
-            <p className='mb-2 sm:mb-3 text-blue-100/90 text-xs drop-shadow leading-relaxed'>
-              Pick a username to start exploring the world beneath the surface.
-            </p>
+            {/* Welcome message */}
+            <div className='text-center'>
+              <h2 className='text-sm sm:text-base md:text-lg font-extrabold uppercase tracking-wide mb-2 text-white drop-shadow'>
+                Ready to Dive In?
+              </h2>
+              <p className='mb-3 text-blue-100/90 text-xs drop-shadow'>
+                You're all set! Let's start your aquatic adventure.
+              </p>
 
-            {/* Input - compact sizing */}
-            <Input
-              id='mobile-username-input'
-              placeholder='Enter your username'
-              className={`bg-blue-100/10 border-blue-300/30 text-white placeholder:text-blue-100/50 mb-1 h-7 sm:h-8 md:h-9 text-xs ${
-                usernameError ? 'border-red-400' : ''
-              }`}
-              value={username}
-              onChange={handleUsernameChange}
-              autoComplete='off'
-              maxLength={24}
-              aria-label='Username'
-              disabled={loading}
-            />
-
-            {/* Error message */}
-            {usernameError && (
-              <div className='text-red-400 text-xs mb-1 px-1'>
-                {usernameError}
-              </div>
-            )}
-
-            {/* Suggestions - compact layout */}
-            {usernameSuggestions.length > 0 && (
-              <div className='mb-2'>
-                <p className='text-blue-200 text-xs mb-1'>
-                  Try these suggestions:
-                </p>
-                <div className='flex flex-wrap gap-1'>
-                  {usernameSuggestions.map((suggestion, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSuggestionClick(suggestion)}
-                      className='px-1 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors touch-manipulation'
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Button - compact sizing */}
-            <Button
-              onClick={handleRegister}
-              className='w-full bg-purple-600 hover:bg-purple-700 text-white font-bold shadow-lg shadow-purple-500/10 h-7 sm:h-8 md:h-9 text-xs touch-manipulation'
-              disabled={loading}
-              aria-busy={loading}
-            >
-              {loading ? 'Registering...' : 'Start Adventure'}
-            </Button>
-
-            {/* Transaction success section */}
-            {txHash && (
-              <div className='mt-2 bg-blue-900/50 text-white text-xs p-1 rounded border border-blue-400/40 shadow-inner'>
-                <div className='mb-1 font-semibold'>Transaction Hash:</div>
-                <div className='break-all text-xs'>{txHash}</div>
-                <Button
-                  onClick={onContinue}
-                  className='mt-1 w-full bg-green-600 hover:bg-green-700 text-white font-bold shadow-lg shadow-green-500/10 h-6 text-xs touch-manipulation'
-                >
-                  Continue
-                </Button>
-              </div>
-            )}
+              {/* Button - compact sizing */}
+              <Button
+                onClick={onContinue}
+                className='w-full bg-purple-600 hover:bg-purple-700 text-white font-bold shadow-lg shadow-purple-500/10 h-8 sm:h-9 md:h-10 text-xs touch-manipulation'
+                disabled={isRegistering}
+                aria-busy={isRegistering}
+              >
+                {isRegistering ? (
+                  <div className='flex items-center gap-2'>
+                    <div className='w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin' />
+                    {registrationStep || 'Processing...'}
+                  </div>
+                ) : (
+                  'Start Adventure'
+                )}
+              </Button>
+            </div>
           </div>
         </div>
 

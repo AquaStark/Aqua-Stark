@@ -7,7 +7,11 @@ import { useAccount, useDisconnect } from '@starknet-react/core';
 import { useNotifications } from '@/hooks';
 import { useFullscreen } from '@/hooks/use-fullscreen';
 
-export function Navbar() {
+interface NavbarProps {
+  isPulsing?: boolean;
+}
+
+export function Navbar({ isPulsing = false }: NavbarProps) {
   const [activeButton, setActiveButton] = useState<string | null>(null);
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
@@ -141,7 +145,9 @@ export function Navbar() {
             </button>
           </div>
         ) : (
-          <ConnectButton />
+          <div className={isPulsing ? 'animate-pulse-glow' : ''}>
+            <ConnectButton />
+          </div>
         )}
       </div>
     </nav>
