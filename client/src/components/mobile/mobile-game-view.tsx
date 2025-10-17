@@ -11,7 +11,7 @@ import { useFeedingSystem } from '@/systems/feeding-system';
 import { FishSpecies } from '@/types';
 import { useFish } from '@/hooks';
 import { fishCollection as fullFishList } from '@/constants';
-import { Monitor, Menu, Fish, Grid, Utensils, Timer, ShoppingBag, Package, Gamepad2, Trophy } from 'lucide-react';
+import { Monitor, Fish, Grid, Utensils, Timer, ShoppingBag, Package, Gamepad2, Trophy } from 'lucide-react';
 import { useAquarium } from '@/hooks';
 import { useSimpleDirtSystem } from '@/hooks/use-simple-dirt-system';
 import { SimpleDirtSpot } from '@/components/simple-dirt-spot';
@@ -512,110 +512,155 @@ export function MobileGameView() {
 
       {/* Mobile Menu - Sidebar Style */}
       {showMenu && (
-        <div className='absolute top-0 left-0 h-full w-64 bg-blue-900/95 backdrop-blur-md z-50'>
-          <div className='flex flex-col h-full p-4'>
-            {/* Close button */}
-            <div className='flex justify-end mb-4'>
+        <div className='absolute top-0 left-0 h-full w-64 bg-gradient-to-b from-blue-900/95 to-blue-800/95 backdrop-blur-md z-50 shadow-2xl border-r border-blue-400/20'>
+          <div className='flex flex-col h-full'>
+            {/* Header with close button */}
+            <div className='flex justify-between items-center p-4 border-b border-blue-400/20'>
+              <h2 className='text-white font-bold text-lg'>Menu</h2>
               <button
                 onClick={() => setShowMenu(false)}
-                className='w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center'
+                className='w-8 h-8 bg-blue-500 hover:bg-blue-400 rounded-full flex items-center justify-center transition-colors shadow-lg'
               >
-                <span className='text-white text-lg'>×</span>
+                <span className='text-white text-lg font-bold'>×</span>
               </button>
             </div>
             
-            {/* Menu items */}
-            <div className='flex flex-col gap-3'>
-              <button
-                onClick={() => {
-                  navigate('/store');
-                  setShowMenu(false);
-                }}
-                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
-              >
-                <span className='text-xl'>🛒</span>
-                Store
-              </button>
-              <button
-                onClick={() => {
-                  navigate('/community');
-                  setShowMenu(false);
-                }}
-                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
-              >
-                <span className='text-xl'>👥</span>
-                Community
-              </button>
-              <button
-                onClick={() => {
-                  navigate('/my-profile');
-                  setShowMenu(false);
-                }}
-                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
-              >
-                <span className='text-xl'>👤</span>
-                Profile
-              </button>
-              <button
-                onClick={() => {
-                  navigate('/achievements');
-                  setShowMenu(false);
-                }}
-                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
-              >
-                <span className='text-xl'>🏆</span>
-                Achievements
-              </button>
-              <button
-                onClick={() => {
-                  navigate('/mini-games');
-                  setShowMenu(false);
-                }}
-                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
-              >
-                <span className='text-xl'>🎮</span>
-                Mini Games
-              </button>
-              <button
-                onClick={() => {
-                  navigate('/encyclopedia');
-                  setShowMenu(false);
-                }}
-                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
-              >
-                <span className='text-xl'>📚</span>
-                Encyclopedia
-              </button>
-              <button
-                onClick={() => {
-                  navigate('/help-center');
-                  setShowMenu(false);
-                }}
-                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
-              >
-                <span className='text-xl'>❓</span>
-                Help Center
-              </button>
-              <button
-                onClick={() => {
-                  navigate('/settings');
-                  setShowMenu(false);
-                }}
-                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
-              >
-                <span className='text-xl'>⚙️</span>
-                Settings
-              </button>
-              <button
-                onClick={() => {
-                  handleWallpaperToggle();
-                  setShowMenu(false);
-                }}
-                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
-              >
-                <span className='text-xl'>🖥️</span>
-                Wallpaper Mode
-              </button>
+            {/* Scrollable menu items */}
+            <div className='flex-1 overflow-y-auto py-4 px-4'>
+              <div className='flex flex-col gap-2'>
+                <button
+                  onClick={() => {
+                    navigate('/store');
+                    setShowMenu(false);
+                  }}
+                  className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
+                >
+                  <span className='text-2xl'>🛒</span>
+                  <span className='font-medium'>Store</span>
+                </button>
+                <button
+                  onClick={() => {
+                    navigate('/community');
+                    setShowMenu(false);
+                  }}
+                  className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
+                >
+                  <span className='text-2xl'>👥</span>
+                  <span className='font-medium'>Community</span>
+                </button>
+                <button
+                  onClick={() => {
+                    navigate('/my-profile');
+                    setShowMenu(false);
+                  }}
+                  className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
+                >
+                  <span className='text-2xl'>👤</span>
+                  <span className='font-medium'>Profile</span>
+                </button>
+                <button
+                  onClick={() => {
+                    navigate('/achievements');
+                    setShowMenu(false);
+                  }}
+                  className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
+                >
+                  <span className='text-2xl'>🏆</span>
+                  <span className='font-medium'>Achievements</span>
+                </button>
+                <button
+                  onClick={() => {
+                    navigate('/mini-games');
+                    setShowMenu(false);
+                  }}
+                  className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
+                >
+                  <span className='text-2xl'>🎮</span>
+                  <span className='font-medium'>Mini Games</span>
+                </button>
+                <button
+                  onClick={() => {
+                    navigate('/encyclopedia');
+                    setShowMenu(false);
+                  }}
+                  className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
+                >
+                  <span className='text-2xl'>📚</span>
+                  <span className='font-medium'>Encyclopedia</span>
+                </button>
+                <button
+                  onClick={() => {
+                    navigate('/help-center');
+                    setShowMenu(false);
+                  }}
+                  className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
+                >
+                  <span className='text-2xl'>❓</span>
+                  <span className='font-medium'>Help Center</span>
+                </button>
+                <button
+                  onClick={() => {
+                    navigate('/settings');
+                    setShowMenu(false);
+                  }}
+                  className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
+                >
+                  <span className='text-2xl'>⚙️</span>
+                  <span className='font-medium'>Settings</span>
+                </button>
+                <button
+                  onClick={() => {
+                    handleWallpaperToggle();
+                    setShowMenu(false);
+                  }}
+                  className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
+                >
+                  <span className='text-2xl'>🖥️</span>
+                  <span className='font-medium'>Wallpaper Mode</span>
+                </button>
+                
+                {/* Additional menu items for better scrolling */}
+                <button
+                  onClick={() => {
+                    navigate('/leaderboard');
+                    setShowMenu(false);
+                  }}
+                  className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
+                >
+                  <span className='text-2xl'>📊</span>
+                  <span className='font-medium'>Leaderboard</span>
+                </button>
+                <button
+                  onClick={() => {
+                    navigate('/events');
+                    setShowMenu(false);
+                  }}
+                  className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
+                >
+                  <span className='text-2xl'>🎉</span>
+                  <span className='font-medium'>Events</span>
+                </button>
+                <button
+                  onClick={() => {
+                    navigate('/tutorial');
+                    setShowMenu(false);
+                  }}
+                  className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
+                >
+                  <span className='text-2xl'>🎯</span>
+                  <span className='font-medium'>Tutorial</span>
+                </button>
+                <button
+                  onClick={() => {
+                    navigate('/about');
+                    setShowMenu(false);
+                  }}
+                  className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
+                >
+                  <span className='text-2xl'>ℹ️</span>
+                  <span className='font-medium'>About</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
