@@ -177,36 +177,36 @@ export function MobileOnboardingView() {
       <BubblesBackground bubbles={bubbles} />
 
       {/* Mobile header */}
-      <div className='relative z-30 p-3 bg-blue-900/60 backdrop-blur-md border-b border-blue-400/30'>
+      <div className='relative z-30 p-2 bg-blue-900/60 backdrop-blur-md border-b border-blue-400/30'>
         <div className='flex items-center justify-between max-w-7xl mx-auto'>
           <button
             onClick={() => window.history.back()}
-            className='flex items-center text-white text-xs sm:text-sm touch-manipulation hover:bg-blue-500/50 px-2 py-1 rounded transition-colors'
+            className='flex items-center text-white text-xs touch-manipulation hover:bg-blue-500/50 px-1 py-0.5 rounded transition-colors'
           >
-            <span className='mr-1'>←</span>
+            <span className='mr-0.5'>←</span>
             Back
           </button>
-          <h1 className='text-sm sm:text-base md:text-lg font-bold text-white'>
+          <h1 className='text-xs font-bold text-white'>
             Choose Your Fish
           </h1>
-          <div className='w-12 sm:w-16' /> {/* Spacer */}
+          <div className='w-8' /> {/* Spacer */}
         </div>
       </div>
 
       {/* Mobile main content */}
-      <main className='flex flex-col items-center px-2 sm:px-3 py-4 sm:py-6 relative z-30 min-h-[100vh] pb-20'>
+      <main className='flex flex-col items-center px-1 py-2 relative z-30 min-h-[100vh] pb-16'>
         {/* Welcome section - responsive */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className='text-center mb-4 sm:mb-6'
+          className='text-center mb-2'
         >
-          <h1 className='text-lg sm:text-xl md:text-2xl lg:text-3xl font-extrabold uppercase tracking-wide text-white drop-shadow-lg mb-2 sm:mb-3'>
+          <h1 className='text-sm font-extrabold uppercase tracking-wide text-white drop-shadow-lg mb-1'>
             Welcome to Aqua Stark!
           </h1>
-          <div className='bg-white/10 backdrop-blur-sm border border-white/20 px-2 sm:px-3 py-2 sm:py-3 rounded-lg sm:rounded-xl text-white/90 shadow-md max-w-xs sm:max-w-sm mx-auto'>
-            <p className='text-xs sm:text-sm leading-relaxed'>
+          <div className='bg-white/10 backdrop-blur-sm border border-white/20 px-2 py-1 rounded-lg text-white/90 shadow-md max-w-xs mx-auto'>
+            <p className='text-xs leading-relaxed'>
               Choose 2 fish to start your aquatic adventure. Each fish has
               unique abilities and characteristics.
             </p>
@@ -218,7 +218,7 @@ export function MobileOnboardingView() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className='grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 w-full max-w-lg sm:max-w-xl md:max-w-2xl auto-rows-fr'
+          className='grid grid-cols-2 gap-1 w-full max-w-sm auto-rows-fr'
         >
           {starterFish.map((fish, index) => (
             <motion.div
@@ -248,18 +248,18 @@ export function MobileOnboardingView() {
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className='absolute top-1 right-1 sm:top-2 sm:right-2 bg-blue-500 rounded-full p-0.5 sm:p-1 z-20'
+                    className='absolute top-0.5 right-0.5 bg-blue-500 rounded-full p-0.5 z-20'
                   >
-                    <Check className='w-3 h-3 sm:w-4 sm:h-4 text-white' />
+                    <Check className='w-2 h-2 text-white' />
                   </motion.div>
                 )}
 
-                <div className='p-2 sm:p-4 text-center flex flex-col h-full'>
-                  <h3 className='text-sm sm:text-lg font-bold text-white mb-2 sm:mb-4 uppercase tracking-wide'>
+                <div className='p-1 text-center flex flex-col h-full'>
+                  <h3 className='text-xs font-bold text-white mb-1 uppercase tracking-wide'>
                     {fish.name}
                   </h3>
 
-                  <div className='relative w-24 h-24 sm:w-40 sm:h-40 mx-auto mb-2 sm:mb-4 flex-shrink-0 flex items-center justify-center'>
+                  <div className='relative w-16 h-16 mx-auto mb-1 flex-shrink-0 flex items-center justify-center'>
                     <div className='relative w-full h-full flex items-center justify-center'>
                       <div className='relative w-full h-full flex items-center justify-center'>
                         <img
@@ -271,7 +271,7 @@ export function MobileOnboardingView() {
                           <img
                             src={fish.image}
                             alt={fish.name}
-                            className='w-16 h-16 sm:w-24 sm:h-24 object-contain'
+                            className='w-10 h-10 object-contain'
                             style={{
                               filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
                             }}
@@ -286,7 +286,7 @@ export function MobileOnboardingView() {
                     </div>
                   </div>
 
-                  <p className='text-xs sm:text-sm text-white/80 leading-relaxed flex-grow'>
+                  <p className='text-xs text-white/80 leading-relaxed flex-grow'>
                     {fish.description}
                   </p>
                 </div>
@@ -305,9 +305,9 @@ export function MobileOnboardingView() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.8 }}
-          className='mt-4 sm:mt-6 text-center'
+          className='mt-2 text-center'
         >
-          <p className='text-white/90 text-xs sm:text-sm'>
+          <p className='text-white/90 text-xs'>
             {selectedFish.length === 0 && 'Select 2 fish to continue'}
             {selectedFish.length === 1 && 'Select 1 more fish'}
             {selectedFish.length === 2 && 'Perfect! You can now continue'}
@@ -319,33 +319,33 @@ export function MobileOnboardingView() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 1.0 }}
-          className='mt-4 sm:mt-6 w-full max-w-xs sm:max-w-sm'
+          className='mt-2 w-full max-w-xs'
         >
           <Button
             onClick={handleContinue}
             disabled={selectedFish.length !== 2}
-            className='w-full bg-green-500 hover:bg-green-600 text-white font-bold px-4 sm:px-6 py-2 sm:py-3 rounded-lg flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation h-10 sm:h-12 text-sm sm:text-base'
+            className='w-full bg-green-500 hover:bg-green-600 text-white font-bold px-3 py-2 rounded-lg flex items-center justify-center gap-1 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation h-8 text-xs'
           >
             Continue
-            <ChevronRight className='w-3 h-3 sm:w-4 sm:h-4' />
+            <ChevronRight className='w-3 h-3' />
           </Button>
         </motion.div>
       </main>
 
       {/* Mobile footer - at end of scroll */}
-      <div className='relative z-30 p-2 sm:p-3 bg-blue-900/90 backdrop-blur-md border-t border-blue-400/50'>
-        <div className='text-center text-blue-100 text-xs sm:text-sm'>
-          <p className='mb-1 sm:mb-2'>
+      <div className='relative z-30 p-1 bg-blue-900/90 backdrop-blur-md border-t border-blue-400/50'>
+        <div className='text-center text-blue-100 text-xs'>
+          <p className='mb-1'>
             © 2025 Aqua Stark - All rights reserved
           </p>
-          <div className='flex flex-wrap justify-center gap-1 sm:gap-2 text-xs sm:text-sm'>
-            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 sm:px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>
+          <div className='flex flex-wrap justify-center gap-1 text-xs'>
+            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 py-0.5 rounded hover:bg-blue-500/20 transition-colors'>
               Polity and Privacy
             </span>
-            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 sm:px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>
+            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 py-0.5 rounded hover:bg-blue-500/20 transition-colors'>
               Terms of Service
             </span>
-            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 sm:px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>
+            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 py-0.5 rounded hover:bg-blue-500/20 transition-colors'>
               Contact
             </span>
           </div>
