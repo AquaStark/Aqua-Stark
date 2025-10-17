@@ -183,7 +183,7 @@ export default function Onboarding() {
   // Desktop/tablet view
   return (
     <OrientationLock>
-      <div className='relative min-h-screen overflow-y-auto bg-gradient-to-b from-blue-400 via-blue-600 to-blue-800'>
+      <div className='relative h-screen overflow-y-auto bg-gradient-to-b from-blue-400 via-blue-600 to-blue-800'>
         {/* Ambient lights */}
         <div className='absolute top-10 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-cyan-300/10 rounded-full blur-2xl' />
         <div className='absolute bottom-10 right-10 w-[350px] h-[350px] bg-yellow-300/10 rounded-full blur-2xl' />
@@ -201,8 +201,8 @@ export default function Onboarding() {
           </Button>
         </div>
 
-        <main className='relative z-20 flex flex-col items-center px-4 py-16 pointer-events-auto min-h-screen'>
-          <div className='flex flex-col items-center justify-center min-h-screen w-full'>
+        <main className='relative z-20 flex flex-col items-center px-4 py-16 pointer-events-auto min-h-[120vh]'>
+          <div className='flex flex-col items-center justify-center min-h-[120vh] w-full'>
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
