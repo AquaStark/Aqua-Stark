@@ -8,7 +8,7 @@ import { logger } from '../../utils/logger.js';
  * @class TransactionController
  * @author Aqua Stark
  * @version 1.0.2
- * @since 2025-01-XX
+ * @since 1.0.0
  */
 export class TransactionController {
   /**

@@ -1,7 +1,17 @@
 import React from 'react';
-import { Grid } from 'lucide-react';
+import {
+  Grid,
+  Utensils,
+  Timer,
+  ShoppingBag,
+  Package,
+  Gamepad2,
+  Trophy,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MOCK_AQUARIUMS } from '@/constants';
+import { CleanButton } from '../dirt/clean-button';
+import { TipsPopup } from './tips-popup';
 
 interface AquariumTabProps {
   name: string;
@@ -39,16 +49,39 @@ interface AquariumTabsProps {
   aquariums: typeof MOCK_AQUARIUMS;
   selectedAquarium: (typeof MOCK_AQUARIUMS)[0];
   onAquariumSelect: (aquarium?: (typeof MOCK_AQUARIUMS)[0]) => void;
+  // Props para botones de acción
+  feedingSystem?: {
+    isFeeding: boolean;
+    startFeeding: (duration: number) => void;
+    stopFeeding: () => void;
+  };
+  dirtSystem?: {
+    dirtLevel: number;
+    isDirty: boolean;
+    needsCleaning: boolean;
+  };
+  isCleaningMode?: boolean;
+  onToggleCleaningMode?: () => void;
+  showTips?: boolean;
+  onTipsToggle?: () => void;
+  onTipsClose?: () => void;
 }
 
 export function AquariumTabs({
   aquariums,
   selectedAquarium,
   onAquariumSelect,
+  feedingSystem,
+  dirtSystem,
+  isCleaningMode,
+  onToggleCleaningMode,
+  showTips,
+  onTipsToggle,
+  onTipsClose,
 }: AquariumTabsProps) {
   return (
-    <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/90 to-transparent z-20 p-2 sm:p-4'>
-      <div className='flex justify-between items-end'>
+    <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/90 to-transparent z-40 p-2 sm:p-4'>
+      <div className='flex justify-between items-end gap-4'>
         {/* Left side - Aquarium tabs */}
         <div className='flex gap-1 sm:gap-2 overflow-x-auto scrollbar-hide'>
           {aquariums.map(aquarium => (
@@ -67,8 +100,128 @@ export function AquariumTabs({
           />
         </div>
 
-        {/* Right side - Empty space for balance */}
-        <div className='w-16 sm:w-32'></div>
+        {/* Right side - Action buttons */}
+        <div className='flex items-center gap-2'>
+          {/* Feed button */}
+          {feedingSystem && (
+            <div className='relative group'>
+              <button
+                onClick={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (feedingSystem.isFeeding) {
+                    feedingSystem.stopFeeding();
+                  } else {
+                    feedingSystem.startFeeding(30000);
+                  }
+                }}
+                className={`game-button bg-gradient-to-b text-white rounded-xl relative group cursor-pointer w-12 h-12 ${
+                  feedingSystem.isFeeding
+                    ? 'from-orange-400 to-orange-600'
+                    : 'from-green-400 to-green-600'
+                }`}
+              >
+                <div className='flex items-center justify-center gap-2 w-full h-full'>
+                  {feedingSystem.isFeeding ? (
+                    <Timer className='h-5 w-5' />
+                  ) : (
+                    <Utensils className='h-5 w-5' />
+                  )}
+                </div>
+              </button>
+              {/* Tooltip */}
+              <div className='absolute bottom-16 left-1/2 transform -translate-x-1/2 w-20 bg-blue-600/90 backdrop-blur-md rounded-lg p-2 border border-blue-400/50 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-60'>
+                <div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-600/90 transform rotate-45 border-r border-b border-blue-400/50'></div>
+                <span className='text-white text-xs font-medium text-center block'>
+                  Feed
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Clean Button */}
+          {dirtSystem && onToggleCleaningMode && (
+            <div className='relative group'>
+              <CleanButton
+                dirtLevel={dirtSystem.dirtLevel}
+                isDirty={dirtSystem.isDirty}
+                needsCleaning={dirtSystem.needsCleaning}
+                onToggleCleaningMode={onToggleCleaningMode}
+                isCleaningMode={isCleaningMode || false}
+                className='w-12 h-12'
+              />
+            </div>
+          )}
+
+          {/* Other action buttons */}
+          {[
+            {
+              id: 'shop',
+              label: 'Shop',
+              icon: <ShoppingBag className='h-5 w-5' />,
+              color: 'from-blue-400 to-blue-600',
+            },
+            {
+              id: 'collection',
+              label: 'Collection',
+              icon: <Package className='h-5 w-5' />,
+              color: 'from-teal-400 to-teal-600',
+            },
+            {
+              id: 'games',
+              label: 'Games',
+              icon: <Gamepad2 className='h-5 w-5' />,
+              color: 'from-pink-400 to-pink-600',
+            },
+            {
+              id: 'rewards',
+              label: 'Rewards',
+              icon: <Trophy className='h-5 w-5' />,
+              color: 'from-yellow-400 to-yellow-600',
+            },
+          ].map(item => (
+            <div key={item.id} className='relative group'>
+              <button
+                onClick={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // Handle different actions
+                  switch (item.id) {
+                    case 'shop':
+                      break;
+                    case 'collection':
+                      break;
+                    case 'games':
+                      break;
+                    case 'rewards':
+                      break;
+                  }
+                }}
+                className={`game-button bg-gradient-to-b text-white rounded-xl relative group cursor-pointer w-12 h-12 ${item.color}`}
+              >
+                <div className='flex items-center justify-center gap-2 w-full h-full'>
+                  {item.icon}
+                </div>
+              </button>
+              {/* Tooltip */}
+              <div className='absolute bottom-16 left-1/2 transform -translate-x-1/2 w-20 bg-blue-600/90 backdrop-blur-md rounded-lg p-2 border border-blue-400/50 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-60'>
+                <div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-600/90 transform rotate-45 border-r border-b border-blue-400/50'></div>
+                <span className='text-white text-xs font-medium text-center block'>
+                  {item.label}
+                </span>
+              </div>
+            </div>
+          ))}
+
+          {/* Tips button */}
+          {onTipsToggle && onTipsClose && (
+            <TipsPopup
+              show={showTips || false}
+              onClose={onTipsClose}
+              onToggle={onTipsToggle}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

@@ -12,29 +12,43 @@ import { setupWorld } from './typescript/contracts.gen.ts';
 import { SchemaType } from './typescript/models.gen';
 
 async function main() {
-  const sdk = await init<SchemaType>({
-    client: {
-      toriiUrl: dojoConfig.toriiUrl, // defaults to http://localhost:8080
-      relayUrl: dojoConfig.relayUrl, // defaults to /ip4/127.0.0.1/tcp/9090/tcp/80
-      worldAddress: dojoConfig.manifest.world.address,
-    },
-    // Those values are used
-    domain: {
-      name: 'AquaStark',
-      revision: '1.0.0',
-      chainId: 'KATANA',
-      version: '1.0.0',
-    },
-  });
-  ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-      <DojoSdkProvider sdk={sdk} dojoConfig={dojoConfig} clientFn={setupWorld}>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </DojoSdkProvider>
-    </React.StrictMode>
-  );
+  console.log('Initializing Dojo SDK with config:', dojoConfig);
+
+  try {
+    const sdk = await init<SchemaType>({
+      client: {
+        toriiUrl: dojoConfig.toriiUrl, // defaults to http://localhost:8080
+        relayUrl: dojoConfig.relayUrl, // defaults to /ip4/127.0.0.1/tcp/9090/tcp/80
+        worldAddress: dojoConfig.manifest.world.address,
+      },
+      // Those values are used
+      domain: {
+        name: 'AquaStark',
+        revision: '1.0',
+        chainId: 'SN_SEPOLIA',
+        version: '1',
+      },
+    });
+
+    console.log('Dojo SDK initialized successfully:', sdk);
+    console.log('setupWorld function:', setupWorld);
+    ReactDOM.createRoot(document.getElementById('root')!).render(
+      <React.StrictMode>
+        <DojoSdkProvider
+          sdk={sdk}
+          dojoConfig={dojoConfig}
+          clientFn={setupWorld}
+        >
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </DojoSdkProvider>
+      </React.StrictMode>
+    );
+  } catch (error) {
+    console.error('Failed to initialize Dojo SDK:', error);
+    throw error;
+  }
 }
 
 main();

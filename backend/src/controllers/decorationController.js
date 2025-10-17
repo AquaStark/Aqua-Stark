@@ -168,6 +168,7 @@ export class DecorationController {
   static async getAquariumDecorations(req, res) {
     try {
       const { aquariumId } = req.params;
+      // eslint-disable-next-line no-unused-vars
       const { playerId: authenticatedPlayerId } = req.user;
 
       // Ensure player can only access their own aquarium decorations
