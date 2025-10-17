@@ -512,14 +512,14 @@ export function MobileGameView() {
 
       {/* Mobile Menu - Sidebar Style */}
       {showMenu && (
-        <div className='absolute top-0 left-0 h-full w-64 bg-gradient-to-b from-blue-900/95 to-blue-800/95 backdrop-blur-md z-50 shadow-2xl border-r border-blue-400/20'>
+        <div className='absolute top-0 left-0 h-full w-64 bg-gradient-to-b from-slate-800/95 to-slate-700/95 backdrop-blur-md z-50 shadow-2xl border-r border-slate-400/20'>
           <div className='flex flex-col h-full'>
             {/* Header with close button */}
-            <div className='flex justify-between items-center p-4 border-b border-blue-400/20'>
+            <div className='flex justify-between items-center p-4 border-b border-slate-400/20'>
               <h2 className='text-white font-bold text-lg'>Menu</h2>
               <button
                 onClick={() => setShowMenu(false)}
-                className='w-8 h-8 bg-blue-500 hover:bg-blue-400 rounded-full flex items-center justify-center transition-colors shadow-lg'
+                className='w-8 h-8 bg-slate-600 hover:bg-slate-500 rounded-full flex items-center justify-center transition-colors shadow-lg'
               >
                 <span className='text-white text-lg font-bold'>×</span>
               </button>
