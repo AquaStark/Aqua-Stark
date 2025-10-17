@@ -3,7 +3,7 @@
 
 export const ENV_CONFIG = {
   // Backend API URL - defaults to localhost:3001
-  API_URL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1',
+  API_URL: import.meta.env.VITE_API_URL || 'http://localhost:3001',
 
   // Environment
   NODE_ENV: import.meta.env.MODE || 'development',
