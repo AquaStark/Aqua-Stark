@@ -7,6 +7,7 @@ import { HeroSection } from '@/components/landing/hero-section';
 import { Navbar } from '@/components/landing/navbar';
 import { OrientationLock } from '@/components/ui';
 import { useBubbles } from '@/hooks';
+import { usePulseAnimation } from '@/hooks/use-pulse-animation';
 
 export default function LandingPage() {
   // Bubbles configuration for background effect
@@ -19,6 +20,9 @@ export default function LandingPage() {
     maxDuration: 20,
     interval: 1200,
   });
+
+  // Pulse animation for connect button
+  const { isPulsing, triggerPulse } = usePulseAnimation({ duration: 3000 });
 
   return (
     <OrientationLock>
@@ -45,14 +49,14 @@ export default function LandingPage() {
 
         {/* Top navbar/HUD - Ultra compact on mobile */}
         <div className='relative z-30 h-10 sm:h-12 md:h-16 lg:h-20'>
-          <Navbar />
+          <Navbar isPulsing={isPulsing} />
         </div>
 
         {/* Main content - Ultra compact on mobile */}
         <div className='relative z-20 flex flex-col justify-center items-center px-0.5 sm:px-1 md:px-2 lg:px-4 pt-1 sm:pt-2 md:pt-4 min-h-[calc(100vh-2.5rem)] sm:min-h-[calc(100vh-3rem)] md:min-h-[calc(100vh-4rem)] lg:min-h-[calc(100vh-5rem)]'>
           {/* Hero section - Ultra small on mobile */}
           <div className='flex items-center justify-center py-0.5 sm:py-1 md:py-2'>
-            <HeroSection />
+            <HeroSection onTriggerPulse={triggerPulse} />
           </div>
 
           {/* Featured fish section - Ultra small on mobile */}

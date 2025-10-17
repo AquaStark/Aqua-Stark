@@ -812,3 +812,20 @@
     margin: 0.5rem;
   }
 }
+
+/* Pulse glow animation for wallet connection prompt */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px 10px rgba(34, 211, 238, 0.3);
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 1s ease-in-out 3;
+}

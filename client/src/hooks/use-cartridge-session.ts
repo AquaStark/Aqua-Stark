@@ -94,9 +94,17 @@ export function useCartridgeSession(): UseCartridgeSessionReturn {
       // Intentar obtener información adicional de la sesión
       try {
         if (controller.account && address) {
+          // Obtener username usando el método correcto del ControllerConnector
+          let username: string | undefined;
+          try {
+            username = await controller.username();
+          } catch (usernameError) {
+            console.warn('No se pudo obtener username:', usernameError);
+          }
+
           const accountData: CartridgeAccount = {
             address,
-            username: (controller.account as any).username,
+            username,
             avatar: (controller.account as any).avatar,
             sessionType: (controller.account as any).sessionType,
             email: (controller.account as any).email,
@@ -171,6 +179,28 @@ export function useCartridgeSession(): UseCartridgeSessionReturn {
       setAccount({ address });
     }
   }, [isConnected, address, account]);
+
+  /**
+   * Effect to fetch username when controller is available and we have an address
+   */
+  useEffect(() => {
+    const fetchUsername = async () => {
+      if (controller && address && account && !account.username) {
+        try {
+          const username = await controller.username();
+          if (username) {
+            setAccount(prev =>
+              prev ? { ...prev, username } : { address, username }
+            );
+          }
+        } catch (error) {
+          console.warn('Error fetching username:', error);
+        }
+      }
+    };
+
+    fetchUsername();
+  }, [controller, address, account]);
 
   /**
    * @returns {UseCartridgeSessionReturn} An object containing the session state and control functions.

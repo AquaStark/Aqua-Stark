@@ -22,7 +22,7 @@ export function HeroSection({ onTriggerPulse }: HeroSectionProps) {
   const handleStartGame = async () => {
     console.log('🎮 handleStartGame called');
     console.log('Account:', account);
-    
+
     if (!account) {
       console.log('❌ No account, showing connect modal');
       setShowConnectModal(true);
@@ -38,18 +38,18 @@ export function HeroSection({ onTriggerPulse }: HeroSectionProps) {
       // Validate if user exists (on-chain and backend)
       console.log('🔍 Validating player:', account.address);
       const validation = await validatePlayer(account.address);
-      
+
       console.log('📊 Validation result:', {
         exists: validation.exists,
         isOnChain: validation.isOnChain,
         isInBackend: validation.isInBackend,
         playerData: validation.playerData,
-        backendData: validation.backendData
+        backendData: validation.backendData,
       });
 
       if (validation.exists) {
         console.log('✅ Player exists, navigating to /game');
-        
+
         // User exists - check if we need to sync to backend
         if (validation.isOnChain && !validation.isInBackend) {
           console.log('🔄 Syncing on-chain player to backend');
@@ -93,8 +93,8 @@ export function HeroSection({ onTriggerPulse }: HeroSectionProps) {
           </span>
         </h1>
         <p className='text-xs sm:text-sm md:text-base text-white/90 mb-1 sm:mb-2 md:mb-3 max-w-xs sm:max-w-md md:max-w-lg mx-auto drop-shadow-md leading-tight px-0.5 sm:px-1'>
-          Breed, feed, and collect unique fish while customizing your aquarium in
-          this incredible aquatic adventure.
+          Breed, feed, and collect unique fish while customizing your aquarium
+          in this incredible aquatic adventure.
         </p>
         <div className='flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 md:gap-2 lg:gap-3'>
           <Button

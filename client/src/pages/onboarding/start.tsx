@@ -22,15 +22,17 @@ export default function Start() {
   const { registerPlayer } = usePlayer();
   const { createBackendPlayer } = usePlayerValidation();
   const navigate = useNavigate();
-  
+
   // States for registration
   const [isRegistering, setIsRegistering] = useState(false);
   const [registrationStep, setRegistrationStep] = useState<string>('');
-  
-  // Extract Cartridge username if available, fallback to address
-  const cartridgeUsername = cartridgeAccount?.username || 
-    (cartridgeAccount?.address ? `User_${cartridgeAccount.address.slice(-6)}` : undefined);
 
+  // Extract Cartridge username if available, fallback to address
+  const cartridgeUsername =
+    cartridgeAccount?.username ||
+    (cartridgeAccount?.address
+      ? `User_${cartridgeAccount.address.slice(-6)}`
+      : undefined);
 
   // Redirect if not connected with Cartridge
   useEffect(() => {
@@ -51,13 +53,12 @@ export default function Start() {
   // Use enhanced bubbles config
   const bubbles = useBubbles({ initialCount: 12, maxBubbles: 30 });
 
-
   const handleContinue = async () => {
     console.log('🎯 handleContinue called');
     console.log('Account:', account);
     console.log('CartridgeAccount:', cartridgeAccount);
     console.log('CartridgeUsername:', cartridgeUsername);
-    
+
     if (!account || !cartridgeUsername) {
       console.error('❌ Missing account or username');
       toast.error('Missing account or username');
@@ -67,20 +68,23 @@ export default function Start() {
     try {
       setIsRegistering(true);
       console.log('🚀 Starting registration...');
-      
+
       // Step 1: Register on-chain
       setRegistrationStep('Registering on blockchain...');
-      console.log('📝 Calling registerPlayer with:', { account: account.address, username: cartridgeUsername });
+      console.log('📝 Calling registerPlayer with:', {
+        account: account.address,
+        username: cartridgeUsername,
+      });
       const tx = await registerPlayer(account, cartridgeUsername);
       console.log('✅ On-chain registration successful:', tx);
       toast.success('Registered on blockchain!');
-      
+
       // Step 2: Register in backend
       setRegistrationStep('Syncing to backend...');
-      console.log('💾 Calling createBackendPlayer with:', { 
-        playerId: account.address, 
-        walletAddress: account.address, 
-        username: cartridgeUsername 
+      console.log('💾 Calling createBackendPlayer with:', {
+        playerId: account.address,
+        walletAddress: account.address,
+        username: cartridgeUsername,
       });
       await createBackendPlayer(
         account.address, // Use wallet address as playerId
@@ -89,19 +93,18 @@ export default function Start() {
       );
       console.log('✅ Backend registration successful');
       toast.success('Registration complete!');
-      
+
       // Step 3: Navigate to onboarding
       console.log('🎉 Navigating to /onboarding');
       navigate('/onboarding');
-      
     } catch (error) {
       console.error('❌ Registration error:', error);
       console.error('Error type:', typeof error);
       console.error('Error details:', JSON.stringify(error, null, 2));
-      
+
       // Handle specific error types
       const errorMessage = error?.toString() || 'Registration failed';
-      
+
       if (errorMessage.includes('USERNAME ALREADY TAKEN')) {
         toast.error('Username is already taken. Please try again.');
       } else if (errorMessage.includes('multicall-failed')) {
@@ -177,7 +180,7 @@ export default function Start() {
             <div className='relative w-full max-w-xl bg-gradient-to-b from-blue-900/70 to-blue-800/60 backdrop-blur-lg rounded-3xl px-6 sm:px-10 py-10 border border-blue-400/30 shadow-[0_0_30px_5px_rgba(0,0,50,0.2)] overflow-hidden'>
               {/* Top highlight strip */}
               <div className='absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-cyan-400/20 via-blue-300/30 to-purple-500/20' />
-              
+
               {/* Cartridge greeting - Always shown since Cartridge is required */}
               <div className='mb-8 text-center bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-4'>
                 <h2 className='text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2 text-cyan-300 drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]'>
@@ -187,7 +190,7 @@ export default function Start() {
                   Welcome from Cartridge
                 </p>
               </div>
-              
+
               {/* Welcome message and contract execution button */}
               <div className='text-center'>
                 <h2 className='text-xl sm:text-2xl md:text-3xl font-extrabold uppercase tracking-wide mb-4 text-white drop-shadow'>
