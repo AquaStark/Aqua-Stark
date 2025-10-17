@@ -214,9 +214,9 @@ export default function Onboarding() {
               </h1>
               <div className='bg-white/10 backdrop-blur-sm border border-white/20 px-6 py-4 rounded-2xl text-white/90 shadow-md max-w-2xl mx-auto'>
                 <p className='text-lg md:text-xl leading-relaxed'>
-                  We see you're new to our aquatic adventure. To get you started,
-                  we've gifted you a personalized aquarium and two unique fish to
-                  choose from as your initial companions.
+                  We see you're new to our aquatic adventure. To get you
+                  started, we've gifted you a personalized aquarium and two
+                  unique fish to choose from as your initial companions.
                 </p>
               </div>
             </motion.div>
