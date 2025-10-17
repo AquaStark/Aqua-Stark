@@ -184,9 +184,7 @@ export const usePlayerValidation = () => {
         // If player exists on-chain but not in backend, create backend entry
         // Convert BigInt to string if necessary
         const playerId = onChainPlayer.id
-          ? typeof onChainPlayer.id === 'bigint'
-            ? onChainPlayer.id.toString()
-            : onChainPlayer.id.toString()
+          ? String(onChainPlayer.id)
           : walletAddress;
         const username = onChainPlayer.username || `Player_${playerId}`;
 
