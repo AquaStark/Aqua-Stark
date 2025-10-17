@@ -269,9 +269,9 @@ export function MobileGameView() {
           <img
             src='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Aqua_Stark-removebg-preview-ubKSrqYo7jzOH5qXqxEw4CyRHXIjfq.png'
             alt='Aqua Stark Logo'
-            width={120}
-            height={48}
-            className='drop-shadow-lg w-24 h-8 object-contain'
+            width={160}
+            height={64}
+            className='drop-shadow-lg w-32 h-10 object-contain'
           />
         </div>
 
