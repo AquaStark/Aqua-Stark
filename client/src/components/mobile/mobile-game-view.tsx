@@ -269,9 +269,9 @@ export function MobileGameView() {
           <img
             src='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Aqua_Stark-removebg-preview-ubKSrqYo7jzOH5qXqxEw4CyRHXIjfq.png'
             alt='Aqua Stark Logo'
-            width={80}
-            height={32}
-            className='drop-shadow-lg w-16 h-6 object-contain'
+            width={120}
+            height={48}
+            className='drop-shadow-lg w-24 h-8 object-contain'
           />
         </div>
 
@@ -510,40 +510,113 @@ export function MobileGameView() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu - Sidebar Style */}
       {showMenu && (
-        <div className='absolute top-14 right-2 z-50 bg-blue-900/95 backdrop-blur-md rounded-lg border border-blue-400/30 p-2'>
-          <div className='flex flex-col gap-1'>
-            <button
-              onClick={() => navigate('/store')}
-              className='px-3 py-2 text-white text-sm hover:bg-white/10 rounded transition-colors'
-            >
-              🛒 Store
-            </button>
-            <button
-              onClick={() => navigate('/community')}
-              className='px-3 py-2 text-white text-sm hover:bg-white/10 rounded transition-colors'
-            >
-              👥 Community
-            </button>
-            <button
-              onClick={() => navigate('/my-profile')}
-              className='px-3 py-2 text-white text-sm hover:bg-white/10 rounded transition-colors'
-            >
-              👤 Profile
-            </button>
-            <button
-              onClick={() => navigate('/settings')}
-              className='px-3 py-2 text-white text-sm hover:bg-white/10 rounded transition-colors'
-            >
-              ⚙️ Settings
-            </button>
-            <button
-              onClick={handleWallpaperToggle}
-              className='px-3 py-2 text-white text-sm hover:bg-white/10 rounded transition-colors'
-            >
-              🖥️ Wallpaper Mode
-            </button>
+        <div className='absolute top-0 left-0 h-full w-64 bg-blue-900/95 backdrop-blur-md z-50'>
+          <div className='flex flex-col h-full p-4'>
+            {/* Close button */}
+            <div className='flex justify-end mb-4'>
+              <button
+                onClick={() => setShowMenu(false)}
+                className='w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center'
+              >
+                <span className='text-white text-lg'>×</span>
+              </button>
+            </div>
+            
+            {/* Menu items */}
+            <div className='flex flex-col gap-3'>
+              <button
+                onClick={() => {
+                  navigate('/store');
+                  setShowMenu(false);
+                }}
+                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
+              >
+                <span className='text-xl'>🛒</span>
+                Store
+              </button>
+              <button
+                onClick={() => {
+                  navigate('/community');
+                  setShowMenu(false);
+                }}
+                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
+              >
+                <span className='text-xl'>👥</span>
+                Community
+              </button>
+              <button
+                onClick={() => {
+                  navigate('/my-profile');
+                  setShowMenu(false);
+                }}
+                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
+              >
+                <span className='text-xl'>👤</span>
+                Profile
+              </button>
+              <button
+                onClick={() => {
+                  navigate('/achievements');
+                  setShowMenu(false);
+                }}
+                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
+              >
+                <span className='text-xl'>🏆</span>
+                Achievements
+              </button>
+              <button
+                onClick={() => {
+                  navigate('/mini-games');
+                  setShowMenu(false);
+                }}
+                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
+              >
+                <span className='text-xl'>🎮</span>
+                Mini Games
+              </button>
+              <button
+                onClick={() => {
+                  navigate('/encyclopedia');
+                  setShowMenu(false);
+                }}
+                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
+              >
+                <span className='text-xl'>📚</span>
+                Encyclopedia
+              </button>
+              <button
+                onClick={() => {
+                  navigate('/help-center');
+                  setShowMenu(false);
+                }}
+                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
+              >
+                <span className='text-xl'>❓</span>
+                Help Center
+              </button>
+              <button
+                onClick={() => {
+                  navigate('/settings');
+                  setShowMenu(false);
+                }}
+                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
+              >
+                <span className='text-xl'>⚙️</span>
+                Settings
+              </button>
+              <button
+                onClick={() => {
+                  handleWallpaperToggle();
+                  setShowMenu(false);
+                }}
+                className='flex items-center gap-3 px-4 py-3 text-white text-base hover:bg-white/10 rounded-lg transition-colors'
+              >
+                <span className='text-xl'>🖥️</span>
+                Wallpaper Mode
+              </button>
+            </div>
           </div>
         </div>
       )}
