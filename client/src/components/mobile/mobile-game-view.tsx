@@ -11,12 +11,13 @@ import { useFeedingSystem } from '@/systems/feeding-system';
 import { FishSpecies } from '@/types';
 import { useFish } from '@/hooks';
 import { fishCollection as fullFishList } from '@/constants';
-import { Monitor, Menu, Star, Zap, Heart } from 'lucide-react';
+import { Monitor, Menu, Fish, Grid, Utensils, Timer, ShoppingBag, Package, Gamepad2, Trophy } from 'lucide-react';
 import { useAquarium } from '@/hooks';
 import { useSimpleDirtSystem } from '@/hooks/use-simple-dirt-system';
 import { SimpleDirtSpot } from '@/components/simple-dirt-spot';
 import { FeedingAquarium } from '@/components';
 import { BubblesBackground } from '@/components';
+import { GameStatusBar } from '@/components';
 import { INITIAL_GAME_STATE } from '@/constants';
 import { initialAquariums } from '@/data/mock-aquarium';
 
@@ -262,42 +263,69 @@ export function MobileGameView() {
       <div className='absolute inset-0 light-rays z-20'></div>
       <div className='absolute inset-0 animate-water-movement z-20'></div>
 
-      {/* Mobile Header */}
-      <div className='absolute top-0 left-0 right-0 z-30 bg-blue-900/80 backdrop-blur-md border-b border-blue-400/30'>
-        <div className='flex items-center justify-between p-2'>
-          {/* Logo */}
-          <div className='flex items-center gap-2'>
-            <div className='w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center'>
-              <span className='text-white text-xs font-bold'>AS</span>
-            </div>
-            <span className='text-white text-sm font-bold'>Aqua Stark</span>
+      {/* Mobile Header - Similar to original */}
+      <div className='absolute top-0 left-0 right-0 flex justify-between items-center p-2 z-50'>
+        <div className='flex items-center gap-2'>
+          <img
+            src='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Aqua_Stark-removebg-preview-ubKSrqYo7jzOH5qXqxEw4CyRHXIjfq.png'
+            alt='Aqua Stark Logo'
+            width={80}
+            height={32}
+            className='drop-shadow-lg w-16 h-6 object-contain'
+          />
+        </div>
+
+        <div className='flex items-center gap-1 bg-blue-900/40 backdrop-blur-sm p-2 rounded-xl overflow-x-auto'>
+          <div className='flex items-center gap-1 mr-2 bg-blue-800/50 px-2 py-1 rounded-lg flex-shrink-0'>
+            <Fish className='text-blue-200 h-3 w-3' />
+            <span className='text-white font-bold text-xs'>2/10</span>
           </div>
 
-          {/* Stats */}
-          <div className='flex items-center gap-1'>
-            <div className='flex items-center gap-1 bg-white/10 rounded-full px-2 py-1'>
-              <Star className='w-3 h-3 text-yellow-400' />
-              <span className='text-white text-xs'>{happiness}%</span>
-            </div>
-            <div className='flex items-center gap-1 bg-white/10 rounded-full px-2 py-1'>
-              <Heart className='w-3 h-3 text-red-400' />
-              <span className='text-white text-xs'>{food}%</span>
-            </div>
-            <div className='flex items-center gap-1 bg-white/10 rounded-full px-2 py-1'>
-              <Zap className='w-3 h-3 text-blue-400' />
-              <span className='text-white text-xs'>{energy}%</span>
-            </div>
+          <div className='flex items-center gap-1 flex-shrink-0'>
+            <GameStatusBar
+              icon='🌟'
+              value={happiness}
+              color='from-yellow-400 to-yellow-600'
+              label='Happiness'
+            />
+            <GameStatusBar
+              icon='🍖'
+              value={food}
+              color='from-orange-400 to-orange-600'
+              label='Hunger'
+            />
+            <GameStatusBar
+              icon='⚡'
+              value={energy}
+              color='from-blue-400 to-blue-600'
+              label='Energy'
+            />
           </div>
+        </div>
 
-          {/* Menu Button */}
+        <div className='flex items-center gap-2 mr-2'>
           <button
+            className='game-button bg-gradient-to-b from-blue-400 to-blue-600 text-white rounded-xl w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-blue-400/30 border border-blue-400/40'
             onClick={() => setShowMenu(!showMenu)}
-            className='w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center'
           >
-            <Menu className='w-4 h-4 text-white' />
+            ☰
           </button>
         </div>
       </div>
+
+      {/* Sponge Mode Text */}
+      {isCleaningMode && (
+        <div className='absolute top-16 left-1/2 transform -translate-x-1/2 flex items-center gap-2 bg-blue-900/60 backdrop-blur-sm px-4 py-2 rounded-xl border border-blue-400/40 shadow-lg z-50'>
+          <img
+            src='/dirt/sponge.png'
+            alt='Sponge'
+            className='w-6 h-6 drop-shadow-lg'
+          />
+          <span className='text-white text-lg font-bold font-nunito drop-shadow-lg'>
+            Sponge Mode
+          </span>
+        </div>
+      )}
 
       {/* Fish Aquarium */}
       <motion.div
@@ -306,7 +334,7 @@ export function MobileGameView() {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 1 }}
-        className='relative z-20 w-full h-full pt-12'
+        className='relative z-20 w-full h-full'
         style={{
           pointerEvents: dirtSystem.spots.length > 0 ? 'none' : 'auto',
         }}
@@ -333,60 +361,158 @@ export function MobileGameView() {
         />
       ))}
 
-      {/* Mobile Bottom Navigation */}
-      <div className='absolute bottom-0 left-0 right-0 z-30 bg-blue-900/90 backdrop-blur-md border-t border-blue-400/30'>
-        <div className='flex items-center justify-between p-2'>
-          {/* Aquarium Tabs */}
-          <div className='flex gap-1'>
-            {aquariums.slice(0, 3).map((aquarium, index) => (
+      {/* Mobile Bottom Navigation - Similar to original */}
+      <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/90 to-transparent z-40 p-2'>
+        <div className='flex justify-between items-end gap-2'>
+          {/* Left side - Aquarium tabs */}
+          <div className='flex gap-1 overflow-x-auto scrollbar-hide'>
+            {aquariums.slice(0, 3).map(aquarium => (
               <button
                 key={aquarium.id}
                 onClick={() => handleAquariumChange(aquarium)}
-                className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                className={`game-button px-3 py-2 rounded-t-xl font-bold transition-all duration-200 flex items-center text-xs ${
                   selectedAquarium?.id === aquarium.id
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-white/10 text-white/80 hover:bg-white/20'
+                    ? 'bg-gradient-to-b from-blue-400 to-blue-600 text-white translate-y-0'
+                    : 'bg-blue-800/50 text-white/70 hover:bg-blue-700/50 translate-y-2'
                 }`}
               >
-                {index === 0 ? 'First' : index === 1 ? 'Second' : 'Third'}
+                {aquarium.name.split(' ')[0]}
               </button>
             ))}
+            <button
+              className={`game-button px-3 py-2 rounded-t-xl font-bold transition-all duration-200 flex items-center text-xs ${
+                selectedAquarium?.id === 0
+                  ? 'bg-gradient-to-b from-blue-400 to-blue-600 text-white translate-y-0'
+                  : 'bg-blue-800/50 text-white/70 hover:bg-blue-700/50 translate-y-2'
+              }`}
+              onClick={() => handleAquariumChange()}
+            >
+              <Grid className='h-3 w-3 mr-1' />
+              All
+            </button>
           </div>
 
-          {/* Action Buttons */}
-          <div className='flex gap-1'>
-            <button
-              onClick={handleToggleCleaningMode}
-              className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
-                isCleaningMode
-                  ? 'bg-yellow-500 text-white'
-                  : 'bg-white/10 text-white/80 hover:bg-white/20'
-              }`}
-              title='Cleaning Mode'
-            >
-              🧽
-            </button>
-            <button
-              onClick={handleTipsToggle}
-              className='w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center'
-              title='Tips'
-            >
-              💡
-            </button>
-            <button
-              onClick={handleWallpaperToggle}
-              className='w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center'
-              title='Wallpaper Mode'
-            >
-              <Monitor className='w-4 h-4 text-white' />
-            </button>
+          {/* Right side - Action buttons */}
+          <div className='flex items-center gap-1'>
+            {/* Feed button */}
+            <div className='relative group'>
+              <button
+                onClick={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (feedingSystem.isFeeding) {
+                    feedingSystem.stopFeeding();
+                  } else {
+                    feedingSystem.startFeeding(30000);
+                  }
+                }}
+                className={`game-button bg-gradient-to-b text-white rounded-xl relative group cursor-pointer w-10 h-10 ${
+                  feedingSystem.isFeeding
+                    ? 'from-orange-400 to-orange-600'
+                    : 'from-green-400 to-green-600'
+                }`}
+              >
+                <div className='flex items-center justify-center gap-2 w-full h-full'>
+                  {feedingSystem.isFeeding ? (
+                    <Timer className='h-4 w-4' />
+                  ) : (
+                    <Utensils className='h-4 w-4' />
+                  )}
+                </div>
+              </button>
+            </div>
+
+            {/* Clean Button */}
+            <div className='relative group'>
+              <button
+                onClick={handleToggleCleaningMode}
+                className={`game-button bg-gradient-to-b text-white rounded-xl relative group cursor-pointer w-10 h-10 ${
+                  isCleaningMode
+                    ? 'from-yellow-400 to-yellow-600'
+                    : 'from-purple-400 to-purple-600'
+                }`}
+              >
+                <div className='flex items-center justify-center gap-2 w-full h-full'>
+                  🧽
+                </div>
+              </button>
+            </div>
+
+            {/* Other action buttons */}
+            {[
+              {
+                id: 'shop',
+                label: 'Shop',
+                icon: <ShoppingBag className='h-4 w-4' />,
+                color: 'from-blue-400 to-blue-600',
+              },
+              {
+                id: 'collection',
+                label: 'Collection',
+                icon: <Package className='h-4 w-4' />,
+                color: 'from-teal-400 to-teal-600',
+              },
+              {
+                id: 'games',
+                label: 'Games',
+                icon: <Gamepad2 className='h-4 w-4' />,
+                color: 'from-pink-400 to-pink-600',
+              },
+              {
+                id: 'rewards',
+                label: 'Rewards',
+                icon: <Trophy className='h-4 w-4' />,
+                color: 'from-yellow-400 to-yellow-600',
+              },
+            ].map(item => (
+              <div key={item.id} className='relative group'>
+                <button
+                  onClick={e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    // Handle different actions
+                    switch (item.id) {
+                      case 'shop':
+                        navigate('/store');
+                        break;
+                      case 'collection':
+                        navigate('/my-profile');
+                        break;
+                      case 'games':
+                        navigate('/mini-games');
+                        break;
+                      case 'rewards':
+                        navigate('/achievements');
+                        break;
+                    }
+                  }}
+                  className={`game-button bg-gradient-to-b text-white rounded-xl relative group cursor-pointer w-10 h-10 ${item.color}`}
+                >
+                  <div className='flex items-center justify-center gap-2 w-full h-full'>
+                    {item.icon}
+                  </div>
+                </button>
+              </div>
+            ))}
+
+            {/* Tips button */}
+            <div className='relative group'>
+              <button
+                onClick={handleTipsToggle}
+                className='game-button bg-gradient-to-b from-yellow-400 to-yellow-600 text-white rounded-xl relative group cursor-pointer w-10 h-10'
+              >
+                <div className='flex items-center justify-center gap-2 w-full h-full'>
+                  💡
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {showMenu && (
-        <div className='absolute top-12 right-2 z-40 bg-blue-900/95 backdrop-blur-md rounded-lg border border-blue-400/30 p-2'>
+        <div className='absolute top-14 right-2 z-50 bg-blue-900/95 backdrop-blur-md rounded-lg border border-blue-400/30 p-2'>
           <div className='flex flex-col gap-1'>
             <button
               onClick={() => navigate('/store')}
@@ -412,13 +538,19 @@ export function MobileGameView() {
             >
               ⚙️ Settings
             </button>
+            <button
+              onClick={handleWallpaperToggle}
+              className='px-3 py-2 text-white text-sm hover:bg-white/10 rounded transition-colors'
+            >
+              🖥️ Wallpaper Mode
+            </button>
           </div>
         </div>
       )}
 
       {/* Tips Popup */}
       {showTips && (
-        <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40 bg-blue-900/95 backdrop-blur-md rounded-lg border border-blue-400/30 p-4 max-w-xs'>
+        <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-blue-900/95 backdrop-blur-md rounded-lg border border-blue-400/30 p-4 max-w-xs'>
           <div className='text-center'>
             <h3 className='text-white font-bold mb-2'>💡 Tips</h3>
             <p className='text-white/90 text-sm mb-3'>
