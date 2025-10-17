@@ -258,6 +258,24 @@ export default function Onboarding() {
             </motion.div>
           </div>
         </main>
+
+        {/* Footer */}
+        <footer className='relative z-30 p-4 bg-blue-900/90 backdrop-blur-md border-t border-blue-400/50'>
+          <div className='text-center text-blue-100 text-sm'>
+            <p className='mb-2'>© 2025 Aqua Stark - All rights reserved</p>
+            <div className='flex flex-wrap justify-center gap-2 text-sm'>
+              <span className='hover:text-blue-200 cursor-pointer px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>
+                Polity and Privacy
+              </span>
+              <span className='hover:text-blue-200 cursor-pointer px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>
+                Terms of Service
+              </span>
+              <span className='hover:text-blue-200 cursor-pointer px-2 py-1 rounded hover:bg-blue-500/20 transition-colors'>
+                Contact
+              </span>
+            </div>
+          </div>
+        </footer>
       </div>
     </OrientationLock>
   );
