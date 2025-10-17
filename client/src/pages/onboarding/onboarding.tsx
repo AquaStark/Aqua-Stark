@@ -183,7 +183,7 @@ export default function Onboarding() {
   // Desktop/tablet view
   return (
     <OrientationLock>
-      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-400 via-blue-600 to-blue-800'>
+      <div className='relative min-h-screen overflow-y-auto bg-gradient-to-b from-blue-400 via-blue-600 to-blue-800'>
         {/* Ambient lights */}
         <div className='absolute top-10 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-cyan-300/10 rounded-full blur-2xl' />
         <div className='absolute bottom-10 right-10 w-[350px] h-[350px] bg-yellow-300/10 rounded-full blur-2xl' />
