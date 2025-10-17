@@ -11,7 +11,7 @@ import { useFeedingSystem } from '@/systems/feeding-system';
 import { FishSpecies } from '@/types';
 import { useFish } from '@/hooks';
 import { fishCollection as fullFishList } from '@/constants';
-import { Monitor, Fish, Grid, Utensils, Timer, ShoppingBag, Package, Gamepad2, Trophy } from 'lucide-react';
+import { Monitor, Fish, Grid, Utensils, Timer, ShoppingBag, Package, Gamepad2, Trophy, HelpCircle, Camera, Home, Settings, Sparkles } from 'lucide-react';
 import { useAquarium } from '@/hooks';
 import { useSimpleDirtSystem } from '@/hooks/use-simple-dirt-system';
 import { SimpleDirtSpot } from '@/components/simple-dirt-spot';
@@ -535,7 +535,7 @@ export function MobileGameView() {
                   }}
                   className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                 >
-                  <span className='text-2xl'>🛒</span>
+                  <ShoppingBag className='h-5 w-5' />
                   <span className='font-medium'>Store</span>
                 </button>
                 <button
@@ -545,7 +545,7 @@ export function MobileGameView() {
                   }}
                   className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                 >
-                  <span className='text-2xl'>👥</span>
+                  <Home className='h-5 w-5' />
                   <span className='font-medium'>Community</span>
                 </button>
                 <button
@@ -555,7 +555,7 @@ export function MobileGameView() {
                   }}
                   className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                 >
-                  <span className='text-2xl'>👤</span>
+                  <Fish className='h-5 w-5' />
                   <span className='font-medium'>Profile</span>
                 </button>
                 <button
@@ -565,7 +565,7 @@ export function MobileGameView() {
                   }}
                   className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                 >
-                  <span className='text-2xl'>🏆</span>
+                  <Trophy className='h-5 w-5' />
                   <span className='font-medium'>Achievements</span>
                 </button>
                 <button
@@ -575,7 +575,7 @@ export function MobileGameView() {
                   }}
                   className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                 >
-                  <span className='text-2xl'>🎮</span>
+                  <Gamepad2 className='h-5 w-5' />
                   <span className='font-medium'>Mini Games</span>
                 </button>
                 <button
@@ -585,7 +585,7 @@ export function MobileGameView() {
                   }}
                   className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                 >
-                  <span className='text-2xl'>📚</span>
+                  <Package className='h-5 w-5' />
                   <span className='font-medium'>Encyclopedia</span>
                 </button>
                 <button
@@ -595,7 +595,7 @@ export function MobileGameView() {
                   }}
                   className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                 >
-                  <span className='text-2xl'>❓</span>
+                  <HelpCircle className='h-5 w-5' />
                   <span className='font-medium'>Help Center</span>
                 </button>
                 <button
@@ -605,7 +605,7 @@ export function MobileGameView() {
                   }}
                   className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                 >
-                  <span className='text-2xl'>⚙️</span>
+                  <Settings className='h-5 w-5' />
                   <span className='font-medium'>Settings</span>
                 </button>
                 <button
@@ -615,7 +615,7 @@ export function MobileGameView() {
                   }}
                   className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                 >
-                  <span className='text-2xl'>🖥️</span>
+                  <Monitor className='h-5 w-5' />
                   <span className='font-medium'>Wallpaper Mode</span>
                 </button>
                 
@@ -627,7 +627,7 @@ export function MobileGameView() {
                   }}
                   className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                 >
-                  <span className='text-2xl'>📊</span>
+                  <Trophy className='h-5 w-5' />
                   <span className='font-medium'>Leaderboard</span>
                 </button>
                 <button
@@ -637,7 +637,7 @@ export function MobileGameView() {
                   }}
                   className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                 >
-                  <span className='text-2xl'>🎉</span>
+                  <Sparkles className='h-5 w-5' />
                   <span className='font-medium'>Events</span>
                 </button>
                 <button
@@ -647,7 +647,7 @@ export function MobileGameView() {
                   }}
                   className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                 >
-                  <span className='text-2xl'>🎯</span>
+                  <HelpCircle className='h-5 w-5' />
                   <span className='font-medium'>Tutorial</span>
                 </button>
                 <button
@@ -657,7 +657,7 @@ export function MobileGameView() {
                   }}
                   className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                 >
-                  <span className='text-2xl'>ℹ️</span>
+                  <Camera className='h-5 w-5' />
                   <span className='font-medium'>About</span>
                 </button>
               </div>
