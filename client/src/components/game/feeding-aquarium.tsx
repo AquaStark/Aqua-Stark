@@ -35,6 +35,7 @@ interface FeedingAquariumProps {
   containerHeight?: number;
   cleanlinessScore?: number;
   fullFishList: Fish[];
+  isMobile?: boolean;
 }
 
 export function FeedingAquarium({
@@ -44,6 +45,7 @@ export function FeedingAquarium({
   containerHeight = 600,
   cleanlinessScore,
   fullFishList,
+  isMobile = false,
 }: FeedingAquariumProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({
@@ -88,6 +90,18 @@ export function FeedingAquarium({
     (event: React.MouseEvent<HTMLDivElement>) => {
       const rect = containerRef.current?.getBoundingClientRect();
       handleFeedClick(event.clientX, event.clientY, rect);
+    },
+    [handleFeedClick, isFeeding]
+  );
+
+  // Handle touch events for mobile
+  const handleContainerTouch = useCallback(
+    (event: React.TouchEvent<HTMLDivElement>) => {
+      if (event.touches.length > 0) {
+        const touch = event.touches[0];
+        const rect = containerRef.current?.getBoundingClientRect();
+        handleFeedClick(touch.clientX, touch.clientY, rect);
+      }
     },
     [handleFeedClick, isFeeding]
   );
@@ -154,18 +168,20 @@ export function FeedingAquarium({
       ref={containerRef}
       className='relative w-full h-full fish-container overflow-hidden'
       onClick={isFeeding ? handleContainerClick : undefined}
+      onTouchStart={isFeeding ? handleContainerTouch : undefined}
       onKeyDown={isFeeding ? handleContainerKeyDown : undefined}
       role={isFeeding ? 'button' : undefined}
       tabIndex={isFeeding ? 0 : undefined}
       style={{
         cursor: isFeeding ? 'pointer' : 'default',
         userSelect: 'none',
-        pointerEvents: 'none', // NUNCA interceptar clicks - las manchas deben tener prioridad
+        pointerEvents: isFeeding ? 'auto' : 'none', // Allow clicks when feeding, block when not
       }}
     >
       <FishDisplay
         fish={fishWithMovement}
         cleanlinessScore={cleanlinessScore}
+        isMobile={isMobile}
       />
       {foods.map((food: FoodItem) => (
         <Food key={food.id} food={food} aquariumBounds={dimensions} />

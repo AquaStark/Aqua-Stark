@@ -15,6 +15,8 @@ import { Monitor } from 'lucide-react';
 import { useAquarium } from '@/hooks';
 import { useSimpleDirtSystem } from '@/hooks/use-simple-dirt-system';
 import { SimpleDirtSpot } from '@/components/simple-dirt-spot';
+import { useMobileDetection } from '@/hooks/use-mobile-detection';
+import { MobileGameView } from '@/components/mobile/mobile-game-view';
 
 // Importar todos los componentes originales
 import { GameHeader } from '@/components';
@@ -30,6 +32,9 @@ import { initialAquariums } from '@/data/mock-aquarium';
 export default function GamePage() {
   // Get account info first
   const { account } = useAccount();
+
+  // Mobile detection
+  const { isMobile } = useMobileDetection();
 
   // All state hooks first
   const [showMenu, setShowMenu] = useState(false);
@@ -66,8 +71,14 @@ export default function GamePage() {
   // Initialize feeding system
   const feedingSystem = useFeedingSystem({
     aquariumBounds: {
-      width: 1000,
-      height: 600,
+      width:
+        typeof window !== 'undefined'
+          ? Math.min(window.innerWidth, 1200)
+          : 1000,
+      height:
+        typeof window !== 'undefined'
+          ? Math.min(window.innerHeight - 150, 700)
+          : 600,
     },
     maxFoodsPerSecond: 3,
     foodLifetime: 10,
@@ -301,6 +312,11 @@ export default function GamePage() {
       };
     })
     .filter((fish): fish is NonNullable<typeof fish> => fish !== null);
+
+  // Render mobile view if device is detected as mobile
+  if (isMobile) {
+    return <MobileGameView />;
+  }
 
   return (
     <OrientationLock>
