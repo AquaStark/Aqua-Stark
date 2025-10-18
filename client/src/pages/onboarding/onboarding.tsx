@@ -109,6 +109,11 @@ export default function Onboarding() {
       return;
     }
 
+    if (isCreatingAquarium) {
+      console.log('⏳ Already creating aquarium, ignoring duplicate call');
+      return;
+    }
+
     try {
       setIsCreatingAquarium(true);
       console.log('🏗️ Creating aquarium with params:', {
@@ -129,13 +134,16 @@ export default function Onboarding() {
       toast.success('Aquarium created on-chain!', { id: 'aquarium' });
 
       // Wait a moment for the transaction to be indexed
-      await delay(2000);
+      await delay(3000);
 
       // Get the newly created aquarium
       const aquariums = await getPlayerAquariums(account.address);
+      console.log('🔍 All aquariums:', aquariums);
+      
       const newAquariumId = aquariums[aquariums.length - 1]?.id;
 
       if (!newAquariumId) {
+        console.error('❌ Aquarium ID not found. Available aquariums:', aquariums);
         throw new Error('Aquarium created but ID not found');
       }
 
@@ -160,6 +168,11 @@ export default function Onboarding() {
   // Step 2: Create Fish
   const handleCreateFish = async () => {
     if (!account || !aquariumId || selectedFish.length !== 1) return;
+
+    if (isCreatingFish) {
+      console.log('⏳ Already creating fish, ignoring duplicate call');
+      return;
+    }
 
     try {
       setIsCreatingFish(true);
