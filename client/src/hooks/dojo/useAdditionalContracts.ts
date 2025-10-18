@@ -304,6 +304,19 @@ export const useGameEnhanced = () => {
     [client, ensureClientReady]
   );
 
+  // Game-specific fish creation
+  const newFish = useCallback(
+    async (
+      account: Account | AccountInterface,
+      aquariumId: BigNumberish,
+      species: CairoCustomEnum
+    ) => {
+      ensureClientReady();
+      return await client.Game.newFish(account, aquariumId, species);
+    },
+    [client, ensureClientReady]
+  );
+
   return {
     // Aquarium functions
     getAquarium,
@@ -316,6 +329,7 @@ export const useGameEnhanced = () => {
     getFishOwner,
     getPlayerFishes,
     getPlayerFishCount,
+    newFish,
 
     // Decoration functions
     getDecoration,
