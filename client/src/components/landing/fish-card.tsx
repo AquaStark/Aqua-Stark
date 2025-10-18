@@ -49,7 +49,7 @@ export function FishCardComponent({
             <img
               src={image || '/placeholder.svg'}
               alt={name}
-              className='object-contain w-6 h-6 sm:w-6 sm:h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 xl:w-12 xl:h-12 transition-transform duration-500 hover:scale-110'
+              className='object-contain w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-20 xl:h-20 transition-transform duration-500 hover:scale-110'
               style={{
                 width: isMobile ? '64px' : undefined,
                 height: isMobile ? '64px' : undefined,
