@@ -58,9 +58,9 @@ export function MobileStartView({
       </div>
 
       {/* Main content - compact mobile layout */}
-      <main className='flex flex-col items-center gap-2 sm:gap-4 md:gap-6 px-2 sm:px-3 md:px-4 py-4 sm:py-6 md:py-8 relative z-30 min-h-[85vh]'>
+      <main className='flex flex-col items-center gap-2 sm:gap-4 md:gap-6 px-2 sm:px-3 md:px-4 py-4 sm:py-6 md:py-8 relative z-30 flex-1'>
         {/* Content container - compact flex layout */}
-        <div className='flex flex-col sm:flex-row items-center justify-center w-full max-w-6xl gap-2 sm:gap-4 md:gap-6'>
+        <div className='flex flex-col sm:flex-row items-center justify-center w-full max-w-6xl gap-2 sm:gap-4 md:gap-6 flex-1'>
           {/* Fish section - much smaller sizing */}
           <div className='w-12 sm:w-16 md:w-24 lg:w-32 xl:w-40 animate-float order-1 sm:order-1 z-20 pointer-events-none select-none'>
             <img
@@ -113,25 +113,10 @@ export function MobileStartView({
             </div>
           </div>
         </div>
-
-        {/* Tips section - compact */}
-        <div className='max-w-xs sm:max-w-sm md:max-w-lg lg:max-w-2xl mt-3 sm:mt-4 md:mt-6 mb-2 sm:mb-3 md:mb-4 text-blue-100/90 text-xs text-center opacity-90 drop-shadow space-y-1 px-2'>
-          <p className='leading-relaxed'>
-            💡 Choose a memorable name — this will represent you across the
-            aquatic universe.
-          </p>
-          <p className='leading-relaxed'>
-            🐠 After registering, you'll unlock your starter aquarium and
-            receive your first fish.
-          </p>
-          <p className='leading-relaxed'>
-            🪙 Get started with free coins and discover rare aquatic species!
-          </p>
-        </div>
       </main>
 
       {/* Footer - darker blue like in image */}
-      <div className='relative z-30 p-3 sm:p-4 bg-blue-900/90 backdrop-blur-md border-t border-blue-400/50'>
+      <div className='relative z-30 p-2 sm:p-3 bg-blue-900/90 backdrop-blur-md border-t border-blue-400/50 mt-auto'>
         <div className='text-center text-blue-100 text-sm'>
           <p className='mb-2'>© 2025 Aqua Stark - All rights reserved</p>
           <div className='flex flex-wrap justify-center gap-2 sm:gap-3 text-sm'>
