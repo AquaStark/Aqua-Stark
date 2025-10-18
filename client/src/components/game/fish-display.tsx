@@ -24,9 +24,10 @@ interface FishDisplayProps {
     lastUpdated?: Date | string | number | null;
   }>;
   cleanlinessScore?: number;
+  isMobile?: boolean;
 }
 
-export function FishDisplay({ fish, cleanlinessScore }: FishDisplayProps) {
+export function FishDisplay({ fish, cleanlinessScore, isMobile = false }: FishDisplayProps) {
   return (
     <div
       className='relative w-full h-full'
@@ -49,6 +50,7 @@ export function FishDisplay({ fish, cleanlinessScore }: FishDisplayProps) {
           facingLeft={fishState.facingLeft}
           behaviorState={fishState.behaviorState}
           cleanlinessScore={cleanlinessScore}
+          isMobile={isMobile}
           style={{
             filter:
               fishState.behaviorState === 'feeding'

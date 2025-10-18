@@ -344,6 +344,7 @@ export function MobileGameView() {
           fullFishList={fullFishList}
           feedingSystem={feedingSystem}
           cleanlinessScore={100 - dirtSystem.dirtLevel}
+          isMobile={true}
         />
       </motion.div>
 

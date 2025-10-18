@@ -27,6 +27,7 @@ interface FishProps {
   //add new state
   style?: React.CSSProperties;
   cleanlinessScore?: number;
+  isMobile?: boolean;
 }
 
 // Define valid rarity types for type safety
@@ -45,6 +46,7 @@ export function Fish({
   behaviorState,
   style = {},
   cleanlinessScore,
+  isMobile = false,
 }: FishProps) {
   // Track previous facing direction to detect changes for flip animation
   const prevFacingLeftRef = useRef(facingLeft);
@@ -125,7 +127,10 @@ export function Fish({
     // Default to medium size if rarity is not recognized
     const baseSize = rarityFactor[rarityKey] || 100;
 
-    return Math.round(baseSize);
+    // Make fish 50% smaller on mobile
+    const finalSize = isMobile ? Math.round(baseSize * 0.5) : baseSize;
+
+    return finalSize;
   };
 
   const fishSize = getFishSize();

@@ -35,6 +35,7 @@ interface FeedingAquariumProps {
   containerHeight?: number;
   cleanlinessScore?: number;
   fullFishList: Fish[];
+  isMobile?: boolean;
 }
 
 export function FeedingAquarium({
@@ -44,6 +45,7 @@ export function FeedingAquarium({
   containerHeight = 600,
   cleanlinessScore,
   fullFishList,
+  isMobile = false,
 }: FeedingAquariumProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({
@@ -179,6 +181,7 @@ export function FeedingAquarium({
       <FishDisplay
         fish={fishWithMovement}
         cleanlinessScore={cleanlinessScore}
+        isMobile={isMobile}
       />
       {foods.map((food: FoodItem) => (
         <Food key={food.id} food={food} aquariumBounds={dimensions} />
