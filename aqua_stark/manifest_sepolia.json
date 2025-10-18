@@ -1,8 +1,8 @@
 {
   "world": {
     "class_hash": "0x13d92333361bb7049c1232c0a5404e2c19082ededc3a73d75cb33fa952adec7",
-    "address": "0x439c0de59a9bdf54e01c7f0d1cb1b966ebefd7dd220843975ee4e777da674e3",
-    "seed": "ajidokwuuuuuuusns",
+    "address": "0x3a11f54945c50816a7eb6088fa2dfbeca18e7f97cb0cb8c063505dd08d01c7d",
+    "seed": "liveProduction11",
     "name": "Dojo starter",
     "entrypoints": [
       "uuid",
@@ -1328,7 +1328,7 @@
   },
   "contracts": [
     {
-      "address": "0x5f7b0ddaef94aecf95c613aa2ca95d13ea5800ffd49123e1916f5240ca7d98f",
+      "address": "0x89fdab2ddcd5d0b89a4e259c058336e92ff676df144d15a44bc537126d5151",
       "class_hash": "0x655297942693f5ab3b0a99bbb7053b03ea101e6fa838e192c192485d88c7b8a",
       "abi": [
         {
@@ -1673,10 +1673,15 @@
       "init_calldata": [],
       "tag": "aqua_stark-AquaAuction",
       "selector": "0x1f42f4bf550166ff084d23b65e8e9a0adba70081115dba1647a5f9d4a84177a",
-      "systems": ["start_auction", "place_bid", "end_auction", "upgrade"]
+      "systems": [
+        "start_auction",
+        "place_bid",
+        "end_auction",
+        "upgrade"
+      ]
     },
     {
-      "address": "0x728a0b434e218a12dec8e50f49a16b97ff2d09e028155a5477c6a4c7a6c9907",
+      "address": "0x64ad1c0c34d3aa03feb1398c96925856165826c5cc44105be29e78bc650eff1",
       "class_hash": "0x25726e537505fc2c70117242f8ae8bea258bcf939867c2a24ece83ed0956adc",
       "abi": [
         {
@@ -2687,7 +2692,7 @@
       ]
     },
     {
-      "address": "0x4a77c3e6778d26dc042e36cb92b87ea0e7935dd666c04f6b08b4c624e554f38",
+      "address": "0x48580459130d534aa2b7472b0e9df4d307e7fc1501dba93bcd9da1299757014",
       "class_hash": "0x6dc98b92b360e7be3b66a68b769dc3dbab46f682bb155d392b47844d0e9660a",
       "abi": [
         {
@@ -3329,7 +3334,7 @@
       ]
     },
     {
-      "address": "0x53103d96c61e667b3f3e83167e87b45c8b7f66a6fc495ec2b86e9eb4c7c6f5c",
+      "address": "0x4195dc29e1c1ee877446706bd785599bb927d8f91a3499add6a41b54a306219",
       "class_hash": "0x420e1e995b3c8210ef1c3136176e8a13e8f66e1d839dec79236c4df5362f77e",
       "abi": [
         {
@@ -4347,7 +4352,7 @@
       ]
     },
     {
-      "address": "0x379c0a7ff7a47f3ee17d92af7d080ef15be5ddfd0b943ddb1e4c901ace98aea",
+      "address": "0x683640ed180954374a7155b83795f1847a24c1c8824bd5febf58c5a83c8d038",
       "class_hash": "0x61b8900aafdccad64b9b50e3b1f1f49ff37349add189413e1e6080bcd07aff2",
       "abi": [
         {
@@ -4642,13 +4647,18 @@
           ]
         }
       ],
-      "init_calldata": ["0x0"],
+      "init_calldata": [
+        "0x0"
+      ],
       "tag": "aqua_stark-ShopCatalog",
       "selector": "0x2ef14be23e442fea61ae3e68a538bc3f033bd435a3d27c414405e827a0ea1a1",
-      "systems": ["dojo_init", "upgrade"]
+      "systems": [
+        "dojo_init",
+        "upgrade"
+      ]
     },
     {
-      "address": "0x649a292fecc29cbe3a2535c0f5d0d1abfc5f3d3acd6706f40beb2397610989d",
+      "address": "0x4270abe34ac2eca781119edac84946f2a064a918bdb414ce5e46a446ab4f1e9",
       "class_hash": "0xa8cdfd809d045c2414c51cf8af3c99112813745d7a7e5850760dee890c03ff",
       "abi": [
         {
@@ -5230,7 +5240,7 @@
       ]
     },
     {
-      "address": "0x74853b62fad964ce64ea01a3cb042bc5a8187892ab0338f41a359c542d04cd3",
+      "address": "0x5ce5aa9f4fdfbf7315a9e7bceace2c4a10638006c5434fd9488da780f81a66a",
       "class_hash": "0x1c4107cad064bf07ad89e27b27a66a2dce2169402f144ad6d2d15e2724d68e9",
       "abi": [
         {
@@ -5791,7 +5801,7 @@
       ]
     },
     {
-      "address": "0xede736f75a3c3a7ef77ec1ac792abc3bf258f46ce4689b17796db60bc29ed9",
+      "address": "0x645239430e89bf1351056f7baa240390da4f76a885b39e34b2a4213a7af09c2",
       "class_hash": "0x42def96ec703a01480ca60816165b69e98e8112af4d842fa9783f9b4a7e1c",
       "abi": [
         {
@@ -6038,7 +6048,7 @@
       ]
     },
     {
-      "address": "0x469bba9023494ef29f75a86ed72c8d5b8d069594c362f11726a8c63224e5a59",
+      "address": "0x42962c7fe91399a4d3fae13910913b0f9e11e051ee468cd6830cebb41d5253c",
       "class_hash": "0x58104ced8f1d798057765f4160a1506ef0306011a383d7c446a348b7a67fe35",
       "abi": [
         {
