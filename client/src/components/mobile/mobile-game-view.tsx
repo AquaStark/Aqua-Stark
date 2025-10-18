@@ -60,8 +60,8 @@ export function MobileGameView() {
   // Initialize feeding system
   const feedingSystem = useFeedingSystem({
     aquariumBounds: {
-      width: window.innerWidth,
-      height: window.innerHeight - 200, // Account for header and bottom nav
+      width: typeof window !== 'undefined' ? window.innerWidth : 400,
+      height: typeof window !== 'undefined' ? window.innerHeight - 200 : 300,
     },
     maxFoodsPerSecond: 2,
     foodLifetime: 8,

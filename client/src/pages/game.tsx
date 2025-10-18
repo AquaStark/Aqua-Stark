@@ -71,8 +71,8 @@ export default function GamePage() {
   // Initialize feeding system
   const feedingSystem = useFeedingSystem({
     aquariumBounds: {
-      width: 1000,
-      height: 600,
+      width: typeof window !== 'undefined' ? Math.min(window.innerWidth, 1200) : 1000,
+      height: typeof window !== 'undefined' ? Math.min(window.innerHeight - 150, 700) : 600,
     },
     maxFoodsPerSecond: 3,
     foodLifetime: 10,
