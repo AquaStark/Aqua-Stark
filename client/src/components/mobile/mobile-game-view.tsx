@@ -11,7 +11,22 @@ import { useFeedingSystem } from '@/systems/feeding-system';
 import { FishSpecies } from '@/types';
 import { useFish } from '@/hooks';
 import { fishCollection as fullFishList } from '@/constants';
-import { Monitor, Fish, Grid, Utensils, Timer, ShoppingBag, Package, Gamepad2, Trophy, HelpCircle, Camera, Home, Settings, Sparkles } from 'lucide-react';
+import {
+  Monitor,
+  Fish,
+  Grid,
+  Utensils,
+  Timer,
+  ShoppingBag,
+  Package,
+  Gamepad2,
+  Trophy,
+  HelpCircle,
+  Camera,
+  Home,
+  Settings,
+  Sparkles,
+} from 'lucide-react';
 import { useAquarium } from '@/hooks';
 import { useSimpleDirtSystem } from '@/hooks/use-simple-dirt-system';
 import { SimpleDirtSpot } from '@/components/simple-dirt-spot';
@@ -525,7 +540,7 @@ export function MobileGameView() {
                 <span className='text-white text-lg font-bold'>×</span>
               </button>
             </div>
-            
+
             {/* Scrollable menu items */}
             <div className='flex-1 overflow-y-auto py-4 px-4'>
               <div className='flex flex-col gap-2'>
@@ -619,7 +634,7 @@ export function MobileGameView() {
                   <Monitor className='h-5 w-5' />
                   <span className='font-medium'>Wallpaper Mode</span>
                 </button>
-                
+
                 {/* Additional menu items for better scrolling */}
                 <button
                   onClick={() => {

@@ -27,7 +27,11 @@ interface FishDisplayProps {
   isMobile?: boolean;
 }
 
-export function FishDisplay({ fish, cleanlinessScore, isMobile = false }: FishDisplayProps) {
+export function FishDisplay({
+  fish,
+  cleanlinessScore,
+  isMobile = false,
+}: FishDisplayProps) {
   return (
     <div
       className='relative w-full h-full'
