@@ -243,6 +243,19 @@ export const useAquaStarkEnhanced = () => {
     [client, ensureClientReady]
   );
 
+  // Fish Management
+  const newFish = useCallback(
+    async (
+      account: Account | AccountInterface,
+      aquariumId: BigNumberish,
+      species: CairoCustomEnum
+    ) => {
+      ensureClientReady();
+      return await client.FishSystem.newFish(account, aquariumId, species);
+    },
+    [client, ensureClientReady]
+  );
+
   // Decoration Management
   const newDecoration = useCallback(
     async (
@@ -345,6 +358,7 @@ export const useAquaStarkEnhanced = () => {
     getPlayerDecorationCount,
 
     // Fish Management
+    newFish,
     getFishOwnerForAuction,
   };
 };

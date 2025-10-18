@@ -11,7 +11,7 @@ import { FishCard } from '@/components/ui/fish-card/fish-card';
 import { useAquarium } from '@/hooks/dojo';
 import { useAccount } from '@starknet-react/core';
 import { toast } from 'sonner';
-import { useGameEnhanced } from '@/hooks/dojo/useAdditionalContracts';
+import { useAquaStarkEnhanced } from '@/hooks/dojo/useAquaStarkEnhanced';
 import { useMobileDetection } from '@/hooks/use-mobile-detection';
 import { MobileOnboardingView } from '@/components/mobile/mobile-onboarding-view';
 import { CairoCustomEnum } from 'starknet';
@@ -79,7 +79,7 @@ export default function Onboarding() {
   const { account } = useAccount();
   const [selectedFish, setSelectedFish] = useState<number[]>([]);
   const { getPlayerAquariums, newAquarium } = useAquarium();
-  const { newFish } = useGameEnhanced();
+  const { newFish } = useAquaStarkEnhanced();
 
   // Mobile detection
   const { isMobile } = useMobileDetection();
