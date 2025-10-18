@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BubblesBackground } from '@/components';
 import { OrientationLock } from '@/components/ui';
@@ -12,13 +11,11 @@ import { FishCard } from '@/components/ui/fish-card/fish-card';
 import { useAquarium } from '@/hooks/dojo';
 import { useAccount } from '@starknet-react/core';
 import { toast } from 'sonner';
-import { useFish } from '@/hooks';
+import { useFishSystemEnhanced } from '@/hooks/dojo';
 import { useMobileDetection } from '@/hooks/use-mobile-detection';
 import { MobileOnboardingView } from '@/components/mobile/mobile-onboarding-view';
 import { CairoCustomEnum } from 'starknet';
 import { SpeciesEnum } from '@/typescript/models.gen';
-import { WalletAccount } from '@/types';
-// Removed unused import
 
 // This map connects your frontend IDs to Cairo enum variants
 const fishEnumMap: Record<number, SpeciesEnum> = {
@@ -82,10 +79,17 @@ export default function Onboarding() {
   const { account } = useAccount();
   const [selectedFish, setSelectedFish] = useState<number[]>([]);
   const { getPlayerAquariums, newAquarium } = useAquarium();
-  const { newFish } = useFish();
+  const { newFish } = useFishSystemEnhanced();
 
   // Mobile detection
   const { isMobile } = useMobileDetection();
+
+  // Step states
+  const [aquariumId, setAquariumId] = useState<bigint | null>(null);
+  const [aquariumCreated, setAquariumCreated] = useState(false);
+  const [fishCreated, setFishCreated] = useState(false);
+  const [isCreatingAquarium, setIsCreatingAquarium] = useState(false);
+  const [isCreatingFish, setIsCreatingFish] = useState(false);
 
   const handleFishSelect = (fishId: number) => {
     setSelectedFish(prev => {
@@ -98,14 +102,23 @@ export default function Onboarding() {
     });
   };
 
-  //  Create Aquarium
-  const createNewAquarium = async (account: WalletAccount) => {
+  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+  // Step 1: Create Aquarium
+  const handleCreateAquarium = async () => {
+    if (!account) {
+      toast.error('Wallet not connected!');
+      return;
+    }
+
     try {
+      setIsCreatingAquarium(true);
       console.log('🏗️ Creating aquarium with params:', {
         owner: account.address,
         maxCapacity: 10,
         maxDecorations: 5,
       });
+      toast.loading('Creating your aquarium...', { id: 'aquarium' });
 
       const tx = await newAquarium(
         account as any,
@@ -115,7 +128,7 @@ export default function Onboarding() {
       );
 
       console.log('✅ Aquarium created, tx:', tx.transaction_hash);
-      toast.success('Aquarium created on-chain!');
+      toast.success('Aquarium created on-chain!', { id: 'aquarium' });
 
       // Wait a moment for the transaction to be indexed
       await delay(2000);
@@ -129,95 +142,72 @@ export default function Onboarding() {
       }
 
       console.log('🏠 Aquarium ID:', newAquariumId);
-      return newAquariumId;
+      setAquariumId(newAquariumId);
+      setAquariumCreated(true);
     } catch (error) {
       console.error('❌ Error creating aquarium:', error);
-      throw error;
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      toast.error(
+        errorMessage.includes('User canceled')
+          ? 'You cancelled the transaction'
+          : 'Failed to create aquarium',
+        { id: 'aquarium' }
+      );
+    } finally {
+      setIsCreatingAquarium(false);
     }
   };
 
-  const createNewFish = async (
-    account: WalletAccount,
-    aquariumId: bigint,
-    fishId: number,
-    order: string
-  ) => {
-    try {
-      const speciesenum = fishEnumMap[fishId];
-      if (!speciesenum) {
-        toast.error(`${order} fish not selected`);
-        return null;
-      }
-
-      const tx = await newFish(account as any, aquariumId, speciesenum);
-
-      return { success: true, transactionHash: tx.transaction_hash };
-    } catch (error: unknown) {
-      const err = error as Error;
-      if (err.message?.includes('USER_REFUSED_OP')) {
-        toast.error(
-          `You rejected the ${order} fish transaction in your wallet.`
-        );
-        return null;
-      }
-      console.error(`Error while creating ${order} fish:`, error);
-      toast.error(`Something went wrong while creating ${order} fish.`);
-      return null;
-    }
-  };
-
-  const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-  const handleContinue = async () => {
-    if (selectedFish.length !== 2) return;
-    if (!account) {
-      toast.error('Wallet not connected!');
-      return;
-    }
+  // Step 2: Create Fish
+  const handleCreateFish = async () => {
+    if (!account || !aquariumId || selectedFish.length !== 2) return;
 
     try {
-      console.log('🎯 Starting onboarding process...');
-      toast.loading('Creating your aquarium...', { id: 'onboarding' });
-
-      const aquariumId = await createNewAquarium(account as any);
-      if (!aquariumId) throw new Error("Couldn't create aquarium");
-
-      toast.loading('Adding your fish...', { id: 'onboarding' });
+      setIsCreatingFish(true);
+      toast.loading('Creating your fish...', { id: 'fish' });
 
       for (let i = 0; i < 2; i++) {
         const order = i === 0 ? 'First' : 'Second';
+        const speciesenum = fishEnumMap[selectedFish[i]];
+
+        if (!speciesenum) {
+          toast.error(`${order} fish not selected`);
+          continue;
+        }
+
         console.log(
           `🐟 Creating ${order} fish (species ID: ${selectedFish[i]})`
         );
+        const tx = await newFish(account as any, aquariumId, speciesenum);
+        console.log(`✅ ${order} fish created, tx:`, tx.transaction_hash);
+        toast.success(`${order} fish created!`);
 
-        const result = await createNewFish(
-          account as any,
-          BigInt(aquariumId),
-          selectedFish[i],
-          order
-        );
-
-        if (result) {
-          toast.success(`${order} fish created successfully!`);
-        }
-
-        if (i < selectedFish.length - 1) {
-          await delay(5000);
-        }
+        if (i < 1) await delay(5000);
       }
 
-      toast.success('Onboarding complete! 🎉', { id: 'onboarding' });
-      console.log('🎉 Navigating to game with aquarium:', aquariumId);
-      navigate(`/game?aquarium=${BigInt(aquariumId)}`);
-    } catch (err) {
-      console.error('❌ Error during onboarding:', err);
+      toast.success('All fish created! 🎉', { id: 'fish' });
+      setFishCreated(true);
+    } catch (error) {
+      console.error('❌ Error creating fish:', error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       toast.error(
-        err instanceof Error && err.message.includes('USER_REFUSED_OP')
+        errorMessage.includes('USER_REFUSED_OP')
           ? 'You cancelled the transaction'
-          : 'Something went wrong. Please try again.',
-        { id: 'onboarding' }
+          : 'Failed to create fish',
+        { id: 'fish' }
       );
+    } finally {
+      setIsCreatingFish(false);
     }
+  };
+
+  // Step 3: Go to Game
+  const handleGoToGame = () => {
+    if (!aquariumId) return;
+    console.log('🎉 Navigating to game with aquarium:', aquariumId);
+    navigate(`/game?aquarium=${aquariumId}`);
   };
   // Render mobile view if device is detected as mobile
   if (isMobile) {
@@ -235,14 +225,34 @@ export default function Onboarding() {
         <BubblesBackground bubbles={bubbles} />
 
         <div className='absolute top-6 right-6 z-50 pointer-events-auto p-2'>
-          <Button
-            onClick={handleContinue}
-            disabled={selectedFish.length !== 2}
-            className='bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-3 rounded-lg flex items-center gap-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed relative z-50 cursor-pointer'
-          >
-            Next
-            <ChevronRight className='w-4 h-4' />
-          </Button>
+          {!aquariumCreated && (
+            <Button
+              onClick={handleCreateAquarium}
+              disabled={isCreatingAquarium}
+              className='bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+            >
+              {isCreatingAquarium ? 'Creating...' : 'Obtener Acuario Gratis'}
+            </Button>
+          )}
+
+          {aquariumCreated && !fishCreated && (
+            <Button
+              onClick={handleCreateFish}
+              disabled={selectedFish.length !== 2 || isCreatingFish}
+              className='bg-blue-500 hover:bg-blue-600 text-white font-bold px-6 py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+            >
+              {isCreatingFish ? 'Creating Fish...' : 'Obtener Peces'}
+            </Button>
+          )}
+
+          {fishCreated && (
+            <Button
+              onClick={handleGoToGame}
+              className='bg-purple-500 hover:bg-purple-600 text-white font-bold px-6 py-3 rounded-lg animate-pulse'
+            >
+              Ir al Juego
+            </Button>
+          )}
         </div>
 
         <main className='relative z-20 flex flex-col items-center px-4 py-16 pointer-events-auto min-h-[120vh]'>
@@ -269,7 +279,9 @@ export default function Onboarding() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className='grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-4xl w-full'
+              className={`grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 max-w-4xl w-full ${
+                !aquariumCreated ? 'opacity-50 pointer-events-none' : ''
+              }`}
             >
               {starterFish.map((fish, index) => (
                 <motion.div
@@ -295,9 +307,20 @@ export default function Onboarding() {
               className='mt-8 text-center'
             >
               <p className='text-white/90 text-lg'>
-                {selectedFish.length === 0 && 'Select 2 fish to continue'}
-                {selectedFish.length === 1 && 'Select 1 more fish'}
-                {selectedFish.length === 2 && 'Perfect! You can now continue'}
+                {!aquariumCreated && 'Click "Get Free Aquarium" to start'}
+                {aquariumCreated &&
+                  !fishCreated &&
+                  selectedFish.length === 0 &&
+                  'Select 2 fish to continue'}
+                {aquariumCreated &&
+                  !fishCreated &&
+                  selectedFish.length === 1 &&
+                  'Select 1 more fish'}
+                {aquariumCreated &&
+                  !fishCreated &&
+                  selectedFish.length === 2 &&
+                  'Click "Get Fish" to continue'}
+                {fishCreated && 'Click "Go to Game" to start playing!'}
               </p>
             </motion.div>
           </div>
