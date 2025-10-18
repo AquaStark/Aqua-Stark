@@ -60,12 +60,12 @@ export function MobileGameView() {
   // Initialize feeding system
   const feedingSystem = useFeedingSystem({
     aquariumBounds: {
-      width: 400,
-      height: 300,
+      width: window.innerWidth,
+      height: window.innerHeight - 200, // Account for header and bottom nav
     },
     maxFoodsPerSecond: 2,
     foodLifetime: 8,
-    attractionRadius: 30,
+    attractionRadius: 40,
   });
 
   const handleTipsToggle = () => {
