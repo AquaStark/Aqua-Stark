@@ -81,7 +81,7 @@ export default function Onboarding() {
   const bubbles = useBubbles();
   const { account } = useAccount();
   const [selectedFish, setSelectedFish] = useState<number[]>([]);
-  const { getPlayerAquariums } = useAquarium();
+  const { getPlayerAquariums, newAquarium } = useAquarium();
   const { newFish } = useFish();
 
   // Mobile detection
@@ -100,11 +100,40 @@ export default function Onboarding() {
 
   //  Create Aquarium
   const createNewAquarium = async (account: WalletAccount) => {
-    toast.success('Aquarium created successfully!');
+    try {
+      console.log('🏗️ Creating aquarium with params:', {
+        owner: account.address,
+        maxCapacity: 10,
+        maxDecorations: 5,
+      });
 
-    const aquariums = await getPlayerAquariums(account.address);
+      const tx = await newAquarium(
+        account as any,
+        account.address,
+        10, // maxCapacity
+        5 // maxDecorations
+      );
 
-    return aquariums[0]?.id;
+      console.log('✅ Aquarium created, tx:', tx.transaction_hash);
+      toast.success('Aquarium created on-chain!');
+
+      // Wait a moment for the transaction to be indexed
+      await delay(2000);
+
+      // Get the newly created aquarium
+      const aquariums = await getPlayerAquariums(account.address);
+      const newAquariumId = aquariums[aquariums.length - 1]?.id;
+
+      if (!newAquariumId) {
+        throw new Error('Aquarium created but ID not found');
+      }
+
+      console.log('🏠 Aquarium ID:', newAquariumId);
+      return newAquariumId;
+    } catch (error) {
+      console.error('❌ Error creating aquarium:', error);
+      throw error;
+    }
   };
 
   const createNewFish = async (
@@ -147,11 +176,19 @@ export default function Onboarding() {
     }
 
     try {
+      console.log('🎯 Starting onboarding process...');
+      toast.loading('Creating your aquarium...', { id: 'onboarding' });
+
       const aquariumId = await createNewAquarium(account as any);
       if (!aquariumId) throw new Error("Couldn't create aquarium");
 
+      toast.loading('Adding your fish...', { id: 'onboarding' });
+
       for (let i = 0; i < 2; i++) {
         const order = i === 0 ? 'First' : 'Second';
+        console.log(
+          `🐟 Creating ${order} fish (species ID: ${selectedFish[i]})`
+        );
 
         const result = await createNewFish(
           account as any,
@@ -161,7 +198,7 @@ export default function Onboarding() {
         );
 
         if (result) {
-          toast.success(`${order} fish created successfully in aquarium`);
+          toast.success(`${order} fish created successfully!`);
         }
 
         if (i < selectedFish.length - 1) {
@@ -169,10 +206,17 @@ export default function Onboarding() {
         }
       }
 
+      toast.success('Onboarding complete! 🎉', { id: 'onboarding' });
+      console.log('🎉 Navigating to game with aquarium:', aquariumId);
       navigate(`/game?aquarium=${BigInt(aquariumId)}`);
     } catch (err) {
-      console.error('Error during onboarding:', err);
-      toast.error('Something went wrong while creating your aquarium.');
+      console.error('❌ Error during onboarding:', err);
+      toast.error(
+        err instanceof Error && err.message.includes('USER_REFUSED_OP')
+          ? 'You cancelled the transaction'
+          : 'Something went wrong. Please try again.',
+        { id: 'onboarding' }
+      );
     }
   };
   // Render mobile view if device is detected as mobile
