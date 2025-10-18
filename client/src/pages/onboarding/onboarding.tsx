@@ -95,9 +95,7 @@ export default function Onboarding() {
     setSelectedFish(prev => {
       const newSelection = prev.includes(fishId)
         ? prev.filter(id => id !== fishId)
-        : prev.length < 2
-          ? [...prev, fishId]
-          : [prev[1], fishId];
+        : [fishId]; // Solo permite 1 pez
       return newSelection;
     });
   };
@@ -161,32 +159,25 @@ export default function Onboarding() {
 
   // Step 2: Create Fish
   const handleCreateFish = async () => {
-    if (!account || !aquariumId || selectedFish.length !== 2) return;
+    if (!account || !aquariumId || selectedFish.length !== 1) return;
 
     try {
       setIsCreatingFish(true);
       toast.loading('Creating your fish...', { id: 'fish' });
 
-      for (let i = 0; i < 2; i++) {
-        const order = i === 0 ? 'First' : 'Second';
-        const speciesenum = fishEnumMap[selectedFish[i]];
+      const speciesenum = fishEnumMap[selectedFish[0]];
 
-        if (!speciesenum) {
-          toast.error(`${order} fish not selected`);
-          continue;
-        }
-
-        console.log(
-          `🐟 Creating ${order} fish (species ID: ${selectedFish[i]})`
-        );
-        const tx = await newFish(account as any, aquariumId, speciesenum);
-        console.log(`✅ ${order} fish created, tx:`, tx.transaction_hash);
-        toast.success(`${order} fish created!`);
-
-        if (i < 1) await delay(5000);
+      if (!speciesenum) {
+        toast.error('Fish not selected');
+        return;
       }
 
-      toast.success('All fish created! 🎉', { id: 'fish' });
+      console.log(`🐟 Creating fish (species ID: ${selectedFish[0]})`);
+      const tx = await newFish(account as any, aquariumId, speciesenum);
+      console.log(`✅ Fish created, tx:`, tx.transaction_hash);
+      toast.success('Fish created!');
+
+      toast.success('Fish created! 🎉', { id: 'fish' });
       setFishCreated(true);
     } catch (error) {
       console.error('❌ Error creating fish:', error);
@@ -238,10 +229,10 @@ export default function Onboarding() {
           {aquariumCreated && !fishCreated && (
             <Button
               onClick={handleCreateFish}
-              disabled={selectedFish.length !== 2 || isCreatingFish}
+              disabled={selectedFish.length !== 1 || isCreatingFish}
               className='bg-blue-500 hover:bg-blue-600 text-white font-bold px-6 py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
             >
-              {isCreatingFish ? 'Creating Fish...' : 'Obtener Peces'}
+              {isCreatingFish ? 'Creating Fish...' : 'Obtener Pez'}
             </Button>
           )}
 
@@ -311,14 +302,10 @@ export default function Onboarding() {
                 {aquariumCreated &&
                   !fishCreated &&
                   selectedFish.length === 0 &&
-                  'Select 2 fish to continue'}
+                  'Select 1 fish to continue'}
                 {aquariumCreated &&
                   !fishCreated &&
                   selectedFish.length === 1 &&
-                  'Select 1 more fish'}
-                {aquariumCreated &&
-                  !fishCreated &&
-                  selectedFish.length === 2 &&
                   'Click "Get Fish" to continue'}
                 {fishCreated && 'Click "Go to Game" to start playing!'}
               </p>
