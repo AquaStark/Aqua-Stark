@@ -1,6 +1,12 @@
 import { useDojoSDK } from '@dojoengine/sdk/react';
 import { useCallback } from 'react';
-import { Account, AccountInterface, BigNumberish, CairoOption } from 'starknet';
+import {
+  Account,
+  AccountInterface,
+  BigNumberish,
+  CairoOption,
+  CairoCustomEnum,
+} from 'starknet';
 import { DojoClient } from '@/types';
 
 /**
