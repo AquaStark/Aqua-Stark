@@ -3,12 +3,17 @@ import { logger } from '../../utils/logger.js';
 
 /**
  * Controller for species catalog endpoints
+ *
  * @module SpeciesController
  */
 
 /**
  * Get all species from catalog
- * @route GET /api/v1/species
+ *
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @returns {Promise<void>}
  */
 export const getSpeciesCatalog = async (req, res, next) => {
   try {
@@ -28,7 +33,11 @@ export const getSpeciesCatalog = async (req, res, next) => {
 
 /**
  * Get species info by name
- * @route GET /api/v1/species/:speciesName
+ *
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ * @returns {Promise<void>}
  */
 export const getSpeciesInfo = async (req, res, next) => {
   try {
