@@ -58,16 +58,14 @@ export const useSpeciesCatalog = () => {
         }
 
         // Fetch from API
-        const response = await fetch(
-          `${API_CONFIG.BASE_URL}/api/v1/species`
-        );
+        const response = await fetch(`${API_CONFIG.BASE_URL}/api/v1/species`);
 
         if (!response.ok) {
           throw new Error('Failed to fetch species catalog');
         }
 
         const result = await response.json();
-        
+
         // Convert array to map
         const catalogMap: SpeciesCatalog = {};
         result.data.forEach((species: Species) => {
@@ -139,4 +137,3 @@ export const useSpeciesCatalog = () => {
     clearCache,
   };
 };
-
