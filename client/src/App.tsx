@@ -1,4 +1,3 @@
-
 import { Route, Routes } from 'react-router-dom';
 import { StarknetProvider } from './providers/StarknetProvider';
 import { ErrorBoundary } from './components';
