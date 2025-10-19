@@ -21,11 +21,11 @@ import { SpeciesEnum } from '@/typescript/models.gen';
 // Cairo enums use numeric indices, not names
 const fishEnumMap: Record<number, SpeciesEnum> = {
   1: new CairoCustomEnum({ AngelFish: {} }), // index 0
-  2: new CairoCustomEnum({ GoldFish: {} }),  // index 1
-  3: new CairoCustomEnum({ Betta: {} }),     // index 2
+  2: new CairoCustomEnum({ GoldFish: {} }), // index 1
+  3: new CairoCustomEnum({ Betta: {} }), // index 2
   4: new CairoCustomEnum({ NeonTetra: {} }), // index 3
   5: new CairoCustomEnum({ Corydoras: {} }), // index 4
-  6: new CairoCustomEnum({ Hybrid: {} }),    // index 5
+  6: new CairoCustomEnum({ Hybrid: {} }), // index 5
 };
 
 const starterFish = [
@@ -134,15 +134,16 @@ export default function Onboarding() {
       );
 
       console.log('✅ Aquarium created, tx:', tx.transaction_hash);
-      
+
       // Extract aquarium ID from transaction events if available
       let extractedAquariumId: bigint | null = null;
-      
+
       if (tx.events && Array.isArray(tx.events)) {
         console.log('📋 Transaction events:', tx.events);
         // Look for AquariumCreated event
-        const aquariumEvent = tx.events.find((e: any) => 
-          e.keys && e.keys[0] && e.keys[0].includes('AquariumCreated')
+        const aquariumEvent = tx.events.find(
+          (e: any) =>
+            e.keys && e.keys[0] && e.keys[0].includes('AquariumCreated')
         );
         if (aquariumEvent && aquariumEvent.data && aquariumEvent.data[0]) {
           extractedAquariumId = BigInt(aquariumEvent.data[0]);
@@ -157,7 +158,7 @@ export default function Onboarding() {
       } else {
         // Fallback: Query for aquariums
         toast.loading('Searching for your aquarium...', { id: 'aquarium' });
-        
+
         let aquariums: any[] = [];
         let attempts = 0;
         const maxAttempts = 5;
@@ -166,7 +167,7 @@ export default function Onboarding() {
           await delay(3000);
           aquariums = await getPlayerAquariums(account.address);
           console.log(`🔍 Attempt ${attempts + 1}: All aquariums:`, aquariums);
-          
+
           if (aquariums && aquariums.length > 0) {
             break;
           }
@@ -176,7 +177,11 @@ export default function Onboarding() {
         const newAquariumId = aquariums[aquariums.length - 1]?.id;
 
         if (!newAquariumId) {
-          console.error('❌ Aquarium ID not found after', maxAttempts, 'attempts');
+          console.error(
+            '❌ Aquarium ID not found after',
+            maxAttempts,
+            'attempts'
+          );
           throw new Error('Aquarium created but ID not found');
         }
 
@@ -222,7 +227,7 @@ export default function Onboarding() {
       console.log(`🐟 Creating fish 1:`, {
         selectedFishId: selectedFish[0],
         speciesEnum: species1,
-        aquariumId: aquariumId.toString()
+        aquariumId: aquariumId.toString(),
       });
       const tx1 = await newFish(account as any, aquariumId, species1);
       console.log(`✅ Fish 1 created, tx:`, tx1.transaction_hash);
@@ -241,7 +246,7 @@ export default function Onboarding() {
       console.log(`🐟 Creating fish 2:`, {
         selectedFishId: selectedFish[1],
         speciesEnum: species2,
-        aquariumId: aquariumId.toString()
+        aquariumId: aquariumId.toString(),
       });
       const tx2 = await newFish(account as any, aquariumId, species2);
       console.log(`✅ Fish 2 created, tx:`, tx2.transaction_hash);
