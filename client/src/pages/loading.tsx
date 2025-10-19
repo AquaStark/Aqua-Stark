@@ -27,11 +27,17 @@ export default function LoadingPage() {
       while (attempts < maxAttempts) {
         try {
           const aquariumData = await getAquarium(BigInt(aquariumIdFromUrl));
-          console.log(`🔍 Pre-loading (attempt ${attempts + 1}):`, aquariumData);
+          console.log(
+            `🔍 Pre-loading (attempt ${attempts + 1}):`,
+            aquariumData
+          );
 
-          if (aquariumData?.housed_fish && aquariumData.housed_fish.length > 0) {
+          if (
+            aquariumData?.housed_fish &&
+            aquariumData.housed_fish.length > 0
+          ) {
             console.log('✅ Fish found! Pre-loading fish data...');
-            
+
             // Pre-load fish data
             const housedFishArray = Array.isArray(aquariumData.housed_fish)
               ? aquariumData.housed_fish
@@ -41,10 +47,13 @@ export default function LoadingPage() {
               const id = typeof fishId === 'bigint' ? fishId : BigInt(fishId);
               return getFish(id);
             });
-            
+
             const fishData = await Promise.all(fishPromises);
             fishDataRef.current = fishData.filter(Boolean);
-            console.log(`🐟 Fish pre-loaded (${fishDataRef.current.length} fish):`, fishDataRef.current);
+            console.log(
+              `🐟 Fish pre-loaded (${fishDataRef.current.length} fish):`,
+              fishDataRef.current
+            );
             break;
           }
 
@@ -72,7 +81,7 @@ export default function LoadingPage() {
       console.log('🎮 Navigating to game with pre-loaded data');
       navigate(`/game?aquarium=${aquariumIdFromUrl}`, {
         state: { preloadedFish: fishDataRef.current },
-        replace: true
+        replace: true,
       });
     } else {
       navigate('/game', { replace: true });
