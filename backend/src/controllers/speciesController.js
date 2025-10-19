@@ -19,7 +19,7 @@ export const getSpeciesCatalog = async (req, res, next) => {
   try {
     logger.info('GET /api/v1/species - Fetching species catalog');
     const species = await FishService.getSpeciesCatalog();
-    
+
     res.json({
       success: true,
       data: species,
@@ -43,9 +43,9 @@ export const getSpeciesInfo = async (req, res, next) => {
   try {
     const { speciesName } = req.params;
     logger.info({ speciesName }, 'GET /api/v1/species/:speciesName');
-    
+
     const species = await FishService.getSpeciesInfo(speciesName);
-    
+
     res.json({
       success: true,
       data: species,
@@ -55,4 +55,3 @@ export const getSpeciesInfo = async (req, res, next) => {
     next(error);
   }
 };
-

@@ -218,11 +218,20 @@ export class FishService {
    * @param {string} onChainId - On-chain fish ID
    * @returns {Promise<Object>} Created fish data
    */
-  static async createFishState(fishId, playerId, species = null, imageUrl = null, onChainId = null) {
+  static async createFishState(
+    fishId,
+    playerId,
+    species = null,
+    imageUrl = null,
+    onChainId = null
+  ) {
     try {
       fishIdSchema.parse(fishId);
       playerIdSchema.parse(playerId);
-      logger.info({ fishId, playerId, species, imageUrl, onChainId }, 'Creating new fish state');
+      logger.info(
+        { fishId, playerId, species, imageUrl, onChainId },
+        'Creating new fish state'
+      );
 
       const insertData = {
         fish_id: fishId,
@@ -280,7 +289,7 @@ export class FishService {
     try {
       fishIdSchema.parse(fishId);
       playerIdSchema.parse(playerId);
-      
+
       const { species, image_url, on_chain_id } = fishData;
       logger.info({ fishId, playerId, species }, 'Syncing fish from chain');
 
@@ -310,7 +319,13 @@ export class FishService {
         return data;
       } else {
         // Create new fish
-        return await this.createFishState(fishId, playerId, species, image_url, on_chain_id);
+        return await this.createFishState(
+          fishId,
+          playerId,
+          species,
+          image_url,
+          on_chain_id
+        );
       }
     } catch (error) {
       logger.error({ fishId, playerId, error }, 'Error syncing fish');
@@ -598,7 +613,7 @@ export class FishService {
 
       const cacheKey = 'species_catalog';
       const cached = await redisClient.get(cacheKey);
-      
+
       if (cached) {
         logger.debug('Species catalog cache hit');
         return JSON.parse(cached);
@@ -666,5 +681,4 @@ export class FishService {
       );
     }
   }
-
 }

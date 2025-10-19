@@ -21,4 +21,3 @@ router.get('/', getSpeciesCatalog);
 router.get('/:speciesName', getSpeciesInfo);
 
 export default router;
-
