@@ -294,7 +294,7 @@ export default function GamePage() {
           } else if (fish.species.variant) {
             // Find the variant with a non-undefined value
             const activeKey = Object.entries(fish.species.variant).find(
-              ([_, value]) => value !== undefined
+              ([, value]) => value !== undefined
             );
             if (activeKey) {
               speciesName = activeKey[0];
