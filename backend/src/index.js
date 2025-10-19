@@ -18,6 +18,7 @@ import dirtRoutes from './routes/dirtRoutes.js';
 import storeRoutes from './routes/storeRoutes.js';
 import shopRouter from './routes/shopRoutes.js';
 import transactionRouter from './routes/transactionRoutes.js';
+import speciesRouter from './routes/species.js';
 
 // Import WebSocket
 import { GameWebSocket } from './websocket/gameWebSocket.js';
@@ -77,6 +78,7 @@ app.get('/api/v1', (req, res) => {
       minigames: '/api/v1/minigames',
       dirt: '/api/v1/dirt',
       store: '/api/v1/store',
+      species: '/api/v1/species',
       websocket: '/ws',
     },
   });
@@ -91,6 +93,7 @@ app.use('/api/v1/dirt', dirtRoutes);
 app.use('/api/v1/store', storeRoutes);
 app.use('/api/v1/shop', shopRouter);
 app.use('/api/transaction/', transactionRouter);
+app.use('/api/v1/species', speciesRouter);
 
 // WebSocket endpoint info
 app.get('/ws', (req, res) => {
