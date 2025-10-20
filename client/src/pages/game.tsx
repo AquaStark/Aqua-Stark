@@ -229,9 +229,15 @@ export default function GamePage() {
             const backendFish = await getPlayerFish(account.address);
             console.log('🐟 Fish from backend:', backendFish);
 
-            if (backendFish.success && backendFish.data && backendFish.data.length > 0) {
-              console.log(`✅ Found ${backendFish.data.length} fish in backend`);
-              
+            if (
+              backendFish.success &&
+              backendFish.data &&
+              backendFish.data.length > 0
+            ) {
+              console.log(
+                `✅ Found ${backendFish.data.length} fish in backend`
+              );
+
               // Use backend fish IDs to load details from blockchain
               const fishPromises = backendFish.data.map((fish: any) => {
                 const onChainId = fish.on_chain_id;
@@ -247,10 +253,15 @@ export default function GamePage() {
               setPlayerFishes([]);
             }
           } catch (backendError) {
-            console.error('❌ Error loading from backend, falling back to blockchain:', backendError);
-            
+            console.error(
+              '❌ Error loading from backend, falling back to blockchain:',
+              backendError
+            );
+
             // Fallback to blockchain if backend fails
-            const playerAquariums = await getPlayerAquariumsList(account.address);
+            const playerAquariums = await getPlayerAquariumsList(
+              account.address
+            );
             console.log('🏠 Player aquariums (fallback):', playerAquariums);
 
             if (playerAquariums && playerAquariums.length > 0) {
@@ -261,7 +272,10 @@ export default function GamePage() {
                   : lastAquarium;
 
               const aquariumData = await getAquariumData(lastAquariumId);
-              if (aquariumData?.housed_fish && aquariumData.housed_fish.length > 0) {
+              if (
+                aquariumData?.housed_fish &&
+                aquariumData.housed_fish.length > 0
+              ) {
                 const housedFishArray = Array.isArray(aquariumData.housed_fish)
                   ? aquariumData.housed_fish
                   : [aquariumData.housed_fish];
