@@ -11,16 +11,16 @@ import { FishTank } from '@/components/fish-tank';
 
 export const StoreCarousel = () => {
   return (
-    <div className='max-w-7xl px-4 py-8 mx-auto'>
+    <div className='max-w-7xl px-2 sm:px-4 py-2 sm:py-4 mx-auto'>
       <div className='relative'>
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
           pagination={{
             clickable: true,
             renderBullet: (_index: number, className: string) =>
-              `<span class="${className} w-3 h-3 bg-white/80 rounded-full mx-1 transition-all z"></span>`,
+              `<span class="${className} w-2 h-2 sm:w-3 sm:h-3 bg-white/80 rounded-full mx-1 transition-all z"></span>`,
           }}
-          spaceBetween={30}
+          spaceBetween={10}
           slidesPerView={1}
           navigation={{
             nextEl: '.swiper-button-next',
@@ -36,7 +36,7 @@ export const StoreCarousel = () => {
           {banners.map((banner: (typeof banners)[number]) => (
             <SwiperSlide key={String(banner.title)}>
               <div
-                className={`relative rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between  text-white`}
+                className={`relative rounded-2xl sm:rounded-3xl p-3 sm:p-6 md:p-8 flex flex-col md:flex-row items-center justify-between text-white`}
                 style={{ backgroundImage: `${banner.background}` }}
               >
                 {/* OFFER Badge */}
@@ -49,12 +49,14 @@ export const StoreCarousel = () => {
 
                 {/* Left Side: Text */}
                 <div className='flex-1'>
-                  <h2 className='text-2xl font-bold mb-4 flex items-center gap-2'>
+                  <h2 className='text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-4 flex items-center gap-2'>
                     {banner.title}
                   </h2>
-                  <p className='mb-6'>{banner.description}</p>
-                  <div className='flex items-center gap-4'>
-                    <button className='bg-white text-blue-600 text-s font-semibold px-3 py-2 rounded-md shadow hover:bg-gray-100 transition'>
+                  <p className='text-sm sm:text-base mb-3 sm:mb-6'>
+                    {banner.description}
+                  </p>
+                  <div className='flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4'>
+                    <button className='bg-white text-blue-600 text-xs sm:text-sm font-semibold px-2 sm:px-3 py-1 sm:py-2 rounded-md shadow hover:bg-gray-100 transition'>
                       {banner.buttonText}
                     </button>
                     <CountdownTimer countdown={banner.countdown} />
@@ -62,7 +64,7 @@ export const StoreCarousel = () => {
                 </div>
 
                 {/* Right Side: Banner Image */}
-                <div className='flex-[0.3] flex justify-start items-center w-full'>
+                <div className='flex-[0.3] flex justify-center items-center w-full mt-2 sm:mt-0'>
                   {banner.bannerVideo ? (
                     <video
                       src={banner.bannerVideo}
@@ -70,16 +72,16 @@ export const StoreCarousel = () => {
                       loop
                       muted
                       playsInline
-                      className='w-[120px] h-[120px] object-contain'
+                      className='w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] md:w-[120px] md:h-[120px] object-contain'
                     />
                   ) : (
                     <FishTank shadow={false}>
                       <img
                         src={banner.bannerImage || '/placeholder.svg'}
                         alt={`${banner.title}`}
-                        width={120}
-                        height={120}
-                        className='object-contain transform hover:scale-110 transition-all duration-500'
+                        width={80}
+                        height={80}
+                        className='w-[80px] h-[80px] sm:w-[100px] sm:h-[100px] md:w-[120px] md:h-[120px] object-contain transform hover:scale-110 transition-all duration-500'
                       />
                     </FishTank>
                   )}
@@ -88,11 +90,11 @@ export const StoreCarousel = () => {
             </SwiperSlide>
           ))}
 
-          <div className='swiper-button-prev absolute p-2 top-1/2 left-0 z-10 w-10 h-10 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm cursor-pointer after:hidden'>
-            <ChevronLeftIcon className='w-4 h-4 text-white' />
+          <div className='swiper-button-prev absolute p-1 sm:p-2 top-1/2 left-1 sm:left-0 z-10 w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm cursor-pointer after:hidden'>
+            <ChevronLeftIcon className='w-3 h-3 sm:w-4 sm:h-4 text-white' />
           </div>
-          <div className='swiper-button-next absolute p-2 top-1/2 right-0 z-10 w-10 h-10 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm cursor-pointer after:hidden'>
-            <ChevronRightIcon className='w-4 h-4 text-white' />
+          <div className='swiper-button-next absolute p-1 sm:p-2 top-1/2 right-1 sm:right-0 z-10 w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm cursor-pointer after:hidden'>
+            <ChevronRightIcon className='w-3 h-3 sm:w-4 sm:h-4 text-white' />
           </div>
         </Swiper>
       </div>
