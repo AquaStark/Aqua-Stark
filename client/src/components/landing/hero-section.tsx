@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { usePlayerValidation, useNotifications } from '@/hooks';
 import { useState } from 'react';
 import { ConnectWalletModal } from '@/components/modal/connect-wallet-modal';
+import { useAquariumSync } from '@/hooks/use-aquarium-sync';
 
 interface HeroSectionProps {
   onTriggerPulse?: () => void;
@@ -16,6 +17,7 @@ export function HeroSection({ onTriggerPulse }: HeroSectionProps) {
   const { validatePlayer, syncPlayerToBackend, isValidating } =
     usePlayerValidation();
   const { success, info } = useNotifications();
+  const { getPlayerAquariums } = useAquariumSync();
   const [isProcessing, setIsProcessing] = useState(false);
   const [showConnectModal, setShowConnectModal] = useState(false);
 
@@ -48,7 +50,7 @@ export function HeroSection({ onTriggerPulse }: HeroSectionProps) {
       });
 
       if (validation.exists) {
-        console.log('✅ Player exists, navigating to /game');
+        console.log('✅ Player exists, fetching aquariums');
 
         // User exists - check if we need to sync to backend
         if (validation.isOnChain && !validation.isInBackend) {
@@ -66,8 +68,23 @@ export function HeroSection({ onTriggerPulse }: HeroSectionProps) {
           success('Welcome back!');
         }
 
-        // Navigate to game
-        navigate('/game');
+        // Para jugadores existentes, obtener su último acuario desde backend
+        console.log('🏠 Fetching player aquariums from backend...');
+        const response = await getPlayerAquariums(account.address);
+        console.log('🏠 Player aquariums from backend:', response);
+
+        if (response.success && response.data && response.data.length > 0) {
+          // Use the first aquarium (most recent)
+          const primaryAquarium = response.data[0];
+          const aquariumId = primaryAquarium.on_chain_id;
+          console.log('🎯 Navigating to loading with aquarium:', aquariumId);
+          navigate(`/loading?aquarium=${aquariumId}`);
+        } else {
+          // Sin acuarios, tratar como jugador nuevo
+          console.log('⚠️ No aquariums found, redirecting to /start');
+          info("Welcome! Let's set up your first aquarium.");
+          navigate('/start');
+        }
       } else {
         console.log('🆕 New player, navigating to /start');
         // New user - go to registration
