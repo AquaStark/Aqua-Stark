@@ -18,6 +18,7 @@ import { SimpleDirtSpot } from '@/components/simple-dirt-spot';
 import { useMobileDetection } from '@/hooks/use-mobile-detection';
 import { MobileGameView } from '@/components/mobile/mobile-game-view';
 import { useSpeciesCatalog } from '@/hooks/use-species-catalog';
+import { useFishSync } from '@/hooks/use-fish-sync';
 
 // Importar todos los componentes originales
 import { GameHeader } from '@/components';
@@ -40,6 +41,9 @@ export default function GamePage() {
 
   // Species catalog for image mapping
   const { getSpeciesImage, getSpeciesDisplayName } = useSpeciesCatalog();
+
+  // Backend sync hooks
+  const { getPlayerFish } = useFishSync();
 
   // All state hooks first
   const [showMenu, setShowMenu] = useState(false);
@@ -219,41 +223,53 @@ export default function GamePage() {
             setPlayerFishes([]);
           }
         } else {
-          // Load all player aquariums and their fishes
-          console.log('📋 Loading all player aquariums');
-          const playerAquariums = await getPlayerAquariumsList(account.address);
-          console.log('🏠 Player aquariums:', playerAquariums);
+          // Load fish from backend (new approach)
+          console.log('📋 Loading player fish from backend');
+          try {
+            const backendFish = await getPlayerFish(account.address);
+            console.log('🐟 Fish from backend:', backendFish);
 
-          if (playerAquariums && playerAquariums.length > 0) {
-            // Load last (most recent) aquarium's fish
-            const lastAquarium = playerAquariums[playerAquariums.length - 1];
-            const lastAquariumId =
-              typeof lastAquarium === 'object' && lastAquarium.id
-                ? lastAquarium.id
-                : lastAquarium;
+            if (backendFish.success && backendFish.data && backendFish.data.length > 0) {
+              console.log(`✅ Found ${backendFish.data.length} fish in backend`);
+              
+              // Use backend fish IDs to load details from blockchain
+              const fishPromises = backendFish.data.map((fish: any) => {
+                const onChainId = fish.on_chain_id;
+                console.log('🔍 Loading fish from blockchain:', onChainId);
+                return getFish(BigInt(onChainId));
+              });
 
-            console.log(
-              '📦 Loading last (most recent) aquarium ID:',
-              lastAquariumId
-            );
-            const aquariumData = await getAquariumData(lastAquariumId);
-            console.log('🏠 Last aquarium data:', aquariumData);
+              const fishDetails = await Promise.all(fishPromises);
+              console.log('🐟 Fish details from blockchain:', fishDetails);
+              setPlayerFishes(fishDetails.filter(Boolean));
+            } else {
+              console.log('⚠️ No fish found in backend for player');
+              setPlayerFishes([]);
+            }
+          } catch (backendError) {
+            console.error('❌ Error loading from backend, falling back to blockchain:', backendError);
+            
+            // Fallback to blockchain if backend fails
+            const playerAquariums = await getPlayerAquariumsList(account.address);
+            console.log('🏠 Player aquariums (fallback):', playerAquariums);
 
-            if (aquariumData?.housed_fish) {
-              const housedFishArray = Array.isArray(aquariumData.housed_fish)
-                ? aquariumData.housed_fish
-                : [aquariumData.housed_fish];
+            if (playerAquariums && playerAquariums.length > 0) {
+              const lastAquarium = playerAquariums[playerAquariums.length - 1];
+              const lastAquariumId =
+                typeof lastAquarium === 'object' && lastAquarium.id
+                  ? lastAquarium.id
+                  : lastAquarium;
 
-              console.log('🎣 Fish IDs:', housedFishArray);
+              const aquariumData = await getAquariumData(lastAquariumId);
+              if (aquariumData?.housed_fish && aquariumData.housed_fish.length > 0) {
+                const housedFishArray = Array.isArray(aquariumData.housed_fish)
+                  ? aquariumData.housed_fish
+                  : [aquariumData.housed_fish];
 
-              if (housedFishArray.length > 0) {
-                const fishPromises = housedFishArray.map((fishId: any) => {
-                  const id =
-                    typeof fishId === 'bigint' ? fishId : BigInt(fishId);
-                  return getFish(id);
-                });
+                const fishPromises = housedFishArray.map((fishId: any) =>
+                  getFish(typeof fishId === 'bigint' ? fishId : BigInt(fishId))
+                );
                 const fishData = await Promise.all(fishPromises);
-                console.log('🐟 Fish data:', fishData);
                 setPlayerFishes(fishData.filter(Boolean));
               } else {
                 setPlayerFishes([]);
@@ -261,9 +277,6 @@ export default function GamePage() {
             } else {
               setPlayerFishes([]);
             }
-          } else {
-            console.log('⚠️ No aquariums found for player');
-            setPlayerFishes([]);
           }
         }
       } catch (err) {
