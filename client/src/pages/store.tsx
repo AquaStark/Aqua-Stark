@@ -101,7 +101,7 @@ export default function StorePage() {
             pointerEvents: 'none',
           }}
         >
-          <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
+          <div className='relative min-h-screen overflow-y-auto overflow-x-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
             <BubblesBackground bubbles={bubbles} />
             <PageHeader
               title='Aqua Stark Store'
@@ -128,7 +128,7 @@ export default function StorePage() {
             />
             <CartSidebar />
             <CheckoutModal />
-            <main className='relative z-10'>
+            <main className='relative z-10 pb-20 sm:pb-24 md:pb-28'>
               <div className='px-2 sm:px-4 py-2 sm:py-4 mx-auto max-w-6xl'>
                 <StoreOriginal />
               </div>
@@ -142,7 +142,7 @@ export default function StorePage() {
 
   // Show store once loading is complete
   return (
-    <div className='relative min-h-screen overflow-y-auto bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
+    <div className='relative min-h-screen overflow-y-auto overflow-x-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
       <BubblesBackground bubbles={bubbles} />
 
       <PageHeader
@@ -167,7 +167,7 @@ export default function StorePage() {
       <CartSidebar />
       <CheckoutModal />
 
-      <main className='relative z-10'>
+      <main className='relative z-10 pb-20 sm:pb-24 md:pb-28'>
         <div className='px-2 sm:px-4 py-2 sm:py-4 mx-auto max-w-6xl w-full'>
           <StoreOriginal />
         </div>
