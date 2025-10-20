@@ -22,6 +22,25 @@ export default function StorePage() {
   const bubbles = useBubbles();
   const { toggleCart } = useCartStore();
 
+  // Add store-active class to body, html, and root when component mounts
+  useEffect(() => {
+    document.body.classList.add('store-active');
+    document.documentElement.classList.add('store-active');
+    const rootElement = document.getElementById('root');
+    if (rootElement) {
+      rootElement.classList.add('store-active');
+    }
+
+    // Cleanup function to remove classes when component unmounts
+    return () => {
+      document.body.classList.remove('store-active');
+      document.documentElement.classList.remove('store-active');
+      if (rootElement) {
+        rootElement.classList.remove('store-active');
+      }
+    };
+  }, []);
+
   // Minimum loading time (2.5 seconds)
   const MIN_LOADING_TIME = 2500;
 
