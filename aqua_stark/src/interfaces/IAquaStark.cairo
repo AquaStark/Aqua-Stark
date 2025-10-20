@@ -1,8 +1,7 @@
 use aqua_stark::models::aquarium_model::Aquarium;
 use aqua_stark::models::decoration_model::Decoration;
-use aqua_stark::models::fish_model::{Fish, FishParents, FishOwner, Species, Listing};
+use aqua_stark::models::fish_model::FishOwner;
 use aqua_stark::models::player_model::Player;
-use aqua_stark::models::trade_model::{FishLock, MatchCriteria, TradeOffer};
 use aqua_stark::models::auctions_model::*;
 
 use starknet::ContractAddress;

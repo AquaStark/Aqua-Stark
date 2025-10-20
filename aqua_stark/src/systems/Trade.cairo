@@ -1,8 +1,6 @@
 #[dojo::contract]
 pub mod Trade {
-    use dojo::world::IWorldDispatcherTrait;
     use aqua_stark::interfaces::ITrade::{ITrade};
-    use aqua_stark::interfaces::IAquaStark::{IAquaStarkDispatcher, IAquaStarkDispatcherTrait};
     use aqua_stark::base::events::{
         TradeOfferCreated, TradeOfferAccepted, TradeOfferCancelled, FishLocked, FishUnlocked,
         TradeOfferExpired,
@@ -11,19 +9,19 @@ pub mod Trade {
         ContractAddress, get_caller_address, get_block_timestamp, contract_address_const,
     };
 
-    use aqua_stark::models::fish_model::{Fish, FishOwner, Species};
+    use aqua_stark::models::fish_model::{Fish, FishOwner};
     use aqua_stark::models::trade_model::{
         TradeOffer, TradeOfferStatus, MatchCriteria, FishLock, TradeOfferCounter, ActiveTradeOffers,
         TradeOfferTrait, FishLockTrait, trade_offer_id_target,
     };
     // Session system imports
     use aqua_stark::models::session::{
-        SessionKey, SessionAnalytics, SESSION_STATUS_ACTIVE, SESSION_STATUS_EXPIRED,
-        SESSION_STATUS_REVOKED, SESSION_TYPE_BASIC, SESSION_TYPE_PREMIUM, SESSION_TYPE_ADMIN,
+        SessionKey, SessionAnalytics, SESSION_STATUS_ACTIVE, 
+         SESSION_TYPE_PREMIUM,
         PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, PERMISSION_ADMIN,
     };
     use aqua_stark::helpers::session_validation::{
-        SessionValidationTrait, SessionValidationImpl, MIN_SESSION_DURATION, MAX_SESSION_DURATION,
+         SessionValidationImpl, MIN_SESSION_DURATION, 
         AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION,
     };
 
@@ -49,13 +47,6 @@ pub mod Trade {
             // Get or create unified session
             let session_id = self.get_or_create_session(caller);
             self.validate_and_update_session(session_id, PERMISSION_TRADE);
-
-            // Validate fish ownership through AquaStark contract
-            let aqua_stark_address = self.get_aqua_stark_address();
-            let aqua_stark = IAquaStarkDispatcher { contract_address: aqua_stark_address };
-
-            // Fish verification moved to game contract
-            // let _ = aqua_stark.get_fish(offered_fish_id);
 
             let fish_owner: FishOwner = world.read_model(offered_fish_id);
             assert(fish_owner.owner == caller, 'You do not own this fish');
@@ -131,14 +122,6 @@ pub mod Trade {
             self.validate_and_update_session(session_id, PERMISSION_TRADE);
 
             let mut trade_offer: TradeOffer = world.read_model(offer_id);
-
-            let aqua_stark_address = self.get_aqua_stark_address();
-            let aqua_stark = IAquaStarkDispatcher { contract_address: aqua_stark_address };
-
-            // Fish verification moved to game contract
-            // let _ = aqua_stark.get_fish(trade_offer.offered_fish_id);
-            // let _ = aqua_stark.get_fish(offered_fish_id);
-
             assert(TradeOfferTrait::is_active(@trade_offer), 'Offer not active');
             assert(trade_offer.creator != caller, 'Cannot accept own offer');
 
@@ -164,13 +147,20 @@ pub mod Trade {
             let acceptor_fish: Fish = world.read_model(offered_fish_id);
 
             // Convert species to u8 for matching
-            let fish_species = match acceptor_fish.species {
-                Species::AngelFish => 0_u8,
-                Species::GoldFish => 1_u8,
-                Species::Betta => 2_u8,
-                Species::NeonTetra => 3_u8,
-                Species::Corydoras => 4_u8,
-                Species::Hybrid => 5_u8,
+            let fish_species = if acceptor_fish.species == 'AngelFish' {
+                0_u8
+            } else if acceptor_fish.species == 'GoldFish' {
+                1_u8
+            } else if acceptor_fish.species == 'Betta' {
+                2_u8
+            } else if acceptor_fish.species == 'NeonTetra' {
+                3_u8
+            } else if acceptor_fish.species == 'Corydoras' {
+                4_u8
+            } else if acceptor_fish.species == 'Hybrid' {
+                5_u8
+            } else {
+                255_u8
             };
 
             let fish_traits = array![acceptor_fish.color].span();

@@ -1,11 +1,10 @@
-use aqua_stark::models::fish_model::{Fish, FishParents, Species, Listing};
-use aqua_stark::models::player_model::Player;
+use aqua_stark::models::fish_model::{Fish, FishParents, Listing};
 use starknet::ContractAddress;
 
 #[starknet::interface]
 pub trait IFishSystem<T> {
     // Core fish management functions
-    fn new_fish(ref self: T, aquarium_id: u256, species: Species) -> Fish;
+    fn new_fish(ref self: T, aquarium_id: u256, species: felt252) -> Fish;
     fn breed_fishes(ref self: T, parent1_id: u256, parent2_id: u256) -> u256;
     fn move_fish_to_aquarium(ref self: T, fish_id: u256, from: u256, to: u256) -> bool;
     fn add_fish_to_aquarium(ref self: T, fish: Fish, aquarium_id: u256);

@@ -34,51 +34,6 @@ pub struct FishParents {
     pub parent2: u256,
 }
 
-#[derive(Serde, Copy, Introspect, Drop, PartialEq)]
-pub enum Species {
-    #[default]
-    AngelFish,
-    GoldFish,
-    Betta,
-    NeonTetra,
-    Corydoras,
-    Hybrid,
-}
-
-#[derive(Serde, Copy, Introspect, Drop, PartialEq)]
-pub enum Pattern {
-    #[default]
-    Plain,
-    Spotted,
-    Stripes,
-}
-
-// Trait-based conversions for Species
-pub impl IntoSpeciesU8 of Into<Species, u8> {
-    fn into(self: Species) -> u8 {
-        match self {
-            Species::AngelFish => 0,
-            Species::GoldFish => 1,
-            Species::Betta => 2,
-            Species::NeonTetra => 3,
-            Species::Corydoras => 4,
-            Species::Hybrid => 5,
-        }
-    }
-}
-
-pub fn species_from_u8_strict(value: u8) -> Option<Species> {
-    match value {
-        0 => Option::Some(Species::AngelFish),
-        1 => Option::Some(Species::GoldFish),
-        2 => Option::Some(Species::Betta),
-        3 => Option::Some(Species::NeonTetra),
-        4 => Option::Some(Species::Corydoras),
-        5 => Option::Some(Species::Hybrid),
-        _ => Option::None(()),
-    }
-}
-
 #[derive(Serde, Copy, Drop, Introspect)]
 #[dojo::model]
 pub struct FishOwner {
@@ -100,10 +55,10 @@ pub struct Fish {
     pub growth: u64, // 0-100 scale
     pub growth_rate: u8,
     pub owner: ContractAddress,
-    pub species: Species,
+    pub species: felt252,
     pub generation: u8,
     pub color: felt252,
-    pub pattern: Pattern,
+    pub pattern: felt252,
     pub size: u8,
     pub speed: u32,
     pub birth_time: u64,
@@ -122,7 +77,7 @@ pub trait FishTrait {
     fn is_fully_grown(fish: Fish) -> bool;
     fn can_eat(fish: Fish) -> bool;
     fn create_fish_by_species(
-        fish: Fish, aquarium_id: u256, owner: ContractAddress, species: Species,
+        fish: Fish, aquarium_id: u256, owner: ContractAddress, species: felt252,
     ) -> Fish;
 
     fn create_offspring(
@@ -132,7 +87,7 @@ pub trait FishTrait {
     fn feed(fish: Fish, amount: u8) -> Fish;
     fn grow(fish: Fish, amount: u64) -> Fish;
     fn heal(fish: Fish, amount: u8) -> Fish;
-    fn damage(fish: Fish, species: Species, amount: u8) -> Fish;
+    fn damage(fish: Fish, species: felt252, amount: u8) -> Fish;
     fn regenerate_health(fish: Fish, aquarium_cleanliness: u8) -> Fish;
     fn update_hunger(fish: Fish, hours_passed: u8) -> Fish;
     fn update_age(fish: Fish, days_passed: u32) -> Fish;
@@ -216,7 +171,7 @@ impl FishImpl of FishTrait {
     }
 
 
-    fn damage(mut fish: Fish, species: Species, amount: u8) -> Fish {
+    fn damage(mut fish: Fish, species: felt252, amount: u8) -> Fish {
         let caller = get_caller_address();
 
         // Check ownership
@@ -277,7 +232,7 @@ impl FishImpl of FishTrait {
             fish.hunger_level = 0
         } else {
             if (fish.hunger_level < 30) {
-                fish.can_grow == true;
+                fish.can_grow = true;
             }
             // Update hunger
             let new_hunger = fish.hunger_level - amount;
@@ -293,7 +248,7 @@ impl FishImpl of FishTrait {
         fish
     }
     fn create_fish_by_species(
-        mut fish: Fish, aquarium_id: u256, owner: ContractAddress, species: Species,
+        mut fish: Fish, aquarium_id: u256, owner: ContractAddress, species: felt252,
     ) -> Fish {
         let timestamp = get_block_timestamp();
 
@@ -310,56 +265,49 @@ impl FishImpl of FishTrait {
         fish.aquarium_id = aquarium_id;
 
         // Assign species-specific traits
-        match species {
-            Species::AngelFish => {
-                fish.color = 'blue';
-                fish.pattern = Pattern::Plain;
-                fish.size = 5;
-                fish.growth_rate = 5;
-                fish.speed = 4;
-                fish.mutation_rate = 5;
-            },
-            Species::GoldFish => {
-                fish.color = 'gold';
-                fish.pattern = Pattern::Spotted;
-                fish.size = 4;
-                fish.growth_rate = 4;
-                fish.speed = 3;
-                fish.mutation_rate = 3;
-            },
-            Species::Betta => {
-                fish.color = 'red';
-                fish.pattern = Pattern::Stripes;
-                fish.size = 3;
-                fish.growth_rate = 3;
-                fish.speed = 5;
-                fish.mutation_rate = 4;
-            },
-            Species::NeonTetra => {
-                fish.color = 'neon';
-                fish.pattern = Pattern::Plain;
-                fish.size = 2;
-                fish.growth_rate = 2;
-                fish.speed = 5;
-                fish.mutation_rate = 2;
-            },
-            Species::Corydoras => {
-                fish.color = 'silver';
-                fish.pattern = Pattern::Spotted;
-                fish.size = 4;
-                fish.growth_rate = 4;
-                fish.speed = 3;
-                fish.mutation_rate = 3;
-            },
-            _ => {
-                // For safety, fallback values (won't apply for Hybrid if it's blocked)
-                fish.color = 'gray';
-                fish.pattern = Pattern::Plain;
-                fish.size = 3;
-                fish.growth_rate = 3;
-                fish.speed = 3;
-                fish.mutation_rate = 3;
-            },
+        if species == 'AngelFish' {
+            fish.color = 'blue';
+            fish.pattern = 'Plain';
+            fish.size = 5;
+            fish.growth_rate = 5;
+            fish.speed = 4;
+            fish.mutation_rate = 5;
+        } else if species == 'GoldFish' {
+            fish.color = 'gold';
+            fish.pattern = 'Spotted';
+            fish.size = 4;
+            fish.growth_rate = 4;
+            fish.speed = 3;
+            fish.mutation_rate = 3;
+        } else if species == 'Betta' {
+            fish.color = 'red';
+            fish.pattern = 'Stripes';
+            fish.size = 3;
+            fish.growth_rate = 3;
+            fish.speed = 5;
+            fish.mutation_rate = 4;
+        } else if species == 'NeonTetra' {
+            fish.color = 'neon';
+            fish.pattern = 'Plain';
+            fish.size = 2;
+            fish.growth_rate = 2;
+            fish.speed = 5;
+            fish.mutation_rate = 2;
+        } else if species == 'Corydoras' {
+            fish.color = 'silver';
+            fish.pattern = 'Spotted';
+            fish.size = 4;
+            fish.growth_rate = 4;
+            fish.speed = 3;
+            fish.mutation_rate = 3;
+        } else {
+            // For safety, fallback values (won't apply for Hybrid if it's blocked)
+            fish.color = 'gray';
+            fish.pattern = 'Plain';
+            fish.size = 3;
+            fish.growth_rate = 3;
+            fish.speed = 3;
+            fish.mutation_rate = 3;
         }
 
         fish
@@ -389,7 +337,7 @@ impl FishImpl of FishTrait {
                 offspring.pattern = parent1.pattern;
             }
         } else {
-            offspring.species = Species::Hybrid;
+            offspring.species = 'Hybrid';
             // Inherit color & pattern randomly
             if !g {
                 offspring.color = parent1.color;
@@ -438,41 +386,41 @@ impl FishImpl of FishTrait {
 
         // Assign species-specific traits
         if species_index == 0 {
-            fish.species = Species::AngelFish;
+            fish.species = 'AngelFish';
             fish.color = 'blue';
-            fish.pattern = Pattern::Plain;
+            fish.pattern = 'Plain';
             fish.size = 5;
             fish.growth_rate = 5;
             fish.speed = 4;
             fish.mutation_rate = 5;
         } else if species_index == 1 {
-            fish.species = Species::GoldFish;
+            fish.species = 'GoldFish';
             fish.color = 'gold';
-            fish.pattern = Pattern::Spotted;
+            fish.pattern = 'Spotted';
             fish.size = 4;
             fish.growth_rate = 4;
             fish.speed = 3;
             fish.mutation_rate = 3;
         } else if species_index == 2 {
-            fish.species = Species::Betta;
+            fish.species = 'Betta';
             fish.color = 'red';
-            fish.pattern = Pattern::Stripes;
+            fish.pattern = 'Stripes';
             fish.size = 3;
             fish.growth_rate = 3;
             fish.speed = 5;
             fish.mutation_rate = 4;
         } else if species_index == 3 {
-            fish.species = Species::NeonTetra;
+            fish.species = 'NeonTetra';
             fish.color = 'neon';
-            fish.pattern = Pattern::Plain;
+            fish.pattern = 'Plain';
             fish.size = 2;
             fish.growth_rate = 2;
             fish.speed = 5;
             fish.mutation_rate = 2;
         } else if species_index == 4 {
-            fish.species = Species::Corydoras;
+            fish.species = 'Corydoras';
             fish.color = 'silver';
-            fish.pattern = Pattern::Spotted;
+            fish.pattern = 'Spotted';
             fish.size = 4;
             fish.growth_rate = 4;
             fish.speed = 3;
@@ -516,10 +464,10 @@ mod tests {
             health: 100,
             growth: 0,
             owner: zero_address(),
-            species: Species::AngelFish,
+            species: 'AngelFish',
             generation: 1,
             color: 'blue',
-            pattern: Pattern::Plain,
+            pattern: 'Plain',
             size: 2,
             speed: 8,
             birth_time: get_block_timestamp(),
@@ -545,10 +493,10 @@ mod tests {
             health: 0,
             growth: 0,
             owner: zero_address(),
-            species: Species::AngelFish,
+            species: 'AngelFish',
             generation: 0,
             color: '',
-            pattern: Pattern::Plain,
+            pattern: 'Plain',
             size: 0,
             speed: 0,
             birth_time: 0,
@@ -578,10 +526,10 @@ mod tests {
             health: 0,
             growth: 4,
             owner: zero_address(),
-            species: Species::AngelFish,
+            species: 'AngelFish',
             generation: 0,
             color: '',
-            pattern: Pattern::Plain,
+            pattern: 'Plain',
             size: 0,
             speed: 0,
             birth_time: 0,
@@ -596,21 +544,21 @@ mod tests {
         };
 
         let parent1: Fish = FishTrait::create_fish_by_species(
-            fish.clone(), fish.aquarium_id, zero_address(), Species::AngelFish,
+            fish.clone(), fish.aquarium_id, zero_address(), 'AngelFish',
         );
         let parent: Fish = FishTrait::create_fish_by_species(
-            fish.clone(), fish.aquarium_id, zero_address(), Species::GoldFish,
+            fish.clone(), fish.aquarium_id, zero_address(), 'GoldFish',
         );
-        assert(parent1.species == Species::AngelFish, 'Fish Species error');
+        assert(parent1.species == 'AngelFish', 'Fish Species error');
         assert(parent1.color == 'blue', 'Color error');
-        assert(parent1.pattern == Pattern::Plain, 'Pattern error');
+        assert(parent1.pattern == 'Plain', 'Pattern error');
         assert(parent1.size == 5, 'size error');
         assert(parent1.speed == 4, 'speed error');
         assert(parent1.mutation_rate == 5, 'mutation_rate error');
 
-        assert(parent.species == Species::GoldFish, 'Fish Species error');
+        assert(parent.species == 'GoldFish', 'Fish Species error');
         assert(parent.color == 'gold', 'Color error');
-        assert(parent.pattern == Pattern::Spotted, 'Pattern error');
+        assert(parent.pattern == 'Spotted', 'Pattern error');
         assert(parent.size == 4, 'size error');
         assert(parent.speed == 3, 'speed error');
         assert(parent.mutation_rate == 3, 'mutation_rate error');
@@ -625,10 +573,10 @@ mod tests {
             health: 0,
             growth: 4,
             owner: zero_address(),
-            species: Species::AngelFish,
+            species: 'AngelFish',
             generation: 0,
             color: '',
-            pattern: Pattern::Plain,
+            pattern: 'Plain',
             size: 0,
             speed: 0,
             birth_time: 0,
@@ -643,16 +591,16 @@ mod tests {
         };
 
         let parent2: Fish = FishTrait::create_fish_by_species(
-            fish.clone(), fish.aquarium_id, zero_address(), Species::AngelFish,
+            fish.clone(), fish.aquarium_id, zero_address(), 'AngelFish',
         );
         let parent1: Fish = FishTrait::create_fish_by_species(
-            fish.clone(), fish.aquarium_id, zero_address(), Species::GoldFish,
+            fish.clone(), fish.aquarium_id, zero_address(), 'GoldFish',
         );
         let offspring: Fish = FishTrait::create_offspring(
             fish.clone(), zero_address(), fish.aquarium_id, parent1, parent2,
         );
-        assert(offspring.species == Species::Hybrid, 'offspring Species error');
-        assert(offspring.pattern == Pattern::Spotted, 'offspring pattern error');
+        assert(offspring.species == 'Hybrid', 'offspring Species error');
+        assert(offspring.pattern == 'Spotted', 'offspring pattern error');
     }
 
     #[test]
@@ -665,10 +613,10 @@ mod tests {
             health: 0,
             growth: 4,
             owner: zero_address(),
-            species: Species::AngelFish,
+            species: 'AngelFish',
             generation: 0,
             color: '',
-            pattern: Pattern::Plain,
+            pattern: 'Plain',
             size: 0,
             speed: 0,
             birth_time: 0,
@@ -683,16 +631,16 @@ mod tests {
         };
 
         let parent2: Fish = FishTrait::create_fish_by_species(
-            fish.clone(), fish.aquarium_id, zero_address(), Species::AngelFish,
+            fish.clone(), fish.aquarium_id, zero_address(), 'AngelFish',
         );
         let parent1: Fish = FishTrait::create_fish_by_species(
-            fish.clone(), fish.aquarium_id, zero_address(), Species::AngelFish,
+            fish.clone(), fish.aquarium_id, zero_address(), 'AngelFish',
         );
         let offspring: Fish = FishTrait::create_offspring(
             fish.clone(), zero_address(), fish.aquarium_id, parent1, parent2,
         );
-        assert(offspring.species == Species::AngelFish, 'offspring Species error');
-        assert(offspring.pattern == Pattern::Plain, 'offspring pattern error');
+        assert(offspring.species == 'AngelFish', 'offspring Species error');
+        assert(offspring.pattern == 'Plain', 'offspring pattern error');
     }
 
     #[test]
@@ -705,10 +653,10 @@ mod tests {
             health: 0,
             growth: 4,
             owner: zero_address(),
-            species: Species::AngelFish,
+            species: 'AngelFish',
             generation: 0,
             color: '',
-            pattern: Pattern::Plain,
+            pattern: 'Plain',
             size: 0,
             speed: 0,
             birth_time: 0,
@@ -723,7 +671,7 @@ mod tests {
         };
 
         let new_fish: Fish = FishTrait::create_fish_by_species(
-            fish.clone(), fish.aquarium_id, zero_address(), Species::AngelFish,
+            fish.clone(), fish.aquarium_id, zero_address(), 'AngelFish',
         );
 
         let health: u8 = FishTrait::get_health(new_fish.clone());
@@ -751,10 +699,10 @@ mod tests {
             health: 0,
             growth: 0,
             owner: zero_address(),
-            species: Species::AngelFish,
+            species: 'AngelFish',
             generation: 0,
             color: '',
-            pattern: Pattern::Plain,
+            pattern: 'Plain',
             size: 0,
             speed: 0,
             birth_time: 0,
@@ -769,7 +717,7 @@ mod tests {
         };
 
         let new_fish: Fish = FishTrait::create_fish_by_species(
-            fish.clone(), fish.aquarium_id, zero_address(), Species::AngelFish,
+            fish.clone(), fish.aquarium_id, zero_address(), 'AngelFish',
         );
 
         let growth: u8 = FishTrait::get_growth_rate(new_fish);

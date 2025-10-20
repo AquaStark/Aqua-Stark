@@ -1,24 +1,20 @@
 // dojo decorator
 #[dojo::contract]
 pub mod FishSystem {
-    // use dojo::world::IWorldDispatcherTrait;
-    // use dojo::world::WorldStorageTrait;
     use aqua_stark::interfaces::IFishSystem::IFishSystem;
     use aqua_stark::base::game_events::{
-        GameStateChanged, FishGameCreated, FishGameMoved, FishGameBred, DecorationGameMoved,
-        FishGameListed, FishGamePurchased, GameExperienceEarned, GameLevelUp,
-        GameOperationCompleted,
+        FishGameMoved,
+        FishGameListed,
     };
     use aqua_stark::base::events::{
-        FishCreated, FishBred, FishMoved, DecorationMoved, FishAddedToAquarium,
-        DecorationAddedToAquarium, FishPurchased,
+        FishCreated, FishBred, FishMoved, FishAddedToAquarium,
+     FishPurchased,
     };
     use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
     use aqua_stark::models::player_model::{Player};
     use aqua_stark::models::aquarium_model::{Aquarium, AquariumTrait};
-    use aqua_stark::models::decoration_model::{Decoration, DecorationTrait};
     use aqua_stark::models::fish_model::{
-        Fish, FishCounter, FishOwner, FishParents, FishTrait, Listing, Species,
+        Fish, FishCounter, FishOwner, FishParents, FishTrait, Listing,
     };
     use core::traits::Into;
     use dojo::event::EventStorage;
@@ -26,7 +22,7 @@ pub mod FishSystem {
 
     #[abi(embed_v0)]
     impl FishSystemImpl of IFishSystem<ContractState> {
-        fn new_fish(ref self: ContractState, aquarium_id: u256, species: Species) -> Fish {
+        fn new_fish(ref self: ContractState, aquarium_id: u256, species: felt252) -> Fish {
             let caller = get_caller_address();
 
             let mut world = self.world_default();
@@ -45,14 +41,21 @@ pub mod FishSystem {
             player.fish_count += 1;
             player.player_fishes.append(fish_id);
 
-            let experience_earned = if player.daily_fish_creations < 5 {
-                let experience = match species {
-                    Species::GoldFish => 3,
-                    Species::AngelFish => 5,
-                    Species::Betta => 7,
-                    Species::NeonTetra => 7,
-                    Species::Corydoras => 7,
-                    Species::Hybrid => 10,
+            let _experience_earned = if player.daily_fish_creations < 5 {
+                let experience = if species == 'GoldFish' {
+                    3
+                } else if species == 'AngelFish' {
+                    5
+                } else if species == 'Betta' {
+                    7
+                } else if species == 'NeonTetra' {
+                    7
+                } else if species == 'Corydoras' {
+                    7
+                } else if species == 'Hybrid' {
+                    10
+                } else {
+                    0
                 };
                 player.experience_points += experience;
                 player.daily_fish_creations += 1;
@@ -114,13 +117,20 @@ pub mod FishSystem {
             aquarium.fish_count += 1;
             aquarium.housed_fish.append(new_fish.id);
 
-            let experience_earned = match new_fish.species {
-                Species::GoldFish => 15,
-                Species::AngelFish => 15,
-                Species::Betta => 20,
-                Species::NeonTetra => 20,
-                Species::Corydoras => 20,
-                Species::Hybrid => 25,
+            let experience_earned = if new_fish.species == 'GoldFish' {
+                15
+            } else if new_fish.species == 'AngelFish' {
+                15
+            } else if new_fish.species == 'Betta' {
+                20
+            } else if new_fish.species == 'NeonTetra' {
+                20
+            } else if new_fish.species == 'Corydoras' {
+                20
+            } else if new_fish.species == 'Hybrid' {
+                25
+            } else {
+                0
             };
             player.experience_points += experience_earned;
 
@@ -190,8 +200,6 @@ pub mod FishSystem {
         }
 
         fn add_fish_to_aquarium(ref self: ContractState, mut fish: Fish, aquarium_id: u256) {
-            let caller = get_caller_address();
-
             let mut world = self.world_default();
             let mut aquarium: Aquarium = world.read_model(aquarium_id);
             assert(aquarium.housed_fish.len() < aquarium.max_capacity, 'Aquarium full');
@@ -325,6 +333,10 @@ pub mod FishSystem {
                 10
             }; // Scale based on price
             buyer.experience_points += experience_earned;
+
+            let mut fish_owner: FishOwner = world.read_model(listing.fish_id);
+            fish_owner.owner = caller;
+            world.write_model(@fish_owner);
 
             world.write_model(@fish);
             world.write_model(@buyer);

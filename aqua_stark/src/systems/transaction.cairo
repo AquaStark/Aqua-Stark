@@ -2,7 +2,6 @@
 #[dojo::contract]
 pub mod Transaction {
     use dojo::world::IWorldDispatcherTrait;
-    use dojo::world::WorldStorageTrait;
     use dojo::model::ModelStorage;
     use dojo::event::EventStorage;
 
@@ -253,7 +252,7 @@ pub mod Transaction {
                 return event_history.span();
             }
 
-            let total_transactions = TransactionHistoryImpl::get_transaction_count(self);
+            let total_transactions = self.get_transaction_count();
 
             let mut i: u256 = start_index.into() + 1;
             let mut count = 0;

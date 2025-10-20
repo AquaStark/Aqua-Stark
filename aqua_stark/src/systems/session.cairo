@@ -1,9 +1,4 @@
-use aqua_stark::models::session::{
-    SessionKey, SessionAnalytics, SessionOperation, SESSION_STATUS_ACTIVE, SESSION_STATUS_EXPIRED,
-    SESSION_STATUS_REVOKED, SESSION_TYPE_BASIC, SESSION_TYPE_PREMIUM, SESSION_TYPE_ADMIN,
-    OPERATION_TYPE_CREATE, OPERATION_TYPE_USE, OPERATION_TYPE_RENEW, OPERATION_TYPE_REVOKE,
-    PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, PERMISSION_ADMIN,
-};
+use aqua_stark::models::session::SessionKey;
 
 // Define the interface
 #[starknet::interface]

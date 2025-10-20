@@ -1,13 +1,10 @@
 // dojo decorator
 #[dojo::contract]
 pub mod Game {
-    // use dojo::world::IWorldDispatcherTrait;
-    // use dojo::world::WorldStorageTrait;
     use aqua_stark::interfaces::IGame::{IGame};
     use aqua_stark::base::game_events::{
         GameStateChanged, FishGameCreated, FishGameMoved, FishGameBred, DecorationGameMoved,
-        FishGameListed, FishGamePurchased, GameExperienceEarned, GameLevelUp,
-        GameOperationCompleted,
+        FishGameListed, FishGamePurchased, GameExperienceEarned, GameOperationCompleted,
     };
     use aqua_stark::base::events::{
         FishCreated, FishBred, FishMoved, DecorationMoved, FishAddedToAquarium,
@@ -16,12 +13,12 @@ pub mod Game {
     use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
     use aqua_stark::models::player_model::{Player};
     use aqua_stark::models::aquarium_model::{Aquarium, AquariumTrait};
-    use aqua_stark::models::decoration_model::{Decoration, DecorationTrait};
+    use aqua_stark::models::decoration_model::{Decoration};
     use aqua_stark::models::fish_model::{
-        Fish, FishCounter, FishOwner, FishParents, FishTrait, Listing, Species,
+        Fish, FishCounter, FishOwner, FishParents, FishTrait, Listing,
     };
     use aqua_stark::models::session::{
-        SessionKey, SessionAnalytics, SESSION_STATUS_ACTIVE, SESSION_STATUS_EXPIRED,
+        SessionKey, SessionAnalytics, SESSION_STATUS_ACTIVE, 
         SESSION_TYPE_PREMIUM, PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, PERMISSION_ADMIN,
     };
     use aqua_stark::helpers::session_validation::{
@@ -34,7 +31,7 @@ pub mod Game {
 
     #[abi(embed_v0)]
     impl GameImpl of IGame<ContractState> {
-        fn new_fish(ref self: ContractState, aquarium_id: u256, species: Species) -> Fish {
+        fn new_fish(ref self: ContractState, aquarium_id: u256, species: felt252) -> Fish {
             // Get or create unified session
             let caller = get_caller_address();
             let session_id = self.get_or_create_session(caller);
@@ -58,13 +55,20 @@ pub mod Game {
             self.check_and_reset_daily_limits(caller);
 
             let experience_earned = if player.daily_fish_creations < 5 {
-                let experience = match species {
-                    Species::GoldFish => 3,
-                    Species::AngelFish => 5,
-                    Species::Betta => 7,
-                    Species::NeonTetra => 7,
-                    Species::Corydoras => 7,
-                    Species::Hybrid => 10,
+                let experience = if species == 'GoldFish' {
+                    3
+                } else if species == 'AngelFish' {
+                    5
+                } else if species == 'Betta' {
+                    7
+                } else if species == 'NeonTetra' {
+                    7
+                } else if species == 'Corydoras' {
+                    7
+                } else if species == 'Hybrid' {
+                    10
+                } else {
+                    0
                 };
                 player.experience_points += experience;
                 player.daily_fish_creations += 1;
@@ -170,13 +174,20 @@ pub mod Game {
             aquarium.fish_count += 1;
             aquarium.housed_fish.append(new_fish.id);
 
-            let experience_earned = match new_fish.species {
-                Species::GoldFish => 15,
-                Species::AngelFish => 15,
-                Species::Betta => 20,
-                Species::NeonTetra => 20,
-                Species::Corydoras => 20,
-                Species::Hybrid => 25,
+            let experience_earned = if new_fish.species == 'GoldFish' {
+                15
+            } else if new_fish.species == 'AngelFish' {
+                15
+            } else if new_fish.species == 'Betta' {
+                20
+            } else if new_fish.species == 'NeonTetra' {
+                20
+            } else if new_fish.species == 'Corydoras' {
+                20
+            } else if new_fish.species == 'Hybrid' {
+                25
+            } else {
+                0
             };
             player.experience_points += experience_earned;
 
