@@ -16,6 +16,8 @@ import { useMobileDetection } from '@/hooks/use-mobile-detection';
 import { MobileOnboardingView } from '@/components/mobile/mobile-onboarding-view';
 import { CairoCustomEnum } from 'starknet';
 import { SpeciesEnum } from '@/typescript/models.gen';
+import { useAquariumSync } from '@/hooks/use-aquarium-sync';
+import { useFishSync } from '@/hooks/use-fish-sync';
 
 // This map connects your frontend IDs to Cairo enum variants
 // Cairo enums use numeric indices, not names
@@ -26,6 +28,16 @@ const fishEnumMap: Record<number, SpeciesEnum> = {
   4: new CairoCustomEnum({ NeonTetra: {} }), // index 3
   5: new CairoCustomEnum({ Corydoras: {} }), // index 4
   6: new CairoCustomEnum({ Hybrid: {} }), // index 5
+};
+
+// Map frontend IDs to species names for backend
+const fishSpeciesMap: Record<number, string> = {
+  1: 'AngelFish',
+  2: 'GoldFish',
+  3: 'Betta',
+  4: 'NeonTetra',
+  5: 'Corydoras',
+  6: 'Hybrid',
 };
 
 const starterFish = [
@@ -80,6 +92,8 @@ export default function Onboarding() {
   const [selectedFish, setSelectedFish] = useState<number[]>([]);
   const { getPlayerAquariums, newAquarium } = useAquarium();
   const { newFish } = useAquaStarkEnhanced();
+  const { syncAquarium } = useAquariumSync();
+  const { syncFish } = useFishSync();
 
   // Mobile detection
   const { isMobile } = useMobileDetection();
@@ -134,6 +148,7 @@ export default function Onboarding() {
       );
 
       console.log('✅ Aquarium created, tx:', tx.transaction_hash);
+      console.log('📋 Full tx object:', tx);
 
       // Extract aquarium ID from transaction events if available
       let extractedAquariumId: bigint | null = null;
@@ -149,15 +164,34 @@ export default function Onboarding() {
           extractedAquariumId = BigInt(aquariumEvent.data[0]);
           console.log('🎯 Aquarium ID from event:', extractedAquariumId);
         }
+      } else {
+        console.log('⚠️ No events in transaction response');
       }
 
       if (extractedAquariumId) {
+        // Sync aquarium to backend immediately
+        try {
+          await syncAquarium(
+            extractedAquariumId.toString(),
+            account.address, // player_id
+            extractedAquariumId.toString() // on_chain_id
+          );
+          console.log('✅ Aquarium synced to backend');
+        } catch (syncError) {
+          console.error('⚠️ Failed to sync aquarium to backend:', syncError);
+          // Continue anyway, not critical for onboarding
+        }
+
         toast.success('Aquarium created successfully!', { id: 'aquarium' });
         setAquariumId(extractedAquariumId);
         setAquariumCreated(true);
       } else {
         // Fallback: Query for aquariums
         toast.loading('Searching for your aquarium...', { id: 'aquarium' });
+
+        // Get aquariums BEFORE to compare
+        const aquariumsBefore = await getPlayerAquariums(account.address);
+        console.log('🏠 Aquariums before creation:', aquariumsBefore);
 
         let aquariums: any[] = [];
         let attempts = 0;
@@ -168,13 +202,37 @@ export default function Onboarding() {
           aquariums = await getPlayerAquariums(account.address);
           console.log(`🔍 Attempt ${attempts + 1}: All aquariums:`, aquariums);
 
-          if (aquariums && aquariums.length > 0) {
+          // Check if new aquarium appeared
+          if (aquariums && aquariums.length > (aquariumsBefore?.length || 0)) {
+            console.log(
+              '✅ New aquarium detected! Before:',
+              aquariumsBefore?.length,
+              'After:',
+              aquariums.length
+            );
             break;
           }
           attempts++;
         }
 
-        const newAquariumId = aquariums[aquariums.length - 1]?.id;
+        // Get the NEWEST aquarium (highest ID)
+        let newAquariumId: bigint | null = null;
+        if (aquariums && aquariums.length > 0) {
+          // Sort by ID descending and take the first (highest ID = newest)
+          const sortedAquariums = [...aquariums].sort((a, b) => {
+            const idA =
+              typeof a === 'object' && a.id ? BigInt(a.id) : BigInt(a);
+            const idB =
+              typeof b === 'object' && b.id ? BigInt(b.id) : BigInt(b);
+            return idA > idB ? -1 : 1;
+          });
+          const newestAquarium = sortedAquariums[0];
+          newAquariumId =
+            typeof newestAquarium === 'object' && newestAquarium.id
+              ? newestAquarium.id
+              : newestAquarium;
+          console.log('🎯 Newest aquarium ID:', newAquariumId);
+        }
 
         if (!newAquariumId) {
           console.error(
@@ -183,6 +241,22 @@ export default function Onboarding() {
             'attempts'
           );
           throw new Error('Aquarium created but ID not found');
+        }
+
+        // Sync aquarium to backend
+        try {
+          await syncAquarium(
+            newAquariumId.toString(),
+            account.address,
+            newAquariumId.toString()
+          );
+          console.log('✅ Aquarium synced to backend (fallback)');
+        } catch (syncError) {
+          console.error(
+            '⚠️ Failed to sync aquarium to backend (fallback):',
+            syncError
+          );
+          // Continue anyway
         }
 
         toast.success('Aquarium found!', { id: 'aquarium' });
@@ -231,6 +305,33 @@ export default function Onboarding() {
       });
       const tx1 = await newFish(account as any, aquariumId, species1);
       console.log(`✅ Fish 1 created, tx:`, tx1.transaction_hash);
+      console.log('📋 Fish 1 tx object:', tx1);
+
+      // Extract fish ID from transaction events or generate
+      let fishId1: string | null = null;
+      if (tx1.events && Array.isArray(tx1.events)) {
+        const fishEvent = tx1.events.find((e: any) =>
+          e.keys?.[0]?.includes('FishCreated')
+        );
+        if (fishEvent?.data?.[0]) {
+          fishId1 = String(fishEvent.data[0]);
+          console.log('🎯 Fish 1 ID from event:', fishId1);
+        }
+      }
+
+      // Sync fish 1 to backend
+      if (fishId1) {
+        try {
+          const speciesName1 = fishSpeciesMap[selectedFish[0]];
+          await syncFish(fishId1, account.address, fishId1, speciesName1);
+          console.log('✅ Fish 1 synced to backend');
+        } catch (syncError) {
+          console.error('⚠️ Failed to sync fish 1 to backend:', syncError);
+          // Continue anyway
+        }
+      } else {
+        console.warn('⚠️ Could not extract fish 1 ID from transaction');
+      }
 
       // Small delay between creations
       await delay(1000);
@@ -250,6 +351,37 @@ export default function Onboarding() {
       });
       const tx2 = await newFish(account as any, aquariumId, species2);
       console.log(`✅ Fish 2 created, tx:`, tx2.transaction_hash);
+      console.log('📋 Fish 2 tx object:', tx2);
+
+      // Extract fish ID from transaction events or generate
+      let fishId2: string | null = null;
+      if (tx2.events && Array.isArray(tx2.events)) {
+        const fishEvent = tx2.events.find((e: any) =>
+          e.keys?.[0]?.includes('FishCreated')
+        );
+        if (fishEvent?.data?.[0]) {
+          fishId2 = String(fishEvent.data[0]);
+          console.log('🎯 Fish 2 ID from event:', fishId2);
+        }
+      }
+
+      // Sync fish 2 to backend
+      if (fishId2) {
+        try {
+          const speciesName2 = fishSpeciesMap[selectedFish[1]];
+          await syncFish(fishId2, account.address, fishId2, speciesName2);
+          console.log('✅ Fish 2 synced to backend');
+        } catch (syncError) {
+          console.error('⚠️ Failed to sync fish 2 to backend:', syncError);
+          // Continue anyway
+        }
+      } else {
+        console.warn('⚠️ Could not extract fish 2 ID from transaction');
+      }
+
+      // Wait longer for indexer to process both fish
+      console.log('⏳ Waiting for blockchain indexer...');
+      await delay(5000); // 5 seconds for both fish to be indexed
 
       toast.success('Both fish created! 🎉', { id: 'fish' });
       setFishCreated(true);
@@ -272,6 +404,8 @@ export default function Onboarding() {
   const handleGoToGame = () => {
     if (!aquariumId) return;
     console.log('🎉 Navigating to loading with aquarium:', aquariumId);
+    console.log('🎉 Aquarium ID type:', typeof aquariumId);
+    console.log('🎉 Aquarium ID toString:', aquariumId.toString());
     navigate(`/loading?aquarium=${aquariumId}`);
   };
   // Render mobile view if device is detected as mobile
