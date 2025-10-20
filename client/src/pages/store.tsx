@@ -147,7 +147,7 @@ export default function StorePage() {
             />
             <CartSidebar />
             <CheckoutModal />
-            <main className='relative z-10 pb-20 sm:pb-24 md:pb-28'>
+            <main className='relative z-10 pb-20 sm:pb-24 md:pb-28 min-h-[200vh]'>
               <div className='px-2 sm:px-4 py-2 sm:py-4 mx-auto max-w-6xl'>
                 <StoreOriginal />
               </div>
@@ -186,7 +186,7 @@ export default function StorePage() {
       <CartSidebar />
       <CheckoutModal />
 
-      <main className='relative z-10 pb-20 sm:pb-24 md:pb-28'>
+      <main className='relative z-10 pb-20 sm:pb-24 md:pb-28 min-h-[200vh]'>
         <div className='px-2 sm:px-4 py-2 sm:py-4 mx-auto max-w-6xl w-full'>
           <StoreOriginal />
         </div>
