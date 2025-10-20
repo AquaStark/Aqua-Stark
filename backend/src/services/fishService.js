@@ -681,4 +681,96 @@ export class FishService {
       );
     }
   }
+
+  /**
+   * Create fish state in backend (simplified version for onboarding)
+   * @param {string} fishId - The fish ID (can be same as on_chain_id)
+   * @param {string} playerId - The player ID (wallet address)
+   * @param {string} onChainId - The on-chain fish ID from blockchain
+   * @param {string} species - The species name (FK to species_catalog)
+   * @returns {Promise<Object>} Created fish data
+   */
+  static async createFishStateSimple(fishId, playerId, onChainId, species) {
+    try {
+      logger.info(
+        { fishId, playerId, onChainId, species },
+        'Creating fish state (simple)'
+      );
+
+      const { data, error } = await supabaseAdmin
+        .from(TABLES.FISH_STATES)
+        .insert({
+          fish_id: fishId,
+          on_chain_id: onChainId || fishId,
+          player_id: playerId,
+          species: species,
+          happiness_level: 50,
+          hunger_level: 100,
+          health: 100,
+          mood: 'happy',
+          last_interaction_timestamp: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+          last_updated: new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (error) {
+        logger.error({ fishId, error }, 'Error creating fish state');
+        throw new ServiceError(
+          'FISH_CREATE_FAILED',
+          'Failed to create fish state',
+          500
+        );
+      }
+
+      logger.info({ fishId }, 'Fish state created successfully');
+      return data;
+    } catch (error) {
+      logger.error({ fishId, error }, 'Error in createFishStateSimple');
+      if (error instanceof ServiceError) throw error;
+      throw new ServiceError(
+        'FISH_CREATE_ERROR',
+        'Failed to create fish state',
+        500
+      );
+    }
+  }
+
+  /**
+   * Get all fish states for a player from backend
+   * @param {string} playerId - The player ID (wallet address)
+   * @returns {Promise<Array>} Array of fish states
+   */
+  static async getPlayerFishStates(playerId) {
+    try {
+      logger.info({ playerId }, 'Fetching player fish states');
+
+      const { data, error } = await supabase
+        .from(TABLES.FISH_STATES)
+        .select('*')
+        .eq('player_id', playerId)
+        .order('created_at', { ascending: false});
+
+      if (error) {
+        logger.error({ playerId, error }, 'Error fetching player fish');
+        throw new ServiceError(
+          'FISH_FETCH_FAILED',
+          'Failed to fetch player fish',
+          500
+        );
+      }
+
+      logger.debug({ playerId, count: data?.length }, 'Player fish fetched');
+      return data || [];
+    } catch (error) {
+      logger.error({ playerId, error }, 'Error in getPlayerFishStates');
+      if (error instanceof ServiceError) throw error;
+      throw new ServiceError(
+        'FISH_FETCH_ERROR',
+        'Failed to get player fish',
+        500
+      );
+    }
+  }
 }
