@@ -750,7 +750,7 @@ export class FishService {
         .from(TABLES.FISH_STATES)
         .select('*')
         .eq('player_id', playerId)
-        .order('created_at', { ascending: false});
+        .order('created_at', { ascending: false });
 
       if (error) {
         logger.error({ playerId, error }, 'Error fetching player fish');

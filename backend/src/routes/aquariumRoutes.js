@@ -19,4 +19,3 @@ router.post('/create', createAquarium);
 router.get('/player/:playerId', getPlayerAquariums);
 
 export default router;
-
