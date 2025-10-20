@@ -40,13 +40,13 @@ export default function LandingPage() {
       />
 
       {/* Water movement effect */}
-      <div 
+      <div
         className='fixed inset-0 water-movement'
         style={{ width: '100vw', height: '100vh' }}
       ></div>
 
       {/* Bubbles background effect */}
-      <div 
+      <div
         className='fixed inset-0 pointer-events-none'
         style={{ width: '100vw', height: '100vh' }}
       >

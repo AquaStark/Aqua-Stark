@@ -81,10 +81,9 @@ export function OrientationLock({
 
         {/* Description */}
         <p className='text-white/90 text-lg mb-6 select-none'>
-          {forcePortrait 
+          {forcePortrait
             ? 'For the best experience, please rotate your device to portrait mode'
-            : 'For the best gaming experience, please rotate your device to landscape mode'
-          }
+            : 'For the best gaming experience, please rotate your device to landscape mode'}
         </p>
 
         {/* Instructions */}

@@ -173,11 +173,11 @@ export function Navbar({ isPulsing = false }: NavbarProps) {
       {isSidebarOpen && (
         <div className='fixed inset-0 z-50 sm:hidden'>
           {/* Backdrop */}
-          <div 
+          <div
             className='absolute inset-0 bg-black/50 backdrop-blur-sm'
             onClick={() => setIsSidebarOpen(false)}
           />
-          
+
           {/* Sidebar */}
           <div className='absolute right-0 top-0 h-full w-64 bg-gradient-to-b from-blue-900/95 to-blue-800/95 backdrop-blur-md border-l border-blue-400/50 shadow-2xl'>
             <div className='p-4'>
@@ -201,9 +201,7 @@ export function Navbar({ isPulsing = false }: NavbarProps) {
                       : ''
                   }`}
                 >
-                  <span className='text-white text-sm font-bold'>
-                    Store
-                  </span>
+                  <span className='text-white text-sm font-bold'>Store</span>
                 </button>
 
                 <button
@@ -214,9 +212,7 @@ export function Navbar({ isPulsing = false }: NavbarProps) {
                       : ''
                   }`}
                 >
-                  <span className='text-white text-sm font-bold'>
-                    Tutorial
-                  </span>
+                  <span className='text-white text-sm font-bold'>Tutorial</span>
                 </button>
 
                 <button
@@ -227,9 +223,7 @@ export function Navbar({ isPulsing = false }: NavbarProps) {
                       : ''
                   }`}
                 >
-                  <span className='text-white text-sm font-bold'>
-                    Settings
-                  </span>
+                  <span className='text-white text-sm font-bold'>Settings</span>
                 </button>
 
                 <button
@@ -240,9 +234,7 @@ export function Navbar({ isPulsing = false }: NavbarProps) {
                       : ''
                   }`}
                 >
-                  <span className='text-white text-sm font-bold'>
-                    Credits
-                  </span>
+                  <span className='text-white text-sm font-bold'>Credits</span>
                 </button>
               </div>
             </div>

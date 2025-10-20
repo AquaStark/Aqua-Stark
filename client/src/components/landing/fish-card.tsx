@@ -12,7 +12,6 @@ export function FishCardComponent({
   rarity: 'common' | 'rare' | 'epic' | 'legendary' | 'mythic';
   description?: string;
 }) {
-
   const rarityColors: Record<typeof rarity, string> = {
     common: 'text-gray-300',
     rare: 'text-blue-300',
@@ -40,7 +39,8 @@ export function FishCardComponent({
         </div>
 
         <p className='text-[8px] sm:text-sm md:text-base text-white/80 mb-1 sm:mb-4 px-1 sm:px-2 text-center leading-relaxed'>
-          {description || 'A curious aquatic specimen with unique traits and vibrant colors. Perfect for your aquarium.'}
+          {description ||
+            'A curious aquatic specimen with unique traits and vibrant colors. Perfect for your aquarium.'}
         </p>
       </div>
 

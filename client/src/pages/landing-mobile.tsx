@@ -54,10 +54,10 @@ export default function LandingMobilePage() {
           <HeroSection onTriggerPulse={triggerPulse} />
         </div>
 
-               {/* Featured fish section - Mobile optimized */}
-               <div className='flex items-center justify-center py-2 flex-1'>
-                 <FeaturedFishMobile />
-               </div>
+        {/* Featured fish section - Mobile optimized */}
+        <div className='flex items-center justify-center py-2 flex-1'>
+          <FeaturedFishMobile />
+        </div>
 
         {/* Footer - Mobile optimized */}
         <div className='py-1 mt-auto'>
