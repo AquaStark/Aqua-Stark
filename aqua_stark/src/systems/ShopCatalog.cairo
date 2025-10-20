@@ -1,17 +1,18 @@
 #[dojo::contract]
 pub mod ShopCatalog {
-    use dojo::model::{ModelStorage};
-    use starknet::{get_contract_address, get_caller_address, ContractAddress, get_block_timestamp};
-    use aqua_stark::models::shop_model::{ShopItemModel, ShopCatalogModel};
+    use aqua_stark::helpers::session_validation::{
+        AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION, MIN_SESSION_DURATION,
+        SessionValidationImpl,
+    };
     use aqua_stark::interfaces::IShopCatalog::IShopCatalog;
     // Session system imports
     use aqua_stark::models::session::{
-        SessionKey, SessionAnalytics, SESSION_STATUS_ACTIVE,
-          SESSION_TYPE_PREMIUM,         PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, PERMISSION_ADMIN,
+        PERMISSION_ADMIN, PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE,
+        SESSION_STATUS_ACTIVE, SESSION_TYPE_PREMIUM, SessionAnalytics, SessionKey,
     };
-    use aqua_stark::helpers::session_validation::{
-         SessionValidationImpl, MIN_SESSION_DURATION,         AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION,
-    };
+    use aqua_stark::models::shop_model::{ShopCatalogModel, ShopItemModel};
+    use dojo::model::ModelStorage;
+    use starknet::{ContractAddress, get_block_timestamp, get_caller_address, get_contract_address};
 
     fn dojo_init(ref self: ContractState, owner: ContractAddress) {
         let mut world = self.world(@"aqua_stark");

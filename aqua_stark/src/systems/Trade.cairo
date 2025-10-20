@@ -1,32 +1,29 @@
 #[dojo::contract]
 pub mod Trade {
-    use aqua_stark::interfaces::ITrade::{ITrade};
     use aqua_stark::base::events::{
-        TradeOfferCreated, TradeOfferAccepted, TradeOfferCancelled, FishLocked, FishUnlocked,
+        FishLocked, FishUnlocked, TradeOfferAccepted, TradeOfferCancelled, TradeOfferCreated,
         TradeOfferExpired,
     };
-    use starknet::{
-        ContractAddress, get_caller_address, get_block_timestamp, contract_address_const,
+    use aqua_stark::helpers::session_validation::{
+        AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION, MIN_SESSION_DURATION,
+        SessionValidationImpl,
     };
-
+    use aqua_stark::interfaces::ITrade::ITrade;
     use aqua_stark::models::fish_model::{Fish, FishOwner};
-    use aqua_stark::models::trade_model::{
-        TradeOffer, TradeOfferStatus, MatchCriteria, FishLock, TradeOfferCounter, ActiveTradeOffers,
-        TradeOfferTrait, FishLockTrait, trade_offer_id_target,
-    };
     // Session system imports
     use aqua_stark::models::session::{
-        SessionKey, SessionAnalytics, SESSION_STATUS_ACTIVE, 
-         SESSION_TYPE_PREMIUM,
-        PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, PERMISSION_ADMIN,
+        PERMISSION_ADMIN, PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE,
+        SESSION_STATUS_ACTIVE, SESSION_TYPE_PREMIUM, SessionAnalytics, SessionKey,
     };
-    use aqua_stark::helpers::session_validation::{
-         SessionValidationImpl, MIN_SESSION_DURATION, 
-        AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION,
+    use aqua_stark::models::trade_model::{
+        ActiveTradeOffers, FishLock, FishLockTrait, MatchCriteria, TradeOffer, TradeOfferCounter,
+        TradeOfferStatus, TradeOfferTrait, trade_offer_id_target,
     };
-
-    use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
+    use dojo::model::ModelStorage;
+    use starknet::{
+        ContractAddress, contract_address_const, get_block_timestamp, get_caller_address,
+    };
 
 
     #[abi(embed_v0)]

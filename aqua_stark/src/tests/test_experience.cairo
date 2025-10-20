@@ -1,23 +1,23 @@
 #[cfg(test)]
 pub mod Test {
-    use super::*;
-    use dojo::world::WorldStorageTrait;
-    use dojo::model::ModelStorage;
+    use aqua_stark::base::events::{
+        ExperienceConfigUpdated, ExperienceEarned, LevelUp, RewardClaimed,
+        e_ExperienceConfigUpdated, e_ExperienceEarned, e_LevelUp, e_RewardClaimed,
+    };
+    use aqua_stark::interfaces::IExperience::{IExperienceDispatcher, IExperienceDispatcherTrait};
     use aqua_stark::models::experience_model::{
         Experience, ExperienceConfig, ExperienceCounter, m_Experience, m_ExperienceConfig,
         m_ExperienceCounter,
     };
+    use aqua_stark::systems::experience::experience;
+    use dojo::model::ModelStorage;
+    use dojo::world::WorldStorageTrait;
     use dojo_cairo_test::{
         ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
         spawn_test_world,
     };
-    use aqua_stark::interfaces::IExperience::{IExperienceDispatcher, IExperienceDispatcherTrait};
-    use aqua_stark::systems::experience::experience;
     use starknet::{contract_address_const, testing};
-    use aqua_stark::base::events::{
-        ExperienceEarned, LevelUp, RewardClaimed, ExperienceConfigUpdated, e_ExperienceEarned,
-        e_LevelUp, e_RewardClaimed, e_ExperienceConfigUpdated,
-    };
+    use super::*;
 
     fn namespace_def() -> NamespaceDef {
         NamespaceDef {

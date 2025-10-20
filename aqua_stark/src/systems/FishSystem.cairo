@@ -1,24 +1,20 @@
 // dojo decorator
 #[dojo::contract]
 pub mod FishSystem {
-    use aqua_stark::interfaces::IFishSystem::IFishSystem;
-    use aqua_stark::base::game_events::{
-        FishGameMoved,
-        FishGameListed,
-    };
     use aqua_stark::base::events::{
-        FishCreated, FishBred, FishMoved, FishAddedToAquarium,
-     FishPurchased,
+        FishAddedToAquarium, FishBred, FishCreated, FishMoved, FishPurchased,
     };
-    use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
-    use aqua_stark::models::player_model::{Player};
+    use aqua_stark::base::game_events::{FishGameListed, FishGameMoved};
+    use aqua_stark::interfaces::IFishSystem::IFishSystem;
     use aqua_stark::models::aquarium_model::{Aquarium, AquariumTrait};
     use aqua_stark::models::fish_model::{
         Fish, FishCounter, FishOwner, FishParents, FishTrait, Listing,
     };
+    use aqua_stark::models::player_model::Player;
     use core::traits::Into;
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
+    use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
 
     #[abi(embed_v0)]
     impl FishSystemImpl of IFishSystem<ContractState> {

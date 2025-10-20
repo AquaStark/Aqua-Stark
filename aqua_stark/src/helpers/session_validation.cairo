@@ -1,6 +1,6 @@
 use aqua_stark::models::session::{
-    SessionKey, SESSION_STATUS_ACTIVE, SESSION_TYPE_BASIC, SESSION_TYPE_PREMIUM, SESSION_TYPE_ADMIN,
-    PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, PERMISSION_ADMIN,
+    PERMISSION_ADMIN, PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, SESSION_STATUS_ACTIVE,
+    SESSION_TYPE_ADMIN, SESSION_TYPE_BASIC, SESSION_TYPE_PREMIUM, SessionKey,
 };
 use starknet::ContractAddress;
 
@@ -89,7 +89,7 @@ pub impl SessionValidationImpl of SessionValidationTrait {
             if permission_value == required_permission {
                 has_permission = true;
                 break;
-            };
+            }
             i += 1;
         };
 
@@ -195,7 +195,7 @@ pub impl SessionValidationImpl of SessionValidationTrait {
             // Default to basic permissions
             permissions.append(PERMISSION_MOVE);
             permissions.append(PERMISSION_SPAWN);
-        };
+        }
         permissions
     }
 

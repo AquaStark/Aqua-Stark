@@ -1,43 +1,33 @@
 // dojo decorator
 #[dojo::contract]
 pub mod AquaStark {
-    use aqua_stark::interfaces::IAquaStark::{IAquaStark};
-    use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
+    use aqua_stark::base::events::{AquariumCreated, DecorationCreated, PlayerCreated};
+    use aqua_stark::helpers::session_validation::{
+        AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION, MIN_SESSION_DURATION,
+        SessionValidationImpl,
+    };
+    use aqua_stark::interfaces::IAquaStark::IAquaStark;
     use aqua_stark::interfaces::ITransactionHistory::{
-        ITransactionHistoryDispatcher, ITransactionHistoryDispatcherTrait,
-    };
-    use aqua_stark::base::events::{
-        PlayerCreated, DecorationCreated, AquariumCreated
-    };
-   
-    use starknet::{
-        ContractAddress, get_caller_address, get_block_timestamp,
-        contract_address_const,
-    };
-    use aqua_stark::models::player_model::{
-        Player, PlayerTrait, PlayerCounter, UsernameToAddress, AddressToUsername,
+        ITransactionHistory, ITransactionHistoryDispatcher, ITransactionHistoryDispatcherTrait,
     };
     use aqua_stark::models::aquarium_model::{
         Aquarium, AquariumCounter, AquariumOwner, AquariumTrait,
     };
     use aqua_stark::models::decoration_model::{Decoration, DecorationCounter, DecorationTrait};
-    use aqua_stark::models::fish_model::{
-         FishCounter, FishOwner
+    use aqua_stark::models::fish_model::{FishCounter, FishOwner};
+    use aqua_stark::models::player_model::{
+        AddressToUsername, Player, PlayerCounter, PlayerTrait, UsernameToAddress,
     };
-    use aqua_stark::models::transaction_model::{
-         EventTypeDetails, TransactionLog,
+    use aqua_stark::models::session::{
+        PERMISSION_ADMIN, PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE,
+        SESSION_STATUS_ACTIVE, SESSION_TYPE_PREMIUM, SessionAnalytics, SessionKey,
     };
+    use aqua_stark::models::transaction_model::{EventTypeDetails, TransactionLog};
     use core::traits::Into;
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
-    use aqua_stark::models::session::{
-        SessionKey, SessionAnalytics, SESSION_STATUS_ACTIVE,
-          SESSION_TYPE_PREMIUM, 
-        PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, PERMISSION_ADMIN,
-    };
-    use aqua_stark::helpers::session_validation::{
-         SessionValidationImpl, MIN_SESSION_DURATION, 
-        AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION,
+    use starknet::{
+        ContractAddress, contract_address_const, get_block_timestamp, get_caller_address,
     };
 
 
@@ -330,7 +320,6 @@ pub mod AquaStark {
             let decoration = self.get_decoration(id);
             decoration.owner
         }
-    
     }
 
     #[abi(embed_v0)]

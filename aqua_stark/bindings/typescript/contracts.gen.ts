@@ -808,7 +808,7 @@ export function setupWorld(provider: DojoProvider) {
 		}
 	};
 
-	const build_FishSystem_newFish_calldata = (aquariumId: BigNumberish, species: CairoCustomEnum): DojoCall => {
+	const build_FishSystem_newFish_calldata = (aquariumId: BigNumberish, species: BigNumberish): DojoCall => {
 		return {
 			contractName: "FishSystem",
 			entrypoint: "new_fish",
@@ -816,7 +816,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const FishSystem_newFish = async (snAccount: Account | AccountInterface, aquariumId: BigNumberish, species: CairoCustomEnum) => {
+	const FishSystem_newFish = async (snAccount: Account | AccountInterface, aquariumId: BigNumberish, species: BigNumberish) => {
 		try {
 			return await provider.execute(
 				snAccount,
@@ -1295,7 +1295,7 @@ export function setupWorld(provider: DojoProvider) {
 		}
 	};
 
-	const build_Game_newFish_calldata = (aquariumId: BigNumberish, species: CairoCustomEnum): DojoCall => {
+	const build_Game_newFish_calldata = (aquariumId: BigNumberish, species: BigNumberish): DojoCall => {
 		return {
 			contractName: "Game",
 			entrypoint: "new_fish",
@@ -1303,7 +1303,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const Game_newFish = async (snAccount: Account | AccountInterface, aquariumId: BigNumberish, species: CairoCustomEnum) => {
+	const Game_newFish = async (snAccount: Account | AccountInterface, aquariumId: BigNumberish, species: BigNumberish) => {
 		try {
 			return await provider.execute(
 				snAccount,

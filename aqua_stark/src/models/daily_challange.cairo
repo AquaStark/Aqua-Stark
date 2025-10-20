@@ -1,5 +1,5 @@
+use core::traits::Into;
 use starknet::ContractAddress;
-use core::traits::{Into};
 
 ////////////////////////////////////////
 ///   MODELS

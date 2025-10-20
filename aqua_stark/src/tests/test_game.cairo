@@ -1,28 +1,26 @@
 #[cfg(test)]
 mod tests {
-    use dojo::world::IWorldDispatcherTrait;
-    use dojo::model::ModelStorage;
-    use aqua_stark::interfaces::IGame::{IGameDispatcher, IGameDispatcherTrait};
+    use aqua_stark::base::{events, game_events};
     use aqua_stark::interfaces::IAquaStark::{IAquaStarkDispatcher, IAquaStarkDispatcherTrait};
+    use aqua_stark::interfaces::IGame::{IGameDispatcher, IGameDispatcherTrait};
     use aqua_stark::models::aquarium_model::{m_Aquarium, m_AquariumCounter, m_AquariumOwner};
     use aqua_stark::models::decoration_model::{m_Decoration, m_DecorationCounter};
     use aqua_stark::models::fish_model::{
-        FishOwner, Species, Listing, m_Listing, m_Fish, m_FishCounter, m_FishOwner,
+        FishOwner, Listing, Species, m_Fish, m_FishCounter, m_FishOwner, m_Listing,
     };
     use aqua_stark::models::player_model::{
         m_AddressToUsername, m_Player, m_PlayerCounter, m_UsernameToAddress,
     };
-    use aqua_stark::models::session::{m_SessionKey, m_SessionAnalytics, m_SessionOperation};
-    use aqua_stark::systems::game::Game;
+    use aqua_stark::models::session::{m_SessionAnalytics, m_SessionKey, m_SessionOperation};
     use aqua_stark::systems::AquaStark::AquaStark;
-    use aqua_stark::base::events;
-    use aqua_stark::base::game_events;
-    use dojo::world::WorldStorageTrait;
+    use aqua_stark::systems::game::Game;
+    use dojo::model::ModelStorage;
+    use dojo::world::{IWorldDispatcherTrait, WorldStorageTrait};
     use dojo_cairo_test::{
         ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
         spawn_test_world,
     };
-    use starknet::{contract_address_const, testing, get_block_timestamp, ContractAddress};
+    use starknet::{ContractAddress, contract_address_const, get_block_timestamp, testing};
 
     fn OWNER() -> ContractAddress {
         contract_address_const::<'owner'>()

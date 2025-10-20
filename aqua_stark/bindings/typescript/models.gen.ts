@@ -115,10 +115,10 @@ export interface Fish {
 	growth: BigNumberish;
 	growth_rate: BigNumberish;
 	owner: string;
-	species: SpeciesEnum;
+	species: BigNumberish;
 	generation: BigNumberish;
 	color: BigNumberish;
-	pattern: PatternEnum;
+	pattern: BigNumberish;
 	size: BigNumberish;
 	speed: BigNumberish;
 	birth_time: BigNumberish;
@@ -589,7 +589,7 @@ export interface FishGameCreated {
 	fish_id: BigNumberish;
 	owner: string;
 	aquarium_id: BigNumberish;
-	species: SpeciesEnum;
+	species: BigNumberish;
 	experience_earned: BigNumberish;
 	timestamp: BigNumberish;
 }
@@ -743,27 +743,6 @@ export interface SessionPerformanceMetrics {
 	success_rate: BigNumberish;
 	last_activity: BigNumberish;
 }
-
-// Type definition for `aqua_stark::models::fish_model::Pattern` enum
-export const pattern = [
-	'Plain',
-	'Spotted',
-	'Stripes',
-] as const;
-export type Pattern = { [key in typeof pattern[number]]: string };
-export type PatternEnum = CairoCustomEnum;
-
-// Type definition for `aqua_stark::models::fish_model::Species` enum
-export const species = [
-	'AngelFish',
-	'GoldFish',
-	'Betta',
-	'NeonTetra',
-	'Corydoras',
-	'Hybrid',
-] as const;
-export type Species = { [key in typeof species[number]]: string };
-export type SpeciesEnum = CairoCustomEnum;
 
 // Type definition for `aqua_stark::models::trade_model::MatchCriteria` enum
 export const matchCriteria = [
@@ -963,19 +942,10 @@ export const schema: SchemaType = {
 			growth: 0,
 			growth_rate: 0,
 			owner: "",
-		species: new CairoCustomEnum({ 
-					AngelFish: "",
-				GoldFish: undefined,
-				Betta: undefined,
-				NeonTetra: undefined,
-				Corydoras: undefined,
-				Hybrid: undefined, }),
+			species: 0,
 			generation: 0,
 			color: 0,
-		pattern: new CairoCustomEnum({ 
-					Plain: "",
-				Spotted: undefined,
-				Stripes: undefined, }),
+			pattern: 0,
 			size: 0,
 			speed: 0,
 			birth_time: 0,
@@ -1352,13 +1322,7 @@ export const schema: SchemaType = {
 		fish_id: 0,
 			owner: "",
 		aquarium_id: 0,
-		species: new CairoCustomEnum({ 
-					AngelFish: "",
-				GoldFish: undefined,
-				Betta: undefined,
-				NeonTetra: undefined,
-				Corydoras: undefined,
-				Hybrid: undefined, }),
+			species: 0,
 		experience_earned: 0,
 			timestamp: 0,
 		},
@@ -1496,8 +1460,6 @@ export enum ModelsMapping {
 	FishOwner = 'aqua_stark-FishOwner',
 	FishParents = 'aqua_stark-FishParents',
 	Listing = 'aqua_stark-Listing',
-	Pattern = 'aqua_stark-Pattern',
-	Species = 'aqua_stark-Species',
 	GameCounter = 'aqua_stark-GameCounter',
 	AddressToUsername = 'aqua_stark-AddressToUsername',
 	Player = 'aqua_stark-Player',

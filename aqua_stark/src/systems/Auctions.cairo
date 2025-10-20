@@ -15,21 +15,20 @@ pub trait IAquaAuction<T> {
 
 #[dojo::contract]
 pub mod AquaAuction {
-    use super::IAquaAuction;
+    use aqua_stark::helpers::session_validation::{
+        AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION, MIN_SESSION_DURATION,
+        SessionValidationImpl,
+    };
     use aqua_stark::models::auctions_model::*;
-    use dojo::model::{ModelStorage};
-    use dojo::event::EventStorage;
-    use starknet::{get_block_timestamp, get_caller_address, ContractAddress};
     // Session system imports
     use aqua_stark::models::session::{
-        SessionKey, SessionAnalytics, SESSION_STATUS_ACTIVE,
-         SESSION_TYPE_PREMIUM,
-        PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, PERMISSION_ADMIN,
+        PERMISSION_ADMIN, PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE,
+        SESSION_STATUS_ACTIVE, SESSION_TYPE_PREMIUM, SessionAnalytics, SessionKey,
     };
-    use aqua_stark::helpers::session_validation::{
-         SessionValidationImpl, MIN_SESSION_DURATION, 
-        AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION,
-    };
+    use dojo::event::EventStorage;
+    use dojo::model::ModelStorage;
+    use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
+    use super::IAquaAuction;
 
     #[abi(embed_v0)]
     impl AquaAuctionImpl of IAquaAuction<ContractState> {

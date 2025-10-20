@@ -1,33 +1,33 @@
 // dojo decorator
 #[dojo::contract]
 pub mod Game {
-    use aqua_stark::interfaces::IGame::{IGame};
-    use aqua_stark::base::game_events::{
-        GameStateChanged, FishGameCreated, FishGameMoved, FishGameBred, DecorationGameMoved,
-        FishGameListed, FishGamePurchased, GameExperienceEarned, GameOperationCompleted,
-    };
     use aqua_stark::base::events::{
-        FishCreated, FishBred, FishMoved, DecorationMoved, FishAddedToAquarium,
-        DecorationAddedToAquarium, FishPurchased,
+        DecorationAddedToAquarium, DecorationMoved, FishAddedToAquarium, FishBred, FishCreated,
+        FishMoved, FishPurchased,
     };
-    use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
-    use aqua_stark::models::player_model::{Player};
+    use aqua_stark::base::game_events::{
+        DecorationGameMoved, FishGameBred, FishGameCreated, FishGameListed, FishGameMoved,
+        FishGamePurchased, GameExperienceEarned, GameOperationCompleted, GameStateChanged,
+    };
+    use aqua_stark::helpers::session_validation::{
+        AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION, MIN_SESSION_DURATION,
+        SessionValidationImpl,
+    };
+    use aqua_stark::interfaces::IGame::IGame;
     use aqua_stark::models::aquarium_model::{Aquarium, AquariumTrait};
-    use aqua_stark::models::decoration_model::{Decoration};
+    use aqua_stark::models::decoration_model::Decoration;
     use aqua_stark::models::fish_model::{
         Fish, FishCounter, FishOwner, FishParents, FishTrait, Listing,
     };
+    use aqua_stark::models::player_model::Player;
     use aqua_stark::models::session::{
-        SessionKey, SessionAnalytics, SESSION_STATUS_ACTIVE, 
-        SESSION_TYPE_PREMIUM, PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, PERMISSION_ADMIN,
-    };
-    use aqua_stark::helpers::session_validation::{
-        SessionValidationImpl, MIN_SESSION_DURATION, AUTO_RENEWAL_THRESHOLD,
-        MAX_TRANSACTIONS_PER_SESSION,
+        PERMISSION_ADMIN, PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE,
+        SESSION_STATUS_ACTIVE, SESSION_TYPE_PREMIUM, SessionAnalytics, SessionKey,
     };
     use core::traits::Into;
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
+    use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
 
     #[abi(embed_v0)]
     impl GameImpl of IGame<ContractState> {

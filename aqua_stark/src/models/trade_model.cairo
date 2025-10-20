@@ -247,8 +247,8 @@ pub fn trade_offer_id_target() -> felt252 {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use starknet::contract_address_const;
+    use super::*;
 
     fn zero_address() -> ContractAddress {
         contract_address_const::<0>()

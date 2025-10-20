@@ -1,22 +1,20 @@
 // dojo decorator
 #[dojo::contract]
 pub mod Transaction {
-    use dojo::world::IWorldDispatcherTrait;
-    use dojo::model::ModelStorage;
-    use dojo::event::EventStorage;
-
+    use aqua_stark::base::events::{
+        EventTypeRegistered, PlayerEventLogged, TransactionConfirmed, TransactionInitiated,
+        TransactionProcessed,
+    };
     use aqua_stark::interfaces::ITransactionHistory::ITransactionHistory;
+    use aqua_stark::models::player_model::Player;
     use aqua_stark::models::transaction_model::{
         EventCounter, EventDetailsTrait, EventTypeDetails, TransactionCounter, TransactionLog,
         TransactionLogTrait, event_id_target, transaction_id_target,
     };
-    use aqua_stark::models::player_model::{Player};
-    use aqua_stark::base::events::{
-        EventTypeRegistered, PlayerEventLogged, TransactionInitiated, TransactionProcessed,
-        TransactionConfirmed,
-    };
-
-    use starknet::{ContractAddress, get_caller_address, get_contract_address, get_block_timestamp};
+    use dojo::event::EventStorage;
+    use dojo::model::ModelStorage;
+    use dojo::world::IWorldDispatcherTrait;
+    use starknet::{ContractAddress, get_block_timestamp, get_caller_address, get_contract_address};
 
 
     #[abi(embed_v0)]

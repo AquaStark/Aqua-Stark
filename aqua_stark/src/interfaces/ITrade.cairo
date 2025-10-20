@@ -1,4 +1,4 @@
-use aqua_stark::models::trade_model::{TradeOffer, FishLock, MatchCriteria};
+use aqua_stark::models::trade_model::{FishLock, MatchCriteria, TradeOffer};
 use starknet::ContractAddress;
 
 #[starknet::interface]

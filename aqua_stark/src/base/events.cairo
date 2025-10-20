@@ -1,5 +1,5 @@
-use starknet::{ContractAddress};
 use aqua_stark::models::trade_model::MatchCriteria;
+use starknet::ContractAddress;
 
 #[derive(Copy, Drop, Serde)]
 #[dojo::event]

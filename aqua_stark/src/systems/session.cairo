@@ -19,15 +19,14 @@ pub trait ISession<T> {
 #[dojo::contract]
 pub mod session {
     use aqua_stark::models::session::{
-        SessionKey, SessionAnalytics, SessionOperation, SESSION_STATUS_ACTIVE,
-        SESSION_STATUS_EXPIRED, SESSION_STATUS_REVOKED, SESSION_TYPE_BASIC, SESSION_TYPE_PREMIUM,
-        SESSION_TYPE_ADMIN, OPERATION_TYPE_CREATE, OPERATION_TYPE_USE, OPERATION_TYPE_RENEW,
-        OPERATION_TYPE_REVOKE, PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE,
-        PERMISSION_ADMIN,
+        OPERATION_TYPE_CREATE, OPERATION_TYPE_RENEW, OPERATION_TYPE_REVOKE, OPERATION_TYPE_USE,
+        PERMISSION_ADMIN, PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE,
+        SESSION_STATUS_ACTIVE, SESSION_STATUS_EXPIRED, SESSION_STATUS_REVOKED, SESSION_TYPE_ADMIN,
+        SESSION_TYPE_BASIC, SESSION_TYPE_PREMIUM, SessionAnalytics, SessionKey, SessionOperation,
     };
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
-    use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
+    use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
     use super::ISession;
 
     #[derive(Copy, Drop, Serde)]
@@ -126,7 +125,7 @@ pub mod session {
                 permissions.append(PERMISSION_SPAWN);
                 permissions.append(PERMISSION_TRADE);
                 permissions.append(PERMISSION_ADMIN);
-            };
+            }
 
             // Create session key
             let session_key = SessionKey {
