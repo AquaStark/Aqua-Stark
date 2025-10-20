@@ -420,4 +420,62 @@ export class AquariumService {
       return 0;
     }
   }
+
+  /**
+   * Sync aquarium from on-chain to backend
+   * @param {string} aquariumId - The aquarium ID
+   * @param {string} playerId - The player ID
+   * @param {Object} aquariumData - Aquarium data from blockchain
+   * @returns {Promise<Object>} Created/Updated aquarium data
+   */
+  static async syncAquariumFromChain(aquariumId, playerId, aquariumData = {}) {
+    try {
+      const { on_chain_id } = aquariumData;
+
+      // Check if aquarium already exists
+      const { data: existing } = await supabase
+        .from(TABLES.AQUARIUM_STATES)
+        .select('*')
+        .eq('aquarium_id', aquariumId)
+        .single();
+
+      if (existing) {
+        // Update existing aquarium
+        const { data, error } = await supabaseAdmin
+          .from(TABLES.AQUARIUM_STATES)
+          .update({
+            on_chain_id,
+            last_updated: new Date().toISOString(),
+          })
+          .eq('aquarium_id', aquariumId)
+          .select()
+          .single();
+
+        if (error) throw error;
+        return data;
+      } else {
+        // Create new aquarium
+        const { data, error } = await supabaseAdmin
+          .from(TABLES.AQUARIUM_STATES)
+          .insert({
+            aquarium_id: aquariumId,
+            player_id: playerId,
+            on_chain_id,
+            water_temperature: 25.0,
+            lighting_level: 50,
+            pollution_level: 0.0,
+            created_at: new Date().toISOString(),
+            last_updated: new Date().toISOString(),
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+        return data;
+      }
+    } catch (error) {
+      console.error('Error syncing aquarium:', error);
+      throw error;
+    }
+  }
 }

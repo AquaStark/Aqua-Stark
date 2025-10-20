@@ -8,7 +8,6 @@ import { useFullscreenPrompt } from './hooks/use-fullscreen-prompt';
 import { useResponsiveLanding } from './hooks/use-responsive-landing';
 import OnboardingPage from './pages/onboarding/onboarding';
 import StartPage from './pages/onboarding/start';
-import CreateAquariumPage from './pages/onboarding/create-aquarium';
 import LoadingPage from './pages/loading';
 
 // Main Game Pages
@@ -56,7 +55,6 @@ function App() {
           <Route path='/' element={ResponsiveLanding} />
           <Route path='/onboarding' element={<OnboardingPage />} />
           <Route path='/start' element={<StartPage />} />
-          <Route path='/create-aquarium' element={<CreateAquariumPage />} />
           <Route path='/loading' element={<LoadingPage />} />
 
           {/* Main Game Routes */}
