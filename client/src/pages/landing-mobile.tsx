@@ -8,23 +8,23 @@ import { Navbar } from '@/components/landing/navbar';
 import { useBubbles } from '@/hooks';
 import { usePulseAnimation } from '@/hooks/use-pulse-animation';
 
-export default function LandingPage() {
+export default function LandingMobilePage() {
   // Bubbles configuration for background effect
   const bubbles = useBubbles({
-    initialCount: 8,
-    maxBubbles: 15,
-    minSize: 3,
-    maxSize: 12,
-    minDuration: 10,
-    maxDuration: 20,
-    interval: 1200,
+    initialCount: 6,
+    maxBubbles: 10,
+    minSize: 2,
+    maxSize: 8,
+    minDuration: 8,
+    maxDuration: 15,
+    interval: 1500,
   });
 
   // Pulse animation for connect button
   const { isPulsing, triggerPulse } = usePulseAnimation({ duration: 3000 });
 
   return (
-    <div className='relative min-h-screen w-full overflow-x-hidden landing-page'>
+    <div className='relative min-h-screen w-full overflow-hidden landing-page'>
       {/* Background image */}
       <div
         className='fixed inset-0 bg-cover bg-center bg-no-repeat'
@@ -42,25 +42,25 @@ export default function LandingPage() {
         <BubblesBackground bubbles={bubbles} />
       </div>
 
-      {/* Top navbar/HUD */}
-      <div className='relative z-30 h-16 lg:h-20'>
+      {/* Top navbar/HUD - Mobile optimized */}
+      <div className='relative z-30 h-12 px-2 pt-2'>
         <Navbar isPulsing={isPulsing} />
       </div>
 
-      {/* Main content */}
-      <div className='relative z-20 flex flex-col justify-between items-center px-4 lg:px-8 pt-6 lg:pt-8 min-h-[calc(100vh-4rem)] lg:min-h-[calc(100vh-5rem)]'>
-        {/* Hero section */}
-        <div className='flex items-center justify-center py-6 lg:py-8 flex-1'>
+      {/* Main content - Mobile optimized */}
+      <div className='relative z-20 flex flex-col justify-between items-center px-3 pt-4 min-h-[calc(100vh-3rem)]'>
+        {/* Hero section - Mobile optimized */}
+        <div className='flex items-center justify-center py-4 flex-1'>
           <HeroSection onTriggerPulse={triggerPulse} />
         </div>
 
-        {/* Featured fish section */}
-        <div className='flex items-center justify-center py-6 lg:py-8 flex-1'>
+        {/* Featured fish section - Mobile optimized */}
+        <div className='flex items-center justify-center py-4 flex-1'>
           <FeaturedFish />
         </div>
 
-        {/* Footer */}
-        <div className='py-3 lg:py-4 mt-auto'>
+        {/* Footer - Mobile optimized */}
+        <div className='py-2 mt-auto'>
           <Footer />
         </div>
       </div>

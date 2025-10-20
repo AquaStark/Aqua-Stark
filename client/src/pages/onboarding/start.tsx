@@ -135,7 +135,7 @@ export default function Start() {
 
   // Desktop/tablet view
   return (
-    <OrientationLock>
+    <OrientationLock forcePortrait={isMobile}>
       <div className='relative min-h-screen w-full overflow-hidden flex flex-col justify-between'>
         {/* Oceanic background image and gradient overlays */}
         <div className='absolute inset-0 -z-10'>

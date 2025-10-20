@@ -111,7 +111,7 @@ export function ConnectButton({ className = '' }: ConnectButtonProps) {
             className='w-5 h-5 sm:w-6 sm:h-6 rounded-sm object-contain'
           />
           <span className='hidden xs:inline font-bold'>Connect</span>
-          <span className='xs:hidden font-bold'>💰</span>
+          <span className='xs:hidden font-bold'>Connect</span>
         </>
       )}
     </button>
