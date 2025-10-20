@@ -1,7 +1,7 @@
 'use client';
 
 import { BubblesBackground } from '@/components';
-import { FeaturedFish } from '@/components';
+import { FeaturedFishMobile } from '@/components/landing/featured-fish-mobile';
 import { Footer } from '@/components';
 import { HeroSection } from '@/components/landing/hero-section';
 import { NavbarMobile } from '@/components/landing/navbar-mobile';
@@ -54,10 +54,10 @@ export default function LandingMobilePage() {
           <HeroSection onTriggerPulse={triggerPulse} />
         </div>
 
-        {/* Featured fish section - Mobile optimized */}
-        <div className='flex items-center justify-center py-2 flex-1'>
-          <FeaturedFish />
-        </div>
+               {/* Featured fish section - Mobile optimized */}
+               <div className='flex items-center justify-center py-2 flex-1'>
+                 <FeaturedFishMobile />
+               </div>
 
         {/* Footer - Mobile optimized */}
         <div className='py-1 mt-auto'>

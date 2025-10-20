@@ -24,43 +24,54 @@ export default function LandingPage() {
   const { isPulsing, triggerPulse } = usePulseAnimation({ duration: 3000 });
 
   return (
-    <div className='relative min-h-screen w-full overflow-x-hidden landing-page'>
+    <div
+      className='relative min-h-screen w-full overflow-hidden landing-page'
+      style={{ height: '100vh', width: '100vw' }}
+    >
       {/* Background image */}
       <div
         className='fixed inset-0 bg-cover bg-center bg-no-repeat'
         style={{
           backgroundImage: 'url("/backgrounds/initaial-background.webp")',
           filter: 'brightness(0.8)',
+          width: '100vw',
+          height: '100vh',
         }}
       />
 
       {/* Water movement effect */}
-      <div className='fixed inset-0 water-movement'></div>
+      <div 
+        className='fixed inset-0 water-movement'
+        style={{ width: '100vw', height: '100vh' }}
+      ></div>
 
       {/* Bubbles background effect */}
-      <div className='fixed inset-0 pointer-events-none'>
+      <div 
+        className='fixed inset-0 pointer-events-none'
+        style={{ width: '100vw', height: '100vh' }}
+      >
         <BubblesBackground bubbles={bubbles} />
       </div>
 
-      {/* Top navbar/HUD */}
-      <div className='relative z-30 h-16 lg:h-20'>
+      {/* Top navbar/HUD - Ultra compact on mobile */}
+      <div className='relative z-30 h-10 sm:h-12 md:h-16 lg:h-20'>
         <Navbar isPulsing={isPulsing} />
       </div>
 
-      {/* Main content */}
-      <div className='relative z-20 flex flex-col justify-between items-center px-4 lg:px-8 pt-6 lg:pt-8 min-h-[calc(100vh-4rem)] lg:min-h-[calc(100vh-5rem)]'>
-        {/* Hero section */}
-        <div className='flex items-center justify-center py-6 lg:py-8 flex-1'>
+      {/* Main content - Ultra compact on mobile */}
+      <div className='relative z-20 flex flex-col justify-center items-center px-0.5 sm:px-1 md:px-2 lg:px-8 pt-1 sm:pt-2 md:pt-4 min-h-[calc(100vh-2.5rem)] sm:min-h-[calc(100vh-3rem)] md:min-h-[calc(100vh-4rem)] lg:min-h-[calc(100vh-5rem)]'>
+        {/* Hero section - Ultra small on mobile */}
+        <div className='flex items-center justify-center py-0.5 sm:py-1 md:py-2'>
           <HeroSection onTriggerPulse={triggerPulse} />
         </div>
 
-        {/* Featured fish section */}
-        <div className='flex items-center justify-center py-6 lg:py-8 flex-1'>
+        {/* Featured fish section - Ultra small on mobile */}
+        <div className='flex items-center justify-center py-0.5 sm:py-1 md:py-2'>
           <FeaturedFish />
         </div>
 
-        {/* Footer */}
-        <div className='py-3 lg:py-4 mt-auto'>
+        {/* Footer - Ultra small on mobile */}
+        <div className='py-0.5 sm:py-1 md:py-2 mt-auto'>
           <Footer />
         </div>
       </div>
