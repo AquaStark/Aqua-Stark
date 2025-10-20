@@ -59,7 +59,7 @@ export default function LandingPage() {
       </div>
 
       {/* Main content - Ultra compact on mobile */}
-      <div className='relative z-20 flex flex-col justify-center items-center px-0.5 sm:px-1 md:px-2 lg:px-8 pt-1 sm:pt-2 md:pt-4 min-h-[calc(100vh-2.5rem)] sm:min-h-[calc(100vh-3rem)] md:min-h-[calc(100vh-4rem)] lg:min-h-[calc(100vh-5rem)]'>
+      <div className='relative z-20 flex flex-col justify-center items-center px-0.5 sm:px-1 md:px-2 lg:px-8 pt-1 sm:pt-2 md:pt-4 pb-16 sm:pb-20 md:pb-24 min-h-[calc(100vh-2.5rem)] sm:min-h-[calc(100vh-3rem)] md:min-h-[calc(100vh-4rem)] lg:min-h-[calc(100vh-5rem)]'>
         {/* Hero section - Ultra small on mobile */}
         <div className='flex items-center justify-center py-0.5 sm:py-1 md:py-2'>
           <HeroSection onTriggerPulse={triggerPulse} />
@@ -69,12 +69,10 @@ export default function LandingPage() {
         <div className='flex items-center justify-center py-0.5 sm:py-1 md:py-2'>
           <FeaturedFish />
         </div>
-
-        {/* Footer - Ultra small on mobile */}
-        <div className='py-0.5 sm:py-1 md:py-2 mt-auto'>
-          <Footer />
-        </div>
       </div>
+
+      {/* Footer - Fixed at bottom */}
+      <Footer />
     </div>
   );
 }
