@@ -478,4 +478,60 @@ export class AquariumService {
       throw error;
     }
   }
+
+  /**
+   * Create aquarium state in backend
+   * @param {string} aquariumId - The aquarium ID (can be same as on_chain_id)
+   * @param {string} playerId - The player ID (wallet address)
+   * @param {string} onChainId - The on-chain aquarium ID from blockchain
+   * @returns {Promise<Object>} Created aquarium data
+   */
+  static async createAquariumState(aquariumId, playerId, onChainId) {
+    try {
+      const { data, error } = await supabaseAdmin
+        .from(TABLES.AQUARIUM_STATES)
+        .insert({
+          aquarium_id: aquariumId,
+          on_chain_id: onChainId || aquariumId,
+          player_id: playerId,
+          water_temperature: 25.0,
+          lighting_level: 50,
+          pollution_level: 0.0,
+          dirt_level: 0.0,
+          partial_dirt_level: 0.0,
+          last_cleaning_time: new Date().toISOString(),
+          created_at: new Date().toISOString(),
+          last_updated: new Date().toISOString(),
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error creating aquarium state:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get all aquarium states for a player from backend
+   * @param {string} playerId - The player ID (wallet address)
+   * @returns {Promise<Array>} Array of aquarium states
+   */
+  static async getPlayerAquariumStates(playerId) {
+    try {
+      const { data, error } = await supabase
+        .from(TABLES.AQUARIUM_STATES)
+        .select('*')
+        .eq('player_id', playerId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error getting player aquarium states:', error);
+      throw error;
+    }
+  }
 }
