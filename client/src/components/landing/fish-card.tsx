@@ -5,10 +5,12 @@ export function FishCardComponent({
   name,
   image,
   rarity,
+  description,
 }: {
   name: string;
   image: string;
-  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+  rarity: 'common' | 'rare' | 'epic' | 'legendary' | 'mythic';
+  description?: string;
 }) {
 
   const rarityColors: Record<typeof rarity, string> = {
@@ -16,6 +18,7 @@ export function FishCardComponent({
     rare: 'text-blue-300',
     epic: 'text-purple-300',
     legendary: 'text-yellow-300',
+    mythic: 'text-orange-300',
   };
 
   return (
@@ -31,14 +34,13 @@ export function FishCardComponent({
             <img
               src={image || '/placeholder.svg'}
               alt={name}
-              className='object-contain w-8 h-8 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 xl:w-32 xl:h-32 transition-transform duration-500 hover:scale-110'
+              className='object-contain w-12 h-12 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 xl:w-36 xl:h-36 transition-transform duration-500 hover:scale-110'
             />
           </FishTank>
         </div>
 
         <p className='text-[8px] sm:text-sm md:text-base text-white/80 mb-1 sm:mb-4 px-1 sm:px-2 text-center leading-relaxed'>
-          A curious aquatic specimen with unique traits and vibrant colors.
-          Perfect for your aquarium.
+          {description || 'A curious aquatic specimen with unique traits and vibrant colors. Perfect for your aquarium.'}
         </p>
       </div>
 

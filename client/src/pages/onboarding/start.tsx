@@ -36,7 +36,7 @@ export default function Start() {
 
   // Redirect if not connected with Cartridge
   useEffect(() => {
-    // Solo redirigir si no hay wallet conectada (Starknet) O no hay Cartridge
+    // Only redirect if no wallet connected (Starknet) OR no Cartridge
     const timer = setTimeout(() => {
       if (!account || !cartridgeAccount) {
         console.log('Redirecting to home - no wallet or Cartridge account');

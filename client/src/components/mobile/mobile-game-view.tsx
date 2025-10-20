@@ -33,6 +33,7 @@ import { SimpleDirtSpot } from '@/components/simple-dirt-spot';
 import { FeedingAquarium } from '@/components';
 import { BubblesBackground } from '@/components';
 import { GameStatusBar } from '@/components';
+import { OrientationLock } from '@/components/ui';
 import { INITIAL_GAME_STATE } from '@/constants';
 import { initialAquariums } from '@/data/mock-aquarium';
 
@@ -259,7 +260,8 @@ export function MobileGameView() {
     .filter((fish): fish is NonNullable<typeof fish> => fish !== null);
 
   return (
-    <div className='relative w-full h-screen overflow-hidden bg-[#005C99]'>
+    <OrientationLock forcePortrait={false}>
+      <div className='relative w-full h-screen overflow-hidden bg-[#005C99]'>
       {/* Background */}
       <img
         src='/backgrounds/background2.png'
@@ -713,6 +715,7 @@ export function MobileGameView() {
           <Monitor className='h-4 w-4' />
         </motion.button>
       )}
-    </div>
+      </div>
+    </OrientationLock>
   );
 }

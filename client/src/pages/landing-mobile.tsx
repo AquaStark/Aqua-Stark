@@ -4,7 +4,7 @@ import { BubblesBackground } from '@/components';
 import { FeaturedFish } from '@/components';
 import { Footer } from '@/components';
 import { HeroSection } from '@/components/landing/hero-section';
-import { Navbar } from '@/components/landing/navbar';
+import { NavbarMobile } from '@/components/landing/navbar-mobile';
 import { useBubbles } from '@/hooks';
 import { usePulseAnimation } from '@/hooks/use-pulse-animation';
 
@@ -43,24 +43,24 @@ export default function LandingMobilePage() {
       </div>
 
       {/* Top navbar/HUD - Mobile optimized */}
-      <div className='relative z-30 h-12 px-2 pt-2'>
-        <Navbar isPulsing={isPulsing} />
+      <div className='relative z-30 h-12' style={{ marginTop: '20px' }}>
+        <NavbarMobile isPulsing={isPulsing} />
       </div>
 
       {/* Main content - Mobile optimized */}
-      <div className='relative z-20 flex flex-col justify-between items-center px-3 pt-4 min-h-[calc(100vh-3rem)]'>
+      <div className='relative z-20 flex flex-col justify-between items-center px-3 pt-1 min-h-[calc(100vh-4rem)]'>
         {/* Hero section - Mobile optimized */}
-        <div className='flex items-center justify-center py-4 flex-1'>
+        <div className='flex items-center justify-center py-2 flex-1'>
           <HeroSection onTriggerPulse={triggerPulse} />
         </div>
 
         {/* Featured fish section - Mobile optimized */}
-        <div className='flex items-center justify-center py-4 flex-1'>
+        <div className='flex items-center justify-center py-2 flex-1'>
           <FeaturedFish />
         </div>
 
         {/* Footer - Mobile optimized */}
-        <div className='py-2 mt-auto'>
+        <div className='py-1 mt-auto'>
           <Footer />
         </div>
       </div>
