@@ -36,7 +36,7 @@ export default function Start() {
 
   // Redirect if not connected with Cartridge
   useEffect(() => {
-    // Solo redirigir si no hay wallet conectada (Starknet) O no hay Cartridge
+    // Only redirect if no wallet connected (Starknet) OR no Cartridge
     const timer = setTimeout(() => {
       if (!account || !cartridgeAccount) {
         console.log('Redirecting to home - no wallet or Cartridge account');
@@ -135,7 +135,7 @@ export default function Start() {
 
   // Desktop/tablet view
   return (
-    <OrientationLock>
+    <OrientationLock forcePortrait={isMobile}>
       <div className='relative min-h-screen w-full overflow-hidden flex flex-col justify-between'>
         {/* Oceanic background image and gradient overlays */}
         <div className='absolute inset-0 -z-10'>

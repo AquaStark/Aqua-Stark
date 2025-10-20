@@ -5,7 +5,7 @@ import { FullscreenModal } from './components/ui/fullscreen-modal';
 import { useFullscreenPrompt } from './hooks/use-fullscreen-prompt';
 
 // Landing & Onboarding Pages
-import LandingPage from './pages/landing';
+import { useResponsiveLanding } from './hooks/use-responsive-landing';
 import OnboardingPage from './pages/onboarding/onboarding';
 import StartPage from './pages/onboarding/start';
 import LoadingPage from './pages/loading';
@@ -45,13 +45,14 @@ import { FullscreenDebug } from './components/debug/fullscreen-debug';
 
 function App() {
   const { showPrompt, hidePrompt, acceptFullscreen } = useFullscreenPrompt();
+  const ResponsiveLanding = useResponsiveLanding();
 
   return (
     <ErrorBoundary>
       <StarknetProvider>
         <Routes>
           {/* Landing & Onboarding Routes */}
-          <Route path='/' element={<LandingPage />} />
+          <Route path='/' element={ResponsiveLanding} />
           <Route path='/onboarding' element={<OnboardingPage />} />
           <Route path='/start' element={<StartPage />} />
           <Route path='/loading' element={<LoadingPage />} />

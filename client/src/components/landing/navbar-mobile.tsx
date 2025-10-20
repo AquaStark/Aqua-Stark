@@ -7,11 +7,11 @@ import { useAccount, useDisconnect } from '@starknet-react/core';
 import { useNotifications } from '@/hooks';
 import { useFullscreen } from '@/hooks/use-fullscreen';
 
-interface NavbarProps {
+interface NavbarMobileProps {
   isPulsing?: boolean;
 }
 
-export function Navbar({ isPulsing = false }: NavbarProps) {
+export function NavbarMobile({ isPulsing = false }: NavbarMobileProps) {
   const [activeButton, setActiveButton] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { address, isConnected } = useAccount();
@@ -29,7 +29,7 @@ export function Navbar({ isPulsing = false }: NavbarProps) {
 
   const handleNavClick = (action: string) => {
     setActiveButton(action);
-    setIsSidebarOpen(false); // Close sidebar when navigating
+    setIsSidebarOpen(false);
     switch (action) {
       case 'store':
         window.location.href = '/store';
@@ -50,11 +50,11 @@ export function Navbar({ isPulsing = false }: NavbarProps) {
 
   return (
     <>
-      <nav className='relative z-10 flex justify-between items-center px-1 sm:px-2 md:px-4 lg:px-6 py-0.5 sm:py-1 md:py-2 bg-gradient-to-b from-black/20 to-transparent h-full'>
+      <nav className='relative z-10 flex items-center px-2 py-1 h-full w-full'>
         {/* Mobile Menu Button - Left side */}
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className='sm:hidden px-2 py-1 rounded-md bg-gradient-to-b from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 shadow-md transform hover:scale-105 transition-all duration-200 border border-blue-300 flex items-center justify-center'
+          className='px-2 py-1 rounded-md bg-gradient-to-b from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 shadow-md transform hover:scale-105 transition-all duration-200 border border-blue-300 flex items-center justify-center'
           title='Menu'
         >
           {isSidebarOpen ? (
@@ -64,90 +64,35 @@ export function Navbar({ isPulsing = false }: NavbarProps) {
           )}
         </button>
 
-        {/* Logo - Right side on mobile, left side on desktop */}
-        <div className='flex items-center order-2 sm:order-1 ml-auto sm:ml-0'>
+        {/* Logo - More to the left */}
+        <div className='flex items-center ml-4'>
           <img
             src='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Aqua_Stark-removebg-preview-ubKSrqYo7jzOH5qXqxEw4CyRHXIjfq.png'
             alt='Aqua Stark Logo'
-            className='h-8 sm:h-12 md:h-16 lg:h-20 w-auto drop-shadow-2xl'
+            className='h-10 w-auto drop-shadow-2xl'
           />
         </div>
 
-        {/* Desktop Navigation Menu - Hidden on mobile */}
-        <div className='hidden sm:flex items-center gap-2 md:gap-3 lg:gap-4 absolute left-1/2 transform -translate-x-1/2'>
-          <button
-            onClick={() => handleNavClick('store')}
-            className={`px-2 md:px-3 py-1 md:py-2 rounded-md md:rounded-lg bg-gradient-to-b from-emerald-400 to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 shadow-md sm:shadow-lg transform hover:scale-105 transition-all duration-200 border border-emerald-300 flex items-center justify-center ${
-              activeButton === 'store'
-                ? 'scale-105 ring-1 sm:ring-2 ring-emerald-300'
-                : ''
-            }`}
-            title='Visit Store'
-          >
-            <span className='text-white text-xs font-bold whitespace-nowrap'>
-              Store
-            </span>
-          </button>
+        {/* Spacer to push controls to the right */}
+        <div className='flex-1'></div>
 
-          <button
-            onClick={() => handleNavClick('tutorial')}
-            className={`px-2 md:px-3 py-1 md:py-2 rounded-md md:rounded-lg bg-gradient-to-b from-cyan-400 to-cyan-600 hover:from-cyan-500 hover:to-cyan-700 shadow-md sm:shadow-lg transform hover:scale-105 transition-all duration-200 border border-cyan-300 flex items-center justify-center ${
-              activeButton === 'tutorial'
-                ? 'scale-105 ring-1 sm:ring-2 ring-cyan-300'
-                : ''
-            }`}
-            title='Tutorial'
-          >
-            <span className='text-white text-xs font-bold whitespace-nowrap'>
-              Tutorial
-            </span>
-          </button>
-
-          <button
-            onClick={() => handleNavClick('settings')}
-            className={`px-2 md:px-3 py-1 md:py-2 rounded-md md:rounded-lg bg-gradient-to-b from-violet-400 to-violet-600 hover:from-violet-500 hover:to-violet-700 shadow-md sm:shadow-lg transform hover:scale-105 transition-all duration-200 border border-violet-300 flex items-center justify-center ${
-              activeButton === 'settings'
-                ? 'scale-105 ring-1 sm:ring-2 ring-violet-300'
-                : ''
-            }`}
-            title='Settings'
-          >
-            <span className='text-white text-xs font-bold whitespace-nowrap'>
-              Settings
-            </span>
-          </button>
-
-          <button
-            onClick={() => handleNavClick('credits')}
-            className={`px-2 md:px-3 py-1 md:py-2 rounded-md md:rounded-lg bg-gradient-to-b from-amber-400 to-amber-600 hover:from-amber-500 hover:to-amber-700 shadow-md sm:shadow-lg transform hover:scale-105 transition-all duration-200 border border-amber-300 flex items-center justify-center ${
-              activeButton === 'credits'
-                ? 'scale-105 ring-1 sm:ring-2 ring-amber-300'
-                : ''
-            }`}
-            title='Credits'
-          >
-            <span className='text-white text-xs font-bold whitespace-nowrap'>
-              Credits
-            </span>
-          </button>
-        </div>
-
-        <div className='flex gap-1 sm:gap-2 md:gap-3 items-center order-3 mt-6 sm:mt-0'>
+        {/* Right side controls */}
+        <div className='flex gap-1 items-center'>
           {/* Fullscreen Button */}
           {isSupported && (
             <button
               onClick={toggleFullscreen}
-              className='px-1 sm:px-2 py-0.5 sm:py-1 rounded-sm sm:rounded-md bg-gradient-to-b from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 shadow-md sm:shadow-lg transform hover:scale-105 transition-all duration-200 border border-blue-300 flex items-center justify-center'
+              className='px-1 py-0.5 rounded-sm bg-gradient-to-b from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 shadow-md transform hover:scale-105 transition-all duration-200 border border-blue-300 flex items-center justify-center'
               title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
             >
-              <Maximize className='w-3 h-3 sm:w-4 sm:h-4 text-white' />
+              <Maximize className='w-3 h-3 text-white' />
             </button>
           )}
 
           {isConnected ? (
-            <div className='flex items-center gap-1 sm:gap-2 md:gap-3'>
-              <div className='bg-blue-600/40 backdrop-blur-sm rounded-lg px-1 sm:px-2 md:px-3 py-0.5 sm:py-1 md:py-2 border border-blue-400/50'>
-                <span className='text-white text-[8px] sm:text-xs md:text-sm font-bold tracking-wide'>
+            <div className='flex items-center gap-1'>
+              <div className='bg-blue-600/40 backdrop-blur-sm rounded-lg px-1 py-0.5 border border-blue-400/50'>
+                <span className='text-white text-[8px] font-bold tracking-wide'>
                   {address
                     ? `${address.slice(0, 4)}...${address.slice(-2)}`
                     : 'Connected'}
@@ -155,10 +100,10 @@ export function Navbar({ isPulsing = false }: NavbarProps) {
               </div>
               <button
                 onClick={handleDisconnectWallet}
-                className='px-1 sm:px-2 md:px-3 py-0.5 sm:py-1 md:py-2 rounded-sm sm:rounded-md md:rounded-lg bg-gradient-to-b from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 shadow-md sm:shadow-lg transform hover:scale-105 transition-all duration-200 border border-red-300 flex items-center justify-center'
+                className='px-1 py-0.5 rounded-sm bg-gradient-to-b from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 shadow-md transform hover:scale-105 transition-all duration-200 border border-red-300 flex items-center justify-center'
                 title='Disconnect Wallet'
               >
-                <LogOut className='w-3 h-3 sm:w-4 sm:h-4 text-white' />
+                <LogOut className='w-3 h-3 text-white' />
               </button>
             </div>
           ) : (
@@ -171,7 +116,7 @@ export function Navbar({ isPulsing = false }: NavbarProps) {
 
       {/* Mobile Sidebar */}
       {isSidebarOpen && (
-        <div className='fixed inset-0 z-50 sm:hidden'>
+        <div className='fixed inset-0 z-50'>
           {/* Backdrop */}
           <div
             className='absolute inset-0 bg-black/50 backdrop-blur-sm'
