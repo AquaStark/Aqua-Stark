@@ -79,6 +79,25 @@ html {
   backface-visibility: hidden;
 }
 
+/* Store page specific styles to allow scrolling */
+.store-page {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+}
+
+.store-page::-webkit-scrollbar {
+  display: none;
+}
+
 /* Animation classes */
 .animated-background {
   background-size: 400% 400%;

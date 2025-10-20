@@ -101,7 +101,7 @@ export default function StorePage() {
             pointerEvents: 'none',
           }}
         >
-          <div className='relative min-h-screen overflow-y-auto overflow-x-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
+          <div className='store-page relative bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
             <BubblesBackground bubbles={bubbles} />
             <PageHeader
               title='Aqua Stark Store'
@@ -142,7 +142,7 @@ export default function StorePage() {
 
   // Show store once loading is complete
   return (
-    <div className='relative min-h-screen overflow-y-auto overflow-x-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
+    <div className='store-page relative bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
       <BubblesBackground bubbles={bubbles} />
 
       <PageHeader
