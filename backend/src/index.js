@@ -19,6 +19,7 @@ import storeRoutes from './routes/storeRoutes.js';
 import shopRouter from './routes/shopRoutes.js';
 import transactionRouter from './routes/transactionRoutes.js';
 import speciesRouter from './routes/species.js';
+import aquariumRouter from './routes/aquariumRoutes.js';
 
 // Import WebSocket
 import { GameWebSocket } from './websocket/gameWebSocket.js';
@@ -74,6 +75,7 @@ app.get('/api/v1', (req, res) => {
     endpoints: {
       players: '/api/v1/players',
       fish: '/api/v1/fish',
+      aquariums: '/api/v1/aquariums',
       decorations: '/api/v1/decorations',
       minigames: '/api/v1/minigames',
       dirt: '/api/v1/dirt',
@@ -86,6 +88,7 @@ app.get('/api/v1', (req, res) => {
 
 // API routes
 app.use('/api/v1/fish', fishRoutes);
+app.use('/api/v1/aquariums', aquariumRouter);
 app.use('/api/v1/minigames', minigameRoutes);
 app.use('/api/v1/players', playerRoutes);
 app.use('/api/v1/decorations', decorationRoutes);
