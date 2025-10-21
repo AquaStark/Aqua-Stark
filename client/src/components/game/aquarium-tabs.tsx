@@ -87,7 +87,8 @@ export function AquariumTabs({
       <div className='flex justify-between items-end gap-4'>
         {/* Left side - Aquarium tabs */}
         <div className='flex gap-1 sm:gap-2 overflow-x-auto scrollbar-hide'>
-          {aquariums.map(aquarium => (
+          {/* Show only the first aquarium */}
+          {aquariums.slice(0, 1).map(aquarium => (
             <AquariumTab
               key={aquarium.id}
               name={aquarium.name}
@@ -95,11 +96,12 @@ export function AquariumTabs({
               onClick={() => onAquariumSelect(aquarium)}
             />
           ))}
+          {/* View All button - redirects to /aquariums page */}
           <AquariumTab
             name='View All'
-            active={selectedAquarium.id === 0}
+            active={false}
             icon={<Grid className='h-3 w-3 sm:h-4 sm:w-4' />}
-            onClick={() => onAquariumSelect()}
+            onClick={() => navigate('/aquariums')}
           />
         </div>
 
