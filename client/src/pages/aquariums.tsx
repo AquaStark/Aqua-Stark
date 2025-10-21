@@ -94,7 +94,7 @@ export default function AquariumsPage() {
         aquariumData,
         fishData: validFish,
       };
-    } catch (error) {
+    } catch {
       return null;
     }
   };
@@ -206,7 +206,7 @@ export default function AquariumsPage() {
           setAquariums(loadedAquariums);
           return;
         }
-      } catch (backendError) {
+      } catch {
         // Fallback to blockchain silently
       }
 
@@ -262,7 +262,7 @@ export default function AquariumsPage() {
       // Navigate to game WITH aquarium ID in URL
       console.log('🎮 Navigating to /game?aquarium=' + aquarium.id);
       navigate(`/game?aquarium=${aquarium.id}`);
-    } catch (error) {
+    } catch {
       setError('Failed to select aquarium. Please try again.');
     }
   };

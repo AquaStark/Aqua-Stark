@@ -253,7 +253,7 @@ export default function GamePage() {
             } else {
               setPlayerFishes([]);
             }
-          } catch (backendError) {
+          } catch {
             // Fallback to blockchain if backend fails
             const playerAquariums = await getPlayerAquariumsList(
               effectivePlayerAddress

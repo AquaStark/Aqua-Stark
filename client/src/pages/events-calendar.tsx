@@ -11,7 +11,7 @@ export default function EventsCalendarPage() {
       description="We're planning amazing underwater events! Soon you'll discover special fish, participate in tournaments, and join seasonal celebrations."
     >
       <div className="min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900">
-        <PageHeader title="Events Calendar" showBackButton={true} backButtonText="Back to Game" />
+        <PageHeader title="Events Calendar" backTo="/game" backText="Back to Game" />
         
         <div className="container mx-auto px-4 py-8">
           {/* Active Events */}

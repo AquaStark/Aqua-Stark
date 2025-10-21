@@ -11,7 +11,7 @@ export default function MyProfilePage() {
       description="We're designing your personal underwater profile! Soon you'll be able to showcase your collection, achievements, and connect with the community."
     >
       <div className="min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900">
-        <PageHeader title="My Profile" showBackButton={true} backButtonText="Back to Game" />
+        <PageHeader title="My Profile" backTo="/game" backText="Back to Game" />
         
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           {/* Profile Header */}

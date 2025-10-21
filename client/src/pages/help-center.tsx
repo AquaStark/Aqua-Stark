@@ -11,7 +11,7 @@ export default function HelpCenterPage() {
       description="We're building a comprehensive underwater support center! Soon you'll find guides, tutorials, and get help with any questions about your aquarium."
     >
       <div className="min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900">
-        <PageHeader title="Help Center" showBackButton={true} backButtonText="Back to Game" />
+        <PageHeader title="Help Center" backTo="/game" backText="Back to Game" />
         
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           {/* Search Bar */}

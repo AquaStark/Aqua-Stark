@@ -11,7 +11,7 @@ export default function EncyclopediaPage() {
       description="We're creating an incredible underwater knowledge base! Soon you'll be able to discover detailed information about every fish species, their habitats, and care requirements."
     >
       <div className="min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900">
-        <PageHeader title="Fish Encyclopedia" showBackButton={true} backButtonText="Back to Game" />
+        <PageHeader title="Fish Encyclopedia" backTo="/game" backText="Back to Game" />
         
         <div className="container mx-auto px-4 py-8">
           {/* Search Bar */}

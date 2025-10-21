@@ -54,65 +54,65 @@ function App() {
     <ErrorBoundary>
       <StarknetProvider>
         <SpeciesCatalogProvider>
-        <Routes>
-          {/* Landing & Onboarding Routes */}
-          <Route path='/' element={ResponsiveLanding} />
-          <Route path='/onboarding' element={<OnboardingPage />} />
-          <Route path='/start' element={<StartPage />} />
-          <Route path='/loading' element={<LoadingPage />} />
+          <Routes>
+            {/* Landing & Onboarding Routes */}
+            <Route path='/' element={ResponsiveLanding} />
+            <Route path='/onboarding' element={<OnboardingPage />} />
+            <Route path='/start' element={<StartPage />} />
+            <Route path='/loading' element={<LoadingPage />} />
 
-          {/* Main Game Routes */}
-          <Route path='/game' element={<GamePage />} />
-          <Route path='/aquariums' element={<AquariumsPage />} />
-          <Route path='/store' element={ResponsiveStore} />
-          <Route path='/trading-market' element={<TradingMarketPage />} />
-          <Route
-            path='/breeding-laboratory'
-            element={<BreedingLaboratoryPage />}
+            {/* Main Game Routes */}
+            <Route path='/game' element={<GamePage />} />
+            <Route path='/aquariums' element={<AquariumsPage />} />
+            <Route path='/store' element={ResponsiveStore} />
+            <Route path='/trading-market' element={<TradingMarketPage />} />
+            <Route
+              path='/breeding-laboratory'
+              element={<BreedingLaboratoryPage />}
+            />
+
+            {/* Settings Route */}
+            <Route path='/settings' element={<SettingsPage />} />
+
+            {/* Community & Social Routes */}
+            <Route path='/community' element={<CommunityPage />} />
+            <Route path='/my-profile' element={<MyProfilePage />} />
+
+            {/* Information & Help Routes */}
+            <Route path='/encyclopedia' element={<EncyclopediaPage />} />
+            <Route path='/help-center' element={<HelpCenterPage />} />
+            <Route path='/events-calendar' element={<EventsCalendarPage />} />
+            <Route path='/achievements' element={<AchievementsPage />} />
+
+            {/* Mini Games Routes */}
+            <Route path='/mini-games' element={<MiniGamesPage />} />
+            <Route
+              path='/mini-games/floppy-fish'
+              element={<FloppyFishGamePage />}
+            />
+            <Route
+              path='/mini-games/bubble-jumper'
+              element={<BubbleJumperPage />}
+            />
+
+            {/* Utility Routes */}
+            <Route path='/credits' element={<CreditsPage />} />
+            <Route path='/test-game' element={<Game />} />
+            <Route path='*' element={<Error404Page />} />
+
+            {/* test page */}
+            <Route path='/demo' element={<AquariumDemo />} />
+          </Routes>
+
+          {/* Fullscreen Modal */}
+          <FullscreenModal
+            isOpen={showPrompt}
+            onClose={hidePrompt}
+            onAccept={acceptFullscreen}
           />
 
-          {/* Settings Route */}
-          <Route path='/settings' element={<SettingsPage />} />
-
-          {/* Community & Social Routes */}
-          <Route path='/community' element={<CommunityPage />} />
-          <Route path='/my-profile' element={<MyProfilePage />} />
-
-          {/* Information & Help Routes */}
-          <Route path='/encyclopedia' element={<EncyclopediaPage />} />
-          <Route path='/help-center' element={<HelpCenterPage />} />
-          <Route path='/events-calendar' element={<EventsCalendarPage />} />
-          <Route path='/achievements' element={<AchievementsPage />} />
-
-          {/* Mini Games Routes */}
-          <Route path='/mini-games' element={<MiniGamesPage />} />
-          <Route
-            path='/mini-games/floppy-fish'
-            element={<FloppyFishGamePage />}
-          />
-          <Route
-            path='/mini-games/bubble-jumper'
-            element={<BubbleJumperPage />}
-          />
-
-          {/* Utility Routes */}
-          <Route path='/credits' element={<CreditsPage />} />
-          <Route path='/test-game' element={<Game />} />
-          <Route path='*' element={<Error404Page />} />
-
-          {/* test page */}
-          <Route path='/demo' element={<AquariumDemo />} />
-        </Routes>
-
-        {/* Fullscreen Modal */}
-        <FullscreenModal
-          isOpen={showPrompt}
-          onClose={hidePrompt}
-          onAccept={acceptFullscreen}
-        />
-
-        {/* Debug Component - Remove in production */}
-        <FullscreenDebug />
+          {/* Debug Component - Remove in production */}
+          <FullscreenDebug />
         </SpeciesCatalogProvider>
       </StarknetProvider>
     </ErrorBoundary>

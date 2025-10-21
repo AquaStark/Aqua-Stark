@@ -11,7 +11,7 @@ export default function CommunityPage() {
       description="We're building an amazing underwater community hub! Soon you'll be able to connect with other aquarists, share your fish, and join exciting events."
     >
       <div className="min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900">
-        <PageHeader title="Community" showBackButton={true} backButtonText="Back to Game" />
+        <PageHeader title="Community" backTo="/game" backText="Back to Game" />
         
         <div className="container mx-auto px-4 py-8">
           {/* Tabs */}

@@ -11,7 +11,7 @@ export default function SettingsPage() {
       description="We're crafting the perfect underwater control center! Soon you'll be able to customize your aquarium experience and game preferences."
     >
       <div className="min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900">
-        <PageHeader title="Settings" showBackButton={true} backButtonText="Back to Game" />
+        <PageHeader title="Settings" backTo="/game" backText="Back to Game" />
         
         <div className="container mx-auto px-4 py-8 max-w-2xl">
           {/* Settings Sections */}
