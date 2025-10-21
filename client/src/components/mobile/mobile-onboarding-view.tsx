@@ -192,13 +192,13 @@ export function MobileOnboardingView() {
       </div>
 
       {/* Mobile main content */}
-      <main className='flex flex-col items-center px-1 py-2 relative z-30 min-h-[100vh] pb-16'>
+      <main className='flex flex-col items-center px-2 py-3 relative z-30 min-h-[100vh] pb-16'>
         {/* Welcome section - responsive */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className='text-center mb-2'
+          className='text-center mb-4'
         >
           <h1 className='text-sm font-extrabold uppercase tracking-wide text-white drop-shadow-lg mb-1'>
             Welcome to Aqua Stark!
@@ -216,7 +216,7 @@ export function MobileOnboardingView() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className='grid grid-cols-2 gap-1 w-full max-w-sm auto-rows-fr'
+          className='grid grid-cols-2 gap-3 w-full max-w-sm auto-rows-fr'
         >
           {starterFish.map((fish, index) => (
             <motion.div
@@ -252,12 +252,12 @@ export function MobileOnboardingView() {
                   </motion.div>
                 )}
 
-                <div className='p-1 text-center flex flex-col h-full'>
-                  <h3 className='text-xs font-bold text-white mb-1 uppercase tracking-wide'>
+                <div className='p-2 text-center flex flex-col h-full'>
+                  <h3 className='text-xs font-bold text-white mb-2 uppercase tracking-wide'>
                     {fish.name}
                   </h3>
 
-                  <div className='relative w-16 h-16 mx-auto mb-1 flex-shrink-0 flex items-center justify-center'>
+                  <div className='relative w-16 h-16 mx-auto mb-2 flex-shrink-0 flex items-center justify-center'>
                     <div className='relative w-full h-full flex items-center justify-center'>
                       <div className='relative w-full h-full flex items-center justify-center'>
                         <img

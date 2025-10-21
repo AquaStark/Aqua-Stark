@@ -79,6 +79,44 @@ html {
   backface-visibility: hidden;
 }
 
+/* Store page specific styles to allow scrolling */
+.store-page {
+  overflow-y: scroll !important;
+  overflow-x: hidden !important;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  height: 100vh !important;
+  width: 100vw !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+  z-index: 1;
+}
+
+.store-page::-webkit-scrollbar {
+  display: none;
+}
+
+/* Override body and html styles when store page is active */
+body.store-active,
+html.store-active {
+  overflow: hidden !important;
+  height: 100vh !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
+#root.store-active {
+  overflow: hidden !important;
+  height: 100vh !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
 /* Animation classes */
 .animated-background {
   background-size: 400% 400%;

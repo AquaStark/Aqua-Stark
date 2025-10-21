@@ -116,7 +116,7 @@ export function StoreOriginal() {
     });
 
   return (
-    <div className='space-y-6'>
+    <div className='space-y-3 sm:space-y-4 md:space-y-6'>
       {/* Store Carousel */}
       <StoreCarousel />
 

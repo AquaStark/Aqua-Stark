@@ -48,7 +48,7 @@ export default function LandingMobilePage() {
       </div>
 
       {/* Main content - Mobile optimized */}
-      <div className='relative z-20 flex flex-col justify-between items-center px-3 pt-1 min-h-[calc(100vh-4rem)]'>
+      <div className='relative z-20 flex flex-col justify-center items-center px-3 pt-1 pb-16 min-h-[calc(100vh-4rem)]'>
         {/* Hero section - Mobile optimized */}
         <div className='flex items-center justify-center py-2 flex-1'>
           <HeroSection onTriggerPulse={triggerPulse} />
@@ -58,12 +58,10 @@ export default function LandingMobilePage() {
         <div className='flex items-center justify-center py-2 flex-1'>
           <FeaturedFishMobile />
         </div>
-
-        {/* Footer - Mobile optimized */}
-        <div className='py-1 mt-auto'>
-          <Footer />
-        </div>
       </div>
+
+      {/* Footer - Fixed at bottom */}
+      <Footer />
     </div>
   );
 }

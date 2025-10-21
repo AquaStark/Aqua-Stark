@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { ShoppingCart } from 'lucide-react';
 import { LoadingScreen } from '@/components/loading/loading-screen';
 
-export default function StorePage() {
+export function MobileStoreView() {
   const [showStore, setShowStore] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState('Initializing store...');
