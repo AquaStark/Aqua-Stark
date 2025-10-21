@@ -500,29 +500,154 @@ export default function MobileBubbleJumperView() {
         </div>
 
         {/* Game area - positioned to the left */}
-        <main className='relative z-10 w-full flex items-start justify-start px-2 pt-4 pb-4 flex-1'>
-          <div className='w-3/4 h-full'>
-            <GameCanvas
-              gameRef={gameRef}
-              platforms={gameState.platforms}
-              fish={gameState.fish}
-              camera={gameState.camera}
-              gameConfig={GAME_CONFIG}
-            />
+        <main className='relative z-10 w-full flex items-start justify-start pt-4 pb-4 flex-1'>
+          <div className='w-3/4 h-full pl-2'>
+            {/* Custom GameCanvas for mobile - positioned to the left */}
+            <div
+              ref={gameRef}
+              className='absolute z-30'
+              style={{
+                width: GAME_CONFIG.gameWidth,
+                height: GAME_CONFIG.gameHeight,
+                left: '0',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                overflow: 'hidden',
+                border: '2px solid rgba(255,255,255,0.2)',
+                borderRadius: '12px',
+                background: 'rgba(0,92,153,0.3)',
+              }}
+            >
+              {gameState.platforms
+                .filter(platform => {
+                  const platformScreenY = platform.y - gameState.camera.y;
+                  return (
+                    platformScreenY > -50 &&
+                    platformScreenY < GAME_CONFIG.gameHeight + 50
+                  );
+                })
+                .map(platform => {
+                  const getPlatformStyle = (platform: Platform) => {
+                    const baseStyle = {
+                      left: platform.x,
+                      top: platform.y - gameState.camera.y,
+                      width: platform.width,
+                      height: 20,
+                      backgroundColor: '#8B4513',
+                      border: '2px solid #654321',
+                      borderRadius: '4px',
+                      position: 'absolute' as const,
+                      willChange: 'transform',
+                    };
+
+                    switch (platform.type) {
+                      case 'spring':
+                        return {
+                          ...baseStyle,
+                          backgroundColor: '#FFD700',
+                          border: '2px solid #FFA500',
+                          boxShadow: platform.bounceAnimation ? '0 0 20px #FFD700' : 'none',
+                        };
+                      case 'broken':
+                        return {
+                          ...baseStyle,
+                          backgroundColor: '#8B4513',
+                          border: '2px solid #654321',
+                          opacity: platform.bounceAnimation ? 0.5 : 1,
+                        };
+                      default:
+                        return baseStyle;
+                    }
+                  };
+
+                  return (
+                    <div
+                      key={platform.id}
+                      className='absolute will-change-transform'
+                      style={getPlatformStyle(platform)}
+                    />
+                  );
+                })}
+
+              {/* Fish */}
+              <div
+                className='absolute z-20'
+                style={{
+                  left: gameState.fish.x,
+                  top: gameState.fish.y - gameState.camera.y,
+                  width: gameState.fish.width,
+                  height: gameState.fish.height,
+                  willChange: 'transform',
+                  transform: `rotate(${gameState.fish.velocityX > 0 ? 5 : gameState.fish.velocityX < 0 ? -5 : 0}deg) scale(${gameState.fish.velocityY < -10 ? 1.1 : 1})`,
+                }}
+              >
+                <img
+                  src={gameState.fish.image || '/placeholder.svg'}
+                  alt={gameState.fish.name}
+                  className='w-full h-full object-contain'
+                  style={{
+                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+                    transform: gameState.fish.velocityX < 0 ? 'scaleX(-1)' : 'scaleX(1)',
+                  }}
+                />
+              </div>
+            </div>
           </div>
+          {/* Right side space for controls */}
+          <div className='w-1/4 h-full pr-2'></div>
         </main>
 
-        <GameUI
-          score={gameState.score}
-          bestScore={gameState.bestScore}
-          isPlaying={gameState.isPlaying}
-          isGameOver={gameState.isGameOver}
-          isPaused={gameState.isPaused}
-          selectedFish={selectedFish}
-          onBack={handleBack}
-          onTogglePause={togglePause}
-          onEndGame={endGame}
-        />
+        {/* Custom GameUI for mobile - positioned to avoid overlaps */}
+        <div className='absolute inset-0 z-40 pointer-events-none'>
+          {/* Score display - positioned on left side */}
+          <div className='absolute top-24 left-4 flex gap-2 pointer-events-auto'>
+            <div className='bg-gradient-to-r from-blue-600 to-blue-700 backdrop-blur-md rounded-xl px-4 py-2 border-2 border-blue-400/50 shadow-lg'>
+              <span className='text-white font-bold text-xs'>Score: {gameState.score}</span>
+            </div>
+            <div className='bg-gradient-to-r from-yellow-500 to-yellow-600 backdrop-blur-md rounded-xl px-4 py-2 border-2 border-yellow-400/50 shadow-lg'>
+              <span className='text-white font-bold text-xs'>Best: {gameState.bestScore}</span>
+            </div>
+          </div>
+
+          {/* Control buttons - positioned in right space */}
+          {gameState.isPlaying && !gameState.isGameOver && (
+            <div className='absolute top-24 right-2 w-1/4 flex flex-col gap-2 pointer-events-auto pr-2'>
+              <button
+                onClick={handleBack}
+                className='bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-500 hover:to-gray-600 text-white shadow-lg rounded-lg p-2 flex items-center justify-center'
+              >
+                <svg className='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                  <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 19l-7-7 7-7' />
+                </svg>
+              </button>
+              
+              <div className='flex gap-1'>
+                <button
+                  onClick={togglePause}
+                  className='bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white shadow-lg rounded-lg p-2 flex items-center justify-center flex-1'
+                >
+                  {gameState.isPaused ? (
+                    <svg className='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m-6-8h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z' />
+                    </svg>
+                  ) : (
+                    <svg className='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z' />
+                    </svg>
+                  )}
+                </button>
+                <button
+                  onClick={endGame}
+                  className='bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white shadow-lg rounded-lg p-2 flex items-center justify-center flex-1'
+                >
+                  <svg className='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 6h12v12H6z' />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
 
         <GameModals
           isPlaying={gameState.isPlaying}
@@ -539,7 +664,7 @@ export default function MobileBubbleJumperView() {
 
         {/* Right Side Panel - Mobile optimized */}
         {gameState.isPlaying && (
-          <div className='absolute top-20 right-2 w-1/4 pointer-events-none z-40'>
+          <div className='absolute top-20 right-2 w-1/4 pointer-events-none z-40 pr-2'>
             <div className='bg-gradient-to-b from-blue-600/90 to-blue-700/90 backdrop-blur-md rounded-lg p-3 border border-blue-400/50 flex flex-col gap-3 shadow-lg h-fit'>
               {/* Fish Info */}
               <div className='flex flex-col items-center gap-2'>
