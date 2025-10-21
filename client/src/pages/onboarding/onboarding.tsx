@@ -18,6 +18,7 @@ import { CairoCustomEnum } from 'starknet';
 import { SpeciesEnum } from '@/typescript/models.gen';
 import { useAquariumSync } from '@/hooks/use-aquarium-sync';
 import { useFishSync } from '@/hooks/use-fish-sync';
+import { useActiveAquarium } from '@/store/active-aquarium';
 
 // This map connects your frontend IDs to Cairo enum variants
 // Cairo enums use numeric indices, not names
@@ -94,6 +95,7 @@ export default function Onboarding() {
   const { newFish } = useAquaStarkEnhanced();
   const { syncAquarium } = useAquariumSync();
   const { syncFish } = useFishSync();
+  const { setActiveAquariumId } = useActiveAquarium();
 
   // Mobile detection
   const { isMobile } = useMobileDetection();
@@ -402,10 +404,14 @@ export default function Onboarding() {
 
   // Step 3: Go to Loading (then Game)
   const handleGoToGame = () => {
-    if (!aquariumId) return;
+    if (!aquariumId || !account) return;
     console.log('🎉 Navigating to loading with aquarium:', aquariumId);
     console.log('🎉 Aquarium ID type:', typeof aquariumId);
     console.log('🎉 Aquarium ID toString:', aquariumId.toString());
+
+    // Persist aquarium ID to store
+    setActiveAquariumId(aquariumId.toString(), account.address);
+
     navigate(`/loading?aquarium=${aquariumId}`);
   };
   // Render mobile view if device is detected as mobile
