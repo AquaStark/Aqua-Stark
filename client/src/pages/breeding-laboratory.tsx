@@ -11,7 +11,7 @@ export default function BreedingLaboratoryPage() {
       description="We're creating an amazing underwater breeding facility! Soon you'll be able to breed unique fish combinations and discover new species."
     >
       <div className="min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900">
-        <PageHeader title="Breeding Laboratory" showBackButton={true} backButtonText="Back to Game" />
+        <PageHeader title="Breeding Laboratory" backTo="/game" backText="Back to Game" />
         
         <div className="container mx-auto px-4 py-8">
           {/* Breeding Slots */}
