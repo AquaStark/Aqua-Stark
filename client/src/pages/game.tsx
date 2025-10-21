@@ -59,8 +59,16 @@ export default function GamePage() {
   // Get pre-loaded fish from navigation state
   const preloadedFish = (location.state as any)?.preloadedFish;
 
-  // Other hooks
-  const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
+  // Persistent aquarium store
+  const {
+    activeAquariumId: storedAquariumId,
+    playerAddress: storedPlayerAddress,
+    setActiveAquariumId,
+  } = useActiveAquarium();
+
+  // Determine which aquarium ID to use (URL > stored)
+  const activeAquariumId = aquariumIdFromUrl || storedAquariumId;
+
   const aquarium =
     initialAquariums.find(a => a.id.toString() === activeAquariumId) ||
     initialAquariums[0];
@@ -146,9 +154,20 @@ export default function GamePage() {
       try {
         console.log('🐠 Fetching fishes for player:', account.address);
 
-        // If aquarium ID is in URL, load fish from that aquarium
-        if (aquariumIdFromUrl) {
-          console.log('📦 Loading aquarium from URL:', aquariumIdFromUrl);
+        // Persist aquarium ID and player address to store
+        if (activeAquariumId && account.address) {
+          if (
+            activeAquariumId !== storedAquariumId ||
+            account.address !== storedPlayerAddress
+          ) {
+            console.log('💾 Persisting aquarium to store:', activeAquariumId);
+            setActiveAquariumId(activeAquariumId, account.address);
+          }
+        }
+
+        // If aquarium ID is available (URL or stored), load fish from that aquarium
+        if (activeAquariumId) {
+          console.log('📦 Loading aquarium:', activeAquariumId);
 
           try {
             // Retry logic for loading aquarium with fish
@@ -157,7 +176,7 @@ export default function GamePage() {
             const maxAttempts = 3;
 
             while (attempts < maxAttempts) {
-              aquariumData = await getAquariumData(BigInt(aquariumIdFromUrl));
+              aquariumData = await getAquariumData(BigInt(activeAquariumId));
               console.log(
                 `🏠 Aquarium data (attempt ${attempts + 1}):`,
                 aquariumData
