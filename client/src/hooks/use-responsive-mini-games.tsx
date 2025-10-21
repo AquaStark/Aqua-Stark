@@ -7,7 +7,7 @@ export function useResponsiveMiniGames() {
 
   useEffect(() => {
     const checkMobile = () => {
-      const mobile = window.innerWidth < 768; // md breakpoint
+      const mobile = window.innerWidth < 1024; // lg breakpoint
       console.log('🔍 Screen width:', window.innerWidth, 'isMobile:', mobile);
       setIsMobile(mobile);
     };
