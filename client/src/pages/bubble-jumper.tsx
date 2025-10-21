@@ -427,7 +427,6 @@ export default function BubbleJumperPage() {
 
   const handleBack = () => {
     console.log('🚀 handleBack called - navigating to /mini-games');
-    alert('Back button clicked!'); // Temporary alert to confirm click
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
     }
