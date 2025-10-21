@@ -1,70 +1,68 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { LayoutFooter } from '@/components';
+import { UnderConstruction } from '@/components/ui/under-construction';
 import { PageHeader } from '@/components';
-import { Tabs } from '@/components/ui/tabs';
-import { EncyclopediaTabs } from '@/components';
-import { useEncyclopedia } from '@/hooks';
-import { BubblesBackground } from '@/components';
-import { useBubbles } from '@/hooks';
-import { ComingSoonModal } from '@/components';
-import { OrientationLock } from '@/components/ui';
+import { Search, BookOpen } from 'lucide-react';
 
 export default function EncyclopediaPage() {
-  const [showComingSoon, setShowComingSoon] = useState(false);
-  const { discoveredSpecies, totalSpecies, activeTab, setActiveTab } =
-    useEncyclopedia();
-
-  const bubbles = useBubbles();
-
-  // Mostrar el modal automáticamente al cargar la página
-  useEffect(() => {
-    setShowComingSoon(true);
-  }, []);
-
   return (
-    <OrientationLock>
-      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
-        <BubblesBackground bubbles={bubbles} />
-
+    <UnderConstruction
+      pageName='Encyclopedia'
+      description="We're creating an incredible underwater knowledge base! Soon you'll be able to discover detailed information about every fish species, their habitats, and care requirements."
+    >
+      <div className='min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900'>
         <PageHeader
-          title='Aqua Stark Encyclopedia'
+          title='Fish Encyclopedia'
           backTo='/game'
           backText='Back to Game'
-          rightContent={
-            <div className='inline-flex items-center px-3 py-1 rounded-full bg-blue-500/30 border border-blue-300 text-sm font-medium text-white shadow-sm backdrop-blur-md'>
-              <span className='mr-1'>Discovered:</span>
-              <span className='font-semibold text-blue-100'>
-                {discoveredSpecies}
-              </span>
-              <span className='mx-1 text-blue-300'>/</span>
-              <span className='text-blue-100'>{totalSpecies}</span>
+        />
+
+        <div className='container mx-auto px-4 py-8'>
+          {/* Search Bar */}
+          <div className='mb-6'>
+            <div className='relative max-w-2xl mx-auto'>
+              <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-300 w-5 h-5' />
+              <input
+                type='text'
+                placeholder='Search species...'
+                className='w-full pl-12 pr-4 py-3 bg-blue-800/50 border border-blue-600/30 rounded-lg text-white'
+              />
             </div>
-          }
-        />
+          </div>
 
-        <main className='relative z-20 flex flex-col items-center px-4 py-8 mx-auto max-w-7xl'>
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className='w-full'
-          >
-            <EncyclopediaTabs />
-          </Tabs>
-        </main>
+          {/* Species Categories */}
+          <div className='flex gap-2 mb-6 overflow-x-auto pb-2'>
+            {['All', 'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'].map(
+              category => (
+                <button
+                  key={category}
+                  className='px-4 py-2 bg-blue-800/30 border border-blue-600/30 rounded-lg text-blue-200 whitespace-nowrap'
+                >
+                  {category}
+                </button>
+              )
+            )}
+          </div>
 
-        <LayoutFooter />
-
-        {/* Modal Coming Soon */}
-        <ComingSoonModal
-          isOpen={showComingSoon}
-          onClose={() => setShowComingSoon(false)}
-          title='Encyclopedia Under Development'
-          description="The fish encyclopedia is being built. Soon you'll discover and learn about all the amazing fish species in Aqua Stark."
-          closable={false}
-        />
+          {/* Species Grid */}
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(i => (
+              <div
+                key={i}
+                className='bg-blue-800/30 border border-blue-600/30 rounded-lg p-4 hover:border-blue-500/50 transition-colors cursor-pointer'
+              >
+                <div className='w-full h-32 bg-blue-700/30 rounded-lg mb-3'></div>
+                <div className='flex items-center gap-2 mb-2'>
+                  <BookOpen className='w-4 h-4 text-blue-400' />
+                  <div className='h-4 bg-blue-700/30 rounded flex-1'></div>
+                </div>
+                <div className='h-3 bg-blue-700/30 rounded mb-2'></div>
+                <div className='h-3 bg-blue-700/30 rounded w-3/4'></div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </OrientationLock>
+    </UnderConstruction>
   );
 }

@@ -59,8 +59,43 @@ export default function GamePage() {
   // Get pre-loaded fish from navigation state
   const preloadedFish = (location.state as any)?.preloadedFish;
 
-  // Other hooks
-  const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
+  // Persistent aquarium store
+  const {
+    activeAquariumId: storedAquariumId,
+    playerAddress: storedPlayerAddress,
+    setActiveAquariumId,
+  } = useActiveAquarium();
+
+  // Determine which aquarium ID to use (URL > stored)
+  const activeAquariumId = aquariumIdFromUrl || storedAquariumId;
+
+  // Use stored player address if account is not connected yet
+  const effectivePlayerAddress = account?.address || storedPlayerAddress;
+
+  // CRITICAL: Save aquarium ID from URL immediately on page load
+  useEffect(() => {
+    console.log('🔍 GAME PAGE - Aquarium ID Check:', {
+      aquariumIdFromUrl,
+      storedAquariumId,
+      effectivePlayerAddress,
+      willSave:
+        aquariumIdFromUrl &&
+        effectivePlayerAddress &&
+        aquariumIdFromUrl !== storedAquariumId,
+    });
+
+    if (aquariumIdFromUrl && effectivePlayerAddress) {
+      if (aquariumIdFromUrl !== storedAquariumId) {
+        console.log(
+          '💾 SAVING TO STORE:',
+          aquariumIdFromUrl,
+          effectivePlayerAddress
+        );
+        setActiveAquariumId(aquariumIdFromUrl, effectivePlayerAddress);
+      }
+    }
+  }, [aquariumIdFromUrl, effectivePlayerAddress]);
+
   const aquarium =
     initialAquariums.find(a => a.id.toString() === activeAquariumId) ||
     initialAquariums[0];
@@ -70,7 +105,7 @@ export default function GamePage() {
   // Initialize simple dirt system with backend
   const dirtSystem = useSimpleDirtSystem(
     activeAquariumId || '1',
-    account?.address || 'demo-player'
+    effectivePlayerAddress || 'demo-player'
   );
 
   const bubbles = useBubbles({
@@ -126,16 +161,11 @@ export default function GamePage() {
     const fetchFishes = async () => {
       // Check if we have pre-loaded fish data from loading page
       if (preloadedFish && preloadedFish.length > 0) {
-        console.log(
-          `🎯 Using pre-loaded fish data (${preloadedFish.length} fish):`,
-          preloadedFish
-        );
         setPlayerFishes(preloadedFish);
         return;
       }
 
-      if (!account?.address) {
-        console.log('No account connected, waiting...');
+      if (!effectivePlayerAddress) {
         setPlayerFishes([]);
         return;
       }
@@ -144,12 +174,18 @@ export default function GamePage() {
       await new Promise(resolve => setTimeout(resolve, 500));
 
       try {
-        console.log('🐠 Fetching fishes for player:', account.address);
+        // Persist aquarium ID and player address to store
+        if (activeAquariumId && effectivePlayerAddress) {
+          if (
+            activeAquariumId !== storedAquariumId ||
+            effectivePlayerAddress !== storedPlayerAddress
+          ) {
+            setActiveAquariumId(activeAquariumId, effectivePlayerAddress);
+          }
+        }
 
-        // If aquarium ID is in URL, load fish from that aquarium
-        if (aquariumIdFromUrl) {
-          console.log('📦 Loading aquarium from URL:', aquariumIdFromUrl);
-
+        // If aquarium ID is available (URL or stored), load fish from that aquarium
+        if (activeAquariumId) {
           try {
             // Retry logic for loading aquarium with fish
             let aquariumData: any = null;
@@ -157,65 +193,39 @@ export default function GamePage() {
             const maxAttempts = 3;
 
             while (attempts < maxAttempts) {
-              aquariumData = await getAquariumData(BigInt(aquariumIdFromUrl));
-              console.log(
-                `🏠 Aquarium data (attempt ${attempts + 1}):`,
-                aquariumData
-              );
+              aquariumData = await getAquariumData(BigInt(activeAquariumId));
 
               // Check if aquarium has fish
               if (
                 aquariumData?.housed_fish &&
                 aquariumData.housed_fish.length > 0
               ) {
-                console.log('✅ Found fish in aquarium!');
                 break;
               }
 
               if (attempts < maxAttempts - 1) {
-                console.log('⏳ No fish yet, retrying in 2 seconds...');
                 await new Promise(resolve => setTimeout(resolve, 2000));
               }
               attempts++;
             }
-
-            console.log('🏠 Aquarium housed_fish:', aquariumData?.housed_fish);
-            console.log(
-              '🏠 Type of housed_fish:',
-              typeof aquariumData?.housed_fish
-            );
-            console.log(
-              '🏠 Is Array:',
-              Array.isArray(aquariumData?.housed_fish)
-            );
 
             if (aquariumData?.housed_fish) {
               const housedFishArray = Array.isArray(aquariumData.housed_fish)
                 ? aquariumData.housed_fish
                 : [aquariumData.housed_fish];
 
-              console.log('🎣 Fish IDs in aquarium:', housedFishArray);
-
               if (housedFishArray.length > 0) {
                 const fishPromises = housedFishArray.map((fishId: any) => {
                   const id =
                     typeof fishId === 'bigint' ? fishId : BigInt(fishId);
-                  console.log('🔍 Fetching fish with ID:', id);
                   return getFish(id);
                 });
                 const fishData = await Promise.all(fishPromises);
-                console.log('🐟 Fish data from aquarium:', fishData);
                 setPlayerFishes(fishData.filter(Boolean));
               } else {
-                console.log(
-                  '⚠️ Aquarium has no fish yet after',
-                  maxAttempts,
-                  'attempts'
-                );
                 setPlayerFishes([]);
               }
             } else {
-              console.log('⚠️ Aquarium data has no housed_fish property');
               setPlayerFishes([]);
             }
           } catch (aquariumError) {
@@ -224,45 +234,30 @@ export default function GamePage() {
           }
         } else {
           // Load fish from backend (new approach)
-          console.log('📋 Loading player fish from backend');
           try {
-            const backendFish = await getPlayerFish(account.address);
-            console.log('🐟 Fish from backend:', backendFish);
+            const backendFish = await getPlayerFish(effectivePlayerAddress);
 
             if (
               backendFish.success &&
               backendFish.data &&
               backendFish.data.length > 0
             ) {
-              console.log(
-                `✅ Found ${backendFish.data.length} fish in backend`
-              );
-
               // Use backend fish IDs to load details from blockchain
               const fishPromises = backendFish.data.map((fish: any) => {
                 const onChainId = fish.on_chain_id;
-                console.log('🔍 Loading fish from blockchain:', onChainId);
                 return getFish(BigInt(onChainId));
               });
 
               const fishDetails = await Promise.all(fishPromises);
-              console.log('🐟 Fish details from blockchain:', fishDetails);
               setPlayerFishes(fishDetails.filter(Boolean));
             } else {
-              console.log('⚠️ No fish found in backend for player');
               setPlayerFishes([]);
             }
-          } catch (backendError) {
-            console.error(
-              '❌ Error loading from backend, falling back to blockchain:',
-              backendError
-            );
-
+          } catch {
             // Fallback to blockchain if backend fails
             const playerAquariums = await getPlayerAquariumsList(
-              account.address
+              effectivePlayerAddress
             );
-            console.log('🏠 Player aquariums (fallback):', playerAquariums);
 
             if (playerAquariums && playerAquariums.length > 0) {
               const lastAquarium = playerAquariums[playerAquariums.length - 1];
@@ -300,7 +295,7 @@ export default function GamePage() {
     };
 
     fetchFishes();
-  }, [account?.address, aquariumIdFromUrl, preloadedFish]);
+  }, [effectivePlayerAddress, aquariumIdFromUrl, preloadedFish]);
 
   function bigIntToNumber(value: unknown): number {
     if (typeof value === 'bigint') return Number(value);
@@ -312,52 +307,22 @@ export default function GamePage() {
     .map((fish: any, index: number) => {
       if (!fish) return null;
 
-      // Extract species name from CairoCustomEnum
+      // Extract species name from CairoCustomEnum (same logic as aquariums page)
       let speciesName = 'AngelFish'; // default
-      if (fish.species) {
-        if (typeof fish.species === 'object') {
-          if (fish.species.activeVariant) {
-            speciesName = fish.species.activeVariant;
-          } else if (fish.species.variant) {
-            // Find the variant with a non-undefined value
-            const activeKey = Object.entries(fish.species.variant).find(
-              ([, value]) => value !== undefined
-            );
-            if (activeKey) {
-              speciesName = activeKey[0];
-            }
-          } else {
-            const keys = Object.keys(fish.species);
-            if (keys.length > 0) {
-              speciesName = keys[0];
-            }
-          }
+      if (fish.species?.variant) {
+        // Handle CairoCustomEnum variant extraction
+        const variantEntries = Object.entries(fish.species.variant);
+        const activeVariant = variantEntries.find(
+          ([, value]) => value !== undefined
+        );
+        if (activeVariant) {
+          speciesName = activeVariant[0];
         }
       }
-
-      // Debug: Check each variant value
-      if (fish.species?.variant) {
-        console.log(
-          '🔍 All variant entries:',
-          Object.entries(fish.species.variant)
-        );
-      }
-
-      console.log('🔍 Species extraction:', {
-        rawSpecies: fish.species,
-        extractedName: speciesName,
-        fishId: fish.id,
-      });
 
       // Use species catalog for image (centralized, scalable)
       const fishImage = getSpeciesImage(speciesName);
       const displayName = getSpeciesDisplayName(speciesName);
-
-      console.log('🎨 Species mapping:', {
-        speciesName,
-        displayName,
-        fishImage,
-      });
 
       // Generate random position within aquarium bounds
       const randomX = Math.random() * 80 + 10; // 10% to 90% of width
@@ -454,17 +419,13 @@ export default function GamePage() {
             energy={energy}
             onMenuToggle={() => setShowMenu(!showMenu)}
             isCleaningMode={isCleaningMode}
-          />
-        )}
-
-        {/* Game Menu */}
-        {showMenu && !isWallpaperMode && (
-          <GameMenu
-            show={showMenu}
             onWallpaperToggle={handleWallpaperToggle}
             isWallpaperMode={isWallpaperMode}
           />
         )}
+
+        {/* Game Menu */}
+        {showMenu && !isWallpaperMode && <GameMenu show={showMenu} />}
 
         {/* Debuggers - only shown when explicitly toggled */}
         <div
@@ -495,6 +456,7 @@ export default function GamePage() {
             showTips={showTips}
             onTipsToggle={handleTipsToggle}
             onTipsClose={() => setShowTips(false)}
+            realAquariumId={activeAquariumId}
           />
         )}
 

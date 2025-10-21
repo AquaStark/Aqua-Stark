@@ -28,3 +28,4 @@ export { Switch } from './switch';
 export { Tabs } from './tabs-component';
 export * from './tabs';
 export { FishCard } from './fish-card/fish-card';
+export { UnderConstruction } from './under-construction';

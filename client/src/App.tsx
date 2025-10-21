@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import { StarknetProvider } from './providers/StarknetProvider';
+import { SpeciesCatalogProvider } from './contexts/SpeciesCatalogContext';
 import { ErrorBoundary } from './components';
 
 // Landing & Onboarding Pages
@@ -7,7 +8,7 @@ import { useResponsiveLanding } from './hooks/use-responsive-landing';
 import { useResponsiveStore } from './hooks/use-responsive-store';
 import { useResponsiveMiniGames } from './hooks/use-responsive-mini-games';
 import { useResponsiveFloppyFish } from './hooks/use-responsive-floppy-fish';
-import { useResponsiveBubbleJumper } from './hooks/use-responsive-bubble-jumper';
+import { ResponsiveBubbleJumper } from './hooks/use-responsive-bubble-jumper';
 import OnboardingPage from './pages/onboarding/onboarding';
 import StartPage from './pages/onboarding/start';
 import LoadingPage from './pages/loading';
@@ -29,8 +30,6 @@ import HelpCenterPage from './pages/help-center';
 import EventsCalendarPage from './pages/events-calendar';
 import AchievementsPage from './pages/achievements';
 
-// Mini Games Pages
-
 // Utility Pages
 import CreditsPage from './pages/credits';
 import Error404Page from './pages/404';
@@ -39,67 +38,66 @@ import Error404Page from './pages/404';
 import { Game } from './Game';
 import AquariumDemo from './pages/demo';
 
-// Debug Component
-
 function App() {
   const ResponsiveLanding = useResponsiveLanding();
   const ResponsiveStore = useResponsiveStore();
   const ResponsiveMiniGames = useResponsiveMiniGames();
   const ResponsiveFloppyFish = useResponsiveFloppyFish();
-  const ResponsiveBubbleJumper = useResponsiveBubbleJumper();
 
   return (
     <ErrorBoundary>
       <StarknetProvider>
-        <Routes>
-          {/* Landing & Onboarding Routes */}
-          <Route path='/' element={ResponsiveLanding} />
-          <Route path='/onboarding' element={<OnboardingPage />} />
-          <Route path='/start' element={<StartPage />} />
-          <Route path='/loading' element={<LoadingPage />} />
+        <SpeciesCatalogProvider>
+          <Routes>
+            {/* Landing & Onboarding Routes */}
+            <Route path='/' element={ResponsiveLanding} />
+            <Route path='/onboarding' element={<OnboardingPage />} />
+            <Route path='/start' element={<StartPage />} />
+            <Route path='/loading' element={<LoadingPage />} />
 
-          {/* Main Game Routes */}
-          <Route path='/game' element={<GamePage />} />
-          <Route path='/aquariums' element={<AquariumsPage />} />
-          <Route path='/store' element={ResponsiveStore} />
-          <Route path='/trading-market' element={<TradingMarketPage />} />
-          <Route
-            path='/breeding-laboratory'
-            element={<BreedingLaboratoryPage />}
-          />
+            {/* Main Game Routes */}
+            <Route path='/game' element={<GamePage />} />
+            <Route path='/aquariums' element={<AquariumsPage />} />
+            <Route path='/store' element={ResponsiveStore} />
+            <Route path='/trading-market' element={<TradingMarketPage />} />
+            <Route
+              path='/breeding-laboratory'
+              element={<BreedingLaboratoryPage />}
+            />
 
-          {/* Settings Route */}
-          <Route path='/settings' element={<SettingsPage />} />
+            {/* Settings Route */}
+            <Route path='/settings' element={<SettingsPage />} />
 
-          {/* Community & Social Routes */}
-          <Route path='/community' element={<CommunityPage />} />
-          <Route path='/my-profile' element={<MyProfilePage />} />
+            {/* Community & Social Routes */}
+            <Route path='/community' element={<CommunityPage />} />
+            <Route path='/my-profile' element={<MyProfilePage />} />
 
-          {/* Information & Help Routes */}
-          <Route path='/encyclopedia' element={<EncyclopediaPage />} />
-          <Route path='/help-center' element={<HelpCenterPage />} />
-          <Route path='/events-calendar' element={<EventsCalendarPage />} />
-          <Route path='/achievements' element={<AchievementsPage />} />
+            {/* Information & Help Routes */}
+            <Route path='/encyclopedia' element={<EncyclopediaPage />} />
+            <Route path='/help-center' element={<HelpCenterPage />} />
+            <Route path='/events-calendar' element={<EventsCalendarPage />} />
+            <Route path='/achievements' element={<AchievementsPage />} />
 
-          {/* Mini Games Routes */}
-          <Route path='/mini-games' element={ResponsiveMiniGames} />
-          <Route
-            path='/mini-games/floppy-fish'
-            element={ResponsiveFloppyFish}
-          />
-          <Route
-            path='/mini-games/bubble-jumper'
-            element={<ResponsiveBubbleJumper />}
-          />
+            {/* Mini Games Routes */}
+            <Route path='/mini-games' element={ResponsiveMiniGames} />
+            <Route
+              path='/mini-games/floppy-fish'
+              element={ResponsiveFloppyFish}
+            />
+            <Route
+              path='/mini-games/bubble-jumper'
+              element={<ResponsiveBubbleJumper />}
+            />
 
-          {/* Utility Routes */}
-          <Route path='/credits' element={<CreditsPage />} />
-          <Route path='/test-game' element={<Game />} />
-          <Route path='*' element={<Error404Page />} />
+            {/* Utility Routes */}
+            <Route path='/credits' element={<CreditsPage />} />
+            <Route path='/test-game' element={<Game />} />
+            <Route path='*' element={<Error404Page />} />
 
-          {/* test page */}
-          <Route path='/demo' element={<AquariumDemo />} />
-        </Routes>
+            {/* test page */}
+            <Route path='/demo' element={<AquariumDemo />} />
+          </Routes>
+        </SpeciesCatalogProvider>
       </StarknetProvider>
     </ErrorBoundary>
   );
