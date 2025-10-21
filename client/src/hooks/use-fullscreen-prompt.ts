@@ -16,43 +16,44 @@ export function useFullscreenPrompt(): UseFullscreenPromptReturn {
   const { isSupported, isEnabled, enterFullscreen, isFullscreen } =
     useFullscreen();
 
-  useEffect(() => {
-    // Check if we should show the prompt
-    const shouldShowPrompt = () => {
-      // Don't show if fullscreen is not supported or enabled
-      if (!isSupported || !isEnabled) return false;
+  // Disabled automatic fullscreen prompt since there's a dedicated button
+  // useEffect(() => {
+  //   // Check if we should show the prompt
+  //   const shouldShowPrompt = () => {
+  //     // Don't show if fullscreen is not supported or enabled
+  //     if (!isSupported || !isEnabled) return false;
 
-      // Don't show if already in fullscreen
-      if (isFullscreen) return false;
+  //     // Don't show if already in fullscreen
+  //     if (isFullscreen) return false;
 
-      // Don't show if user has already been prompted
-      const hasBeenPrompted = localStorage.getItem(FULLSCREEN_PROMPT_KEY);
-      if (hasBeenPrompted) return false;
+  //     // Don't show if user has already been prompted
+  //     const hasBeenPrompted = localStorage.getItem(FULLSCREEN_PROMPT_KEY);
+  //     if (hasBeenPrompted) return false;
 
-      // Don't show if user declined recently (within 24 hours)
-      const declinedTime = localStorage.getItem(FULLSCREEN_DECLINED_KEY);
-      if (declinedTime) {
-        const declinedDate = new Date(declinedTime);
-        const now = new Date();
-        const hoursSinceDeclined =
-          (now.getTime() - declinedDate.getTime()) / (1000 * 60 * 60);
+  //     // Don't show if user declined recently (within 24 hours)
+  //     const declinedTime = localStorage.getItem(FULLSCREEN_DECLINED_KEY);
+  //     if (declinedTime) {
+  //       const declinedDate = new Date(declinedTime);
+  //       const now = new Date();
+  //       const hoursSinceDeclined =
+  //         (now.getTime() - declinedDate.getTime()) / (1000 * 60 * 60);
 
-        // If declined less than 24 hours ago, don't show
-        if (hoursSinceDeclined < 24) return false;
-      }
+  //       // If declined less than 24 hours ago, don't show
+  //       if (hoursSinceDeclined < 24) return false;
+  //     }
 
-      return true;
-    };
+  //     return true;
+  //   };
 
-    // Show prompt after a short delay to let the app load
-    const timer = setTimeout(() => {
-      if (shouldShowPrompt()) {
-        setShowPrompt(true);
-      }
-    }, 2000); // 2 second delay
+  //   // Show prompt after a short delay to let the app load
+  //   const timer = setTimeout(() => {
+  //     if (shouldShowPrompt()) {
+  //       setShowPrompt(true);
+  //     }
+  //   }, 2000); // 2 second delay
 
-    return () => clearTimeout(timer);
-  }, [isSupported, isEnabled, isFullscreen]);
+  //   return () => clearTimeout(timer);
+  // }, [isSupported, isEnabled, isFullscreen]);
 
   const hidePrompt = () => {
     setShowPrompt(false);
