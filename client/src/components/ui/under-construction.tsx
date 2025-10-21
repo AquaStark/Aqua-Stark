@@ -24,13 +24,13 @@ export function UnderConstruction({ pageName, description, children }: UnderCons
 
   return (
     <div className="relative min-h-screen">
-      {/* Page content in background (blurred) */}
-      <div className="absolute inset-0 blur-md pointer-events-none">
+      {/* Page content in background (lightly blurred) */}
+      <div className="absolute inset-0 blur-sm pointer-events-none opacity-70">
         {children}
       </div>
 
       {/* Overlay with modal */}
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-md z-[9999] flex items-center justify-center p-4">
+      <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}

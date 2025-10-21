@@ -231,7 +231,7 @@ export function AquariumTabs({
                 </div>
               </button>
               {/* Tooltip */}
-              <div className='absolute bottom-16 left-1/2 transform -translate-x-1/2 w-20 bg-blue-600/90 backdrop-blur-md rounded-lg p-2 border border-blue-400/50 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-60'>
+              <div className={`absolute bottom-16 left-1/2 transform -translate-x-1/2 ${item.id === 'achievements' ? 'w-28' : 'w-20'} bg-blue-600/90 backdrop-blur-md rounded-lg p-2 border border-blue-400/50 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-60`}>
                 <div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-600/90 transform rotate-45 border-r border-b border-blue-400/50'></div>
                 <span className='text-white text-xs font-medium text-center block'>
                   {item.label}

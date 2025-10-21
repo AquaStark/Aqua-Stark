@@ -42,59 +42,59 @@ export function GameMenu({
   const navigate = useNavigate();
 
   const menuItems: MenuItem[] = [
-    // Volver a la página principal
+    // Back to home
     {
       icon: <ArrowLeft className='h-5 w-5' />,
       onClick: () => navigate('/'),
-      tooltip: 'Volver al Inicio',
+      tooltip: 'Back to Home',
     },
     // Trading Market
     {
       icon: <TrendingUp className='h-5 w-5' />,
       onClick: () => navigate('/trading-market'),
-      tooltip: 'Mercado de Intercambio',
+      tooltip: 'Trading Market',
     },
     // Breeding Laboratory
     {
       icon: <Heart className='h-5 w-5' />,
       onClick: () => navigate('/breeding-laboratory'),
-      tooltip: 'Laboratorio de Cría',
+      tooltip: 'Breeding Lab',
     },
     // Settings
     {
       icon: <Settings className='h-5 w-5' />,
       onClick: () => navigate('/settings'),
-      tooltip: 'Configuraciones',
+      tooltip: 'Settings',
     },
     // Community
     {
       icon: <Users className='h-5 w-5' />,
       onClick: () => navigate('/community'),
-      tooltip: 'Comunidad',
+      tooltip: 'Community',
     },
     // My Profile
     {
       icon: <User className='h-5 w-5' />,
       onClick: () => navigate('/my-profile'),
-      tooltip: 'Mi Perfil',
+      tooltip: 'My Profile',
     },
     // Encyclopedia
     {
       icon: <BookOpen className='h-5 w-5' />,
       onClick: () => navigate('/encyclopedia'),
-      tooltip: 'Enciclopedia',
+      tooltip: 'Encyclopedia',
     },
     // Help Center
     {
       icon: <HelpCircle className='h-5 w-5' />,
       onClick: () => navigate('/help-center'),
-      tooltip: 'Centro de Ayuda',
+      tooltip: 'Help Center',
     },
     // Events Calendar
     {
       icon: <Calendar className='h-5 w-5' />,
       onClick: () => navigate('/events-calendar'),
-      tooltip: 'Calendario de Eventos',
+      tooltip: 'Events',
     },
     // Achievements
     {
@@ -102,11 +102,11 @@ export function GameMenu({
       onClick: () => navigate('/achievements'),
       tooltip: 'Achievements',
     },
-    // Wallpaper Mode (keep existing functionality)
+    // Wallpaper Mode
     {
       icon: <Monitor className='h-5 w-5' />,
       onClick: onWallpaperToggle || (() => {}),
-      tooltip: isWallpaperMode ? 'Salir del Modo Wallpaper' : 'Modo Wallpaper',
+      tooltip: isWallpaperMode ? 'Exit Wallpaper' : 'Wallpaper Mode',
     },
   ];
 
