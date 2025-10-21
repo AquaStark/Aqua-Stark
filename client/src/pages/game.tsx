@@ -74,8 +74,16 @@ export default function GamePage() {
 
   // CRITICAL: Save aquarium ID from URL immediately on page load
   useEffect(() => {
+    console.log('🔍 GAME PAGE - Aquarium ID Check:', {
+      aquariumIdFromUrl,
+      storedAquariumId,
+      effectivePlayerAddress,
+      willSave: aquariumIdFromUrl && effectivePlayerAddress && aquariumIdFromUrl !== storedAquariumId
+    });
+    
     if (aquariumIdFromUrl && effectivePlayerAddress) {
       if (aquariumIdFromUrl !== storedAquariumId) {
+        console.log('💾 SAVING TO STORE:', aquariumIdFromUrl, effectivePlayerAddress);
         setActiveAquariumId(aquariumIdFromUrl, effectivePlayerAddress);
       }
     }

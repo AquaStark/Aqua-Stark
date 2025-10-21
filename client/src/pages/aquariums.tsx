@@ -287,10 +287,13 @@ export default function AquariumsPage() {
   }, [aquariums, searchQuery]);
 
   const handleBackToGame = () => {
+    console.log('🔙 BACK BUTTON - storedAquariumId:', storedAquariumId);
     // Navigate back to game with stored aquarium ID
     if (storedAquariumId) {
+      console.log('✅ Navigating to /game?aquarium=' + storedAquariumId);
       navigate(`/game?aquarium=${storedAquariumId}`);
     } else {
+      console.log('⚠️ No storedAquariumId, going to /game');
       navigate('/game');
     }
   };
