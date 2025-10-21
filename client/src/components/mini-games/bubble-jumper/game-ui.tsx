@@ -30,7 +30,7 @@ export function GameUI({
   onEndGame,
 }: GameUIProps) {
   return (
-    <div className='absolute inset-0 z-40 pointer-events-none'>
+    <div className='absolute inset-0 z-30 pointer-events-none'>
       <div className='absolute top-24 left-4 right-4 flex justify-end items-center pointer-events-auto'>
         <div className='flex gap-4'>
           <div className='bg-gradient-to-r from-blue-600 to-blue-700 backdrop-blur-md rounded-xl px-6 py-3 border-2 border-blue-400/50 shadow-lg'>

@@ -459,7 +459,7 @@ export default function BubbleJumperPage() {
         gameConfig={GAME_CONFIG}
       />
 
-      <div className='relative z-10 p-3 sm:p-4 bg-blue-700 border-b-2 border-blue-400/50 select-none'>
+      <div className='relative z-60 p-3 sm:p-4 bg-blue-700 border-b-2 border-blue-400/50 select-none'>
         <div className='flex flex-row items-center justify-between mx-auto font-sans max-w-7xl'>
           <div className='flex flex-row items-center'>
             <button
@@ -467,7 +467,8 @@ export default function BubbleJumperPage() {
                 console.log('Back button clicked');
                 handleBack();
               }}
-              className='flex items-center mr-2 text-xs text-white rounded-full hover:bg-blue-500/50 px-2 sm:px-3 md:px-4 py-1 sm:py-2 h-8 sm:h-9 bg-transparent border-none cursor-pointer transition-colors'
+              className='flex items-center mr-2 text-xs text-white rounded-full hover:bg-blue-500/50 px-2 sm:px-3 md:px-4 py-1 sm:py-2 h-8 sm:h-9 bg-blue-600/30 border border-blue-400/50 cursor-pointer transition-colors relative z-60'
+              style={{ pointerEvents: 'auto' }}
             >
               <svg
                 className='mr-1 sm:mr-2'
