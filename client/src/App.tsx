@@ -7,6 +7,9 @@ import { useFullscreenPrompt } from './hooks/use-fullscreen-prompt';
 // Landing & Onboarding Pages
 import { useResponsiveLanding } from './hooks/use-responsive-landing';
 import { useResponsiveStore } from './hooks/use-responsive-store';
+import { useResponsiveMiniGames } from './hooks/use-responsive-mini-games';
+import { useResponsiveFloppyFish } from './hooks/use-responsive-floppy-fish';
+import { useResponsiveBubbleJumper } from './hooks/use-responsive-bubble-jumper';
 import OnboardingPage from './pages/onboarding/onboarding';
 import StartPage from './pages/onboarding/start';
 import LoadingPage from './pages/loading';
@@ -29,9 +32,6 @@ import EventsCalendarPage from './pages/events-calendar';
 import AchievementsPage from './pages/achievements';
 
 // Mini Games Pages
-import MiniGamesPage from './pages/mini-games';
-import FloppyFishGamePage from './pages/floppy-fish';
-import BubbleJumperPage from './pages/bubble-jumper';
 
 // Utility Pages
 import CreditsPage from './pages/credits';
@@ -47,6 +47,9 @@ function App() {
   const { showPrompt, hidePrompt, acceptFullscreen } = useFullscreenPrompt();
   const ResponsiveLanding = useResponsiveLanding();
   const ResponsiveStore = useResponsiveStore();
+  const ResponsiveMiniGames = useResponsiveMiniGames();
+  const ResponsiveFloppyFish = useResponsiveFloppyFish();
+  const ResponsiveBubbleJumper = useResponsiveBubbleJumper();
 
   return (
     <ErrorBoundary>
@@ -82,14 +85,14 @@ function App() {
           <Route path='/achievements' element={<AchievementsPage />} />
 
           {/* Mini Games Routes */}
-          <Route path='/mini-games' element={<MiniGamesPage />} />
+          <Route path='/mini-games' element={ResponsiveMiniGames} />
           <Route
             path='/mini-games/floppy-fish'
-            element={<FloppyFishGamePage />}
+            element={ResponsiveFloppyFish}
           />
           <Route
             path='/mini-games/bubble-jumper'
-            element={<BubbleJumperPage />}
+            element={<ResponsiveBubbleJumper />}
           />
 
           {/* Utility Routes */}

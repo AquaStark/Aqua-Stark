@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useBubbles } from '@/hooks/use-bubbles';
 import { BubblesBackground } from '@/components/bubble-background';
 import { GameCanvas } from '@/components/mini-games/bubble-jumper/game-canvas';
-import { GameUI } from '@/components/mini-games/bubble-jumper/game-ui';
 import { GameModals } from '@/components/mini-games/bubble-jumper/game-modals';
+import { OrientationLock } from '@/components/ui';
 
 interface Platform {
   id: number;
@@ -43,10 +43,10 @@ interface GameState {
 }
 
 const GAME_CONFIG = {
-  gravity: 0.5,
-  jumpForce: -15,
-  springJumpForce: -22,
-  horizontalSpeed: 5,
+  gravity: 0.4, // Reduced for mobile
+  jumpForce: -12, // Reduced for mobile
+  springJumpForce: -18, // Reduced for mobile
+  horizontalSpeed: 4, // Reduced for mobile
   platformWidth: 80,
   platformSpacing: 80,
   gameWidth: 800,
@@ -55,7 +55,7 @@ const GAME_CONFIG = {
   fishHeight: 30,
 };
 
-export default function BubbleJumperPage() {
+export default function MobileBubbleJumperView() {
   const navigate = useNavigate();
   const gameRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>();
@@ -70,13 +70,13 @@ export default function BubbleJumperPage() {
   };
 
   const bubbles = useBubbles({
-    initialCount: 10,
-    maxBubbles: 20,
+    initialCount: 8, // Reduced for mobile
+    maxBubbles: 15, // Reduced for mobile
     minSize: 6,
-    maxSize: 30,
+    maxSize: 25, // Reduced for mobile
     minDuration: 10,
     maxDuration: 18,
-    interval: 400,
+    interval: 500, // Increased for mobile
   });
 
   const [gameState, setGameState] = useState<GameState>(() => {
@@ -215,10 +215,40 @@ export default function BubbleJumperPage() {
     }));
   }, [generatePlatforms, selectedFish]);
 
-  // Keyboard controls - FIX: handle spacebar before checking isPlaying/isPaused
+  // Touch controls for mobile
   useEffect(() => {
+    if (!gameState.isPlaying || gameState.isPaused || gameState.isGameOver)
+      return;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const screenWidth = window.innerWidth;
+
+      if (touch.clientX < screenWidth / 2) {
+        // Left side - move left
+        setGameState(prev => ({
+          ...prev,
+          keys: { ...prev.keys, left: true, right: false },
+        }));
+      } else {
+        // Right side - move right
+        setGameState(prev => ({
+          ...prev,
+          keys: { ...prev.keys, left: false, right: true },
+        }));
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      e.preventDefault();
+      setGameState(prev => ({
+        ...prev,
+        keys: { left: false, right: false },
+      }));
+    };
+
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Handle spacebar for pause/resume regardless of state
       if (e.code === 'Space') {
         e.preventDefault();
         if (gameState.isPlaying && !gameState.isGameOver) {
@@ -263,10 +293,15 @@ export default function BubbleJumperPage() {
       }));
     };
 
+    // Add touch event listeners
+    window.addEventListener('touchstart', handleTouchStart, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd, { passive: false });
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
 
     return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
@@ -318,18 +353,14 @@ export default function BubbleJumperPage() {
               fish.velocityY > 0
             ) {
               if (platform.type === 'broken') {
-                // Broken platform: first touch gives jump, second touch removes it
                 if (platform.bounceAnimation) {
-                  // Second touch: remove platform
                   newState.platforms.splice(i, 1);
                   continue;
                 } else {
-                  // First touch: give jump and mark as used
                   fish.velocityY = GAME_CONFIG.jumpForce;
-                  platform.bounceAnimation = true; // Reuse this property as "used" flag
+                  platform.bounceAnimation = true;
                 }
               } else if (platform.type === 'spring') {
-                // Spring platform gives super jump
                 fish.velocityY = GAME_CONFIG.springJumpForce;
                 platform.bounceAnimation = true;
                 setTimeout(() => {
@@ -343,11 +374,9 @@ export default function BubbleJumperPage() {
                   }));
                 }, 200);
               } else {
-                // Normal platform
                 fish.velocityY = GAME_CONFIG.jumpForce;
               }
 
-              // Update score - FIX: use fish.multiplier from state, not closure
               const heightScore = Math.max(
                 0,
                 Math.floor((GAME_CONFIG.gameHeight - platform.y) / 10)
@@ -426,7 +455,6 @@ export default function BubbleJumperPage() {
   };
 
   const handleBack = () => {
-    console.log('🚀 handleBack called - navigating to /mini-games');
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
     }
@@ -434,45 +462,33 @@ export default function BubbleJumperPage() {
   };
 
   return (
-    <div className='relative w-full h-screen overflow-hidden bg-[#005C99]'>
-      {/* Background */}
-      <img
-        src='/backgrounds/background2.png'
-        alt=''
-        className='absolute inset-0 w-full h-full object-cover z-0'
-        role='presentation'
-      />
+    <OrientationLock>
+      <div className='relative h-screen bg-[#005C99] overflow-hidden flex flex-col'>
+        {/* Background */}
+        <img
+          src='/backgrounds/background2.png'
+          alt=''
+          className='absolute inset-0 w-full h-full object-cover z-0'
+          role='presentation'
+        />
 
-      <BubblesBackground
-        bubbles={bubbles}
-        className='absolute inset-0 z-10 pointer-events-none'
-      />
+        <BubblesBackground
+          bubbles={bubbles}
+          className='absolute inset-0 z-10 pointer-events-none'
+        />
 
-      <div className='absolute inset-0 light-rays z-20'></div>
-      <div className='absolute inset-0 animate-water-movement z-20'></div>
+        <div className='absolute inset-0 light-rays z-20'></div>
+        <div className='absolute inset-0 animate-water-movement z-20'></div>
 
-      <GameCanvas
-        gameRef={gameRef}
-        platforms={gameState.platforms}
-        fish={gameState.fish}
-        camera={gameState.camera}
-        gameConfig={GAME_CONFIG}
-      />
-
-      <div className='relative z-60 p-3 sm:p-4 bg-blue-700 border-b-2 border-blue-400/50'>
-        <div className='flex flex-row items-center justify-between mx-auto font-sans max-w-7xl'>
-          <div className='flex flex-row items-center'>
+        {/* Minimal header */}
+        <div className='relative z-30 p-2 bg-blue-700/90 backdrop-blur-sm border-b border-blue-400/50'>
+          <div className='flex items-center justify-between'>
             <button
               onClick={handleBack}
-              className='flex items-center mr-2 text-xs text-white rounded-full hover:bg-blue-500/50 px-2 sm:px-3 md:px-4 py-1 sm:py-2 h-8 sm:h-9 bg-blue-600/30 border border-blue-400/50 cursor-pointer transition-colors'
-              style={{
-                pointerEvents: 'auto',
-                zIndex: 9999,
-                position: 'relative',
-              }}
+              className='flex items-center text-white hover:bg-blue-500/50 px-2 py-1 rounded transition-colors'
             >
               <svg
-                className='mr-1 sm:mr-2'
+                className='mr-1'
                 width={14}
                 height={14}
                 viewBox='0 0 24 24'
@@ -485,62 +501,185 @@ export default function BubbleJumperPage() {
                 <path d='m12 19-7-7 7-7' />
                 <path d='M19 12H5' />
               </svg>
-              <span className='text-xs'>Back to Games</span>
+              <span className='text-sm'>Back</span>
             </button>
-            <h3 className='text-sm sm:text-base md:text-lg font-semibold text-white select-none leading-tight'>
-              Bubble Jumper
-            </h3>
+            <h3 className='text-sm font-semibold text-white'>Bubble Jumper</h3>
+            <div className='w-12'></div>
           </div>
         </div>
+
+        {/* Game area - positioned to the left */}
+        <main className='relative z-10 w-full flex items-start justify-start pt-4 pb-20 flex-1'>
+          <div className='w-3/4 h-full pl-4 relative flex items-center justify-center'>
+            <div className='w-full h-full flex items-center justify-center'>
+              <div
+                className='relative'
+                style={{
+                  transform: 'scale(0.7)',
+                  transformOrigin: 'center center',
+                }}
+              >
+                <GameCanvas
+                  gameRef={gameRef}
+                  platforms={gameState.platforms}
+                  fish={gameState.fish}
+                  camera={gameState.camera}
+                  gameConfig={GAME_CONFIG}
+                />
+              </div>
+            </div>
+          </div>
+          {/* Right side space for controls */}
+          <div className='w-1/4 h-full pr-2'></div>
+        </main>
+
+        {/* Custom GameUI for mobile - positioned to avoid overlaps */}
+        <div className='absolute inset-0 z-40 pointer-events-none'>
+          {/* Right side panel - Score, Controls, and Info */}
+          <div className='absolute top-20 right-2 w-20 flex flex-col gap-2 pointer-events-auto'>
+            {/* Score display */}
+            <div className='bg-gradient-to-r from-blue-600 to-blue-700 backdrop-blur-md rounded-lg px-2 py-1 border-2 border-blue-400/50 shadow-lg'>
+              <span className='text-white font-bold text-xs'>
+                Score: {gameState.score}
+              </span>
+            </div>
+            <div className='bg-gradient-to-r from-yellow-500 to-yellow-600 backdrop-blur-md rounded-lg px-2 py-1 border-2 border-yellow-400/50 shadow-lg'>
+              <span className='text-white font-bold text-xs'>
+                Best: {gameState.bestScore}
+              </span>
+            </div>
+
+            {/* Control buttons */}
+            {gameState.isPlaying && !gameState.isGameOver && (
+              <>
+                <button
+                  onClick={handleBack}
+                  className='bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-500 hover:to-gray-600 text-white shadow-lg rounded-lg p-1 flex items-center justify-center'
+                >
+                  <svg
+                    className='h-3 w-3'
+                    fill='none'
+                    stroke='currentColor'
+                    viewBox='0 0 24 24'
+                  >
+                    <path
+                      strokeLinecap='round'
+                      strokeLinejoin='round'
+                      strokeWidth={2}
+                      d='M15 19l-7-7 7-7'
+                    />
+                  </svg>
+                </button>
+
+                <div className='flex gap-1'>
+                  <button
+                    onClick={togglePause}
+                    className='bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white shadow-lg rounded-lg p-1 flex items-center justify-center flex-1'
+                  >
+                    {gameState.isPaused ? (
+                      <svg
+                        className='h-3 w-3'
+                        fill='none'
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m-6-8h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z'
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        className='h-3 w-3'
+                        fill='none'
+                        stroke='currentColor'
+                        viewBox='0 0 24 24'
+                      >
+                        <path
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
+                          strokeWidth={2}
+                          d='M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z'
+                        />
+                      </svg>
+                    )}
+                  </button>
+                  <button
+                    onClick={endGame}
+                    className='bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white shadow-lg rounded-lg p-1 flex items-center justify-center flex-1'
+                  >
+                    <svg
+                      className='h-3 w-3'
+                      fill='none'
+                      stroke='currentColor'
+                      viewBox='0 0 24 24'
+                    >
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        strokeWidth={2}
+                        d='M6 6h12v12H6z'
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        <GameModals
+          isPlaying={gameState.isPlaying}
+          isPaused={gameState.isPaused}
+          isGameOver={gameState.isGameOver}
+          score={gameState.score}
+          bestScore={gameState.bestScore}
+          selectedFish={selectedFish}
+          onStartGame={initializeGame}
+          onTogglePause={togglePause}
+          onPlayAgain={handlePlayAgain}
+          onBack={handleBack}
+        />
+
+        {/* Right Side Panel - Mobile optimized */}
+        {gameState.isPlaying && (
+          <div className='absolute bottom-16 right-2 w-20 pointer-events-none z-40'>
+            <div className='bg-gradient-to-b from-blue-600/90 to-blue-700/90 backdrop-blur-md rounded-lg p-1 border border-blue-400/50 flex flex-col gap-1 shadow-lg h-fit'>
+              {/* Fish Info */}
+              <div className='flex flex-col items-center gap-1'>
+                <img
+                  src={selectedFish.image || '/placeholder.svg'}
+                  alt={selectedFish.name}
+                  className='w-4 h-3 object-contain'
+                />
+                <div className='text-center'>
+                  <h3 className='text-white font-bold text-xs'>
+                    {selectedFish.name}
+                  </h3>
+                  <p className='text-white/70 text-xs'>
+                    {selectedFish.rarity} • {selectedFish.multiplier}x XP
+                  </p>
+                </div>
+              </div>
+
+              {/* Controls Info */}
+              <div className='text-center border-t border-blue-400/30 pt-1'>
+                <p className='text-white/70 text-xs'>Touch L/R</p>
+                <p className='text-white text-xs'>Space pause</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Minimal footer */}
+        <footer className='relative z-20 bg-blue-800/90 backdrop-blur-sm py-2 border-t border-blue-400/50'>
+          <div className='container mx-auto px-4 text-center'>
+            <p className='text-white/80 mb-0 text-sm'>© 2025 Aqua Stark</p>
+          </div>
+        </footer>
       </div>
-
-      <GameUI
-        score={gameState.score}
-        bestScore={gameState.bestScore}
-        isPlaying={gameState.isPlaying}
-        isGameOver={gameState.isGameOver}
-        isPaused={gameState.isPaused}
-        selectedFish={selectedFish}
-        onBack={handleBack}
-        onTogglePause={togglePause}
-        onEndGame={endGame}
-      />
-
-      <GameModals
-        isPlaying={gameState.isPlaying}
-        isPaused={gameState.isPaused}
-        isGameOver={gameState.isGameOver}
-        score={gameState.score}
-        bestScore={gameState.bestScore}
-        selectedFish={selectedFish}
-        onStartGame={initializeGame}
-        onTogglePause={togglePause}
-        onPlayAgain={handlePlayAgain}
-        onBack={handleBack}
-      />
-
-      {/* Bottom Info Panel */}
-      {gameState.isPlaying && (
-        <div className='absolute bottom-4 left-4 right-4 pointer-events-none z-40'>
-          <div className='bg-gradient-to-r from-blue-600/90 to-blue-700/90 backdrop-blur-md rounded-xl p-4 border-2 border-blue-400/50 flex items-center gap-4 shadow-lg'>
-            <img
-              src={selectedFish.image || '/placeholder.svg'}
-              alt={selectedFish.name}
-              className='w-12 h-9 object-contain'
-            />
-            <div className='flex-1'>
-              <h3 className='text-white font-bold'>{selectedFish.name}</h3>
-              <p className='text-white/70 text-sm'>
-                {selectedFish.rarity} • {selectedFish.multiplier}x XP
-              </p>
-            </div>
-            <div className='text-right'>
-              <p className='text-white/70 text-sm'>Controls</p>
-              <p className='text-white text-sm'>← → or A D • Space to pause</p>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </OrientationLock>
   );
 }
