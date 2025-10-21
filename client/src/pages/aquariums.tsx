@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { PageHeader } from '@/components';
 import { LayoutFooter } from '@/components';
 import { AquariumStats } from '@/components';
 import { AquariumList } from '@/components';
@@ -15,11 +14,11 @@ import { useActiveAquarium } from '../store/active-aquarium';
 import { useNavigate } from 'react-router-dom';
 import type { Aquarium } from '@/types';
 import { useAccount } from '@starknet-react/core';
-import { useFish } from '@/hooks';
 import * as models from '@/typescript/models.gen';
 import { num, type BigNumberish } from 'starknet';
 import { useAquarium } from '@/hooks/dojo';
 import { useAquariumSync } from '@/hooks/use-aquarium-sync';
+import { useFishSystemEnhanced } from '@/hooks/dojo';
 
 export default function AquariumsPage() {
   const [aquariums, setAquariums] = useState<Aquarium[]>([]);
@@ -31,7 +30,7 @@ export default function AquariumsPage() {
 
   const { account } = useAccount();
   const { getPlayerAquariums, getAquarium, newAquarium } = useAquarium();
-  const { getFish } = useFish();
+  const { getFish } = useFishSystemEnhanced();
   const { getPlayerAquariums: getPlayerAquariumsBackend } = useAquariumSync();
 
   // Get stored player address from persisted store
