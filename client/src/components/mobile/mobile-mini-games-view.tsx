@@ -107,7 +107,7 @@ export function MobileMiniGamesView() {
           rightContent={null}
         />
 
-        <main className='relative z-10 w-full px-4 py-4 pb-8'>
+        <main className='relative z-10 w-full px-4 py-4 pb-4'>
           <section>
             <h2 className='text-xl font-bold text-white mb-3 flex items-center gap-2'>
               <Gamepad2 className='w-5 h-5' />
@@ -194,7 +194,7 @@ export function MobileMiniGamesView() {
             </div>
 
             {/* Add minimal spacing at the end */}
-            <div className='h-2'></div>
+            <div className='h-1'></div>
           </section>
         </main>
 
