@@ -46,7 +46,7 @@ export function MobileFloppyFishGame({
   const scale = Math.min(scaleX, scaleY, 1.5); // Allow up to 1.5x scale for mobile
 
   return (
-    <div className='flex flex-col items-center justify-center w-full h-full'>
+    <div className='flex flex-col items-center justify-start w-full h-full pt-4'>
       {/* Compact score display - top right */}
       <div className='absolute top-2 right-2 z-30 bg-black/50 backdrop-blur-sm rounded-lg px-2 py-1'>
         <div className='text-white text-sm font-bold'>Score: {score}</div>
