@@ -537,24 +537,26 @@ export default function MobileBubbleJumperView() {
           onBack={handleBack}
         />
 
-        {/* Bottom Info Panel - Mobile optimized */}
+        {/* Side Info Panel - Mobile optimized */}
         {gameState.isPlaying && (
-          <div className='absolute bottom-4 left-4 right-4 pointer-events-none z-40'>
-            <div className='bg-gradient-to-r from-blue-600/90 to-blue-700/90 backdrop-blur-md rounded-lg p-3 border border-blue-400/50 flex items-center gap-3 shadow-lg'>
-              <img
-                src={selectedFish.image || '/placeholder.svg'}
-                alt={selectedFish.name}
-                className='w-10 h-8 object-contain'
-              />
-              <div className='flex-1'>
-                <h3 className='text-white font-bold text-sm'>{selectedFish.name}</h3>
-                <p className='text-white/70 text-sm'>
-                  {selectedFish.rarity} • {selectedFish.multiplier}x XP
-                </p>
+          <div className='absolute top-20 right-2 pointer-events-none z-40'>
+            <div className='bg-gradient-to-b from-blue-600/90 to-blue-700/90 backdrop-blur-md rounded-lg p-2 border border-blue-400/50 flex flex-col gap-2 shadow-lg max-w-32'>
+              <div className='flex items-center gap-2'>
+                <img
+                  src={selectedFish.image || '/placeholder.svg'}
+                  alt={selectedFish.name}
+                  className='w-6 h-5 object-contain'
+                />
+                <div className='flex-1'>
+                  <h3 className='text-white font-bold text-xs'>{selectedFish.name}</h3>
+                  <p className='text-white/70 text-xs'>
+                    {selectedFish.rarity} • {selectedFish.multiplier}x XP
+                  </p>
+                </div>
               </div>
-              <div className='text-right'>
-                <p className='text-white/70 text-sm'>Touch left/right</p>
-                <p className='text-white text-sm'>Space to pause</p>
+              <div className='text-center border-t border-blue-400/30 pt-1'>
+                <p className='text-white/70 text-xs'>Touch left/right</p>
+                <p className='text-white text-xs'>Space to pause</p>
               </div>
             </div>
           </div>
