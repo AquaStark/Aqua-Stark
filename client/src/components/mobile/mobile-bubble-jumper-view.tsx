@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { useBubbles } from '@/hooks/use-bubbles';
 import { BubblesBackground } from '@/components/bubble-background';
 import { GameCanvas } from '@/components/mini-games/bubble-jumper/game-canvas';
-import { GameUI } from '@/components/mini-games/bubble-jumper/game-ui';
 import { GameModals } from '@/components/mini-games/bubble-jumper/game-modals';
 import { OrientationLock } from '@/components/ui';
 
