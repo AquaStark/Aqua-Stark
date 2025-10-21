@@ -78,12 +78,19 @@ export default function GamePage() {
       aquariumIdFromUrl,
       storedAquariumId,
       effectivePlayerAddress,
-      willSave: aquariumIdFromUrl && effectivePlayerAddress && aquariumIdFromUrl !== storedAquariumId
+      willSave:
+        aquariumIdFromUrl &&
+        effectivePlayerAddress &&
+        aquariumIdFromUrl !== storedAquariumId,
     });
-    
+
     if (aquariumIdFromUrl && effectivePlayerAddress) {
       if (aquariumIdFromUrl !== storedAquariumId) {
-        console.log('💾 SAVING TO STORE:', aquariumIdFromUrl, effectivePlayerAddress);
+        console.log(
+          '💾 SAVING TO STORE:',
+          aquariumIdFromUrl,
+          effectivePlayerAddress
+        );
         setActiveAquariumId(aquariumIdFromUrl, effectivePlayerAddress);
       }
     }
@@ -463,6 +470,7 @@ export default function GamePage() {
             showTips={showTips}
             onTipsToggle={handleTipsToggle}
             onTipsClose={() => setShowTips(false)}
+            realAquariumId={activeAquariumId}
           />
         )}
 

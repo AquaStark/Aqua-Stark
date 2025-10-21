@@ -68,6 +68,7 @@ interface AquariumTabsProps {
   showTips?: boolean;
   onTipsToggle?: () => void;
   onTipsClose?: () => void;
+  realAquariumId?: string | null;
 }
 
 export function AquariumTabs({
@@ -81,16 +82,21 @@ export function AquariumTabs({
   showTips,
   onTipsToggle,
   onTipsClose,
+  realAquariumId,
 }: AquariumTabsProps) {
   const navigate = useNavigate();
   const { account } = useAccount();
-  const { setActiveAquariumId } = useActiveAquarium();
+  const { setActiveAquariumId, playerAddress: storedPlayerAddress } =
+    useActiveAquarium();
 
   const handleViewAllClick = () => {
-    // CRITICAL: Save current aquarium ID before navigating
-    if (selectedAquarium && account?.address) {
-      console.log('💾 Saving aquarium before navigation:', selectedAquarium.id);
-      setActiveAquariumId(selectedAquarium.id.toString(), account.address);
+    // CRITICAL: Save REAL aquarium ID (not mock ID) before navigating
+    const aquariumToSave = realAquariumId || selectedAquarium.id.toString();
+    const playerAddress = account?.address || storedPlayerAddress;
+
+    if (aquariumToSave && playerAddress) {
+      console.log('💾 Saving REAL aquarium before navigation:', aquariumToSave);
+      setActiveAquariumId(aquariumToSave, playerAddress);
     }
     navigate('/aquariums');
   };
