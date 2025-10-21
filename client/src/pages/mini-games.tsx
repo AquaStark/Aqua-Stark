@@ -6,6 +6,7 @@ import { LayoutFooter } from '@/components';
 import { Gamepad2, Lock, Play } from 'lucide-react';
 
 export default function GamesPage() {
+  console.log('🖥️ Desktop MiniGamesPage is rendering!');
   const navigate = useNavigate();
 
   const availableGames = [
