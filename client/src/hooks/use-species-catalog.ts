@@ -58,13 +58,17 @@ export const useSpeciesCatalog = () => {
         }
 
         // Fetch from API
-        const response = await fetch(`${API_CONFIG.BASE_URL}/api/v1/species`);
+        const apiUrl = `${API_CONFIG.BASE_URL}/api/v1/species`;
+        console.log('🌐 Fetching species catalog from:', apiUrl);
+        const response = await fetch(apiUrl);
 
         if (!response.ok) {
+          console.error('❌ Species catalog fetch failed:', response.status, response.statusText);
           throw new Error('Failed to fetch species catalog');
         }
 
         const result = await response.json();
+        console.log('✅ Species catalog response:', result);
 
         // Convert array to map
         const catalogMap: SpeciesCatalog = {};
@@ -99,35 +103,13 @@ export const useSpeciesCatalog = () => {
   };
 
   /**
-   * Hardcoded species catalog as fallback
-   */
-  const getHardcodedSpeciesImage = (speciesName: string): string => {
-    const hardcodedImages: Record<string, string> = {
-      'Betta': '/fish/fish2.png',
-      'Corydoras': '/fish/fish5.png',
-      'AngelFish': '/fish/fish1.png',
-      'GoldFish': '/fish/fish3.png',
-      'NeonTetra': '/fish/fish4.png',
-      'Hybrid': '/fish/fish6.png'
-    };
-    return hardcodedImages[speciesName] || '/fish/fish1.png';
-  };
-
-  /**
    * Get image URL for a species
    */
   const getSpeciesImage = (speciesName: string): string => {
     const found = catalog[speciesName];
     console.log('🔎 Catalog lookup for', speciesName, ':', found);
     console.log('📚 Available species in catalog:', Object.keys(catalog));
-    
-    // Use hardcoded fallback if catalog is empty
-    if (Object.keys(catalog).length === 0) {
-      console.log('🔄 Using hardcoded fallback for', speciesName);
-      return getHardcodedSpeciesImage(speciesName);
-    }
-    
-    return catalog[speciesName]?.image_url || getHardcodedSpeciesImage(speciesName);
+    return catalog[speciesName]?.image_url || '/fish/fish1.png';
   };
 
   /**
