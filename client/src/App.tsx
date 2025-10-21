@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import { StarknetProvider } from './providers/StarknetProvider';
+import { SpeciesCatalogProvider } from './contexts/SpeciesCatalogContext';
 import { ErrorBoundary } from './components';
 import { FullscreenModal } from './components/ui/fullscreen-modal';
 import { useFullscreenPrompt } from './hooks/use-fullscreen-prompt';
@@ -52,6 +53,7 @@ function App() {
   return (
     <ErrorBoundary>
       <StarknetProvider>
+        <SpeciesCatalogProvider>
         <Routes>
           {/* Landing & Onboarding Routes */}
           <Route path='/' element={ResponsiveLanding} />
@@ -111,6 +113,7 @@ function App() {
 
         {/* Debug Component - Remove in production */}
         <FullscreenDebug />
+        </SpeciesCatalogProvider>
       </StarknetProvider>
     </ErrorBoundary>
   );
