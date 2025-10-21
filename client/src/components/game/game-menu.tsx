@@ -1,22 +1,21 @@
 import {
-  Volume2,
-  Trophy,
-  ShoppingBag,
-  HelpCircle,
-  Camera,
-  Home,
   Settings,
-  Fish,
-  Sparkles,
-  Monitor,
+  HelpCircle,
+  Users,
+  User,
+  BookOpen,
+  Calendar,
+  Award,
+  ArrowLeft,
+  TrendingUp,
+  Heart,
 } from 'lucide-react';
 import { GameButton } from './game-button';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 interface GameMenuProps {
   show: boolean;
-  onWallpaperToggle?: () => void;
-  isWallpaperMode?: boolean;
 }
 
 interface MenuItem {
@@ -25,68 +24,69 @@ interface MenuItem {
   tooltip: string;
 }
 
-export function GameMenu({
-  show,
-  onWallpaperToggle,
-  isWallpaperMode,
-}: GameMenuProps) {
+export function GameMenu({ show }: GameMenuProps) {
+  const navigate = useNavigate();
+
   const menuItems: MenuItem[] = [
+    // Back to home
     {
-      icon: <Volume2 className='h-5 w-5' />,
-      onClick: () => {},
-      tooltip: 'Volume',
+      icon: <ArrowLeft className='h-5 w-5' />,
+      onClick: () => navigate('/'),
+      tooltip: 'Back to Home',
     },
+    // Trading Market
     {
-      icon: <Trophy className='h-5 w-5' />,
-      onClick: () => {},
-      tooltip: 'Achievements',
+      icon: <TrendingUp className='h-5 w-5' />,
+      onClick: () => navigate('/trading-market'),
+      tooltip: 'Trading Market',
     },
+    // Breeding Laboratory
     {
-      icon: <ShoppingBag className='h-5 w-5' />,
-      onClick: () => {},
-      tooltip: 'Shop',
+      icon: <Heart className='h-5 w-5' />,
+      onClick: () => navigate('/breeding-laboratory'),
+      tooltip: 'Breeding Lab',
     },
-    {
-      icon: <HelpCircle className='h-5 w-5' />,
-      onClick: () => {},
-      tooltip: 'Help',
-    },
-    {
-      icon: <Camera className='h-5 w-5' />,
-      onClick: () => {},
-      tooltip: 'Screenshot',
-    },
-    {
-      icon: <Monitor className='h-5 w-5' />,
-      onClick: onWallpaperToggle || (() => {}),
-      tooltip: isWallpaperMode ? 'Exit Wallpaper' : 'Wallpaper Mode',
-    },
-    { icon: <Home className='h-5 w-5' />, onClick: () => {}, tooltip: 'Home' },
+    // Settings
     {
       icon: <Settings className='h-5 w-5' />,
-      onClick: () => {},
+      onClick: () => navigate('/settings'),
       tooltip: 'Settings',
     },
-    // Debug buttons
+    // Community
     {
-      icon: <Fish className='h-5 w-5' />,
-      onClick: () => {
-        const feedingDebug = document.querySelector('[data-feeding-debug]');
-        if (feedingDebug) {
-          feedingDebug.classList.toggle('hidden');
-        }
-      },
-      tooltip: 'Feeding Debug',
+      icon: <Users className='h-5 w-5' />,
+      onClick: () => navigate('/community'),
+      tooltip: 'Community',
     },
+    // My Profile
     {
-      icon: <Sparkles className='h-5 w-5' />,
-      onClick: () => {
-        const dirtDebug = document.querySelector('[data-dirt-debug]');
-        if (dirtDebug) {
-          dirtDebug.classList.toggle('hidden');
-        }
-      },
-      tooltip: 'Dirt Debug',
+      icon: <User className='h-5 w-5' />,
+      onClick: () => navigate('/my-profile'),
+      tooltip: 'My Profile',
+    },
+    // Encyclopedia
+    {
+      icon: <BookOpen className='h-5 w-5' />,
+      onClick: () => navigate('/encyclopedia'),
+      tooltip: 'Encyclopedia',
+    },
+    // Help Center
+    {
+      icon: <HelpCircle className='h-5 w-5' />,
+      onClick: () => navigate('/help-center'),
+      tooltip: 'Help Center',
+    },
+    // Events Calendar
+    {
+      icon: <Calendar className='h-5 w-5' />,
+      onClick: () => navigate('/events-calendar'),
+      tooltip: 'Events',
+    },
+    // Achievements
+    {
+      icon: <Award className='h-5 w-5' />,
+      onClick: () => navigate('/achievements'),
+      tooltip: 'Achievements',
     },
   ];
 

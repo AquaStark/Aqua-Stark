@@ -1,70 +1,100 @@
-import { useState, useEffect } from 'react';
-import { BubblesBackground } from '@/components/bubble-background';
-import { useBubbles } from '@/hooks';
+'use client';
+
+import { UnderConstruction } from '@/components/ui/under-construction';
 import { PageHeader } from '@/components';
-import { LayoutFooter } from '@/components';
-import { OrientationLock } from '@/components/ui';
-import { Trophy } from 'lucide-react';
-import { AchievementsTabs } from '@/components';
-import { ComingSoonModal } from '@/components';
+import { Award, Trophy, Star, Lock } from 'lucide-react';
 
 export default function AchievementsPage() {
-  const bubbles = useBubbles();
-  const [activeTab, setActiveTab] = useState('achievements');
-  const [showComingSoon, setShowComingSoon] = useState(false);
-
-  // Mostrar el modal automáticamente al cargar la página
-  useEffect(() => {
-    setShowComingSoon(true);
-  }, []);
-
   return (
-    <OrientationLock>
-      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900'>
-        {/* Background with bubbles */}
-        <BubblesBackground
-          bubbles={bubbles}
-          className='opacity-60'
-          customStyles={{
-            background:
-              'linear-gradient(180deg, rgba(59,130,246,0.1) 0%, rgba(29,78,216,0.2) 100%)',
-          }}
-        />
-
+    <UnderConstruction
+      pageName='Achievements'
+      description="We're creating an incredible achievement system! Soon you'll unlock badges, complete challenges, and showcase your underwater accomplishments."
+    >
+      <div className='min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900'>
         <PageHeader
-          title='Achievements & Rewards'
-          backTo='/'
+          title='Achievements'
+          backTo='/game'
           backText='Back to Game'
-          className='bg-blue-900/60 backdrop-blur-md border-b border-blue-400/30'
-          rightContent={
-            <div className='flex items-center gap-2 bg-amber-500/20 backdrop-blur-sm px-4 py-2 rounded-xl border border-amber-400/30'>
-              <Trophy className='text-amber-400 h-5 w-5' />
-              <span className='text-amber-100 font-bold'>2/8</span>
+        />
+
+        <div className='container mx-auto px-4 py-8'>
+          {/* Progress Summary */}
+          <div className='bg-blue-800/30 border border-blue-600/30 rounded-lg p-6 mb-8'>
+            <div className='flex items-center justify-between mb-4'>
+              <h2 className='text-2xl font-bold text-white flex items-center gap-2'>
+                <Trophy className='w-6 h-6 text-yellow-400' />
+                Your Progress
+              </h2>
+              <div className='text-right'>
+                <div className='text-2xl font-bold text-white'>24/100</div>
+                <div className='text-sm text-blue-300'>
+                  Achievements Unlocked
+                </div>
+              </div>
             </div>
-          }
-        />
-
-        {/* Main content */}
-        <main className='relative z-20 flex flex-col items-center px-4 py-8 mx-auto max-w-7xl'>
-          <div className='w-full backdrop-blur-md rounded-2xl p-6'>
-            <AchievementsTabs
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-            />
+            <div className='w-full h-3 bg-blue-700/30 rounded-full overflow-hidden'>
+              <div className='h-full bg-gradient-to-r from-blue-500 to-purple-600 w-1/4'></div>
+            </div>
           </div>
-        </main>
 
-        <LayoutFooter className='bg-blue-900/60 backdrop-blur-md border-t border-blue-400/30' />
+          {/* Categories */}
+          <div className='flex gap-2 mb-6 overflow-x-auto pb-2'>
+            {[
+              'All',
+              'Collection',
+              'Breeding',
+              'Trading',
+              'Social',
+              'Events',
+            ].map(category => (
+              <button
+                key={category}
+                className='px-4 py-2 bg-blue-800/30 border border-blue-600/30 rounded-lg text-blue-200 whitespace-nowrap'
+              >
+                {category}
+              </button>
+            ))}
+          </div>
 
-        {/* Modal Coming Soon */}
-        <ComingSoonModal
-          isOpen={showComingSoon}
-          onClose={() => setShowComingSoon(false)}
-          title='Achievements Under Development'
-          description="The achievements system is being built. Soon you'll unlock badges, rewards, and track your progress in Aqua Stark."
-          closable={false}
-        />
+          {/* Achievements Grid */}
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+            {/* Unlocked Achievements */}
+            {[1, 2, 3, 4].map(i => (
+              <div
+                key={`unlocked-${i}`}
+                className='bg-blue-800/30 border border-blue-600/30 rounded-lg p-4 hover:border-blue-500/50 transition-colors'
+              >
+                <div className='w-full aspect-square bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg mb-3 flex items-center justify-center'>
+                  <Award className='w-12 h-12 text-white' />
+                </div>
+                <div className='flex items-center gap-2 mb-2'>
+                  <Star className='w-4 h-4 text-yellow-400' />
+                  <div className='h-4 bg-blue-700/30 rounded flex-1'></div>
+                </div>
+                <div className='h-3 bg-blue-700/30 rounded mb-2'></div>
+                <div className='text-xs text-green-400 font-semibold'>
+                  Unlocked!
+                </div>
+              </div>
+            ))}
+
+            {/* Locked Achievements */}
+            {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+              <div
+                key={`locked-${i}`}
+                className='bg-blue-800/30 border border-blue-600/30 rounded-lg p-4 opacity-60'
+              >
+                <div className='w-full aspect-square bg-blue-700/30 rounded-lg mb-3 flex items-center justify-center'>
+                  <Lock className='w-12 h-12 text-blue-500' />
+                </div>
+                <div className='h-4 bg-blue-700/30 rounded mb-2'></div>
+                <div className='h-3 bg-blue-700/30 rounded w-3/4 mb-2'></div>
+                <div className='text-xs text-blue-400'>Locked</div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </OrientationLock>
+    </UnderConstruction>
   );
 }
