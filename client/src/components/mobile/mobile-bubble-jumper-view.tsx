@@ -50,8 +50,8 @@ const GAME_CONFIG = {
   horizontalSpeed: 4, // Reduced for mobile
   platformWidth: 80,
   platformSpacing: 80,
-  gameWidth: 600, // Reduced for mobile
-  gameHeight: 500, // Reduced for mobile
+  gameWidth: 800,
+  gameHeight: 600,
   fishWidth: 40,
   fishHeight: 30,
 };
@@ -95,7 +95,7 @@ export default function MobileBubbleJumperView() {
       platforms: [],
       fish: {
         x: GAME_CONFIG.gameWidth / 2,
-        y: GAME_CONFIG.gameHeight - 80,
+        y: GAME_CONFIG.gameHeight - 100,
         velocityX: 0,
         velocityY: 0,
         width: GAME_CONFIG.fishWidth,
@@ -117,7 +117,7 @@ export default function MobileBubbleJumperView() {
     platforms.push({
       id: 0,
       x: GAME_CONFIG.gameWidth / 2 - GAME_CONFIG.platformWidth / 2,
-      y: GAME_CONFIG.gameHeight - 60,
+      y: GAME_CONFIG.gameHeight - 50,
       width: GAME_CONFIG.platformWidth,
       type: 'normal',
     });
@@ -204,7 +204,7 @@ export default function MobileBubbleJumperView() {
       fish: {
         ...prev.fish,
         x: GAME_CONFIG.gameWidth / 2,
-        y: GAME_CONFIG.gameHeight - 80,
+        y: GAME_CONFIG.gameHeight - 100,
         velocityX: 0,
         velocityY: 0,
         image: selectedFish.image,
@@ -502,13 +502,23 @@ export default function MobileBubbleJumperView() {
         {/* Game area - positioned to the left */}
         <main className='relative z-10 w-full flex items-start justify-start pt-4 pb-4 flex-1'>
           <div className='w-3/4 h-full pl-4 relative flex items-center justify-center'>
-            <GameCanvas
-              gameRef={gameRef}
-              platforms={gameState.platforms}
-              fish={gameState.fish}
-              camera={gameState.camera}
-              gameConfig={GAME_CONFIG}
-            />
+            <div className='w-full h-full flex items-center justify-center'>
+              <div 
+                className='relative'
+                style={{
+                  transform: 'scale(0.7)',
+                  transformOrigin: 'center center'
+                }}
+              >
+                <GameCanvas
+                  gameRef={gameRef}
+                  platforms={gameState.platforms}
+                  fish={gameState.fish}
+                  camera={gameState.camera}
+                  gameConfig={GAME_CONFIG}
+                />
+              </div>
+            </div>
           </div>
           {/* Right side space for controls */}
           <div className='w-1/4 h-full pr-2'></div>
