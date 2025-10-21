@@ -99,13 +99,35 @@ export const useSpeciesCatalog = () => {
   };
 
   /**
+   * Hardcoded species catalog as fallback
+   */
+  const getHardcodedSpeciesImage = (speciesName: string): string => {
+    const hardcodedImages: Record<string, string> = {
+      'Betta': '/fish/fish2.png',
+      'Corydoras': '/fish/fish5.png',
+      'AngelFish': '/fish/fish1.png',
+      'GoldFish': '/fish/fish3.png',
+      'NeonTetra': '/fish/fish4.png',
+      'Hybrid': '/fish/fish6.png'
+    };
+    return hardcodedImages[speciesName] || '/fish/fish1.png';
+  };
+
+  /**
    * Get image URL for a species
    */
   const getSpeciesImage = (speciesName: string): string => {
     const found = catalog[speciesName];
     console.log('🔎 Catalog lookup for', speciesName, ':', found);
     console.log('📚 Available species in catalog:', Object.keys(catalog));
-    return catalog[speciesName]?.image_url || '/fish/fish1.png';
+    
+    // Use hardcoded fallback if catalog is empty
+    if (Object.keys(catalog).length === 0) {
+      console.log('🔄 Using hardcoded fallback for', speciesName);
+      return getHardcodedSpeciesImage(speciesName);
+    }
+    
+    return catalog[speciesName]?.image_url || getHardcodedSpeciesImage(speciesName);
   };
 
   /**
