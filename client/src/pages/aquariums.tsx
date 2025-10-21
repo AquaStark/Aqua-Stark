@@ -34,6 +34,12 @@ export default function AquariumsPage() {
   const { getFish } = useFish();
   const { getPlayerAquariums: getPlayerAquariumsBackend } = useAquariumSync();
 
+  // Get stored player address from persisted store
+  const { playerAddress: storedPlayerAddress } = useActiveAquarium();
+
+  // Use stored player address if account is not connected yet
+  const effectivePlayerAddress = account?.address || storedPlayerAddress;
+
   const bubbles = useBubbles({
     initialCount: 15,
     maxBubbles: 35,
@@ -109,7 +115,7 @@ export default function AquariumsPage() {
 
   // Function to load player aquariums using backend + blockchain sync
   const loadPlayerAquariums = async () => {
-    if (!account?.address) {
+    if (!effectivePlayerAddress) {
       setLoading(false);
       setError(null);
       return;
@@ -118,12 +124,12 @@ export default function AquariumsPage() {
     try {
       setLoading(true);
       setError(null);
-      console.log('🏠 Loading aquariums for player:', account.address);
+      console.log('🏠 Loading aquariums for player:', effectivePlayerAddress);
 
       // Try loading from backend first
       try {
         const backendResponse = await getPlayerAquariumsBackend(
-          account.address
+          effectivePlayerAddress
         );
         console.log('📋 Backend response:', backendResponse);
 
@@ -171,7 +177,7 @@ export default function AquariumsPage() {
 
       // Fallback: Load directly from blockchain if backend fails
       console.log('🔗 Fallback: Loading from blockchain directly');
-      const playerAquariums = await getPlayerAquariums(account.address);
+      const playerAquariums = await getPlayerAquariums(effectivePlayerAddress);
 
       if (!playerAquariums || playerAquariums.length === 0) {
         console.log('⚠️ No aquariums found on blockchain');
@@ -207,10 +213,10 @@ export default function AquariumsPage() {
   // Load aquariums when account changes
   useEffect(() => {
     loadPlayerAquariums();
-  }, [account?.address]);
+  }, [effectivePlayerAddress]);
 
   const handleSelectAquarium = async (aquarium: Aquarium) => {
-    if (!account?.address) {
+    if (!effectivePlayerAddress) {
       setError('Please connect your wallet first');
       return;
     }
@@ -219,7 +225,7 @@ export default function AquariumsPage() {
       console.log('🎯 Selecting aquarium:', aquarium.id);
 
       // Persist aquarium ID to store
-      setActiveAquariumId(aquarium.id.toString(), account.address);
+      setActiveAquariumId(aquarium.id.toString(), effectivePlayerAddress);
       console.log('💾 Aquarium persisted to store');
 
       // Navigate to game - the persistent store will handle loading
@@ -314,7 +320,7 @@ export default function AquariumsPage() {
               </div>
             )}
 
-            {!account?.address ? (
+            {!effectivePlayerAddress ? (
               <div className='text-center py-12'>
                 <div className='text-white text-xl mb-4'>
                   👋 Welcome to Aqua Stark
