@@ -1,6 +1,6 @@
 'use client';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -20,6 +20,12 @@ export function PageHeader({
   rightContent,
   className,
 }: PageHeaderProps) {
+  const navigate = useNavigate();
+
+  const handleBackClick = () => {
+    navigate(backTo);
+  };
+
   return (
     <nav
       className={cn(
@@ -29,18 +35,14 @@ export function PageHeader({
     >
       <div className='flex flex-row items-center justify-between mx-auto font-sans max-w-7xl'>
         <div className='flex flex-row items-center'>
-          <Link
-            to={backTo}
-            className='flex items-center select-none touch-manipulation'
+          <Button
+            onClick={handleBackClick}
+            variant='ghost'
+            className='flex items-center mr-2 text-xs text-white rounded-full hover:bg-blue-500/50 px-2 sm:px-3 md:px-4 py-1 sm:py-2 select-none touch-manipulation h-8 sm:h-9'
           >
-            <Button
-              variant='ghost'
-              className='flex items-center mr-2 text-xs text-white rounded-full hover:bg-blue-500/50 px-2 sm:px-3 md:px-4 py-1 sm:py-2 select-none touch-manipulation h-8 sm:h-9'
-            >
-              <ArrowLeft className='mr-1 sm:mr-2' width={14} height={14} />
-              <span className='text-xs select-none'>{backText}</span>
-            </Button>
-          </Link>
+            <ArrowLeft className='mr-1 sm:mr-2' width={14} height={14} />
+            <span className='text-xs select-none'>{backText}</span>
+          </Button>
           <h3 className='text-sm sm:text-base md:text-lg font-semibold text-white select-none leading-tight'>
             {title}
           </h3>
