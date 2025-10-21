@@ -18,4 +18,3 @@ function StartGameButton({ onStartGame }: StartGameButtonProps) {
 }
 
 export default StartGameButton;
-

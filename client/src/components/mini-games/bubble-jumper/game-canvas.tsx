@@ -61,13 +61,15 @@ export function GameCanvas({
       case 'spring':
         return {
           ...baseStyle,
-          boxShadow: '0 0 15px rgba(16, 185, 129, 0.8), 0 0 30px rgba(16, 185, 129, 0.5)',
+          boxShadow:
+            '0 0 15px rgba(16, 185, 129, 0.8), 0 0 30px rgba(16, 185, 129, 0.5)',
           filter: 'drop-shadow(0 0 8px rgba(16, 185, 129, 0.6))',
         };
       case 'broken':
         return {
           ...baseStyle,
-          boxShadow: '0 0 15px rgba(220, 38, 38, 0.8), 0 0 30px rgba(220, 38, 38, 0.5)',
+          boxShadow:
+            '0 0 15px rgba(220, 38, 38, 0.8), 0 0 30px rgba(220, 38, 38, 0.5)',
           filter: 'drop-shadow(0 0 8px rgba(220, 38, 38, 0.6))',
           opacity: platform.bounceAnimation ? 0.4 : 0.85, // More transparent if already used
         };
@@ -138,4 +140,3 @@ export function GameCanvas({
     </div>
   );
 }
-
