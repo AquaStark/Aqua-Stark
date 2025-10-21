@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components/layout/page-header';
 import { useBubbles } from '@/hooks/use-bubbles';
 import { BubblesBackground } from '@/components/bubble-background';
@@ -56,6 +57,7 @@ const GAME_CONFIG = {
 };
 
 export default function BubbleJumperPage() {
+  const navigate = useNavigate();
   const gameRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>();
 
@@ -428,7 +430,7 @@ export default function BubbleJumperPage() {
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
     }
-    window.history.back();
+    navigate('/mini-games');
   };
 
   return (

@@ -1,9 +1,12 @@
+import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components';
 import { LayoutFooter } from '@/components';
 import { OrientationLock } from '@/components/ui';
 import { FloppyFishGame } from '@/components';
 
 export default function FloppyFishGamePage() {
+  const navigate = useNavigate();
+
   const selectedFish = {
     id: 'fish001',
     name: 'Aqua Puffer',
