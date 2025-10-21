@@ -502,7 +502,7 @@ export default function MobileBubbleJumperView() {
         {/* Game area - positioned to the left */}
         <main className='relative z-10 w-full flex items-start justify-start pt-4 pb-4 flex-1'>
           <div className='w-3/4 h-full pl-4 relative'>
-            <div className='absolute left-4 top-1/2 transform -translate-y-1/2'>
+            <div className='absolute left-8 top-1/2 transform -translate-y-1/2'>
               <GameCanvas
                 gameRef={gameRef}
                 platforms={gameState.platforms}
