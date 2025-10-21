@@ -482,26 +482,26 @@ export default function MobileBubbleJumperView() {
         <div className='absolute inset-0 animate-water-movement z-20'></div>
 
         {/* Minimal header */}
-        <div className='relative z-30 p-1 bg-blue-700/90 backdrop-blur-sm border-b border-blue-400/50'>
+        <div className='relative z-30 p-2 bg-blue-700/90 backdrop-blur-sm border-b border-blue-400/50'>
           <div className='flex items-center justify-between'>
             <button
               onClick={handleBack}
-              className='flex items-center text-white hover:bg-blue-500/50 px-1 py-0.5 rounded transition-colors'
+              className='flex items-center text-white hover:bg-blue-500/50 px-2 py-1 rounded transition-colors'
             >
-              <svg className='mr-1' width={12} height={12} viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+              <svg className='mr-1' width={14} height={14} viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
                 <path d='m12 19-7-7 7-7'/>
                 <path d='M19 12H5'/>
               </svg>
-              <span className='text-xs'>Back</span>
+              <span className='text-sm'>Back</span>
             </button>
-            <h3 className='text-xs font-semibold text-white'>Bubble Jumper</h3>
-            <div className='w-8'></div>
+            <h3 className='text-sm font-semibold text-white'>Bubble Jumper</h3>
+            <div className='w-12'></div>
           </div>
         </div>
 
         {/* Game area - takes most of the screen */}
-        <main className='relative z-10 w-full flex items-center justify-center px-1 pt-1 pb-2 flex-1'>
-          <div className='w-full h-full max-w-md'>
+        <main className='relative z-10 w-full flex items-center justify-center px-4 pt-4 pb-4 flex-1'>
+          <div className='w-full h-full max-w-lg'>
             <GameCanvas
               gameRef={gameRef}
               platforms={gameState.platforms}
@@ -539,31 +539,31 @@ export default function MobileBubbleJumperView() {
 
         {/* Bottom Info Panel - Mobile optimized */}
         {gameState.isPlaying && (
-          <div className='absolute bottom-2 left-2 right-2 pointer-events-none z-40'>
-            <div className='bg-gradient-to-r from-blue-600/90 to-blue-700/90 backdrop-blur-md rounded-lg p-2 border border-blue-400/50 flex items-center gap-2 shadow-lg'>
+          <div className='absolute bottom-4 left-4 right-4 pointer-events-none z-40'>
+            <div className='bg-gradient-to-r from-blue-600/90 to-blue-700/90 backdrop-blur-md rounded-lg p-3 border border-blue-400/50 flex items-center gap-3 shadow-lg'>
               <img
                 src={selectedFish.image || '/placeholder.svg'}
                 alt={selectedFish.name}
-                className='w-8 h-6 object-contain'
+                className='w-10 h-8 object-contain'
               />
               <div className='flex-1'>
-                <h3 className='text-white font-bold text-xs'>{selectedFish.name}</h3>
-                <p className='text-white/70 text-xs'>
+                <h3 className='text-white font-bold text-sm'>{selectedFish.name}</h3>
+                <p className='text-white/70 text-sm'>
                   {selectedFish.rarity} • {selectedFish.multiplier}x XP
                 </p>
               </div>
               <div className='text-right'>
-                <p className='text-white/70 text-xs'>Touch left/right</p>
-                <p className='text-white text-xs'>Space to pause</p>
+                <p className='text-white/70 text-sm'>Touch left/right</p>
+                <p className='text-white text-sm'>Space to pause</p>
               </div>
             </div>
           </div>
         )}
 
         {/* Minimal footer */}
-        <footer className='relative z-20 bg-blue-800/90 backdrop-blur-sm py-1 border-t border-blue-400/50'>
-          <div className='container mx-auto px-2 text-center'>
-            <p className='text-white/80 mb-0 text-xs'>
+        <footer className='relative z-20 bg-blue-800/90 backdrop-blur-sm py-2 border-t border-blue-400/50'>
+          <div className='container mx-auto px-4 text-center'>
+            <p className='text-white/80 mb-0 text-sm'>
               © 2025 Aqua Stark
             </p>
           </div>
