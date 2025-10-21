@@ -42,16 +42,6 @@ export default function AquariumsPage() {
   // Use stored player address if account is not connected yet
   const effectivePlayerAddress = account?.address || storedPlayerAddress;
 
-  // Debug logs
-  useEffect(() => {
-    console.log('🔍 Aquariums Page - Debug Info:', {
-      accountAddress: account?.address,
-      storedPlayerAddress,
-      effectivePlayerAddress,
-      storedAquariumId,
-    });
-  }, [account?.address, storedPlayerAddress, effectivePlayerAddress]);
-
   const bubbles = useBubbles({
     initialCount: 15,
     maxBubbles: 35,
@@ -69,37 +59,22 @@ export default function AquariumsPage() {
   const loadAquariumWithFishes = async (aquariumId: BigNumberish) => {
     try {
       const id = num.toBigInt(aquariumId);
-      console.log('🐠 Loading aquarium with ID:', id);
       const aquariumData = await getAquarium(id);
-      if (!aquariumData) {
-        console.log('❌ No aquarium data found');
-        return null;
-      }
-
-      console.log('✅ Aquarium loaded, fish IDs:', aquariumData.housed_fish);
+      if (!aquariumData) return null;
 
       if (!aquariumData.housed_fish || aquariumData.housed_fish.length === 0) {
-        console.log('ℹ️ Aquarium has no fish');
         return {
           aquariumData,
           fishData: [],
         };
       }
 
-      console.log(
-        '🎣 Loading fish details for',
-        aquariumData.housed_fish.length,
-        'fish'
-      );
       const fishPromises = aquariumData.housed_fish.map(
         async (fishId: BigNumberish) => {
           try {
-            console.log('🐟 Fetching fish:', fishId);
             const fish = await getFish(fishId);
-            console.log('✅ Fish loaded:', fish);
             return fish;
           } catch (err) {
-            console.error('❌ Error loading fish', fishId, ':', err);
             return null;
           }
         }
@@ -109,14 +84,12 @@ export default function AquariumsPage() {
       const validFish = fishData.filter(
         (fish): fish is models.Fish => fish !== null
       );
-      console.log('🎉 Loaded', validFish.length, 'valid fish');
 
       return {
         aquariumData,
         fishData: validFish,
       };
     } catch (error) {
-      console.error('❌ Error loading aquarium with fishes:', error);
       return null;
     }
   };
@@ -170,29 +143,22 @@ export default function AquariumsPage() {
     try {
       setLoading(true);
       setError(null);
-      console.log('🏠 Loading aquariums for player:', effectivePlayerAddress);
 
       // Try loading from backend first
       try {
         const backendResponse = await getPlayerAquariumsBackend(
           effectivePlayerAddress
         );
-        console.log('📋 Backend response:', backendResponse);
 
         if (
           backendResponse.success &&
           backendResponse.data &&
           backendResponse.data.length > 0
         ) {
-          console.log(
-            `✅ Found ${backendResponse.data.length} aquariums in backend`
-          );
-
           // Use backend aquarium IDs to load details from blockchain
           const aquariumPromises = backendResponse.data.map(
             async (aquariumData: any) => {
               const onChainId = aquariumData.on_chain_id;
-              console.log('🔍 Loading aquarium from blockchain:', onChainId);
 
               const result = await loadAquariumWithFishes(BigInt(onChainId));
               if (result) {
@@ -208,30 +174,20 @@ export default function AquariumsPage() {
           const loadedAquariums = (await Promise.all(aquariumPromises)).filter(
             Boolean
           ) as Aquarium[];
-          console.log('🎉 Loaded aquariums:', loadedAquariums);
           setAquariums(loadedAquariums);
           return;
-        } else {
-          console.log('⚠️ No aquariums found in backend');
         }
       } catch (backendError) {
-        console.error(
-          '❌ Backend error, falling back to blockchain:',
-          backendError
-        );
+        // Fallback to blockchain silently
       }
 
       // Fallback: Load directly from blockchain if backend fails
-      console.log('🔗 Fallback: Loading from blockchain directly');
       const playerAquariums = await getPlayerAquariums(effectivePlayerAddress);
 
       if (!playerAquariums || playerAquariums.length === 0) {
-        console.log('⚠️ No aquariums found on blockchain');
         setAquariums([]);
         return;
       }
-
-      console.log('📦 Found aquariums on blockchain:', playerAquariums);
 
       // Load each aquarium with its fish
       const aquariumPromises = playerAquariums.map(
@@ -268,16 +224,12 @@ export default function AquariumsPage() {
     }
 
     try {
-      console.log('🎯 Selecting aquarium:', aquarium.id);
-
       // Persist aquarium ID to store
       setActiveAquariumId(aquarium.id.toString(), effectivePlayerAddress);
-      console.log('💾 Aquarium persisted to store');
 
       // Navigate to game - the persistent store will handle loading
       navigate('/game');
     } catch (error) {
-      console.error('❌ Error selecting aquarium:', error);
       setError('Failed to select aquarium. Please try again.');
     }
   };
@@ -318,13 +270,8 @@ export default function AquariumsPage() {
   const handleBackToGame = () => {
     // Navigate back to game with stored aquarium ID
     if (storedAquariumId) {
-      console.log(
-        '🎮 Navigating back to game with aquarium:',
-        storedAquariumId
-      );
       navigate(`/game?aquarium=${storedAquariumId}`);
     } else {
-      console.log('⚠️ No stored aquarium, navigating to /game');
       navigate('/game');
     }
   };
