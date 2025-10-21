@@ -243,11 +243,15 @@ export default function AquariumsPage() {
     }
 
     try {
+      console.log('🎯 Selected aquarium ID:', aquarium.id);
+      
       // Persist aquarium ID to store
       setActiveAquariumId(aquarium.id.toString(), effectivePlayerAddress);
+      console.log('💾 Saved to store:', aquarium.id.toString());
 
-      // Navigate to game - the persistent store will handle loading
-      navigate('/game');
+      // Navigate to game WITH aquarium ID in URL
+      console.log('🎮 Navigating to /game?aquarium=' + aquarium.id);
+      navigate(`/game?aquarium=${aquarium.id}`);
     } catch (error) {
       setError('Failed to select aquarium. Please try again.');
     }
