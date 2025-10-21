@@ -58,7 +58,7 @@ const GAME_CONFIG = {
 export default function BubbleJumperPage() {
   const gameRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>();
-  
+
   // Fixed fish (no localStorage)
   const selectedFish = {
     id: 'fish001',
@@ -226,7 +226,8 @@ export default function BubbleJumperPage() {
         return;
       }
 
-      if (!gameState.isPlaying || gameState.isPaused || gameState.isGameOver) return;
+      if (!gameState.isPlaying || gameState.isPaused || gameState.isGameOver)
+        return;
 
       setGameState(prev => ({
         ...prev,
@@ -513,4 +514,3 @@ export default function BubbleJumperPage() {
     </div>
   );
 }
-
