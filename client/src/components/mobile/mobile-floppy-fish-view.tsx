@@ -2,7 +2,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import { OrientationLock } from '@/components/ui';
-import { FloppyFishGame } from '@/components';
+import { MobileFloppyFishGame } from './mobile-floppy-fish-game';
 
 export function MobileFloppyFishView() {
   const navigate = useNavigate();
@@ -50,9 +50,9 @@ export function MobileFloppyFishView() {
         </div>
 
         {/* Game area - takes most of the screen */}
-        <main className='relative z-10 w-full h-full flex items-center justify-center px-2 py-2'>
-          <div className='w-full h-full max-w-md'>
-            <FloppyFishGame selectedFish={selectedFish} />
+        <main className='relative z-10 w-full h-full flex items-center justify-center px-1 py-1'>
+          <div className='w-full h-full'>
+            <MobileFloppyFishGame selectedFish={selectedFish} />
           </div>
         </main>
 
