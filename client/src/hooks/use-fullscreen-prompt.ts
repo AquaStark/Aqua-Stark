@@ -59,14 +59,20 @@ export function useFullscreenPrompt(): UseFullscreenPromptReturn {
   };
 
   const acceptFullscreen = async () => {
-    // Mark as prompted
-    localStorage.setItem(FULLSCREEN_PROMPT_KEY, 'true');
+    try {
+      // Mark as prompted
+      localStorage.setItem(FULLSCREEN_PROMPT_KEY, 'true');
 
-    // Try to enter fullscreen
-    await enterFullscreen();
+      // Try to enter fullscreen
+      await enterFullscreen();
 
-    // Hide the prompt
-    setShowPrompt(false);
+      // Hide the prompt
+      setShowPrompt(false);
+    } catch (error) {
+      console.error('Error accepting fullscreen:', error);
+      // Hide the prompt even if fullscreen fails
+      setShowPrompt(false);
+    }
   };
 
   const declineFullscreen = () => {
