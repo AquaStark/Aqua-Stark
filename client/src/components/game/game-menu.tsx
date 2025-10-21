@@ -100,7 +100,7 @@ export function GameMenu({
     {
       icon: <Award className='h-5 w-5' />,
       onClick: () => navigate('/achievements'),
-      tooltip: 'Logros',
+      tooltip: 'Achievements',
     },
     // Wallpaper Mode (keep existing functionality)
     {

@@ -198,8 +198,8 @@ export function AquariumTabs({
               color: 'from-pink-400 to-pink-600',
             },
             {
-              id: 'rewards',
-              label: 'Rewards',
+              id: 'achievements',
+              label: 'Achievements',
               icon: <Trophy className='h-5 w-5' />,
               color: 'from-yellow-400 to-yellow-600',
             },
@@ -219,7 +219,7 @@ export function AquariumTabs({
                     case 'games':
                       navigate('/mini-games');
                       break;
-                    case 'rewards':
+                    case 'achievements':
                       navigate('/achievements');
                       break;
                   }
