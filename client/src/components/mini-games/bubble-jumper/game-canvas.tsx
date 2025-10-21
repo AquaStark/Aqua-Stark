@@ -69,7 +69,7 @@ export function GameCanvas({
           ...baseStyle,
           boxShadow: '0 0 15px rgba(220, 38, 38, 0.8), 0 0 30px rgba(220, 38, 38, 0.5)',
           filter: 'drop-shadow(0 0 8px rgba(220, 38, 38, 0.6))',
-          opacity: 0.85,
+          opacity: platform.bounceAnimation ? 0.4 : 0.85, // More transparent if already used
         };
       default:
         return {
