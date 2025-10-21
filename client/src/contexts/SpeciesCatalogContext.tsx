@@ -120,9 +120,6 @@ export const SpeciesCatalogProvider: React.FC<SpeciesCatalogProviderProps> = ({ 
    * Get image URL for a species
    */
   const getSpeciesImage = (speciesName: string): string => {
-    const found = catalog[speciesName];
-    console.log('🔎 Catalog lookup for', speciesName, ':', found);
-    console.log('📚 Available species in catalog:', Object.keys(catalog));
     return catalog[speciesName]?.image_url || '/fish/fish1.png';
   };
 
