@@ -1,11 +1,15 @@
 import { PageHeader } from '@/components';
 import { LayoutFooter } from '@/components';
 import { OrientationLock } from '@/components/ui';
-import { useGames } from '@/hooks';
 import { FloppyFishGame } from '@/components';
 
 export default function FloppyFishGamePage() {
-  const { selectedFish } = useGames();
+  const selectedFish = {
+    id: 'fish001',
+    name: 'Aqua Puffer',
+    image: '/fish/fish1.png',
+    experienceMultiplier: 1.0,
+  };
 
   return (
     <OrientationLock>

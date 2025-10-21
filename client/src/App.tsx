@@ -31,6 +31,7 @@ import AchievementsPage from './pages/achievements';
 // Mini Games Pages
 import MiniGamesPage from './pages/mini-games';
 import FloppyFishGamePage from './pages/floppy-fish';
+import BubbleJumperPage from './pages/bubble-jumper';
 
 // Utility Pages
 import CreditsPage from './pages/credits';
@@ -85,6 +86,10 @@ function App() {
           <Route
             path='/mini-games/floppy-fish'
             element={<FloppyFishGamePage />}
+          />
+          <Route
+            path='/mini-games/bubble-jumper'
+            element={<BubbleJumperPage />}
           />
 
           {/* Utility Routes */}

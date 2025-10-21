@@ -24,7 +24,7 @@ export function GameHeader({
   };
 
   return (
-    <div className='absolute top-0 left-0 right-0 flex justify-between items-center p-2 sm:p-4 z-50'>
+    <div className='absolute top-0 left-0 right-0 flex justify-between items-center p-2 sm:p-4 z-[10001]'>
       <div className='flex items-center gap-2 sm:gap-4'>
         <img
           src='https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Aqua_Stark-removebg-preview-ubKSrqYo7jzOH5qXqxEw4CyRHXIjfq.png'

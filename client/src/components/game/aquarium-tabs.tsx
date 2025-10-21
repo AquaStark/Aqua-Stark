@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Grid,
   Utensils,
@@ -79,6 +80,8 @@ export function AquariumTabs({
   onTipsToggle,
   onTipsClose,
 }: AquariumTabsProps) {
+  const navigate = useNavigate();
+
   return (
     <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/90 to-transparent z-40 p-2 sm:p-4'>
       <div className='flex justify-between items-end gap-4'>
@@ -188,12 +191,15 @@ export function AquariumTabs({
                   // Handle different actions
                   switch (item.id) {
                     case 'shop':
+                      navigate('/store');
                       break;
                     case 'collection':
                       break;
                     case 'games':
+                      navigate('/mini-games');
                       break;
                     case 'rewards':
+                      navigate('/achievements');
                       break;
                   }
                 }}
