@@ -11,7 +11,7 @@ export default function MarketPage() {
       description="We're building an incredible underwater marketplace! Soon you'll be able to trade, auction, and discover rare fish with other players."
     >
       <div className="min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900">
-        <PageHeader title="Trading Market" showBackButton={true} backButtonText="Back to Game" />
+        <PageHeader title="Trading Market" backTo="/game" backText="Back to Game" />
         
         <div className="container mx-auto px-4 py-8">
           {/* Search Bar */}
