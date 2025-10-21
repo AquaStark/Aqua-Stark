@@ -35,10 +35,23 @@ export default function AquariumsPage() {
   const { getPlayerAquariums: getPlayerAquariumsBackend } = useAquariumSync();
 
   // Get stored player address from persisted store
-  const { playerAddress: storedPlayerAddress } = useActiveAquarium();
+  const {
+    playerAddress: storedPlayerAddress,
+    activeAquariumId: storedAquariumId,
+  } = useActiveAquarium();
 
   // Use stored player address if account is not connected yet
   const effectivePlayerAddress = account?.address || storedPlayerAddress;
+
+  // Debug logs
+  useEffect(() => {
+    console.log('🔍 Aquariums Page - Debug Info:', {
+      accountAddress: account?.address,
+      storedPlayerAddress,
+      effectivePlayerAddress,
+      storedAquariumId,
+    });
+  }, [account?.address, storedPlayerAddress, effectivePlayerAddress]);
 
   const bubbles = useBubbles({
     initialCount: 15,
@@ -57,20 +70,54 @@ export default function AquariumsPage() {
   const loadAquariumWithFishes = async (aquariumId: BigNumberish) => {
     try {
       const id = num.toBigInt(aquariumId);
+      console.log('🐠 Loading aquarium with ID:', id);
       const aquariumData = await getAquarium(id);
-      if (!aquariumData) return null;
+      if (!aquariumData) {
+        console.log('❌ No aquarium data found');
+        return null;
+      }
 
+      console.log('✅ Aquarium loaded, fish IDs:', aquariumData.housed_fish);
+
+      if (!aquariumData.housed_fish || aquariumData.housed_fish.length === 0) {
+        console.log('ℹ️ Aquarium has no fish');
+        return {
+          aquariumData,
+          fishData: [],
+        };
+      }
+
+      console.log(
+        '🎣 Loading fish details for',
+        aquariumData.housed_fish.length,
+        'fish'
+      );
       const fishPromises = aquariumData.housed_fish.map(
-        (fishId: BigNumberish) => getFish(fishId)
+        async (fishId: BigNumberish) => {
+          try {
+            console.log('🐟 Fetching fish:', fishId);
+            const fish = await getFish(fishId);
+            console.log('✅ Fish loaded:', fish);
+            return fish;
+          } catch (err) {
+            console.error('❌ Error loading fish', fishId, ':', err);
+            return null;
+          }
+        }
       );
       const fishData = await Promise.all(fishPromises);
 
+      const validFish = fishData.filter(
+        (fish): fish is models.Fish => fish !== null
+      );
+      console.log('🎉 Loaded', validFish.length, 'valid fish');
+
       return {
         aquariumData,
-        fishData: fishData.filter((fish): fish is models.Fish => fish !== null),
+        fishData: validFish,
       };
     } catch (error) {
-      console.error('Error loading aquarium with fishes:', error);
+      console.error('❌ Error loading aquarium with fishes:', error);
       return null;
     }
   };
