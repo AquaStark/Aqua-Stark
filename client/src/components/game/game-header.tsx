@@ -67,11 +67,7 @@ export function GameHeader({
         </div>
 
         <div className='flex items-center gap-1 sm:gap-2 ml-2 sm:ml-4'>
-          <FullscreenButton
-            className='text-white hover:bg-blue-500/50 flex-shrink-0'
-            variant='ghost'
-            size='sm'
-          />
+          <FullscreenButton />
           {onWallpaperToggle && (
             <button
               onClick={(e) => {
