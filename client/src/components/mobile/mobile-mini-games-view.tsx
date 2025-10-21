@@ -127,7 +127,7 @@ export function MobileMiniGamesView() {
                 <div
                   key={game.id}
                   onClick={() => game.available && navigate(game.route)}
-                  className={`group relative bg-gradient-to-br from-blue-500/20 to-blue-800/40 backdrop-blur-sm border-2 border-blue-400/40 rounded-2xl overflow-hidden transition-all duration-300 flex-shrink-0 w-64 ${
+                  className={`group relative bg-gradient-to-br from-blue-500/20 to-blue-800/40 backdrop-blur-sm border-2 border-blue-400/40 rounded-2xl overflow-hidden transition-all duration-300 flex-shrink-0 w-48 ${
                     game.available
                       ? 'hover:scale-[1.02] hover:border-blue-400/70 hover:shadow-2xl hover:shadow-blue-500/40 cursor-pointer'
                       : 'opacity-60 cursor-not-allowed'
@@ -147,8 +147,8 @@ export function MobileMiniGamesView() {
                     ) : (
                       <div className='w-full h-full bg-gradient-to-br from-blue-900/30 to-gray-900/50 flex items-center justify-center'>
                         <div className='text-center'>
-                          <Lock className='w-12 h-12 text-white/40 mx-auto mb-2' />
-                          <div className='px-3 py-1 bg-white/10 rounded-lg border border-white/20'>
+                          <Lock className='w-10 h-10 text-white/40 mx-auto mb-2' />
+                          <div className='px-2 py-1 bg-white/10 rounded-lg border border-white/20'>
                             <span className='text-white/70 text-xs font-bold'>
                               COMING SOON
                             </span>
@@ -159,26 +159,26 @@ export function MobileMiniGamesView() {
                   </div>
 
                   {/* Content */}
-                  <div className='p-3'>
-                    <div className='flex items-center justify-between mb-2'>
-                      <h3 className='text-lg font-bold text-white'>
+                  <div className='p-2'>
+                    <div className='flex items-center justify-between mb-1'>
+                      <h3 className='text-sm font-bold text-white'>
                         {game.name}
                       </h3>
                       <div className='p-1 bg-green-500/20 rounded-lg border border-green-400/30'>
                         <Gamepad2 className='w-3 h-3 text-green-400' />
                       </div>
                     </div>
-                    <p className='text-blue-100/90 text-xs mb-3 line-clamp-2'>
+                    <p className='text-blue-100/90 text-xs mb-2 line-clamp-2'>
                       {game.description}
                     </p>
 
                     {game.available ? (
-                      <button className='w-full game-button bg-gradient-to-b from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 text-white py-2 rounded-lg font-bold transition-all duration-200 flex items-center justify-center gap-2 group-hover:scale-105 text-xs'>
+                      <button className='w-full game-button bg-gradient-to-b from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 text-white py-1.5 rounded-lg font-bold transition-all duration-200 flex items-center justify-center gap-1 group-hover:scale-105 text-xs'>
                         <Play className='w-3 h-3' />
                         Play Now
                       </button>
                     ) : (
-                      <div className='w-full bg-gray-700/30 text-white/50 py-2 rounded-lg font-bold text-center border border-gray-600/30 text-xs'>
+                      <div className='w-full bg-gray-700/30 text-white/50 py-1.5 rounded-lg font-bold text-center border border-gray-600/30 text-xs'>
                         Coming Soon
                       </div>
                     )}
