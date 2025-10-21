@@ -6,6 +6,7 @@ import { usePlayerValidation, useNotifications } from '@/hooks';
 import { useState } from 'react';
 import { ConnectWalletModal } from '@/components/modal/connect-wallet-modal';
 import { useAquariumSync } from '@/hooks/use-aquarium-sync';
+import { useActiveAquarium } from '@/store/active-aquarium';
 
 interface HeroSectionProps {
   onTriggerPulse?: () => void;
@@ -18,6 +19,7 @@ export function HeroSection({ onTriggerPulse }: HeroSectionProps) {
     usePlayerValidation();
   const { success, info } = useNotifications();
   const { getPlayerAquariums } = useAquariumSync();
+  const { setActiveAquariumId } = useActiveAquarium();
   const [isProcessing, setIsProcessing] = useState(false);
   const [showConnectModal, setShowConnectModal] = useState(false);
 
@@ -78,6 +80,10 @@ export function HeroSection({ onTriggerPulse }: HeroSectionProps) {
           const primaryAquarium = response.data[0];
           const aquariumId = primaryAquarium.on_chain_id;
           console.log('🎯 Navigating to loading with aquarium:', aquariumId);
+
+          // Persist aquarium to store immediately
+          setActiveAquariumId(aquariumId, account.address);
+
           navigate(`/loading?aquarium=${aquariumId}`);
         } else {
           // Sin acuarios, tratar como jugador nuevo
