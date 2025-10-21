@@ -53,22 +53,35 @@ export function useFullscreen(): UseFullscreenReturn {
   }, []);
 
   const enterFullscreen = useCallback(async () => {
-    if (!isSupported || !isFullscreenEnabled) return;
+    console.log('enterFullscreen called', { isSupported, isFullscreenEnabled });
+    
+    if (!isSupported || !isFullscreenEnabled) {
+      console.warn('Fullscreen not supported or not enabled');
+      return;
+    }
 
     try {
       const element = document.documentElement;
+      console.log('Attempting to enter fullscreen on element:', element);
 
       if (element.requestFullscreen) {
+        console.log('Using requestFullscreen');
         await element.requestFullscreen();
       } else if ((element as any).webkitRequestFullscreen) {
+        console.log('Using webkitRequestFullscreen');
         await (element as any).webkitRequestFullscreen();
       } else if ((element as any).mozRequestFullScreen) {
+        console.log('Using mozRequestFullScreen');
         await (element as any).mozRequestFullScreen();
       } else if ((element as any).msRequestFullscreen) {
+        console.log('Using msRequestFullscreen');
         await (element as any).msRequestFullscreen();
+      } else {
+        console.warn('No fullscreen method available');
       }
     } catch (error) {
       console.error('Error entering fullscreen:', error);
+      throw error; // Re-throw to let the caller handle it
     }
   }, [isSupported, isFullscreenEnabled]);
 
