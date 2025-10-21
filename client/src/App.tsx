@@ -41,7 +41,6 @@ import { Game } from './Game';
 import AquariumDemo from './pages/demo';
 
 // Debug Component
-import { FullscreenDebug } from './components/debug/fullscreen-debug';
 
 function App() {
   const { showPrompt, hidePrompt, acceptFullscreen } = useFullscreenPrompt();
@@ -103,9 +102,6 @@ function App() {
           onClose={hidePrompt}
           onAccept={acceptFullscreen}
         />
-
-        {/* Debug Component - Remove in production */}
-        <FullscreenDebug />
       </StarknetProvider>
     </ErrorBoundary>
   );
