@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBubbles } from '@/hooks/use-bubbles';
 import { BubblesBackground } from '@/components/bubble-background';
-import { MobileGameCanvas } from '@/components/mobile/mobile-game-canvas';
+import { GameCanvas } from '@/components/mini-games/bubble-jumper/game-canvas';
 import { GameUI } from '@/components/mini-games/bubble-jumper/game-ui';
 import { GameModals } from '@/components/mini-games/bubble-jumper/game-modals';
 import { OrientationLock } from '@/components/ui';
@@ -501,14 +501,16 @@ export default function MobileBubbleJumperView() {
 
         {/* Game area - positioned to the left */}
         <main className='relative z-10 w-full flex items-start justify-start pt-4 pb-4 flex-1'>
-          <div className='w-3/4 h-full pl-2'>
-            <MobileGameCanvas
-              gameRef={gameRef}
-              platforms={gameState.platforms}
-              fish={gameState.fish}
-              camera={gameState.camera}
-              gameConfig={GAME_CONFIG}
-            />
+          <div className='w-3/4 h-full pl-2 relative'>
+            <div className='absolute left-0 top-1/2 transform -translate-y-1/2'>
+              <GameCanvas
+                gameRef={gameRef}
+                platforms={gameState.platforms}
+                fish={gameState.fish}
+                camera={gameState.camera}
+                gameConfig={GAME_CONFIG}
+              />
+            </div>
           </div>
           {/* Right side space for controls */}
           <div className='w-1/4 h-full pr-2'></div>
