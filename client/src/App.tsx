@@ -90,7 +90,7 @@ function App() {
             />
             <Route
               path='/mini-games/bubble-jumper'
-              element={ResponsiveBubbleJumper}
+              element={<ResponsiveBubbleJumper />}
             />
 
             {/* Utility Routes */}

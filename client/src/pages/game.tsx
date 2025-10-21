@@ -312,7 +312,9 @@ export default function GamePage() {
       if (fish.species?.variant) {
         // Handle CairoCustomEnum variant extraction
         const variantEntries = Object.entries(fish.species.variant);
-        const activeVariant = variantEntries.find(([, value]) => value !== undefined);
+        const activeVariant = variantEntries.find(
+          ([, value]) => value !== undefined
+        );
         if (activeVariant) {
           speciesName = activeVariant[0];
         }
@@ -423,11 +425,7 @@ export default function GamePage() {
         )}
 
         {/* Game Menu */}
-        {showMenu && !isWallpaperMode && (
-          <GameMenu
-            show={showMenu}
-          />
-        )}
+        {showMenu && !isWallpaperMode && <GameMenu show={showMenu} />}
 
         {/* Debuggers - only shown when explicitly toggled */}
         <div

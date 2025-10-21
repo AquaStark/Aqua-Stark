@@ -7,9 +7,7 @@ interface FullscreenButtonProps {
   className?: string;
 }
 
-export function FullscreenButton({
-  className = '',
-}: FullscreenButtonProps) {
+export function FullscreenButton({ className = '' }: FullscreenButtonProps) {
   const { isFullscreen, toggleFullscreen, isSupported, enterFullscreen } =
     useFullscreen();
   const [showModal, setShowModal] = useState(false);

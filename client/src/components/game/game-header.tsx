@@ -70,7 +70,7 @@ export function GameHeader({
           <FullscreenButton />
           {onWallpaperToggle && (
             <button
-              onClick={(e) => {
+              onClick={e => {
                 e.preventDefault();
                 e.stopPropagation();
                 onWallpaperToggle();

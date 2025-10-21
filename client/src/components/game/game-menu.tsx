@@ -24,9 +24,7 @@ interface MenuItem {
   tooltip: string;
 }
 
-export function GameMenu({
-  show,
-}: GameMenuProps) {
+export function GameMenu({ show }: GameMenuProps) {
   const navigate = useNavigate();
 
   const menuItems: MenuItem[] = [

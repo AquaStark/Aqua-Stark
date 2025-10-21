@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from 'react';
 import { API_CONFIG } from '@/config/api';
 
 /**
@@ -37,7 +43,9 @@ interface SpeciesCatalogContextType {
   clearCache: () => void;
 }
 
-const SpeciesCatalogContext = createContext<SpeciesCatalogContextType | undefined>(undefined);
+const SpeciesCatalogContext = createContext<
+  SpeciesCatalogContextType | undefined
+>(undefined);
 
 const STORAGE_KEY = 'aqua_stark_species_catalog';
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
@@ -46,7 +54,9 @@ interface SpeciesCatalogProviderProps {
   children: ReactNode;
 }
 
-export const SpeciesCatalogProvider: React.FC<SpeciesCatalogProviderProps> = ({ children }) => {
+export const SpeciesCatalogProvider: React.FC<SpeciesCatalogProviderProps> = ({
+  children,
+}) => {
   const [catalog, setCatalog] = useState<SpeciesCatalog>({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -77,7 +87,11 @@ export const SpeciesCatalogProvider: React.FC<SpeciesCatalogProviderProps> = ({ 
         const response = await fetch(apiUrl);
 
         if (!response.ok) {
-          console.error('❌ Species catalog fetch failed:', response.status, response.statusText);
+          console.error(
+            '❌ Species catalog fetch failed:',
+            response.status,
+            response.statusText
+          );
           throw new Error('Failed to fetch species catalog');
         }
 
@@ -165,7 +179,9 @@ export const SpeciesCatalogProvider: React.FC<SpeciesCatalogProviderProps> = ({ 
 export const useSpeciesCatalog = (): SpeciesCatalogContextType => {
   const context = useContext(SpeciesCatalogContext);
   if (context === undefined) {
-    throw new Error('useSpeciesCatalog must be used within a SpeciesCatalogProvider');
+    throw new Error(
+      'useSpeciesCatalog must be used within a SpeciesCatalogProvider'
+    );
   }
   return context;
 };

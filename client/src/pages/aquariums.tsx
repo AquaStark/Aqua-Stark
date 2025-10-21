@@ -122,7 +122,7 @@ export default function AquariumsPage() {
         console.log('🔍 Processing fish for card:', {
           fishId: fish.id,
           species: fish.species,
-          variant: fish.species?.variant
+          variant: fish.species?.variant,
         });
 
         // Extract species name from CairoCustomEnum
@@ -130,7 +130,9 @@ export default function AquariumsPage() {
         if (fish.species?.variant) {
           // Handle CairoCustomEnum variant extraction
           const variantEntries = Object.entries(fish.species.variant);
-          const activeVariant = variantEntries.find(([, value]) => value !== undefined);
+          const activeVariant = variantEntries.find(
+            ([, value]) => value !== undefined
+          );
           if (activeVariant) {
             speciesName = activeVariant[0];
           }
@@ -139,7 +141,6 @@ export default function AquariumsPage() {
         // Get correct image and display name from catalog
         const fishImage = getSpeciesImage(speciesName);
         const displayName = getSpeciesDisplayName(speciesName);
-
 
         return {
           id: Number(fish.id),
@@ -254,7 +255,7 @@ export default function AquariumsPage() {
 
     try {
       console.log('🎯 Selected aquarium ID:', aquarium.id);
-      
+
       // Persist aquarium ID to store
       setActiveAquariumId(aquarium.id.toString(), effectivePlayerAddress);
       console.log('💾 Saved to store:', aquarium.id.toString());
