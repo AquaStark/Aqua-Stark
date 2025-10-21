@@ -306,7 +306,8 @@ export default function BubbleJumperPage() {
 
         // Platform collision detection (only when falling)
         if (fish.velocityY > 0) {
-          for (const platform of newState.platforms) {
+          for (let i = 0; i < newState.platforms.length; i++) {
+            const platform = newState.platforms[i];
             if (
               fish.x + fish.width > platform.x &&
               fish.x < platform.x + platform.width &&
@@ -315,9 +316,16 @@ export default function BubbleJumperPage() {
               fish.velocityY > 0
             ) {
               if (platform.type === 'broken') {
-                // Broken platform doesn't give jump
-                platform.type = 'normal';
-                continue;
+                // Broken platform: first touch gives jump, second touch removes it
+                if (platform.bounceAnimation) {
+                  // Second touch: remove platform
+                  newState.platforms.splice(i, 1);
+                  continue;
+                } else {
+                  // First touch: give jump and mark as used
+                  fish.velocityY = GAME_CONFIG.jumpForce;
+                  platform.bounceAnimation = true; // Reuse this property as "used" flag
+                }
               } else if (platform.type === 'spring') {
                 // Spring platform gives super jump
                 fish.velocityY = GAME_CONFIG.springJumpForce;
