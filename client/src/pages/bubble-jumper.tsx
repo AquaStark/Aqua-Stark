@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PageHeader } from '@/components/layout/page-header';
 import { useBubbles } from '@/hooks/use-bubbles';
 import { BubblesBackground } from '@/components/bubble-background';
 import { GameCanvas } from '@/components/mini-games/bubble-jumper/game-canvas';
@@ -459,12 +458,37 @@ export default function BubbleJumperPage() {
         gameConfig={GAME_CONFIG}
       />
 
-      <PageHeader
-        title='Bubble Jumper'
-        backTo='/mini-games'
-        backText='Back to Games'
-        rightContent={null}
-      />
+      <div className='relative z-10 p-3 sm:p-4 bg-blue-700 border-b-2 border-blue-400/50 select-none'>
+        <div className='flex flex-row items-center justify-between mx-auto font-sans max-w-7xl'>
+          <div className='flex flex-row items-center'>
+            <button
+              onClick={handleBack}
+              className='flex items-center select-none touch-manipulation'
+            >
+              <div className='flex items-center mr-2 text-xs text-white rounded-full hover:bg-blue-500/50 px-2 sm:px-3 md:px-4 py-1 sm:py-2 select-none touch-manipulation h-8 sm:h-9 bg-transparent border-none cursor-pointer'>
+                <svg
+                  className='mr-1 sm:mr-2'
+                  width={14}
+                  height={14}
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                >
+                  <path d='m12 19-7-7 7-7' />
+                  <path d='M19 12H5' />
+                </svg>
+                <span className='text-xs select-none'>Back to Games</span>
+              </div>
+            </button>
+            <h3 className='text-sm sm:text-base md:text-lg font-semibold text-white select-none leading-tight'>
+              Bubble Jumper
+            </h3>
+          </div>
+        </div>
+      </div>
 
       <GameUI
         score={gameState.score}
