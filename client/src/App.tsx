@@ -1,8 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import { StarknetProvider } from './providers/StarknetProvider';
 import { ErrorBoundary } from './components';
-import { FullscreenModal } from './components/ui/fullscreen-modal';
-import { useFullscreenPrompt } from './hooks/use-fullscreen-prompt';
 
 // Landing & Onboarding Pages
 import { useResponsiveLanding } from './hooks/use-responsive-landing';
@@ -44,7 +42,6 @@ import AquariumDemo from './pages/demo';
 // Debug Component
 
 function App() {
-  const { showPrompt, hidePrompt, acceptFullscreen } = useFullscreenPrompt();
   const ResponsiveLanding = useResponsiveLanding();
   const ResponsiveStore = useResponsiveStore();
   const ResponsiveMiniGames = useResponsiveMiniGames();
@@ -103,13 +100,6 @@ function App() {
           {/* test page */}
           <Route path='/demo' element={<AquariumDemo />} />
         </Routes>
-
-        {/* Fullscreen Modal */}
-        <FullscreenModal
-          isOpen={showPrompt}
-          onClose={hidePrompt}
-          onAccept={acceptFullscreen}
-        />
       </StarknetProvider>
     </ErrorBoundary>
   );
