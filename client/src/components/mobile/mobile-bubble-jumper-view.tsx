@@ -499,9 +499,9 @@ export default function MobileBubbleJumperView() {
           </div>
         </div>
 
-        {/* Game area - takes most of the screen */}
-        <main className='relative z-10 w-full flex items-center justify-center px-4 pt-4 pb-4 flex-1'>
-          <div className='w-full h-full max-w-lg'>
+        {/* Game area - positioned to the left */}
+        <main className='relative z-10 w-full flex items-start justify-start px-2 pt-4 pb-4 flex-1'>
+          <div className='w-3/4 h-full'>
             <GameCanvas
               gameRef={gameRef}
               platforms={gameState.platforms}
@@ -537,25 +537,29 @@ export default function MobileBubbleJumperView() {
           onBack={handleBack}
         />
 
-        {/* Side Info Panel - Mobile optimized */}
+        {/* Right Side Panel - Mobile optimized */}
         {gameState.isPlaying && (
-          <div className='absolute top-20 right-2 pointer-events-none z-40'>
-            <div className='bg-gradient-to-b from-blue-600/90 to-blue-700/90 backdrop-blur-md rounded-lg p-2 border border-blue-400/50 flex flex-col gap-2 shadow-lg max-w-32'>
-              <div className='flex items-center gap-2'>
+          <div className='absolute top-20 right-2 w-1/4 pointer-events-none z-40'>
+            <div className='bg-gradient-to-b from-blue-600/90 to-blue-700/90 backdrop-blur-md rounded-lg p-3 border border-blue-400/50 flex flex-col gap-3 shadow-lg h-fit'>
+              {/* Fish Info */}
+              <div className='flex flex-col items-center gap-2'>
                 <img
                   src={selectedFish.image || '/placeholder.svg'}
                   alt={selectedFish.name}
-                  className='w-6 h-5 object-contain'
+                  className='w-8 h-6 object-contain'
                 />
-                <div className='flex-1'>
-                  <h3 className='text-white font-bold text-xs'>{selectedFish.name}</h3>
+                <div className='text-center'>
+                  <h3 className='text-white font-bold text-sm'>{selectedFish.name}</h3>
                   <p className='text-white/70 text-xs'>
                     {selectedFish.rarity} • {selectedFish.multiplier}x XP
                   </p>
                 </div>
               </div>
-              <div className='text-center border-t border-blue-400/30 pt-1'>
-                <p className='text-white/70 text-xs'>Touch left/right</p>
+              
+              {/* Controls Info */}
+              <div className='text-center border-t border-blue-400/30 pt-2'>
+                <p className='text-white/70 text-xs mb-1'>Controls:</p>
+                <p className='text-white text-xs'>Touch left/right</p>
                 <p className='text-white text-xs'>Space to pause</p>
               </div>
             </div>
