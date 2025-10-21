@@ -3,10 +3,10 @@ import BubbleJumperPage from '@/pages/bubble-jumper';
 import MobileBubbleJumperView from '@/components/mobile/mobile-bubble-jumper-view';
 
 /**
- * Hook that conditionally renders the appropriate Bubble Jumper view based on screen size.
- * Returns the desktop version for screens >= 1024px, mobile version otherwise.
+ * Component that conditionally renders the appropriate Bubble Jumper view based on screen size.
+ * Shows the desktop version for screens >= 1024px, mobile version otherwise.
  */
-export function useResponsiveBubbleJumper() {
+export function ResponsiveBubbleJumper() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -26,5 +26,5 @@ export function useResponsiveBubbleJumper() {
     };
   }, []);
 
-  return isMobile ? MobileBubbleJumperView : BubbleJumperPage;
+  return isMobile ? <MobileBubbleJumperView /> : <BubbleJumperPage />;
 }

@@ -10,7 +10,7 @@ import { useResponsiveLanding } from './hooks/use-responsive-landing';
 import { useResponsiveStore } from './hooks/use-responsive-store';
 import { useResponsiveMiniGames } from './hooks/use-responsive-mini-games';
 import { useResponsiveFloppyFish } from './hooks/use-responsive-floppy-fish';
-import { useResponsiveBubbleJumper } from './hooks/use-responsive-bubble-jumper';
+import { ResponsiveBubbleJumper } from './hooks/use-responsive-bubble-jumper';
 import OnboardingPage from './pages/onboarding/onboarding';
 import StartPage from './pages/onboarding/start';
 import LoadingPage from './pages/loading';
@@ -46,7 +46,6 @@ function App() {
   const ResponsiveStore = useResponsiveStore();
   const ResponsiveMiniGames = useResponsiveMiniGames();
   const ResponsiveFloppyFish = useResponsiveFloppyFish();
-  const ResponsiveBubbleJumper = useResponsiveBubbleJumper();
 
   return (
     <ErrorBoundary>
