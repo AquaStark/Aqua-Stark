@@ -54,7 +54,7 @@ export function useFullscreen(): UseFullscreenReturn {
 
   const enterFullscreen = useCallback(async () => {
     console.log('enterFullscreen called', { isSupported, isFullscreenEnabled });
-    
+
     if (!isSupported || !isFullscreenEnabled) {
       console.warn('Fullscreen not supported or not enabled');
       return;
