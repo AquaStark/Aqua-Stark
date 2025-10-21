@@ -1,100 +1,97 @@
+import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Construction } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useActiveAquarium } from '@/store/active-aquarium';
+import { ArrowLeft, Construction } from 'lucide-react';
 
 interface UnderConstructionProps {
   pageName: string;
-  description?: string;
+  description: string;
 }
 
-export function UnderConstruction({ 
-  pageName, 
-  description = "We're building something incredible under the water! We expect to have it ready soon." 
-}: UnderConstructionProps) {
+export function UnderConstruction({ pageName, description }: UnderConstructionProps) {
   const navigate = useNavigate();
+  const { activeAquariumId } = useActiveAquarium();
 
-  const handleGoBack = () => {
-    // Navigate back to game with aquarium ID preserved
-    const urlParams = new URLSearchParams(window.location.search);
-    const aquariumId = urlParams.get('aquarium');
-    
-    if (aquariumId) {
-      navigate(`/game?aquarium=${aquariumId}`);
+  const handleBackToAquarium = () => {
+    if (activeAquariumId) {
+      navigate(`/game?aquarium=${activeAquariumId}`);
     } else {
       navigate('/game');
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.8, y: 20 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        className="bg-gradient-to-br from-blue-900/90 to-purple-900/90 backdrop-blur-xl rounded-2xl p-8 max-w-md w-full border border-blue-400/30 shadow-2xl"
-      >
-        {/* Construction Icon */}
-        <div className="flex justify-center mb-6">
-          <div className="relative">
-            <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
-              <Construction className="w-10 h-10 text-white" />
-            </div>
-            {/* Animated bubbles */}
-            <motion.div
-              animate={{ y: [-5, 5, -5] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-2 -right-2 w-4 h-4 bg-blue-400 rounded-full opacity-70"
-            />
-            <motion.div
-              animate={{ y: [5, -5, 5] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-              className="absolute -bottom-1 -left-1 w-3 h-3 bg-cyan-400 rounded-full opacity-60"
-            />
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="text-center space-y-4">
-          <h2 className="text-2xl font-bold text-white mb-2">
-            {pageName}
-          </h2>
-          
-          <p className="text-blue-200 text-sm leading-relaxed">
-            {description}
-          </p>
-
-          {/* Animated underwater effect */}
-          <div className="flex justify-center space-x-1 mt-6">
-            {[...Array(5)].map((_, i) => (
-              <motion.div
-                key={i}
-                animate={{ y: [0, -10, 0] }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: i * 0.2
-                }}
-                className="text-2xl"
-              >
-                🐠
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* Back Button */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={handleGoBack}
-          className="w-full mt-8 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-blue-500/25"
+    <div className="min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900 relative overflow-hidden">
+      {/* Background blur effect */}
+      <div className="absolute inset-0 backdrop-blur-sm bg-black/20"></div>
+      
+      {/* Content with blur */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center max-w-2xl mx-auto"
         >
-          <ArrowLeft className="w-5 h-5" />
-          Back to Aquarium
-        </motion.button>
-      </motion.div>
+          {/* Construction Icon */}
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+            className="mb-8"
+          >
+            <div className="w-24 h-24 mx-auto bg-blue-600/20 rounded-full flex items-center justify-center border-2 border-blue-400/30">
+              <Construction className="w-12 h-12 text-blue-300" />
+            </div>
+          </motion.div>
+
+          {/* Title */}
+          <motion.h1
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-4xl md:text-5xl font-bold text-white mb-4"
+          >
+            {pageName}
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="mb-8"
+          >
+            <div className="inline-flex items-center gap-2 bg-blue-800/30 border border-blue-600/30 rounded-full px-4 py-2 text-blue-200 text-sm">
+              <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
+              Under Construction
+            </div>
+          </motion.div>
+
+          {/* Description */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="text-blue-100 text-lg md:text-xl leading-relaxed mb-8 max-w-lg mx-auto"
+          >
+            {description}
+          </motion.p>
+
+          {/* Back Button */}
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1 }}
+            onClick={handleBackToAquarium}
+            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors duration-200 font-medium"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back to Aquarium
+          </motion.button>
+        </motion.div>
+      </div>
     </div>
   );
 }
