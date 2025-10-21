@@ -5,7 +5,7 @@ import { PageHeader } from '@/components';
 import { LayoutFooter } from '@/components';
 import { Gamepad2, Lock, Play } from 'lucide-react';
 
-export default function GamesPage() {
+export function MobileMiniGamesView() {
   const navigate = useNavigate();
 
   const availableGames = [
@@ -80,13 +80,13 @@ export default function GamesPage() {
     <>
       <style>
         {`
-          .mini-games-scroll-container::-webkit-scrollbar {
+          .mobile-mini-games-scroll-container::-webkit-scrollbar {
             display: none;
           }
         `}
       </style>
       <div
-        className='relative bg-gradient-to-b from-blue-600 to-blue-950 mini-games-scroll-container'
+        className='relative bg-gradient-to-b from-blue-600 to-blue-950 mobile-mini-games-scroll-container'
         style={{
           height: '100vh',
           overflowY: 'scroll',
@@ -108,18 +108,26 @@ export default function GamesPage() {
           rightContent={null}
         />
 
-        <main className='relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24 pb-8'>
+        <main className='relative z-10 w-full px-4 py-6 pb-8'>
           <section>
-            <h2 className='text-2xl font-bold text-white mb-6 flex items-center gap-2'>
-              <Gamepad2 className='w-6 h-6' />
+            <h2 className='text-xl font-bold text-white mb-4 flex items-center gap-2'>
+              <Gamepad2 className='w-5 h-5' />
               Mini Games
             </h2>
-            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+
+            {/* Horizontal scroll container for games */}
+            <div
+              className='flex gap-4 overflow-x-auto pb-4'
+              style={{
+                scrollbarWidth: 'none', // Firefox
+                msOverflowStyle: 'none', // IE and Edge
+              }}
+            >
               {availableGames.map(game => (
                 <div
                   key={game.id}
                   onClick={() => game.available && navigate(game.route)}
-                  className={`group relative bg-gradient-to-br from-blue-500/20 to-blue-800/40 backdrop-blur-sm border-2 border-blue-400/40 rounded-2xl overflow-hidden transition-all duration-300 ${
+                  className={`group relative bg-gradient-to-br from-blue-500/20 to-blue-800/40 backdrop-blur-sm border-2 border-blue-400/40 rounded-2xl overflow-hidden transition-all duration-300 flex-shrink-0 w-64 ${
                     game.available
                       ? 'hover:scale-[1.02] hover:border-blue-400/70 hover:shadow-2xl hover:shadow-blue-500/40 cursor-pointer'
                       : 'opacity-60 cursor-not-allowed'
@@ -139,9 +147,9 @@ export default function GamesPage() {
                     ) : (
                       <div className='w-full h-full bg-gradient-to-br from-blue-900/30 to-gray-900/50 flex items-center justify-center'>
                         <div className='text-center'>
-                          <Lock className='w-16 h-16 text-white/40 mx-auto mb-3' />
-                          <div className='px-4 py-2 bg-white/10 rounded-lg border border-white/20'>
-                            <span className='text-white/70 text-sm font-bold'>
+                          <Lock className='w-12 h-12 text-white/40 mx-auto mb-2' />
+                          <div className='px-3 py-1 bg-white/10 rounded-lg border border-white/20'>
+                            <span className='text-white/70 text-xs font-bold'>
                               COMING SOON
                             </span>
                           </div>
@@ -151,26 +159,26 @@ export default function GamesPage() {
                   </div>
 
                   {/* Content */}
-                  <div className='p-4'>
+                  <div className='p-3'>
                     <div className='flex items-center justify-between mb-2'>
-                      <h3 className='text-xl font-bold text-white'>
+                      <h3 className='text-lg font-bold text-white'>
                         {game.name}
                       </h3>
-                      <div className='p-1.5 bg-green-500/20 rounded-lg border border-green-400/30'>
-                        <Gamepad2 className='w-4 h-4 text-green-400' />
+                      <div className='p-1 bg-green-500/20 rounded-lg border border-green-400/30'>
+                        <Gamepad2 className='w-3 h-3 text-green-400' />
                       </div>
                     </div>
-                    <p className='text-blue-100/90 text-xs mb-3'>
+                    <p className='text-blue-100/90 text-xs mb-3 line-clamp-2'>
                       {game.description}
                     </p>
 
                     {game.available ? (
-                      <button className='w-full game-button bg-gradient-to-b from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 text-white py-2 rounded-lg font-bold transition-all duration-200 flex items-center justify-center gap-2 group-hover:scale-105 text-sm'>
+                      <button className='w-full game-button bg-gradient-to-b from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 text-white py-2 rounded-lg font-bold transition-all duration-200 flex items-center justify-center gap-2 group-hover:scale-105 text-xs'>
                         <Play className='w-3 h-3' />
                         Play Now
                       </button>
                     ) : (
-                      <div className='w-full bg-gray-700/30 text-white/50 py-2 rounded-lg font-bold text-center border border-gray-600/30 text-sm'>
+                      <div className='w-full bg-gray-700/30 text-white/50 py-2 rounded-lg font-bold text-center border border-gray-600/30 text-xs'>
                         Coming Soon
                       </div>
                     )}
@@ -185,6 +193,9 @@ export default function GamesPage() {
                 </div>
               ))}
             </div>
+
+            {/* Add some spacing at the end for better scroll experience */}
+            <div className='h-4'></div>
           </section>
         </main>
 
