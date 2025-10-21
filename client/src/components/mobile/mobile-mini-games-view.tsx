@@ -2,7 +2,6 @@
 
 import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components';
-import { LayoutFooter } from '@/components';
 import { Gamepad2, Lock, Play } from 'lucide-react';
 
 export function MobileMiniGamesView() {
@@ -194,12 +193,26 @@ export function MobileMiniGamesView() {
               ))}
             </div>
 
-            {/* Add some spacing at the end for better scroll experience */}
-            <div className='h-4'></div>
+            {/* Add minimal spacing at the end */}
+            <div className='h-2'></div>
           </section>
         </main>
 
-        <LayoutFooter />
+        {/* Custom compact footer for mobile mini-games */}
+        <footer className='relative z-40 bg-blue-800/95 backdrop-blur-sm py-1 border-t-2 border-blue-400/50'>
+          <div className='container mx-auto px-2 text-center'>
+            <p className='text-white/80 mb-0 text-xs'>
+              © 2025 Aqua Stark
+            </p>
+            <div className='flex justify-center gap-1 mt-0'>
+              <span className='text-white/60 text-xs'>Privacy</span>
+              <span className='text-white/60 text-xs'>•</span>
+              <span className='text-white/60 text-xs'>Terms</span>
+              <span className='text-white/60 text-xs'>•</span>
+              <span className='text-white/60 text-xs'>Contact</span>
+            </div>
+          </div>
+        </footer>
       </div>
     </>
   );
