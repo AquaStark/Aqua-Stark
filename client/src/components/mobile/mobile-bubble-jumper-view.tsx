@@ -565,7 +565,21 @@ export default function MobileBubbleJumperView() {
                       key={platform.id}
                       className='absolute will-change-transform'
                       style={getPlatformStyle(platform)}
-                    />
+                    >
+                      {/* Platform decorations */}
+                      <div className='absolute inset-0 flex items-center justify-center'>
+                        {platform.type === 'spring' ? (
+                          <div className='w-4 h-4 bg-yellow-300 rounded-full border border-yellow-500'></div>
+                        ) : platform.type === 'broken' ? (
+                          <div className='w-3 h-3 bg-red-500 rounded-full'></div>
+                        ) : (
+                          <>
+                            <div className='w-2 h-2 bg-green-500 rounded-full absolute left-2'></div>
+                            <div className='w-2 h-2 bg-red-500 rounded-full absolute right-2'></div>
+                          </>
+                        )}
+                      </div>
+                    </div>
                   );
                 })}
 
@@ -599,54 +613,55 @@ export default function MobileBubbleJumperView() {
 
         {/* Custom GameUI for mobile - positioned to avoid overlaps */}
         <div className='absolute inset-0 z-40 pointer-events-none'>
-          {/* Score display - positioned on left side */}
-          <div className='absolute top-24 left-4 flex gap-2 pointer-events-auto'>
-            <div className='bg-gradient-to-r from-blue-600 to-blue-700 backdrop-blur-md rounded-xl px-4 py-2 border-2 border-blue-400/50 shadow-lg'>
+          {/* Right side panel - Score, Controls, and Info */}
+          <div className='absolute top-24 right-2 w-1/4 flex flex-col gap-2 pointer-events-auto pr-2'>
+            {/* Score display */}
+            <div className='bg-gradient-to-r from-blue-600 to-blue-700 backdrop-blur-md rounded-lg px-3 py-2 border-2 border-blue-400/50 shadow-lg'>
               <span className='text-white font-bold text-xs'>Score: {gameState.score}</span>
             </div>
-            <div className='bg-gradient-to-r from-yellow-500 to-yellow-600 backdrop-blur-md rounded-xl px-4 py-2 border-2 border-yellow-400/50 shadow-lg'>
+            <div className='bg-gradient-to-r from-yellow-500 to-yellow-600 backdrop-blur-md rounded-lg px-3 py-2 border-2 border-yellow-400/50 shadow-lg'>
               <span className='text-white font-bold text-xs'>Best: {gameState.bestScore}</span>
             </div>
-          </div>
 
-          {/* Control buttons - positioned in right space */}
-          {gameState.isPlaying && !gameState.isGameOver && (
-            <div className='absolute top-24 right-2 w-1/4 flex flex-col gap-2 pointer-events-auto pr-2'>
-              <button
-                onClick={handleBack}
-                className='bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-500 hover:to-gray-600 text-white shadow-lg rounded-lg p-2 flex items-center justify-center'
-              >
-                <svg className='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                  <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 19l-7-7 7-7' />
-                </svg>
-              </button>
-              
-              <div className='flex gap-1'>
+            {/* Control buttons */}
+            {gameState.isPlaying && !gameState.isGameOver && (
+              <>
                 <button
-                  onClick={togglePause}
-                  className='bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white shadow-lg rounded-lg p-2 flex items-center justify-center flex-1'
-                >
-                  {gameState.isPaused ? (
-                    <svg className='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m-6-8h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z' />
-                    </svg>
-                  ) : (
-                    <svg className='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z' />
-                    </svg>
-                  )}
-                </button>
-                <button
-                  onClick={endGame}
-                  className='bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white shadow-lg rounded-lg p-2 flex items-center justify-center flex-1'
+                  onClick={handleBack}
+                  className='bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-500 hover:to-gray-600 text-white shadow-lg rounded-lg p-2 flex items-center justify-center'
                 >
                   <svg className='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 6h12v12H6z' />
+                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 19l-7-7 7-7' />
                   </svg>
                 </button>
-              </div>
-            </div>
-          )}
+                
+                <div className='flex gap-1'>
+                  <button
+                    onClick={togglePause}
+                    className='bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white shadow-lg rounded-lg p-2 flex items-center justify-center flex-1'
+                  >
+                    {gameState.isPaused ? (
+                      <svg className='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                        <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m-6-8h8a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2z' />
+                      </svg>
+                    ) : (
+                      <svg className='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                        <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z' />
+                      </svg>
+                    )}
+                  </button>
+                  <button
+                    onClick={endGame}
+                    className='bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white shadow-lg rounded-lg p-2 flex items-center justify-center flex-1'
+                  >
+                    <svg className='h-4 w-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                      <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 6h12v12H6z' />
+                    </svg>
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
         <GameModals
@@ -664,17 +679,17 @@ export default function MobileBubbleJumperView() {
 
         {/* Right Side Panel - Mobile optimized */}
         {gameState.isPlaying && (
-          <div className='absolute top-20 right-2 w-1/4 pointer-events-none z-40 pr-2'>
-            <div className='bg-gradient-to-b from-blue-600/90 to-blue-700/90 backdrop-blur-md rounded-lg p-3 border border-blue-400/50 flex flex-col gap-3 shadow-lg h-fit'>
+          <div className='absolute bottom-20 right-2 w-1/4 pointer-events-none z-40 pr-2'>
+            <div className='bg-gradient-to-b from-blue-600/90 to-blue-700/90 backdrop-blur-md rounded-lg p-2 border border-blue-400/50 flex flex-col gap-2 shadow-lg h-fit'>
               {/* Fish Info */}
-              <div className='flex flex-col items-center gap-2'>
+              <div className='flex items-center gap-2'>
                 <img
                   src={selectedFish.image || '/placeholder.svg'}
                   alt={selectedFish.name}
-                  className='w-8 h-6 object-contain'
+                  className='w-6 h-4 object-contain'
                 />
-                <div className='text-center'>
-                  <h3 className='text-white font-bold text-sm'>{selectedFish.name}</h3>
+                <div className='text-center flex-1'>
+                  <h3 className='text-white font-bold text-xs'>{selectedFish.name}</h3>
                   <p className='text-white/70 text-xs'>
                     {selectedFish.rarity} • {selectedFish.multiplier}x XP
                   </p>
@@ -682,9 +697,8 @@ export default function MobileBubbleJumperView() {
               </div>
               
               {/* Controls Info */}
-              <div className='text-center border-t border-blue-400/30 pt-2'>
-                <p className='text-white/70 text-xs mb-1'>Controls:</p>
-                <p className='text-white text-xs'>Touch left/right</p>
+              <div className='text-center border-t border-blue-400/30 pt-1'>
+                <p className='text-white/70 text-xs'>Touch left/right</p>
                 <p className='text-white text-xs'>Space to pause</p>
               </div>
             </div>
