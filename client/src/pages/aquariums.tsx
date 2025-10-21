@@ -19,6 +19,7 @@ import { num, type BigNumberish } from 'starknet';
 import { useAquarium } from '@/hooks/dojo';
 import { useAquariumSync } from '@/hooks/use-aquarium-sync';
 import { useFishSystemEnhanced } from '@/hooks/dojo';
+import { useSpeciesCatalog } from '@/hooks/use-species-catalog';
 
 export default function AquariumsPage() {
   const [aquariums, setAquariums] = useState<Aquarium[]>([]);
@@ -32,6 +33,7 @@ export default function AquariumsPage() {
   const { getPlayerAquariums, getAquarium, newAquarium } = useAquarium();
   const { getFish } = useFishSystemEnhanced();
   const { getPlayerAquariums: getPlayerAquariumsBackend } = useAquariumSync();
+  const { getSpeciesImage, getSpeciesDisplayName } = useSpeciesCatalog();
 
   // Get stored player address from persisted store
   const {
@@ -113,22 +115,39 @@ export default function AquariumsPage() {
         Math.floor(Number(contractAquarium.cleanliness) / 20) + 1
       ),
       isPremium: Number(contractAquarium.max_capacity) > 10,
-      fishes: fishes.map(fish => ({
-        id: Number(fish.id),
-        name: `Fish ${fish.id}`,
-        image: '/fish/fish1.png',
-        rarity: 'Common' as const,
-        generation: Number(fish.generation),
-        level: Math.floor(Number(fish.age) / 100) + 1,
-        traits: {
-          color: 'blue',
-          pattern: 'striped',
-          fins: 'long',
-          size: 'medium',
-        },
-        hunger: (fish as any).hunger ?? 50,
-        state: (fish as any).state ?? 'idle',
-      })),
+      fishes: fishes.map(fish => {
+        // Extract species name from CairoCustomEnum
+        let speciesName = 'AngelFish'; // Default
+        if (fish.species?.variant) {
+          const activeVariant = Object.entries(fish.species.variant).find(
+            ([, value]) => value !== undefined
+          );
+          if (activeVariant) {
+            speciesName = activeVariant[0];
+          }
+        }
+
+        // Get correct image and display name from catalog
+        const fishImage = getSpeciesImage(speciesName);
+        const displayName = getSpeciesDisplayName(speciesName);
+
+        return {
+          id: Number(fish.id),
+          name: displayName,
+          image: fishImage,
+          rarity: 'Common' as const,
+          generation: Number(fish.generation),
+          level: Math.floor(Number(fish.age) / 100) + 1,
+          traits: {
+            color: 'blue',
+            pattern: 'striped',
+            fins: 'long',
+            size: 'medium',
+          },
+          hunger: (fish as any).hunger ?? 50,
+          state: (fish as any).state ?? 'idle',
+        };
+      }),
     };
   };
 

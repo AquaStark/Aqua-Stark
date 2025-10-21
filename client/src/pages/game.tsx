@@ -72,6 +72,15 @@ export default function GamePage() {
   // Use stored player address if account is not connected yet
   const effectivePlayerAddress = account?.address || storedPlayerAddress;
 
+  // CRITICAL: Save aquarium ID from URL immediately on page load
+  useEffect(() => {
+    if (aquariumIdFromUrl && effectivePlayerAddress) {
+      if (aquariumIdFromUrl !== storedAquariumId) {
+        setActiveAquariumId(aquariumIdFromUrl, effectivePlayerAddress);
+      }
+    }
+  }, [aquariumIdFromUrl, effectivePlayerAddress]);
+
   const aquarium =
     initialAquariums.find(a => a.id.toString() === activeAquariumId) ||
     initialAquariums[0];
