@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBubbles } from '@/hooks/use-bubbles';
 import { BubblesBackground } from '@/components/bubble-background';
-import { GameCanvas } from '@/components/mini-games/bubble-jumper/game-canvas';
+import { MobileGameCanvas } from '@/components/mobile/mobile-game-canvas';
 import { GameUI } from '@/components/mini-games/bubble-jumper/game-ui';
 import { GameModals } from '@/components/mini-games/bubble-jumper/game-modals';
 import { OrientationLock } from '@/components/ui';
@@ -502,96 +502,13 @@ export default function MobileBubbleJumperView() {
         {/* Game area - positioned to the left */}
         <main className='relative z-10 w-full flex items-start justify-start pt-4 pb-4 flex-1'>
           <div className='w-3/4 h-full pl-2'>
-            {/* Custom GameCanvas for mobile - positioned to the left */}
-            <div
-              ref={gameRef}
-              className='absolute z-30'
-              style={{
-                width: GAME_CONFIG.gameWidth,
-                height: GAME_CONFIG.gameHeight,
-                left: '0',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                overflow: 'hidden',
-                border: '2px solid rgba(255,255,255,0.2)',
-                borderRadius: '12px',
-                background: 'rgba(0,92,153,0.3)',
-              }}
-            >
-              {gameState.platforms
-                .filter(platform => {
-                  const platformScreenY = platform.y - gameState.camera.y;
-                  return (
-                    platformScreenY > -50 &&
-                    platformScreenY < GAME_CONFIG.gameHeight + 50
-                  );
-                })
-                .map(platform => {
-                  const getPlatformStyle = (platform: Platform) => {
-                    const baseStyle = {
-                      left: platform.x,
-                      top: platform.y - gameState.camera.y,
-                      width: platform.width,
-                      height: 20,
-                      backgroundColor: '#8B4513',
-                      border: '2px solid #654321',
-                      borderRadius: '4px',
-                      position: 'absolute' as const,
-                      willChange: 'transform',
-                    };
-
-                    switch (platform.type) {
-                      case 'spring':
-                        return {
-                          ...baseStyle,
-                          backgroundColor: '#FFD700',
-                          border: '2px solid #FFA500',
-                          boxShadow: platform.bounceAnimation ? '0 0 20px #FFD700' : 'none',
-                        };
-                      case 'broken':
-                        return {
-                          ...baseStyle,
-                          backgroundColor: '#8B4513',
-                          border: '2px solid #654321',
-                          opacity: platform.bounceAnimation ? 0.5 : 1,
-                        };
-                      default:
-                        return baseStyle;
-                    }
-                  };
-
-                  return (
-                    <div
-                      key={platform.id}
-                      className='absolute will-change-transform'
-                      style={getPlatformStyle(platform)}
-                    />
-                  );
-                })}
-
-              {/* Fish */}
-              <div
-                className='absolute z-20'
-                style={{
-                  left: gameState.fish.x,
-                  top: gameState.fish.y - gameState.camera.y,
-                  width: gameState.fish.width,
-                  height: gameState.fish.height,
-                  willChange: 'transform',
-                  transform: `rotate(${gameState.fish.velocityX > 0 ? 5 : gameState.fish.velocityX < 0 ? -5 : 0}deg) scale(${gameState.fish.velocityY < -10 ? 1.1 : 1})`,
-                }}
-              >
-                <img
-                  src={gameState.fish.image || '/placeholder.svg'}
-                  alt={gameState.fish.name}
-                  className='w-full h-full object-contain'
-                  style={{
-                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
-                    transform: gameState.fish.velocityX < 0 ? 'scaleX(-1)' : 'scaleX(1)',
-                  }}
-                />
-              </div>
-            </div>
+            <MobileGameCanvas
+              gameRef={gameRef}
+              platforms={gameState.platforms}
+              fish={gameState.fish}
+              camera={gameState.camera}
+              gameConfig={GAME_CONFIG}
+            />
           </div>
           {/* Right side space for controls */}
           <div className='w-1/4 h-full pr-2'></div>
@@ -600,13 +517,13 @@ export default function MobileBubbleJumperView() {
         {/* Custom GameUI for mobile - positioned to avoid overlaps */}
         <div className='absolute inset-0 z-40 pointer-events-none'>
           {/* Right side panel - Score, Controls, and Info */}
-          <div className='absolute top-24 right-2 w-20 flex flex-col gap-2 pointer-events-auto'>
+          <div className='absolute top-20 right-2 w-20 flex flex-col gap-2 pointer-events-auto'>
             {/* Score display */}
             <div className='bg-gradient-to-r from-blue-600 to-blue-700 backdrop-blur-md rounded-lg px-2 py-1 border-2 border-blue-400/50 shadow-lg'>
-              <span className='text-white font-bold text-xs'>S: {gameState.score}</span>
+              <span className='text-white font-bold text-xs'>Score: {gameState.score}</span>
             </div>
             <div className='bg-gradient-to-r from-yellow-500 to-yellow-600 backdrop-blur-md rounded-lg px-2 py-1 border-2 border-yellow-400/50 shadow-lg'>
-              <span className='text-white font-bold text-xs'>B: {gameState.bestScore}</span>
+              <span className='text-white font-bold text-xs'>Best: {gameState.bestScore}</span>
             </div>
 
             {/* Control buttons */}
@@ -665,7 +582,7 @@ export default function MobileBubbleJumperView() {
 
         {/* Right Side Panel - Mobile optimized */}
         {gameState.isPlaying && (
-          <div className='absolute bottom-20 right-2 w-20 pointer-events-none z-40'>
+          <div className='absolute bottom-16 right-2 w-20 pointer-events-none z-40'>
             <div className='bg-gradient-to-b from-blue-600/90 to-blue-700/90 backdrop-blur-md rounded-lg p-1 border border-blue-400/50 flex flex-col gap-1 shadow-lg h-fit'>
               {/* Fish Info */}
               <div className='flex flex-col items-center gap-1'>
