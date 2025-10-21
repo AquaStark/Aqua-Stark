@@ -307,32 +307,16 @@ export default function GamePage() {
     .map((fish: any, index: number) => {
       if (!fish) return null;
 
-      // Extract species name from CairoCustomEnum
+      // Extract species name from CairoCustomEnum (same logic as aquariums page)
       let speciesName = 'AngelFish'; // default
-      if (fish.species) {
-        if (typeof fish.species === 'object') {
-          if (fish.species.activeVariant) {
-            speciesName = fish.species.activeVariant;
-          } else if (fish.species.variant) {
-            console.log('🎮 GAME - Raw species variant:', fish.species.variant);
-            // Find the variant with a non-undefined value
-            const activeKey = Object.entries(fish.species.variant).find(
-              ([, value]) => value !== undefined
-            );
-            console.log('🎮 GAME - Active key found:', activeKey);
-            if (activeKey) {
-              speciesName = activeKey[0];
-            }
-          } else {
-            const keys = Object.keys(fish.species);
-            if (keys.length > 0) {
-              speciesName = keys[0];
-            }
-          }
+      if (fish.species?.variant) {
+        // Handle CairoCustomEnum variant extraction
+        const variantEntries = Object.entries(fish.species.variant);
+        const activeVariant = variantEntries.find(([, value]) => value !== undefined);
+        if (activeVariant) {
+          speciesName = activeVariant[0];
         }
       }
-      
-      console.log('🎮 GAME - Final species name:', speciesName);
 
       // Use species catalog for image (centralized, scalable)
       const fishImage = getSpeciesImage(speciesName);
