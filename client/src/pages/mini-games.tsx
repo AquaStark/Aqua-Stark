@@ -3,7 +3,6 @@
 import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components';
 import { LayoutFooter } from '@/components';
-import { OrientationLock } from '@/components/ui';
 import { Gamepad2, Lock, Play } from 'lucide-react';
 
 export default function GamesPage() {
@@ -79,16 +78,15 @@ export default function GamesPage() {
 
 
   return (
-    <OrientationLock>
-      <div className='relative min-h-screen bg-gradient-to-b from-blue-600 to-blue-950 overflow-y-auto'>
-        <PageHeader
-          title='Aqua Stark Arcade'
-          backTo='/game'
-          backText='Back to Game'
-          rightContent={null}
-        />
+    <div className='mini-games-page relative bg-gradient-to-b from-blue-600 to-blue-950'>
+      <PageHeader
+        title='Aqua Stark Arcade'
+        backTo='/game'
+        backText='Back to Game'
+        rightContent={null}
+      />
 
-        <main className='relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 pb-24'>
+      <main className='relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24 pb-32'>
           <section>
             <h2 className='text-2xl font-bold text-white mb-6 flex items-center gap-2'>
               <Gamepad2 className='w-6 h-6' />
@@ -166,10 +164,9 @@ export default function GamesPage() {
               ))}
             </div>
           </section>
-        </main>
+      </main>
 
-        <LayoutFooter />
-      </div>
-    </OrientationLock>
+      <LayoutFooter />
+    </div>
   );
 }
