@@ -8,6 +8,7 @@ import { useFullscreenPrompt } from './hooks/use-fullscreen-prompt';
 import { useResponsiveLanding } from './hooks/use-responsive-landing';
 import { useResponsiveStore } from './hooks/use-responsive-store';
 import { useResponsiveMiniGames } from './hooks/use-responsive-mini-games';
+import { useResponsiveFloppyFish } from './hooks/use-responsive-floppy-fish';
 import OnboardingPage from './pages/onboarding/onboarding';
 import StartPage from './pages/onboarding/start';
 import LoadingPage from './pages/loading';
@@ -30,7 +31,6 @@ import EventsCalendarPage from './pages/events-calendar';
 import AchievementsPage from './pages/achievements';
 
 // Mini Games Pages
-import FloppyFishGamePage from './pages/floppy-fish';
 import BubbleJumperPage from './pages/bubble-jumper';
 
 // Utility Pages
@@ -48,6 +48,7 @@ function App() {
   const ResponsiveLanding = useResponsiveLanding();
   const ResponsiveStore = useResponsiveStore();
   const ResponsiveMiniGames = useResponsiveMiniGames();
+  const ResponsiveFloppyFish = useResponsiveFloppyFish();
 
   return (
     <ErrorBoundary>
@@ -86,7 +87,7 @@ function App() {
           <Route path='/mini-games' element={ResponsiveMiniGames} />
           <Route
             path='/mini-games/floppy-fish'
-            element={<FloppyFishGamePage />}
+            element={ResponsiveFloppyFish}
           />
           <Route
             path='/mini-games/bubble-jumper'
