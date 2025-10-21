@@ -19,6 +19,7 @@ import { useFish } from '@/hooks';
 import * as models from '@/typescript/models.gen';
 import { num, type BigNumberish } from 'starknet';
 import { useAquarium } from '@/hooks/dojo';
+import { useAquariumSync } from '@/hooks/use-aquarium-sync';
 
 export default function AquariumsPage() {
   const [aquariums, setAquariums] = useState<Aquarium[]>([]);
@@ -31,6 +32,7 @@ export default function AquariumsPage() {
   const { account } = useAccount();
   const { getPlayerAquariums, getAquarium, newAquarium } = useAquarium();
   const { getFish } = useFish();
+  const { getPlayerAquariums: getPlayerAquariumsBackend } = useAquariumSync();
 
   const bubbles = useBubbles({
     initialCount: 15,
@@ -105,24 +107,79 @@ export default function AquariumsPage() {
     };
   };
 
-  // Function to load player aquariums
+  // Function to load player aquariums using backend + blockchain sync
   const loadPlayerAquariums = async () => {
     if (!account?.address) {
       setLoading(false);
+      setError(null);
       return;
     }
 
     try {
       setLoading(true);
       setError(null);
+      console.log('🏠 Loading aquariums for player:', account.address);
 
+      // Try loading from backend first
+      try {
+        const backendResponse = await getPlayerAquariumsBackend(
+          account.address
+        );
+        console.log('📋 Backend response:', backendResponse);
+
+        if (
+          backendResponse.success &&
+          backendResponse.data &&
+          backendResponse.data.length > 0
+        ) {
+          console.log(
+            `✅ Found ${backendResponse.data.length} aquariums in backend`
+          );
+
+          // Use backend aquarium IDs to load details from blockchain
+          const aquariumPromises = backendResponse.data.map(
+            async (aquariumData: any) => {
+              const onChainId = aquariumData.on_chain_id;
+              console.log('🔍 Loading aquarium from blockchain:', onChainId);
+
+              const result = await loadAquariumWithFishes(BigInt(onChainId));
+              if (result) {
+                return transformAquariumData(
+                  result.aquariumData,
+                  result.fishData
+                );
+              }
+              return null;
+            }
+          );
+
+          const loadedAquariums = (await Promise.all(aquariumPromises)).filter(
+            Boolean
+          ) as Aquarium[];
+          console.log('🎉 Loaded aquariums:', loadedAquariums);
+          setAquariums(loadedAquariums);
+          return;
+        } else {
+          console.log('⚠️ No aquariums found in backend');
+        }
+      } catch (backendError) {
+        console.error(
+          '❌ Backend error, falling back to blockchain:',
+          backendError
+        );
+      }
+
+      // Fallback: Load directly from blockchain if backend fails
+      console.log('🔗 Fallback: Loading from blockchain directly');
       const playerAquariums = await getPlayerAquariums(account.address);
 
       if (!playerAquariums || playerAquariums.length === 0) {
+        console.log('⚠️ No aquariums found on blockchain');
         setAquariums([]);
-        setLoading(false);
         return;
       }
+
+      console.log('📦 Found aquariums on blockchain:', playerAquariums);
 
       // Load each aquarium with its fish
       const aquariumPromises = playerAquariums.map(
@@ -140,8 +197,8 @@ export default function AquariumsPage() {
       ) as Aquarium[];
       setAquariums(loadedAquariums);
     } catch (error) {
-      console.error('Error loading player aquariums:', error);
-      setError('Failed to load aquariums');
+      console.error('❌ Error loading player aquariums:', error);
+      setError('Failed to load aquariums. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -153,25 +210,23 @@ export default function AquariumsPage() {
   }, [account?.address]);
 
   const handleSelectAquarium = async (aquarium: Aquarium) => {
+    if (!account?.address) {
+      setError('Please connect your wallet first');
+      return;
+    }
+
     try {
-      // Load complete aquarium with fish before navigating
-      const completeAquarium = await loadAquariumWithFishes(aquarium.id);
-      if (completeAquarium) {
-        setActiveAquariumId(aquarium.id.toString());
-        navigate('/game', {
-          state: {
-            aquarium: transformAquariumData(
-              completeAquarium.aquariumData,
-              completeAquarium.fishData
-            ),
-          },
-        });
-      }
-    } catch (error) {
-      console.error('Error loading aquarium for navigation:', error);
-      // Fallback to simple navigation
-      setActiveAquariumId(aquarium.id.toString());
+      console.log('🎯 Selecting aquarium:', aquarium.id);
+
+      // Persist aquarium ID to store
+      setActiveAquariumId(aquarium.id.toString(), account.address);
+      console.log('💾 Aquarium persisted to store');
+
+      // Navigate to game - the persistent store will handle loading
       navigate('/game');
+    } catch (error) {
+      console.error('❌ Error selecting aquarium:', error);
+      setError('Failed to select aquarium. Please try again.');
     }
   };
 
@@ -259,41 +314,63 @@ export default function AquariumsPage() {
               </div>
             )}
 
-            {loading ? (
-              <div className='flex justify-center items-center py-12'>
-                <div className='text-white text-lg'>Loading aquariums...</div>
+            {!account?.address ? (
+              <div className='text-center py-12'>
+                <div className='text-white text-xl mb-4'>
+                  👋 Welcome to Aqua Stark
+                </div>
+                <div className='text-blue-200 mb-6'>
+                  Connect your wallet to view and manage your aquariums
+                </div>
+              </div>
+            ) : loading ? (
+              <div className='flex flex-col justify-center items-center py-12'>
+                <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-4'></div>
+                <div className='text-white text-lg'>
+                  Loading your aquariums...
+                </div>
+                <div className='text-blue-200 text-sm mt-2'>
+                  Syncing from backend and blockchain
+                </div>
               </div>
             ) : (
               <>
-                <AquariumStats
-                  totalAquariums={aquariums.length}
-                  totalFish={aquariums.reduce(
-                    (acc, curr) => acc + curr.fishes.length,
-                    0
-                  )}
-                  premiumAquariums={aquariums.filter(a => a.isPremium).length}
-                  averageHealth={
-                    aquariums.length > 0
-                      ? Math.round(
-                          aquariums.reduce(
-                            (acc, curr) => acc + curr.health,
-                            0
-                          ) / aquariums.length
-                        )
-                      : 0
-                  }
-                />
+                {aquariums.length > 0 && (
+                  <AquariumStats
+                    totalAquariums={aquariums.length}
+                    totalFish={aquariums.reduce(
+                      (acc, curr) => acc + curr.fishes.length,
+                      0
+                    )}
+                    premiumAquariums={aquariums.filter(a => a.isPremium).length}
+                    averageHealth={
+                      aquariums.length > 0
+                        ? Math.round(
+                            aquariums.reduce(
+                              (acc, curr) => acc + curr.health,
+                              0
+                            ) / aquariums.length
+                          )
+                        : 0
+                    }
+                  />
+                )}
 
                 {aquariums.length === 0 ? (
                   <div className='text-center py-12'>
                     <div className='text-white text-xl mb-4'>
-                      No aquariums found
+                      🐠 No aquariums yet
                     </div>
                     <div className='text-blue-200 mb-6'>
-                      {account?.address
-                        ? 'Create your first aquarium to get started!'
-                        : 'Connect your wallet to view your aquariums'}
+                      Create your first aquarium to start your underwater
+                      adventure!
                     </div>
+                    <button
+                      onClick={() => setShowPurchaseModal(true)}
+                      className='bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors'
+                    >
+                      Create First Aquarium
+                    </button>
                   </div>
                 ) : (
                   <AquariumList
