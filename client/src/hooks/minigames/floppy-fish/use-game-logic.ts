@@ -7,12 +7,12 @@ import { useLocalStorage } from '@/hooks';
 const GAME_WIDTH = 600; // Increased from 400
 const GAME_HEIGHT = 400; // Reduced from 500 for better aspect ratio
 const FISH_SIZE = 40; // Slightly smaller for better proportions
-const GRAVITY = 0.3; // Reduced from 0.5 for smoother movement
-const JUMP_VELOCITY = -5; // Reduced from -8 for less sensitive jumps
+const GRAVITY = 0.2; // Further reduced for smoother mobile gameplay
+const JUMP_VELOCITY = -4; // Further reduced for less sensitive mobile jumps
 const COLUMN_WIDTH = 80; // Increased for better visibility
-const GAP_HEIGHT = 120; // Reduced for easier gameplay
-const COLUMN_INTERVAL = 2000; // Increased from 1600 for more spacing
-const COLUMN_SPEED = 2; // Reduced from 2.5 for slower movement
+const GAP_HEIGHT = 140; // Increased for easier mobile gameplay
+const COLUMN_INTERVAL = 2200; // Increased for more spacing on mobile
+const COLUMN_SPEED = 1.5; // Further reduced for slower mobile movement
 const FISH_X = 120; // Moved further right for better visibility
 
 /**
