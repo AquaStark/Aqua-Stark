@@ -13,6 +13,8 @@ import { cn } from '@/lib/utils';
 import { MOCK_AQUARIUMS } from '@/constants';
 import { CleanButton } from '../dirt/clean-button';
 import { TipsPopup } from './tips-popup';
+import { useActiveAquarium } from '@/store/active-aquarium';
+import { useAccount } from '@starknet-react/core';
 
 interface AquariumTabProps {
   name: string;
@@ -81,6 +83,17 @@ export function AquariumTabs({
   onTipsClose,
 }: AquariumTabsProps) {
   const navigate = useNavigate();
+  const { account } = useAccount();
+  const { setActiveAquariumId } = useActiveAquarium();
+
+  const handleViewAllClick = () => {
+    // CRITICAL: Save current aquarium ID before navigating
+    if (selectedAquarium && account?.address) {
+      console.log('💾 Saving aquarium before navigation:', selectedAquarium.id);
+      setActiveAquariumId(selectedAquarium.id.toString(), account.address);
+    }
+    navigate('/aquariums');
+  };
 
   return (
     <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/90 to-transparent z-40 p-2 sm:p-4'>
@@ -101,7 +114,7 @@ export function AquariumTabs({
             name='View All'
             active={false}
             icon={<Grid className='h-3 w-3 sm:h-4 sm:w-4' />}
-            onClick={() => navigate('/aquariums')}
+            onClick={handleViewAllClick}
           />
         </div>
 

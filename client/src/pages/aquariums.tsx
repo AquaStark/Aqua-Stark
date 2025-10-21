@@ -316,29 +316,50 @@ export default function AquariumsPage() {
     );
   }, [aquariums, searchQuery]);
 
+  const handleBackToGame = () => {
+    // Navigate back to game with stored aquarium ID
+    if (storedAquariumId) {
+      console.log(
+        '🎮 Navigating back to game with aquarium:',
+        storedAquariumId
+      );
+      navigate(`/game?aquarium=${storedAquariumId}`);
+    } else {
+      console.log('⚠️ No stored aquarium, navigating to /game');
+      navigate('/game');
+    }
+  };
+
   return (
     <OrientationLock>
       <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900'>
         <BubblesBackground bubbles={bubbles} className='pointer-events-none' />
 
         <div className='relative z-10 flex flex-col min-h-screen w-full'>
-          <PageHeader
-            title='My Aquariums'
-            backTo='/game'
-            backText='Back to Game'
-            rightContent={
-              <div className='flex items-center gap-2'>
-                <div className='flex items-center px-4 py-2 border rounded-full bg-blue-700/50 border-blue-400/50'>
-                  <img
-                    src='/icons/coin.png'
-                    alt='Coins'
-                    className='w-5 h-5 mr-2'
-                  />
-                  <span className='font-bold text-white'>{coinBalance}</span>
-                </div>
+          <div className='w-full px-2 sm:px-4'>
+            <div className='flex items-center justify-between py-4'>
+              {/* Back button */}
+              <button
+                onClick={handleBackToGame}
+                className='bg-blue-600/30 hover:bg-blue-600/50 border border-blue-400/30 text-white rounded-lg px-4 py-2 flex items-center transition-colors'
+              >
+                ← Back to Game
+              </button>
+
+              {/* Title */}
+              <h1 className='text-2xl font-bold text-white'>My Aquariums</h1>
+
+              {/* Coins */}
+              <div className='flex items-center px-4 py-2 border rounded-full bg-blue-700/50 border-blue-400/50'>
+                <img
+                  src='/icons/coin.png'
+                  alt='Coins'
+                  className='w-5 h-5 mr-2'
+                />
+                <span className='font-bold text-white'>{coinBalance}</span>
               </div>
-            }
-          />
+            </div>
+          </div>
 
           <div className='w-full px-4 py-4'>
             <div className='flex flex-col sm:flex-row items-center justify-center gap-4 mb-6'>
