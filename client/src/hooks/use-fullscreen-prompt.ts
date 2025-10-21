@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useFullscreen } from './use-fullscreen';
 
 interface UseFullscreenPromptReturn {
@@ -13,8 +13,7 @@ const FULLSCREEN_DECLINED_KEY = 'aqua-stark-fullscreen-declined';
 
 export function useFullscreenPrompt(): UseFullscreenPromptReturn {
   const [showPrompt, setShowPrompt] = useState(false);
-  const { isSupported, isEnabled, enterFullscreen, isFullscreen } =
-    useFullscreen();
+  const { enterFullscreen } = useFullscreen();
 
   // Disabled automatic fullscreen prompt since there's a dedicated button
   // useEffect(() => {
