@@ -48,7 +48,7 @@ export const StoreCarousel = () => {
                 </div>
 
                 {/* Left Side: Text */}
-                <div className='flex-1'>
+                <div className='flex-1 ml-8 sm:ml-12 md:ml-16'>
                   <h2 className='text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-4 flex items-center gap-2'>
                     {banner.title}
                   </h2>
@@ -90,10 +90,10 @@ export const StoreCarousel = () => {
             </SwiperSlide>
           ))}
 
-          <div className='swiper-button-prev absolute p-1 sm:p-2 top-1/2 left-1 sm:left-0 z-10 w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm cursor-pointer after:hidden'>
+          <div className='swiper-button-prev absolute p-1 sm:p-2 top-1/2 left-4 sm:left-2 z-10 w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm cursor-pointer after:hidden'>
             <ChevronLeftIcon className='w-3 h-3 sm:w-4 sm:h-4 text-white' />
           </div>
-          <div className='swiper-button-next absolute p-1 sm:p-2 top-1/2 right-1 sm:right-0 z-10 w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm cursor-pointer after:hidden'>
+          <div className='swiper-button-next absolute p-1 sm:p-2 top-1/2 right-4 sm:right-2 z-10 w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm cursor-pointer after:hidden'>
             <ChevronRightIcon className='w-3 h-3 sm:w-4 sm:h-4 text-white' />
           </div>
         </Swiper>

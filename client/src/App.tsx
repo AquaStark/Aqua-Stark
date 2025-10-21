@@ -6,6 +6,7 @@ import { useFullscreenPrompt } from './hooks/use-fullscreen-prompt';
 
 // Landing & Onboarding Pages
 import { useResponsiveLanding } from './hooks/use-responsive-landing';
+import { useResponsiveStore } from './hooks/use-responsive-store';
 import OnboardingPage from './pages/onboarding/onboarding';
 import StartPage from './pages/onboarding/start';
 import LoadingPage from './pages/loading';
@@ -13,7 +14,6 @@ import LoadingPage from './pages/loading';
 // Main Game Pages
 import GamePage from './pages/game';
 import AquariumsPage from './pages/aquariums';
-import StorePage from './pages/store';
 import TradingMarketPage from './pages/trading-market';
 import BreedingLaboratoryPage from './pages/breeding-laboratory';
 import SettingsPage from './pages/settings';
@@ -46,6 +46,7 @@ import { FullscreenDebug } from './components/debug/fullscreen-debug';
 function App() {
   const { showPrompt, hidePrompt, acceptFullscreen } = useFullscreenPrompt();
   const ResponsiveLanding = useResponsiveLanding();
+  const ResponsiveStore = useResponsiveStore();
 
   return (
     <ErrorBoundary>
@@ -60,7 +61,7 @@ function App() {
           {/* Main Game Routes */}
           <Route path='/game' element={<GamePage />} />
           <Route path='/aquariums' element={<AquariumsPage />} />
-          <Route path='/store' element={<StorePage />} />
+          <Route path='/store' element={ResponsiveStore} />
           <Route path='/trading-market' element={<TradingMarketPage />} />
           <Route
             path='/breeding-laboratory'

@@ -9,7 +9,7 @@ export function LayoutFooter({ className }: FooterProps = {}) {
   return (
     <footer
       className={cn(
-        'fixed bottom-0 left-0 right-0 z-40 bg-blue-800/95 backdrop-blur-sm py-3 sm:py-4 md:py-6 border-t-2 border-blue-400/50',
+        'relative z-40 bg-blue-800/95 backdrop-blur-sm py-3 sm:py-4 md:py-6 border-t-2 border-blue-400/50',
         className
       )}
     >
