@@ -40,7 +40,7 @@ export function MobileFloppyFishGame({
 
   // Mobile-optimized scaling - make game much larger
   const containerWidth = Math.min(window.innerWidth * 0.98, GAME_WIDTH);
-  const containerHeight = Math.min(window.innerHeight * 0.75, GAME_HEIGHT);
+  const containerHeight = Math.min(window.innerHeight * 0.78, GAME_HEIGHT);
   const scaleX = containerWidth / GAME_WIDTH;
   const scaleY = containerHeight / GAME_HEIGHT;
   const scale = Math.min(scaleX, scaleY, 1.5); // Allow up to 1.5x scale for mobile
