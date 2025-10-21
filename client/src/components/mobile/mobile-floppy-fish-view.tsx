@@ -22,11 +22,11 @@ export function MobileFloppyFishView() {
     <OrientationLock>
       <div className='relative h-screen bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-800 overflow-hidden'>
         {/* Minimal header */}
-        <div className='relative z-10 p-2 bg-blue-700/90 backdrop-blur-sm border-b border-blue-400/50'>
+        <div className='relative z-10 p-1 bg-blue-700/90 backdrop-blur-sm border-b border-blue-400/50'>
           <div className='flex items-center justify-between'>
             <button
               onClick={handleBack}
-              className='flex items-center text-white hover:bg-blue-500/50 px-2 py-1 rounded transition-colors'
+              className='flex items-center text-white hover:bg-blue-500/50 px-1 py-0.5 rounded transition-colors'
             >
               <svg
                 className='mr-1'
@@ -44,13 +44,13 @@ export function MobileFloppyFishView() {
               </svg>
               <span className='text-xs'>Back</span>
             </button>
-            <h3 className='text-sm font-semibold text-white'>Floppy Fish</h3>
+            <h3 className='text-xs font-semibold text-white'>Floppy Fish</h3>
             <div className='w-12'></div> {/* Spacer for centering */}
           </div>
         </div>
 
         {/* Game area - takes most of the screen */}
-        <main className='relative z-10 w-full h-full flex items-start justify-center px-1 pt-2 pb-4'>
+        <main className='relative z-10 w-full flex items-start justify-center px-1 pt-1 pb-2' style={{ height: 'calc(100vh - 60px)' }}>
           <div className='w-full h-full'>
             <MobileFloppyFishGame selectedFish={selectedFish} />
           </div>
