@@ -1,4 +1,4 @@
-import { Fish } from 'lucide-react';
+import { Fish, Monitor } from 'lucide-react';
 import { GameStatusBar } from '@/components';
 import { FullscreenButton } from '@/components/ui/fullscreen-button';
 
@@ -8,6 +8,8 @@ interface GameHeaderProps {
   energy: number;
   onMenuToggle: () => void;
   isCleaningMode?: boolean;
+  onWallpaperToggle?: () => void;
+  isWallpaperMode?: boolean;
 }
 
 export function GameHeader({
@@ -16,6 +18,8 @@ export function GameHeader({
   energy,
   onMenuToggle,
   isCleaningMode = false,
+  onWallpaperToggle,
+  isWallpaperMode = false,
 }: GameHeaderProps) {
   const handleMenuClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -62,11 +66,26 @@ export function GameHeader({
           />
         </div>
 
-        <FullscreenButton
-          className='ml-2 sm:ml-4 text-white hover:bg-blue-500/50 flex-shrink-0'
-          variant='ghost'
-          size='sm'
-        />
+        <div className='flex items-center gap-1 sm:gap-2 ml-2 sm:ml-4'>
+          <FullscreenButton
+            className='text-white hover:bg-blue-500/50 flex-shrink-0'
+            variant='ghost'
+            size='sm'
+          />
+          {onWallpaperToggle && (
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onWallpaperToggle();
+              }}
+              className='game-button p-2 text-white hover:bg-blue-500/50 rounded-lg transition-colors flex-shrink-0'
+              title={isWallpaperMode ? 'Exit Wallpaper Mode' : 'Wallpaper Mode'}
+            >
+              <Monitor className='h-4 w-4 sm:h-5 sm:w-5' />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Sponge Mode Text */}

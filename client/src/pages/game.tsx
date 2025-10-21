@@ -417,6 +417,8 @@ export default function GamePage() {
             energy={energy}
             onMenuToggle={() => setShowMenu(!showMenu)}
             isCleaningMode={isCleaningMode}
+            onWallpaperToggle={handleWallpaperToggle}
+            isWallpaperMode={isWallpaperMode}
           />
         )}
 
@@ -424,8 +426,6 @@ export default function GamePage() {
         {showMenu && !isWallpaperMode && (
           <GameMenu
             show={showMenu}
-            onWallpaperToggle={handleWallpaperToggle}
-            isWallpaperMode={isWallpaperMode}
           />
         )}
 

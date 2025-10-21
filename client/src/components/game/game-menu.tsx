@@ -1,14 +1,6 @@
 import {
-  Volume2,
-  Trophy,
-  ShoppingBag,
-  HelpCircle,
-  Camera,
-  Home,
   Settings,
-  Fish,
-  Sparkles,
-  Monitor,
+  HelpCircle,
   Users,
   User,
   BookOpen,
@@ -24,8 +16,6 @@ import { useNavigate } from 'react-router-dom';
 
 interface GameMenuProps {
   show: boolean;
-  onWallpaperToggle?: () => void;
-  isWallpaperMode?: boolean;
 }
 
 interface MenuItem {
@@ -36,8 +26,6 @@ interface MenuItem {
 
 export function GameMenu({
   show,
-  onWallpaperToggle,
-  isWallpaperMode,
 }: GameMenuProps) {
   const navigate = useNavigate();
 
@@ -101,12 +89,6 @@ export function GameMenu({
       icon: <Award className='h-5 w-5' />,
       onClick: () => navigate('/achievements'),
       tooltip: 'Achievements',
-    },
-    // Wallpaper Mode
-    {
-      icon: <Monitor className='h-5 w-5' />,
-      onClick: onWallpaperToggle || (() => {}),
-      tooltip: isWallpaperMode ? 'Exit Wallpaper' : 'Wallpaper Mode',
     },
   ];
 
