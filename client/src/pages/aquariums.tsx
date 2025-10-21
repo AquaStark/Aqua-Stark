@@ -75,8 +75,10 @@ export default function AquariumsPage() {
         async (fishId: BigNumberish) => {
           try {
             const fish = await getFish(fishId);
+            console.log('🐟 Fish data from blockchain:', fish);
             return fish;
           } catch (err) {
+            console.error('❌ Error loading fish:', err);
             return null;
           }
         }
@@ -86,6 +88,7 @@ export default function AquariumsPage() {
       const validFish = fishData.filter(
         (fish): fish is models.Fish => fish !== null
       );
+      console.log('✅ Valid fish loaded:', validFish);
 
       return {
         aquariumData,
@@ -116,6 +119,12 @@ export default function AquariumsPage() {
       ),
       isPremium: Number(contractAquarium.max_capacity) > 10,
       fishes: fishes.map(fish => {
+        console.log('🔍 Processing fish for card:', {
+          fishId: fish.id,
+          species: fish.species,
+          variant: fish.species?.variant
+        });
+
         // Extract species name from CairoCustomEnum
         let speciesName = 'AngelFish'; // Default
         if (fish.species?.variant) {
@@ -127,9 +136,13 @@ export default function AquariumsPage() {
           }
         }
 
+        console.log('🎨 Species extracted:', speciesName);
+
         // Get correct image and display name from catalog
         const fishImage = getSpeciesImage(speciesName);
         const displayName = getSpeciesDisplayName(speciesName);
+
+        console.log('🖼️ Fish display data:', { displayName, fishImage });
 
         return {
           id: Number(fish.id),
