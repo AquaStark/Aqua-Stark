@@ -50,7 +50,10 @@ export function MobileFloppyFishView() {
         </div>
 
         {/* Game area - takes most of the screen */}
-        <main className='relative z-10 w-full flex items-start justify-center px-1 pt-1 pb-2' style={{ height: 'calc(100vh - 60px)' }}>
+        <main
+          className='relative z-10 w-full flex items-start justify-center px-1 pt-1 pb-2'
+          style={{ height: 'calc(100vh - 60px)' }}
+        >
           <div className='w-full h-full'>
             <MobileFloppyFishGame selectedFish={selectedFish} />
           </div>

@@ -465,10 +465,10 @@ export default function BubbleJumperPage() {
             <button
               onClick={handleBack}
               className='flex items-center mr-2 text-xs text-white rounded-full hover:bg-blue-500/50 px-2 sm:px-3 md:px-4 py-1 sm:py-2 h-8 sm:h-9 bg-blue-600/30 border border-blue-400/50 cursor-pointer transition-colors'
-              style={{ 
+              style={{
                 pointerEvents: 'auto',
                 zIndex: 9999,
-                position: 'relative'
+                position: 'relative',
               }}
             >
               <svg

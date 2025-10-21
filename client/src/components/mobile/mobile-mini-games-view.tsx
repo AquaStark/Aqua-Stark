@@ -201,9 +201,7 @@ export function MobileMiniGamesView() {
         {/* Custom compact footer for mobile mini-games */}
         <footer className='relative z-40 bg-blue-800/95 backdrop-blur-sm py-1 border-t-2 border-blue-400/50'>
           <div className='container mx-auto px-2 text-center'>
-            <p className='text-white/80 mb-0 text-xs'>
-              © 2025 Aqua Stark
-            </p>
+            <p className='text-white/80 mb-0 text-xs'>© 2025 Aqua Stark</p>
             <div className='flex justify-center gap-1 mt-0'>
               <span className='text-white/60 text-xs'>Privacy</span>
               <span className='text-white/60 text-xs'>•</span>
