@@ -357,29 +357,9 @@ export default function GamePage() {
         }
       }
 
-      // Debug: Check each variant value
-      if (fish.species?.variant) {
-        console.log(
-          '🔍 All variant entries:',
-          Object.entries(fish.species.variant)
-        );
-      }
-
-      console.log('🔍 Species extraction:', {
-        rawSpecies: fish.species,
-        extractedName: speciesName,
-        fishId: fish.id,
-      });
-
       // Use species catalog for image (centralized, scalable)
       const fishImage = getSpeciesImage(speciesName);
       const displayName = getSpeciesDisplayName(speciesName);
-
-      console.log('🎨 Species mapping:', {
-        speciesName,
-        displayName,
-        fishImage,
-      });
 
       // Generate random position within aquarium bounds
       const randomX = Math.random() * 80 + 10; // 10% to 90% of width
