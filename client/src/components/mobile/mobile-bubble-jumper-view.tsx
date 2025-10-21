@@ -500,7 +500,7 @@ export default function MobileBubbleJumperView() {
         </div>
 
         {/* Game area - positioned to the left */}
-        <main className='relative z-10 w-full flex items-start justify-start pt-4 pb-4 flex-1'>
+        <main className='relative z-10 w-full flex items-start justify-start pt-4 pb-20 flex-1'>
           <div className='w-3/4 h-full pl-4 relative flex items-center justify-center'>
             <div className='w-full h-full flex items-center justify-center'>
               <div 
