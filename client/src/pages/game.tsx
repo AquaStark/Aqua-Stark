@@ -69,6 +69,9 @@ export default function GamePage() {
   // Determine which aquarium ID to use (URL > stored)
   const activeAquariumId = aquariumIdFromUrl || storedAquariumId;
 
+  // Use stored player address if account is not connected yet
+  const effectivePlayerAddress = account?.address || storedPlayerAddress;
+
   const aquarium =
     initialAquariums.find(a => a.id.toString() === activeAquariumId) ||
     initialAquariums[0];
@@ -78,7 +81,7 @@ export default function GamePage() {
   // Initialize simple dirt system with backend
   const dirtSystem = useSimpleDirtSystem(
     activeAquariumId || '1',
-    account?.address || 'demo-player'
+    effectivePlayerAddress || 'demo-player'
   );
 
   const bubbles = useBubbles({
@@ -142,8 +145,8 @@ export default function GamePage() {
         return;
       }
 
-      if (!account?.address) {
-        console.log('No account connected, waiting...');
+      if (!effectivePlayerAddress) {
+        console.log('No player address available, waiting...');
         setPlayerFishes([]);
         return;
       }
@@ -152,16 +155,16 @@ export default function GamePage() {
       await new Promise(resolve => setTimeout(resolve, 500));
 
       try {
-        console.log('🐠 Fetching fishes for player:', account.address);
+        console.log('🐠 Fetching fishes for player:', effectivePlayerAddress);
 
         // Persist aquarium ID and player address to store
-        if (activeAquariumId && account.address) {
+        if (activeAquariumId && effectivePlayerAddress) {
           if (
             activeAquariumId !== storedAquariumId ||
-            account.address !== storedPlayerAddress
+            effectivePlayerAddress !== storedPlayerAddress
           ) {
             console.log('💾 Persisting aquarium to store:', activeAquariumId);
-            setActiveAquariumId(activeAquariumId, account.address);
+            setActiveAquariumId(activeAquariumId, effectivePlayerAddress);
           }
         }
 
@@ -245,7 +248,7 @@ export default function GamePage() {
           // Load fish from backend (new approach)
           console.log('📋 Loading player fish from backend');
           try {
-            const backendFish = await getPlayerFish(account.address);
+            const backendFish = await getPlayerFish(effectivePlayerAddress);
             console.log('🐟 Fish from backend:', backendFish);
 
             if (
@@ -279,7 +282,7 @@ export default function GamePage() {
 
             // Fallback to blockchain if backend fails
             const playerAquariums = await getPlayerAquariumsList(
-              account.address
+              effectivePlayerAddress
             );
             console.log('🏠 Player aquariums (fallback):', playerAquariums);
 
@@ -319,7 +322,7 @@ export default function GamePage() {
     };
 
     fetchFishes();
-  }, [account?.address, aquariumIdFromUrl, preloadedFish]);
+  }, [effectivePlayerAddress, aquariumIdFromUrl, preloadedFish]);
 
   function bigIntToNumber(value: unknown): number {
     if (typeof value === 'bigint') return Number(value);
