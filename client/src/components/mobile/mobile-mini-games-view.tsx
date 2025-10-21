@@ -2,10 +2,9 @@
 
 import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components';
-import { LayoutFooter } from '@/components';
 import { Gamepad2, Lock, Play } from 'lucide-react';
 
-export default function GamesPage() {
+export function MobileMiniGamesView() {
   const navigate = useNavigate();
 
   const availableGames = [
@@ -80,13 +79,13 @@ export default function GamesPage() {
     <>
       <style>
         {`
-          .mini-games-scroll-container::-webkit-scrollbar {
+          .mobile-mini-games-scroll-container::-webkit-scrollbar {
             display: none;
           }
         `}
       </style>
       <div
-        className='relative bg-gradient-to-b from-blue-600 to-blue-950 mini-games-scroll-container'
+        className='relative bg-gradient-to-b from-blue-600 to-blue-950 mobile-mini-games-scroll-container'
         style={{
           height: '100vh',
           overflowY: 'scroll',
@@ -108,18 +107,26 @@ export default function GamesPage() {
           rightContent={null}
         />
 
-        <main className='relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24 pb-8'>
+        <main className='relative z-10 w-full px-4 py-4 pb-4'>
           <section>
-            <h2 className='text-2xl font-bold text-white mb-6 flex items-center gap-2'>
-              <Gamepad2 className='w-6 h-6' />
+            <h2 className='text-xl font-bold text-white mb-3 flex items-center gap-2'>
+              <Gamepad2 className='w-5 h-5' />
               Mini Games
             </h2>
-            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+
+            {/* Horizontal scroll container for games */}
+            <div
+              className='flex gap-2 overflow-x-auto pb-4'
+              style={{
+                scrollbarWidth: 'none', // Firefox
+                msOverflowStyle: 'none', // IE and Edge
+              }}
+            >
               {availableGames.map(game => (
                 <div
                   key={game.id}
                   onClick={() => game.available && navigate(game.route)}
-                  className={`group relative bg-gradient-to-br from-blue-500/20 to-blue-800/40 backdrop-blur-sm border-2 border-blue-400/40 rounded-2xl overflow-hidden transition-all duration-300 ${
+                  className={`group relative bg-gradient-to-br from-blue-500/20 to-blue-800/40 backdrop-blur-sm border-2 border-blue-400/40 rounded-2xl overflow-hidden transition-all duration-300 flex-shrink-0 w-36 ${
                     game.available
                       ? 'hover:scale-[1.02] hover:border-blue-400/70 hover:shadow-2xl hover:shadow-blue-500/40 cursor-pointer'
                       : 'opacity-60 cursor-not-allowed'
@@ -139,9 +146,9 @@ export default function GamesPage() {
                     ) : (
                       <div className='w-full h-full bg-gradient-to-br from-blue-900/30 to-gray-900/50 flex items-center justify-center'>
                         <div className='text-center'>
-                          <Lock className='w-16 h-16 text-white/40 mx-auto mb-3' />
-                          <div className='px-4 py-2 bg-white/10 rounded-lg border border-white/20'>
-                            <span className='text-white/70 text-sm font-bold'>
+                          <Lock className='w-10 h-10 text-white/40 mx-auto mb-2' />
+                          <div className='px-2 py-1 bg-white/10 rounded-lg border border-white/20'>
+                            <span className='text-white/70 text-xs font-bold'>
                               COMING SOON
                             </span>
                           </div>
@@ -151,27 +158,27 @@ export default function GamesPage() {
                   </div>
 
                   {/* Content */}
-                  <div className='p-4'>
-                    <div className='flex items-center justify-between mb-2'>
-                      <h3 className='text-xl font-bold text-white'>
+                  <div className='p-1'>
+                    <div className='flex items-center justify-between mb-0.5'>
+                      <h3 className='text-xs font-bold text-white truncate'>
                         {game.name}
                       </h3>
-                      <div className='p-1.5 bg-green-500/20 rounded-lg border border-green-400/30'>
-                        <Gamepad2 className='w-4 h-4 text-green-400' />
+                      <div className='p-0.5 bg-green-500/20 rounded border border-green-400/30'>
+                        <Gamepad2 className='w-2 h-2 text-green-400' />
                       </div>
                     </div>
-                    <p className='text-blue-100/90 text-xs mb-3'>
+                    <p className='text-blue-100/90 text-xs mb-1 line-clamp-1'>
                       {game.description}
                     </p>
 
                     {game.available ? (
-                      <button className='w-full game-button bg-gradient-to-b from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 text-white py-2 rounded-lg font-bold transition-all duration-200 flex items-center justify-center gap-2 group-hover:scale-105 text-sm'>
-                        <Play className='w-3 h-3' />
-                        Play Now
+                      <button className='w-full game-button bg-gradient-to-b from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 text-white py-0.5 rounded font-bold transition-all duration-200 flex items-center justify-center gap-0.5 group-hover:scale-105 text-xs'>
+                        <Play className='w-2 h-2' />
+                        Play
                       </button>
                     ) : (
-                      <div className='w-full bg-gray-700/30 text-white/50 py-2 rounded-lg font-bold text-center border border-gray-600/30 text-sm'>
-                        Coming Soon
+                      <div className='w-full bg-gray-700/30 text-white/50 py-0.5 rounded font-bold text-center border border-gray-600/30 text-xs'>
+                        Soon
                       </div>
                     )}
                   </div>
@@ -185,10 +192,25 @@ export default function GamesPage() {
                 </div>
               ))}
             </div>
+
+            {/* Add minimal spacing at the end */}
+            <div className='h-1'></div>
           </section>
         </main>
 
-        <LayoutFooter />
+        {/* Custom compact footer for mobile mini-games */}
+        <footer className='relative z-40 bg-blue-800/95 backdrop-blur-sm py-1 border-t-2 border-blue-400/50'>
+          <div className='container mx-auto px-2 text-center'>
+            <p className='text-white/80 mb-0 text-xs'>© 2025 Aqua Stark</p>
+            <div className='flex justify-center gap-1 mt-0'>
+              <span className='text-white/60 text-xs'>Privacy</span>
+              <span className='text-white/60 text-xs'>•</span>
+              <span className='text-white/60 text-xs'>Terms</span>
+              <span className='text-white/60 text-xs'>•</span>
+              <span className='text-white/60 text-xs'>Contact</span>
+            </div>
+          </div>
+        </footer>
       </div>
     </>
   );
