@@ -47,7 +47,9 @@ export function GameCanvas({
       width: platform.width,
       height: 20,
       borderRadius: '8px',
-      border: '2px solid rgba(255,255,255,0.4)',
+      backgroundImage: 'url(/mini-games/base.png)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
       transform: `translate(${platform.x}px, ${platform.y - camera.y}px) ${
         platform.bounceAnimation ? 'scaleY(0.8)' : 'scaleY(1)'
       }`,
@@ -59,22 +61,19 @@ export function GameCanvas({
       case 'spring':
         return {
           ...baseStyle,
-          background: 'linear-gradient(45deg, #10B981, #059669)',
-          boxShadow: '0 0 10px rgba(16, 185, 129, 0.5)',
+          boxShadow: '0 0 15px rgba(16, 185, 129, 0.8), 0 0 30px rgba(16, 185, 129, 0.5)',
+          filter: 'drop-shadow(0 0 8px rgba(16, 185, 129, 0.6))',
         };
       case 'broken':
         return {
           ...baseStyle,
-          background: 'linear-gradient(45deg, #DC2626, #991B1B)',
-          opacity: 0.7,
+          boxShadow: '0 0 15px rgba(220, 38, 38, 0.8), 0 0 30px rgba(220, 38, 38, 0.5)',
+          filter: 'drop-shadow(0 0 8px rgba(220, 38, 38, 0.6))',
+          opacity: 0.85,
         };
       default:
         return {
           ...baseStyle,
-          backgroundImage: 'url(/mini-games/base.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundColor: '#4A90E2',
         };
     }
   };
