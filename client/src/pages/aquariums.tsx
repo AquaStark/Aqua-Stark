@@ -128,9 +128,15 @@ export default function AquariumsPage() {
         // Extract species name from CairoCustomEnum
         let speciesName = 'AngelFish'; // Default
         if (fish.species?.variant) {
-          const activeVariant = Object.entries(fish.species.variant).find(
-            ([, value]) => value !== undefined
-          );
+          console.log('🔍 Raw species variant:', fish.species.variant);
+          console.log('🔍 Type of variant:', typeof fish.species.variant);
+          console.log('🔍 Is function?', typeof fish.species.variant === 'function');
+          
+          // Handle CairoCustomEnum variant extraction
+          const variantEntries = Object.entries(fish.species.variant);
+          console.log('🔍 Variant entries:', variantEntries);
+          const activeVariant = variantEntries.find(([, value]) => value !== undefined);
+          console.log('🔍 Active variant found:', activeVariant);
           if (activeVariant) {
             speciesName = activeVariant[0];
           }
