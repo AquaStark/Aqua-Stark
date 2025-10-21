@@ -117,7 +117,7 @@ export function MobileMiniGamesView() {
 
             {/* Horizontal scroll container for games */}
             <div
-              className='flex gap-3 overflow-x-auto pb-4'
+              className='flex gap-2 overflow-x-auto pb-4'
               style={{
                 scrollbarWidth: 'none', // Firefox
                 msOverflowStyle: 'none', // IE and Edge
@@ -127,7 +127,7 @@ export function MobileMiniGamesView() {
                 <div
                   key={game.id}
                   onClick={() => game.available && navigate(game.route)}
-                  className={`group relative bg-gradient-to-br from-blue-500/20 to-blue-800/40 backdrop-blur-sm border-2 border-blue-400/40 rounded-2xl overflow-hidden transition-all duration-300 flex-shrink-0 w-40 ${
+                  className={`group relative bg-gradient-to-br from-blue-500/20 to-blue-800/40 backdrop-blur-sm border-2 border-blue-400/40 rounded-2xl overflow-hidden transition-all duration-300 flex-shrink-0 w-36 ${
                     game.available
                       ? 'hover:scale-[1.02] hover:border-blue-400/70 hover:shadow-2xl hover:shadow-blue-500/40 cursor-pointer'
                       : 'opacity-60 cursor-not-allowed'
@@ -159,27 +159,27 @@ export function MobileMiniGamesView() {
                   </div>
 
                   {/* Content */}
-                  <div className='p-1.5'>
-                    <div className='flex items-center justify-between mb-1'>
-                      <h3 className='text-xs font-bold text-white'>
+                  <div className='p-1'>
+                    <div className='flex items-center justify-between mb-0.5'>
+                      <h3 className='text-xs font-bold text-white truncate'>
                         {game.name}
                       </h3>
-                      <div className='p-0.5 bg-green-500/20 rounded-lg border border-green-400/30'>
-                        <Gamepad2 className='w-2.5 h-2.5 text-green-400' />
+                      <div className='p-0.5 bg-green-500/20 rounded border border-green-400/30'>
+                        <Gamepad2 className='w-2 h-2 text-green-400' />
                       </div>
                     </div>
-                    <p className='text-blue-100/90 text-xs mb-1.5 line-clamp-2'>
+                    <p className='text-blue-100/90 text-xs mb-1 line-clamp-1'>
                       {game.description}
                     </p>
 
                     {game.available ? (
-                      <button className='w-full game-button bg-gradient-to-b from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 text-white py-1 rounded-lg font-bold transition-all duration-200 flex items-center justify-center gap-1 group-hover:scale-105 text-xs'>
-                        <Play className='w-2.5 h-2.5' />
-                        Play Now
+                      <button className='w-full game-button bg-gradient-to-b from-green-500 to-green-700 hover:from-green-400 hover:to-green-600 text-white py-0.5 rounded font-bold transition-all duration-200 flex items-center justify-center gap-0.5 group-hover:scale-105 text-xs'>
+                        <Play className='w-2 h-2' />
+                        Play
                       </button>
                     ) : (
-                      <div className='w-full bg-gray-700/30 text-white/50 py-1 rounded-lg font-bold text-center border border-gray-600/30 text-xs'>
-                        Coming Soon
+                      <div className='w-full bg-gray-700/30 text-white/50 py-0.5 rounded font-bold text-center border border-gray-600/30 text-xs'>
+                        Soon
                       </div>
                     )}
                   </div>
