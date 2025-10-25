@@ -118,7 +118,21 @@ export default function GamesPage() {
               {availableGames.map(game => (
                 <div
                   key={game.id}
-                  onClick={() => game.available && navigate(game.route)}
+                  onClick={() => {
+                    if (game.available) {
+                      navigate(game.route);
+                    }
+                  }}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      if (game.available) {
+                        navigate(game.route);
+                      }
+                    }
+                  }}
+                  role='button'
+                  tabIndex={game.available ? 0 : -1}
                   className={`group relative bg-gradient-to-br from-blue-500/20 to-blue-800/40 backdrop-blur-sm border-2 border-blue-400/40 rounded-2xl overflow-hidden transition-all duration-300 ${
                     game.available
                       ? 'hover:scale-[1.02] hover:border-blue-400/70 hover:shadow-2xl hover:shadow-blue-500/40 cursor-pointer'

@@ -1,5 +1,5 @@
 import { Fish, Monitor } from 'lucide-react';
-import { GameStatusBar } from '@/components';
+import { GameStatusBar, SSEStatus } from '@/components';
 import { FullscreenButton } from '@/components/ui/fullscreen-button';
 
 interface GameHeaderProps {
@@ -67,6 +67,7 @@ export function GameHeader({
         </div>
 
         <div className='flex items-center gap-1 sm:gap-2 ml-2 sm:ml-4'>
+          <SSEStatus />
           <FullscreenButton />
           {onWallpaperToggle && (
             <button
@@ -104,8 +105,18 @@ export function GameHeader({
           onClick={handleMenuClick}
           title='Menu'
         >
-          <svg className='h-4 w-4 sm:h-5 sm:w-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 6h16M4 12h16M4 18h16' />
+          <svg
+            className='h-4 w-4 sm:h-5 sm:w-5'
+            fill='none'
+            stroke='currentColor'
+            viewBox='0 0 24 24'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth={2}
+              d='M4 6h16M4 12h16M4 18h16'
+            />
           </svg>
         </button>
       </div>

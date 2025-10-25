@@ -19,6 +19,7 @@ import { useMobileDetection } from '@/hooks/use-mobile-detection';
 import { MobileGameView } from '@/components/mobile/mobile-game-view';
 import { useSpeciesCatalog } from '@/hooks/use-species-catalog';
 import { useFishSync } from '@/hooks/use-fish-sync';
+import { useFishUpdates, useAquariumUpdates, useGameEvents } from '@/hooks';
 
 // Importar todos los componentes originales
 import { GameHeader } from '@/components';
@@ -72,6 +73,11 @@ export default function GamePage() {
   // Use stored player address if account is not connected yet
   const effectivePlayerAddress = account?.address || storedPlayerAddress;
 
+  // SSE Real-time updates
+  const { subscribeToFishUpdates } = useFishUpdates();
+  const { subscribeToAquariumUpdates } = useAquariumUpdates();
+  const { subscribeToGameEvents } = useGameEvents();
+
   // CRITICAL: Save aquarium ID from URL immediately on page load
   useEffect(() => {
     console.log('🔍 GAME PAGE - Aquarium ID Check:', {
@@ -94,7 +100,42 @@ export default function GamePage() {
         setActiveAquariumId(aquariumIdFromUrl, effectivePlayerAddress);
       }
     }
-  }, [aquariumIdFromUrl, effectivePlayerAddress]);
+  }, [
+    aquariumIdFromUrl,
+    effectivePlayerAddress,
+    setActiveAquariumId,
+    storedAquariumId,
+  ]);
+
+  // SSE Event Handlers
+  useEffect(() => {
+    if (!effectivePlayerAddress) return;
+
+    // Subscribe to fish updates
+    subscribeToFishUpdates((data: any) => {
+      console.log('🐟 Real-time fish update:', data);
+      // Update fish states in real-time
+      // You can trigger re-fetch of fish data or update local state
+    });
+
+    // Subscribe to aquarium updates
+    subscribeToAquariumUpdates((data: any) => {
+      console.log('🏠 Real-time aquarium update:', data);
+      // Update aquarium states in real-time
+      // You can trigger re-fetch of aquarium data or update local state
+    });
+
+    // Subscribe to game events
+    subscribeToGameEvents((data: any) => {
+      console.log('🎮 Real-time game event:', data);
+      // Handle game events like achievements, notifications, etc.
+    });
+  }, [
+    effectivePlayerAddress,
+    subscribeToFishUpdates,
+    subscribeToAquariumUpdates,
+    subscribeToGameEvents,
+  ]);
 
   const aquarium =
     initialAquariums.find(a => a.id.toString() === activeAquariumId) ||
@@ -295,7 +336,19 @@ export default function GamePage() {
     };
 
     fetchFishes();
-  }, [effectivePlayerAddress, aquariumIdFromUrl, preloadedFish]);
+  }, [
+    effectivePlayerAddress,
+    aquariumIdFromUrl,
+    preloadedFish,
+    activeAquariumId,
+    getAquariumData,
+    getFish,
+    getPlayerAquariumsList,
+    getPlayerFish,
+    setActiveAquariumId,
+    storedAquariumId,
+    storedPlayerAddress,
+  ]);
 
   function bigIntToNumber(value: unknown): number {
     if (typeof value === 'bigint') return Number(value);

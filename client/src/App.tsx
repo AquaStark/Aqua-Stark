@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { StarknetProvider } from './providers/StarknetProvider';
 import { SpeciesCatalogProvider } from './contexts/SpeciesCatalogContext';
+import { SSEWrapper } from './components/sse-wrapper';
 import { ErrorBoundary } from './components';
 
 // Landing & Onboarding Pages
@@ -48,55 +49,57 @@ function App() {
     <ErrorBoundary>
       <StarknetProvider>
         <SpeciesCatalogProvider>
-          <Routes>
-            {/* Landing & Onboarding Routes */}
-            <Route path='/' element={ResponsiveLanding} />
-            <Route path='/onboarding' element={<OnboardingPage />} />
-            <Route path='/start' element={<StartPage />} />
-            <Route path='/loading' element={<LoadingPage />} />
+          <SSEWrapper>
+            <Routes>
+              {/* Landing & Onboarding Routes */}
+              <Route path='/' element={ResponsiveLanding} />
+              <Route path='/onboarding' element={<OnboardingPage />} />
+              <Route path='/start' element={<StartPage />} />
+              <Route path='/loading' element={<LoadingPage />} />
 
-            {/* Main Game Routes */}
-            <Route path='/game' element={<GamePage />} />
-            <Route path='/aquariums' element={<AquariumsPage />} />
-            <Route path='/store' element={ResponsiveStore} />
-            <Route path='/trading-market' element={<TradingMarketPage />} />
-            <Route
-              path='/breeding-laboratory'
-              element={<BreedingLaboratoryPage />}
-            />
+              {/* Main Game Routes */}
+              <Route path='/game' element={<GamePage />} />
+              <Route path='/aquariums' element={<AquariumsPage />} />
+              <Route path='/store' element={ResponsiveStore} />
+              <Route path='/trading-market' element={<TradingMarketPage />} />
+              <Route
+                path='/breeding-laboratory'
+                element={<BreedingLaboratoryPage />}
+              />
 
-            {/* Settings Route */}
-            <Route path='/settings' element={<SettingsPage />} />
+              {/* Settings Route */}
+              <Route path='/settings' element={<SettingsPage />} />
 
-            {/* Community & Social Routes */}
-            <Route path='/community' element={<CommunityPage />} />
-            <Route path='/my-profile' element={<MyProfilePage />} />
+              {/* Community & Social Routes */}
+              <Route path='/community' element={<CommunityPage />} />
+              <Route path='/my-profile' element={<MyProfilePage />} />
 
-            {/* Information & Help Routes */}
-            <Route path='/encyclopedia' element={<EncyclopediaPage />} />
-            <Route path='/help-center' element={<HelpCenterPage />} />
-            <Route path='/events-calendar' element={<EventsCalendarPage />} />
-            <Route path='/achievements' element={<AchievementsPage />} />
+              {/* Information & Help Routes */}
+              <Route path='/encyclopedia' element={<EncyclopediaPage />} />
+              <Route path='/help-center' element={<HelpCenterPage />} />
+              <Route path='/events-calendar' element={<EventsCalendarPage />} />
+              <Route path='/achievements' element={<AchievementsPage />} />
 
-            {/* Mini Games Routes */}
-            <Route path='/mini-games' element={ResponsiveMiniGames} />
-            <Route
-              path='/mini-games/floppy-fish'
-              element={ResponsiveFloppyFish}
-            />
-            <Route
-              path='/mini-games/bubble-jumper'
-              element={<ResponsiveBubbleJumper />}
-            />
+              {/* Mini Games Routes */}
+              <Route path='/mini-games' element={ResponsiveMiniGames} />
+              <Route
+                path='/mini-games/floppy-fish'
+                element={ResponsiveFloppyFish}
+              />
+              <Route
+                path='/mini-games/bubble-jumper'
+                element={<ResponsiveBubbleJumper />}
+              />
 
-            {/* Utility Routes */}
-            <Route path='/credits' element={<CreditsPage />} />
-            <Route path='/test-game' element={<Game />} />
-            <Route path='*' element={<Error404Page />} />
+              {/* Utility Routes */}
+              <Route path='/credits' element={<CreditsPage />} />
+              <Route path='/test-game' element={<Game />} />
+              <Route path='*' element={<Error404Page />} />
 
-            {/* test page */}
-            <Route path='/demo' element={<AquariumDemo />} />
-          </Routes>
+              {/* test page */}
+              <Route path='/demo' element={<AquariumDemo />} />
+            </Routes>
+          </SSEWrapper>
         </SpeciesCatalogProvider>
       </StarknetProvider>
     </ErrorBoundary>
