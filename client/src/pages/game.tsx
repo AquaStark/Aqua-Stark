@@ -111,25 +111,25 @@ export default function GamePage() {
   useEffect(() => {
     if (!effectivePlayerAddress) return;
 
-    // Subscribe to fish updates
-    subscribeToFishUpdates(data => {
-      console.log('🐟 Real-time fish update:', data);
-      // Update fish states in real-time
-      // You can trigger re-fetch of fish data or update local state
-    });
+      // Subscribe to fish updates
+      subscribeToFishUpdates((data: any) => {
+        console.log('🐟 Real-time fish update:', data);
+        // Update fish states in real-time
+        // You can trigger re-fetch of fish data or update local state
+      });
 
-    // Subscribe to aquarium updates
-    subscribeToAquariumUpdates(data => {
-      console.log('🏠 Real-time aquarium update:', data);
-      // Update aquarium states in real-time
-      // You can trigger re-fetch of aquarium data or update local state
-    });
+      // Subscribe to aquarium updates
+      subscribeToAquariumUpdates((data: any) => {
+        console.log('🏠 Real-time aquarium update:', data);
+        // Update aquarium states in real-time
+        // You can trigger re-fetch of aquarium data or update local state
+      });
 
-    // Subscribe to game events
-    subscribeToGameEvents(data => {
-      console.log('🎮 Real-time game event:', data);
-      // Handle game events like achievements, notifications, etc.
-    });
+      // Subscribe to game events
+      subscribeToGameEvents((data: any) => {
+        console.log('🎮 Real-time game event:', data);
+        // Handle game events like achievements, notifications, etc.
+      });
   }, [
     effectivePlayerAddress,
     subscribeToFishUpdates,

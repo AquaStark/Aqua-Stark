@@ -4,6 +4,7 @@ interface SSEEvent {
   type: string;
   data: any;
   timestamp: number;
+  message?: string;
 }
 
 interface UseSSEOptions {

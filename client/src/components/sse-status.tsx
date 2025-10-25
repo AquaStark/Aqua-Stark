@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSSEContext } from '@/contexts/SSEContext';
 import { Wifi, WifiOff, Loader2 } from 'lucide-react';
 
