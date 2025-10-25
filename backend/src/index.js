@@ -227,11 +227,14 @@ async function startServer() {
   }
 }
 
-// Start the server (only if not in Vercel)
-if (!process.env.VERCEL) {
+// Initialize Redis for both Vercel and local development
+if (process.env.VERCEL) {
+  // For Vercel, initialize Redis but don't start server
+  initRedis().catch(console.error);
+} else {
+  // For local development, start the full server
   startServer();
 }
 
-// Export for Vercel
+// Export for Vercel - must be the default export
 export default app;
-export { app, server, gameWebSocket };
