@@ -105,8 +105,18 @@ export function GameHeader({
           onClick={handleMenuClick}
           title='Menu'
         >
-          <svg className='h-4 w-4 sm:h-5 sm:w-5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-            <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M4 6h16M4 12h16M4 18h16' />
+          <svg
+            className='h-4 w-4 sm:h-5 sm:w-5'
+            fill='none'
+            stroke='currentColor'
+            viewBox='0 0 24 24'
+          >
+            <path
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth={2}
+              d='M4 6h16M4 12h16M4 18h16'
+            />
           </svg>
         </button>
       </div>

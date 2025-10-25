@@ -8,15 +8,11 @@ interface SSEWrapperProps {
 
 export function SSEWrapper({ children }: SSEWrapperProps) {
   const { account } = useAccount();
-  
+
   // Only provide SSE context if we have a connected account
   if (!account?.address) {
     return <>{children}</>;
   }
 
-  return (
-    <SSEProvider playerWallet={account.address}>
-      {children}
-    </SSEProvider>
-  );
+  return <SSEProvider playerWallet={account.address}>{children}</SSEProvider>;
 }

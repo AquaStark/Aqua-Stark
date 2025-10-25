@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useCallback, useState, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useCallback,
+  useState,
+  ReactNode,
+} from 'react';
 import { useSSE } from '@/hooks/use-sse';
 
 interface SSEContextType {
@@ -26,9 +32,15 @@ interface SSEProviderProps {
 
 export function SSEProvider({ children, playerWallet }: SSEProviderProps) {
   const [eventHistory, setEventHistory] = useState<any[]>([]);
-  const [fishUpdateHandler, setFishUpdateHandler] = useState<(data: any) => void>(() => {});
-  const [aquariumUpdateHandler, setAquariumUpdateHandler] = useState<(data: any) => void>(() => {});
-  const [gameEventHandler, setGameEventHandler] = useState<(data: any) => void>(() => {});
+  const [fishUpdateHandler, setFishUpdateHandler] = useState<
+    (data: any) => void
+  >(() => {});
+  const [aquariumUpdateHandler, setAquariumUpdateHandler] = useState<
+    (data: any) => void
+  >(() => {});
+  const [gameEventHandler, setGameEventHandler] = useState<(data: any) => void>(
+    () => {}
+  );
 
   // Add event to history
   const addToHistory = useCallback((event: any) => {
@@ -40,33 +52,51 @@ export function SSEProvider({ children, playerWallet }: SSEProviderProps) {
   }, []);
 
   // Fish update handler
-  const handleFishUpdate = useCallback((data: any) => {
-    console.log('🐟 Fish update received:', data);
-    addToHistory({ type: 'fish_update', data });
-    fishUpdateHandler(data);
-  }, [fishUpdateHandler, addToHistory]);
+  const handleFishUpdate = useCallback(
+    (data: any) => {
+      console.log('🐟 Fish update received:', data);
+      addToHistory({ type: 'fish_update', data });
+      fishUpdateHandler(data);
+    },
+    [fishUpdateHandler, addToHistory]
+  );
 
   // Aquarium update handler
-  const handleAquariumUpdate = useCallback((data: any) => {
-    console.log('🏠 Aquarium update received:', data);
-    addToHistory({ type: 'aquarium_update', data });
-    aquariumUpdateHandler(data);
-  }, [aquariumUpdateHandler, addToHistory]);
+  const handleAquariumUpdate = useCallback(
+    (data: any) => {
+      console.log('🏠 Aquarium update received:', data);
+      addToHistory({ type: 'aquarium_update', data });
+      aquariumUpdateHandler(data);
+    },
+    [aquariumUpdateHandler, addToHistory]
+  );
 
   // Game event handler
-  const handleGameEvent = useCallback((data: any) => {
-    console.log('🎮 Game event received:', data);
-    addToHistory({ type: 'game_event', data });
-    gameEventHandler(data);
-  }, [gameEventHandler, addToHistory]);
+  const handleGameEvent = useCallback(
+    (data: any) => {
+      console.log('🎮 Game event received:', data);
+      addToHistory({ type: 'game_event', data });
+      gameEventHandler(data);
+    },
+    [gameEventHandler, addToHistory]
+  );
 
   // Connection change handler
-  const handleConnectionChange = useCallback((connected: boolean) => {
-    console.log('🌊 SSE Connection status:', connected ? 'Connected' : 'Disconnected');
-    if (connected) {
-      addToHistory({ type: 'connection', message: 'Connected to real-time updates' });
-    }
-  }, [addToHistory]);
+  const handleConnectionChange = useCallback(
+    (connected: boolean) => {
+      console.log(
+        '🌊 SSE Connection status:',
+        connected ? 'Connected' : 'Disconnected'
+      );
+      if (connected) {
+        addToHistory({
+          type: 'connection',
+          message: 'Connected to real-time updates',
+        });
+      }
+    },
+    [addToHistory]
+  );
 
   // Use SSE hook
   const sse = useSSE({
@@ -85,17 +115,26 @@ export function SSEProvider({ children, playerWallet }: SSEProviderProps) {
   }, []);
 
   // Register event handlers
-  const registerFishUpdateHandler = useCallback((handler: (data: any) => void) => {
-    setFishUpdateHandler(() => handler);
-  }, []);
+  const registerFishUpdateHandler = useCallback(
+    (handler: (data: any) => void) => {
+      setFishUpdateHandler(() => handler);
+    },
+    []
+  );
 
-  const registerAquariumUpdateHandler = useCallback((handler: (data: any) => void) => {
-    setAquariumUpdateHandler(() => handler);
-  }, []);
+  const registerAquariumUpdateHandler = useCallback(
+    (handler: (data: any) => void) => {
+      setAquariumUpdateHandler(() => handler);
+    },
+    []
+  );
 
-  const registerGameEventHandler = useCallback((handler: (data: any) => void) => {
-    setGameEventHandler(() => handler);
-  }, []);
+  const registerGameEventHandler = useCallback(
+    (handler: (data: any) => void) => {
+      setGameEventHandler(() => handler);
+    },
+    []
+  );
 
   const contextValue: SSEContextType = {
     ...sse,
@@ -107,9 +146,7 @@ export function SSEProvider({ children, playerWallet }: SSEProviderProps) {
   };
 
   return (
-    <SSEContext.Provider value={contextValue}>
-      {children}
-    </SSEContext.Provider>
+    <SSEContext.Provider value={contextValue}>{children}</SSEContext.Provider>
   );
 }
 
@@ -125,10 +162,13 @@ export function useSSEContext() {
 // Hook for fish updates specifically
 export function useFishUpdates() {
   const { onFishUpdate, isConnected, error } = useSSEContext();
-  
-  const subscribeToFishUpdates = useCallback((handler: (data: any) => void) => {
-    onFishUpdate(handler);
-  }, [onFishUpdate]);
+
+  const subscribeToFishUpdates = useCallback(
+    (handler: (data: any) => void) => {
+      onFishUpdate(handler);
+    },
+    [onFishUpdate]
+  );
 
   return {
     subscribeToFishUpdates,
@@ -140,10 +180,13 @@ export function useFishUpdates() {
 // Hook for aquarium updates specifically
 export function useAquariumUpdates() {
   const { onAquariumUpdate, isConnected, error } = useSSEContext();
-  
-  const subscribeToAquariumUpdates = useCallback((handler: (data: any) => void) => {
-    onAquariumUpdate(handler);
-  }, [onAquariumUpdate]);
+
+  const subscribeToAquariumUpdates = useCallback(
+    (handler: (data: any) => void) => {
+      onAquariumUpdate(handler);
+    },
+    [onAquariumUpdate]
+  );
 
   return {
     subscribeToAquariumUpdates,
@@ -155,10 +198,13 @@ export function useAquariumUpdates() {
 // Hook for game events specifically
 export function useGameEvents() {
   const { onGameEvent, isConnected, error } = useSSEContext();
-  
-  const subscribeToGameEvents = useCallback((handler: (data: any) => void) => {
-    onGameEvent(handler);
-  }, [onGameEvent]);
+
+  const subscribeToGameEvents = useCallback(
+    (handler: (data: any) => void) => {
+      onGameEvent(handler);
+    },
+    [onGameEvent]
+  );
 
   return {
     subscribeToGameEvents,

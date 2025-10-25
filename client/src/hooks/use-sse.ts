@@ -29,7 +29,7 @@ export function useSSE({
   const [isConnecting, setIsConnecting] = useState(false);
   const [lastEvent, setLastEvent] = useState<SSEEvent | null>(null);
   const [error, setError] = useState<string | null>(null);
-  
+
   const eventSourceRef = useRef<EventSource | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const reconnectAttempts = useRef(0);
@@ -42,55 +42,63 @@ export function useSSE({
   };
 
   // Handle incoming SSE events
-  const handleMessage = useCallback((event: MessageEvent) => {
-    try {
-      const data: SSEEvent = JSON.parse(event.data);
-      setLastEvent(data);
-      setError(null);
+  const handleMessage = useCallback(
+    (event: MessageEvent) => {
+      try {
+        const data: SSEEvent = JSON.parse(event.data);
+        setLastEvent(data);
+        setError(null);
 
-      // Route events to appropriate handlers
-      switch (data.type) {
-        case 'fish_update':
-          onFishUpdate?.(data.data);
-          break;
-        case 'aquarium_update':
-          onAquariumUpdate?.(data.data);
-          break;
-        case 'game_event':
-          onGameEvent?.(data.data);
-          break;
-        case 'connection':
-          console.log('🌊 SSE Connected:', data.message);
-          break;
-        case 'ping':
-          // Keep-alive ping, no action needed
-          break;
-        default:
-          console.log('🌊 Unknown SSE event:', data.type);
+        // Route events to appropriate handlers
+        switch (data.type) {
+          case 'fish_update':
+            onFishUpdate?.(data.data);
+            break;
+          case 'aquarium_update':
+            onAquariumUpdate?.(data.data);
+            break;
+          case 'game_event':
+            onGameEvent?.(data.data);
+            break;
+          case 'connection':
+            console.log('🌊 SSE Connected:', data.message);
+            break;
+          case 'ping':
+            // Keep-alive ping, no action needed
+            break;
+          default:
+            console.log('🌊 Unknown SSE event:', data.type);
+        }
+      } catch (err) {
+        console.error('🌊 Error parsing SSE message:', err);
+        setError('Failed to parse server message');
       }
-    } catch (err) {
-      console.error('🌊 Error parsing SSE message:', err);
-      setError('Failed to parse server message');
-    }
-  }, [onFishUpdate, onAquariumUpdate, onGameEvent]);
+    },
+    [onFishUpdate, onAquariumUpdate, onGameEvent]
+  );
 
   // Handle connection errors
-  const handleError = useCallback((event: Event) => {
-    console.error('🌊 SSE Connection error:', event);
-    setIsConnected(false);
-    setError('Connection lost');
-    
-    if (autoReconnect && reconnectAttempts.current < maxReconnectAttempts) {
-      reconnectAttempts.current++;
-      console.log(`🌊 Attempting to reconnect (${reconnectAttempts.current}/${maxReconnectAttempts})...`);
-      
-      reconnectTimeoutRef.current = setTimeout(() => {
-        connect();
-      }, reconnectInterval);
-    } else if (reconnectAttempts.current >= maxReconnectAttempts) {
-      setError('Max reconnection attempts reached');
-    }
-  }, [autoReconnect, reconnectInterval]);
+  const handleError = useCallback(
+    (event: Event) => {
+      console.error('🌊 SSE Connection error:', event);
+      setIsConnected(false);
+      setError('Connection lost');
+
+      if (autoReconnect && reconnectAttempts.current < maxReconnectAttempts) {
+        reconnectAttempts.current++;
+        console.log(
+          `🌊 Attempting to reconnect (${reconnectAttempts.current}/${maxReconnectAttempts})...`
+        );
+
+        reconnectTimeoutRef.current = setTimeout(() => {
+          connect();
+        }, reconnectInterval);
+      } else if (reconnectAttempts.current >= maxReconnectAttempts) {
+        setError('Max reconnection attempts reached');
+      }
+    },
+    [autoReconnect, reconnectInterval]
+  );
 
   // Connect to SSE endpoint
   const connect = useCallback(() => {
@@ -119,7 +127,6 @@ export function useSSE({
 
       eventSource.onmessage = handleMessage;
       eventSource.onerror = handleError;
-
     } catch (err) {
       console.error('🌊 Failed to create SSE connection:', err);
       setError('Failed to connect to server');
