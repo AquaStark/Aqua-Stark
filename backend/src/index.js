@@ -20,6 +20,7 @@ import shopRouter from './routes/shopRoutes.js';
 import transactionRouter from './routes/transactionRoutes.js';
 import speciesRouter from './routes/species.js';
 import aquariumRouter from './routes/aquariumRoutes.js';
+import sseRoutes from './routes/sseRoutes.js';
 
 // Import WebSocket
 import { GameWebSocket } from './websocket/gameWebSocket.js';
@@ -30,11 +31,21 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Create HTTP server for WebSocket
-const server = http.createServer(app);
+// Create HTTP server for WebSocket (only if not in Vercel)
+let server;
+let gameWebSocket;
 
-// Initialize WebSocket server
-const gameWebSocket = new GameWebSocket(server);
+if (process.env.VERCEL) {
+  // Vercel doesn't support persistent WebSocket connections
+  console.log('🌊 Running on Vercel - WebSocket disabled, using polling fallback');
+} else {
+  // Create HTTP server for WebSocket (local development)
+  server = http.createServer(app);
+  
+  // Initialize WebSocket server
+  gameWebSocket = new GameWebSocket(server);
+  console.log('🌊 WebSocket enabled for real-time updates');
+}
 
 // Middleware
 app.use(helmet()); // Security headers
@@ -46,7 +57,10 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === 'production'
-        ? ['https://yourdomain.com']
+        ? [
+            'https://aqua-stark-frontend.vercel.app',
+            'https://your-frontend-domain.vercel.app'
+          ]
         : ['http://localhost:3000', 'http://localhost:5173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -97,15 +111,27 @@ app.use('/api/v1/store', storeRoutes);
 app.use('/api/v1/shop', shopRouter);
 app.use('/api/transaction/', transactionRouter);
 app.use('/api/v1/species', speciesRouter);
+app.use('/api/v1/events', sseRoutes);
 
-// WebSocket endpoint info
+// Real-time endpoint info
 app.get('/ws', (req, res) => {
-  res.json({
-    message: 'WebSocket endpoint',
-    url: `ws://${req.get('host')}/ws`,
-    authentication: 'Send JWT token in authenticate message',
-    channels: ['fish_updates', 'aquarium_updates', 'game_events'],
-  });
+  if (process.env.VERCEL) {
+    res.json({
+      message: 'Server-Sent Events endpoint (Vercel compatible)',
+      url: `${req.protocol}://${req.get('host')}/api/v1/events/{playerWallet}`,
+      method: 'GET',
+      format: 'text/event-stream',
+      channels: ['fish_updates', 'aquarium_updates', 'game_events'],
+      example: '/api/v1/events/0x123...abc'
+    });
+  } else {
+    res.json({
+      message: 'WebSocket endpoint',
+      url: `ws://${req.get('host')}/ws`,
+      authentication: 'Send JWT token in authenticate message',
+      channels: ['fish_updates', 'aquarium_updates', 'game_events'],
+    });
+  }
 });
 
 // Error handling middleware
@@ -153,7 +179,13 @@ async function startServer() {
     // Initialize Redis connection
     await initRedis();
 
-    // Start server
+    if (process.env.VERCEL) {
+      // For Vercel, just export the app
+      console.log('Server ready for Vercel deployment');
+      return;
+    }
+
+    // Start server (only for non-Vercel environments)
     server.listen(PORT, () => {
       console.log('');
       console.log(
@@ -193,8 +225,11 @@ async function startServer() {
   }
 }
 
-// Start the server
-startServer();
+// Start the server (only if not in Vercel)
+if (!process.env.VERCEL) {
+  startServer();
+}
 
-// Export for testing
+// Export for Vercel
+export default app;
 export { app, server, gameWebSocket };
