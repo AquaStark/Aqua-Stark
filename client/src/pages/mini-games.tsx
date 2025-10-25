@@ -118,11 +118,17 @@ export default function GamesPage() {
               {availableGames.map(game => (
                 <div
                   key={game.id}
-                  onClick={() => game.available && navigate(game.route)}
+                  onClick={() => {
+                    if (game.available) {
+                      navigate(game.route);
+                    }
+                  }}
                   onKeyDown={e => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
-                      game.available && navigate(game.route);
+                      if (game.available) {
+                        navigate(game.route);
+                      }
                     }
                   }}
                   role='button'
