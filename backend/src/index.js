@@ -37,11 +37,13 @@ let gameWebSocket;
 
 if (process.env.VERCEL) {
   // Vercel doesn't support persistent WebSocket connections
-  console.log('🌊 Running on Vercel - WebSocket disabled, using polling fallback');
+  console.log(
+    '🌊 Running on Vercel - WebSocket disabled, using polling fallback'
+  );
 } else {
   // Create HTTP server for WebSocket (local development)
   server = http.createServer(app);
-  
+
   // Initialize WebSocket server
   gameWebSocket = new GameWebSocket(server);
   console.log('🌊 WebSocket enabled for real-time updates');
@@ -59,7 +61,7 @@ app.use(
       process.env.NODE_ENV === 'production'
         ? [
             'https://aqua-stark-frontend.vercel.app',
-            'https://your-frontend-domain.vercel.app'
+            'https://your-frontend-domain.vercel.app',
           ]
         : ['http://localhost:3000', 'http://localhost:5173'],
     credentials: true,
@@ -122,7 +124,7 @@ app.get('/ws', (req, res) => {
       method: 'GET',
       format: 'text/event-stream',
       channels: ['fish_updates', 'aquarium_updates', 'game_events'],
-      example: '/api/v1/events/0x123...abc'
+      example: '/api/v1/events/0x123...abc',
     });
   } else {
     res.json({

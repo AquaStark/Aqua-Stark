@@ -11,41 +11,59 @@ export class RedisWebSocket {
   async setupRedis() {
     await this.publisher.connect();
     await this.subscriber.connect();
-    
+
     // Subscribe to game channels
-    await this.subscriber.subscribe('fish_updates', this.handleFishUpdate.bind(this));
-    await this.subscriber.subscribe('aquarium_updates', this.handleAquariumUpdate.bind(this));
-    await this.subscriber.subscribe('game_events', this.handleGameEvent.bind(this));
+    await this.subscriber.subscribe(
+      'fish_updates',
+      this.handleFishUpdate.bind(this)
+    );
+    await this.subscriber.subscribe(
+      'aquarium_updates',
+      this.handleAquariumUpdate.bind(this)
+    );
+    await this.subscriber.subscribe(
+      'game_events',
+      this.handleGameEvent.bind(this)
+    );
   }
 
   // Broadcast fish updates
   async broadcastFishUpdate(fishId, data) {
-    await this.publisher.publish('fish_updates', JSON.stringify({
-      type: 'fish_update',
-      fishId,
-      data,
-      timestamp: Date.now()
-    }));
+    await this.publisher.publish(
+      'fish_updates',
+      JSON.stringify({
+        type: 'fish_update',
+        fishId,
+        data,
+        timestamp: Date.now(),
+      })
+    );
   }
 
-  // Broadcast aquarium updates  
+  // Broadcast aquarium updates
   async broadcastAquariumUpdate(aquariumId, data) {
-    await this.publisher.publish('aquarium_updates', JSON.stringify({
-      type: 'aquarium_update', 
-      aquariumId,
-      data,
-      timestamp: Date.now()
-    }));
+    await this.publisher.publish(
+      'aquarium_updates',
+      JSON.stringify({
+        type: 'aquarium_update',
+        aquariumId,
+        data,
+        timestamp: Date.now(),
+      })
+    );
   }
 
   // Broadcast game events
   async broadcastGameEvent(playerWallet, data) {
-    await this.publisher.publish('game_events', JSON.stringify({
-      type: 'game_event',
-      playerWallet,
-      data,
-      timestamp: Date.now()
-    }));
+    await this.publisher.publish(
+      'game_events',
+      JSON.stringify({
+        type: 'game_event',
+        playerWallet,
+        data,
+        timestamp: Date.now(),
+      })
+    );
   }
 
   // Handle incoming messages
