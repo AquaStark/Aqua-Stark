@@ -9,7 +9,6 @@
     }
   ],
   "env": {
-    "VITE_API_URL": "@vite_api_url",
     "VITE_BACKEND_INTEGRATION": "true",
     "VITE_PLAYER_VALIDATION": "true",
     "VITE_REALTIME_UPDATES": "true"
