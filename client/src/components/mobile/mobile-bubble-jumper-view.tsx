@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBubbles } from '@/hooks/use-bubbles';
 import { BubblesBackground } from '@/components/bubble-background';
@@ -61,13 +61,16 @@ export default function MobileBubbleJumperView() {
   const animationRef = useRef<number>();
 
   // Fixed fish (no localStorage)
-  const selectedFish = {
-    id: 'fish001',
-    name: 'Aqua Puffer',
-    image: '/fish/fish1.png',
-    rarity: 'Common',
-    multiplier: 1.0,
-  };
+  const selectedFish = useMemo(
+    () => ({
+      id: 'fish001',
+      name: 'Aqua Puffer',
+      image: '/fish/fish1.png',
+      rarity: 'Common',
+      multiplier: 1.0,
+    }),
+    []
+  );
 
   const bubbles = useBubbles({
     initialCount: 8, // Reduced for mobile

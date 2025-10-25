@@ -19,12 +19,7 @@ import { useMobileDetection } from '@/hooks/use-mobile-detection';
 import { MobileGameView } from '@/components/mobile/mobile-game-view';
 import { useSpeciesCatalog } from '@/hooks/use-species-catalog';
 import { useFishSync } from '@/hooks/use-fish-sync';
-import {
-  useSSE,
-  useFishUpdates,
-  useAquariumUpdates,
-  useGameEvents,
-} from '@/hooks';
+import { useFishUpdates, useAquariumUpdates, useGameEvents } from '@/hooks';
 
 // Importar todos los componentes originales
 import { GameHeader } from '@/components';
@@ -79,11 +74,9 @@ export default function GamePage() {
   const effectivePlayerAddress = account?.address || storedPlayerAddress;
 
   // SSE Real-time updates
-  const { subscribeToFishUpdates, isConnected: fishConnected } =
-    useFishUpdates();
-  const { subscribeToAquariumUpdates, isConnected: aquariumConnected } =
-    useAquariumUpdates();
-  const { subscribeToGameEvents, isConnected: gameConnected } = useGameEvents();
+  const { subscribeToFishUpdates } = useFishUpdates();
+  const { subscribeToAquariumUpdates } = useAquariumUpdates();
+  const { subscribeToGameEvents } = useGameEvents();
 
   // CRITICAL: Save aquarium ID from URL immediately on page load
   useEffect(() => {
@@ -107,7 +100,12 @@ export default function GamePage() {
         setActiveAquariumId(aquariumIdFromUrl, effectivePlayerAddress);
       }
     }
-  }, [aquariumIdFromUrl, effectivePlayerAddress]);
+  }, [
+    aquariumIdFromUrl,
+    effectivePlayerAddress,
+    setActiveAquariumId,
+    storedAquariumId,
+  ]);
 
   // SSE Event Handlers
   useEffect(() => {
@@ -338,7 +336,19 @@ export default function GamePage() {
     };
 
     fetchFishes();
-  }, [effectivePlayerAddress, aquariumIdFromUrl, preloadedFish]);
+  }, [
+    effectivePlayerAddress,
+    aquariumIdFromUrl,
+    preloadedFish,
+    activeAquariumId,
+    getAquariumData,
+    getFish,
+    getPlayerAquariumsList,
+    getPlayerFish,
+    setActiveAquariumId,
+    storedAquariumId,
+    storedPlayerAddress,
+  ]);
 
   function bigIntToNumber(value: unknown): number {
     if (typeof value === 'bigint') return Number(value);
