@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { StarknetProvider } from './providers/StarknetProvider';
 import { SpeciesCatalogProvider } from './contexts/SpeciesCatalogContext';
+import { SSEWrapper } from './components/sse-wrapper';
 import { ErrorBoundary } from './components';
 
 // Landing & Onboarding Pages
@@ -48,7 +49,8 @@ function App() {
     <ErrorBoundary>
       <StarknetProvider>
         <SpeciesCatalogProvider>
-          <Routes>
+          <SSEWrapper>
+            <Routes>
             {/* Landing & Onboarding Routes */}
             <Route path='/' element={ResponsiveLanding} />
             <Route path='/onboarding' element={<OnboardingPage />} />
@@ -97,6 +99,7 @@ function App() {
             {/* test page */}
             <Route path='/demo' element={<AquariumDemo />} />
           </Routes>
+          </SSEWrapper>
         </SpeciesCatalogProvider>
       </StarknetProvider>
     </ErrorBoundary>

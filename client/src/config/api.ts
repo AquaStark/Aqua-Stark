@@ -50,6 +50,12 @@ export const API_CONFIG = {
       BULK_UPDATE: '/api/v1/decorations/bulk-update',
       CREATE_STATE: '/api/v1/decorations/state',
     },
+
+    // Real-time endpoints
+    EVENTS: {
+      SSE: '/api/v1/events/:playerWallet',
+      WEBSOCKET_INFO: '/ws',
+    },
   },
 };
 

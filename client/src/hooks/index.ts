@@ -55,6 +55,7 @@ export { useGameActions } from './useGameActions';
 export { usePlayerValidation } from './usePlayerValidation';
 export { useLocalStorage } from './use-local-storage';
 export { useMobileDetection } from './use-mobile-detection';
+export { useSSE } from './use-sse';
 
 // Dojo hooks
 
