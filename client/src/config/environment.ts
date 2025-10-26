@@ -10,15 +10,12 @@ const getBackendUrl = () => {
 
   // Fallback based on environment
   if (import.meta.env.MODE === 'production') {
-    // Production fallback - you should set VITE_API_URL in production
-    console.warn(
-      '⚠️ VITE_API_URL not set in production. Using localhost fallback.'
-    );
-    return 'http://localhost:3001';
+    // Production: use relative path (same origin deployment)
+    return '/api';
   }
 
-  // Development fallback
-  return 'http://localhost:3001';
+  // Development: use absolute URL to local backend
+  return 'http://localhost:3001/api';
 };
 
 export const ENV_CONFIG = {
@@ -73,13 +70,21 @@ export const isLocalBackend = () => {
 
 // Helper function to check if using remote backend
 export const isRemoteBackend = () => {
-  return !isLocalBackend();
+  return !isLocalBackend() && !ENV_CONFIG.API_URL.startsWith('/');
+};
+
+// Helper function to check if using relative path (same-origin deployment)
+export const isRelativeBackend = () => {
+  return ENV_CONFIG.API_URL.startsWith('/');
 };
 
 // Helper function to get backend type for debugging
 export const getBackendType = () => {
   if (isLocalBackend()) {
     return 'local';
+  }
+  if (isRelativeBackend()) {
+    return 'same-origin (unified deployment)';
   }
   return 'remote';
 };

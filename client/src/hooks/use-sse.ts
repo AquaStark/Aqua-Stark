@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { ENV_CONFIG } from '@/config/environment';
 
 interface SSEEvent {
   type: string;
@@ -36,10 +37,9 @@ export function useSSE({
   const reconnectAttempts = useRef(0);
   const maxReconnectAttempts = 5;
 
-  // Get API base URL from environment
+  // Get API base URL from centralized environment config
   const getApiUrl = () => {
-    const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-    return `${baseUrl}/api/v1/events/${playerWallet}`;
+    return `${ENV_CONFIG.API_URL}/v1/events/${playerWallet}`;
   };
 
   // Handle incoming SSE events

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { ENV_CONFIG } from '@/config/environment';
 
 interface DirtSpot {
   id: number;
@@ -7,9 +8,8 @@ interface DirtSpot {
   size: number;
 }
 
-// API base URL
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
+// API base URL - use centralized environment config
+const API_BASE_URL = `${ENV_CONFIG.API_URL}/v1`;
 
 export function useSimpleDirtSystem(aquariumId?: string, playerId?: string) {
   const [spots, setSpots] = useState<DirtSpot[]>([]);

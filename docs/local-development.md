@@ -226,7 +226,7 @@ pnpm install
 pnpm dev
 
 # You should see:
-# Server running on http://localhost:3000
+# Server running on http://localhost:3001
 ```
 
 ### Step 5: Frontend Setup
@@ -273,7 +273,7 @@ curl http://localhost:8080/graphql
 ### 3. Services Check
 ```bash
 # Check backend
-curl http://localhost:3000/health
+curl http://localhost:3001/health
 
 # Check frontend
 curl http://localhost:5173
