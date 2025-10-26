@@ -136,7 +136,14 @@ export function useSSE({
       setError('Failed to connect to server');
       setIsConnecting(false);
     }
-  }, [playerWallet, handleMessage, handleError, onConnectionChange, disconnect, getApiUrl]);
+  }, [
+    playerWallet,
+    handleMessage,
+    handleError,
+    onConnectionChange,
+    disconnect,
+    getApiUrl,
+  ]);
 
   // Disconnect from SSE
   const disconnect = useCallback(() => {
