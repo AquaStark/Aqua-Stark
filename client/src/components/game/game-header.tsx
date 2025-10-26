@@ -1,5 +1,5 @@
 import { Fish, Monitor } from 'lucide-react';
-import { GameStatusBar, SSEStatus } from '@/components';
+import { GameStatusBar, SSEStatus, BackendStatus } from '@/components';
 import { FullscreenButton } from '@/components/ui/fullscreen-button';
 
 interface GameHeaderProps {
@@ -67,6 +67,7 @@ export function GameHeader({
         </div>
 
         <div className='flex items-center gap-1 sm:gap-2 ml-2 sm:ml-4'>
+          <BackendStatus />
           <SSEStatus />
           <FullscreenButton />
           {onWallpaperToggle && (

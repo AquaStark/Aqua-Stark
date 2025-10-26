@@ -1,15 +1,36 @@
 // Environment configuration for Aqua Stark Frontend
 // This file centralizes all environment variables
 
+// Backend URL configuration with fallbacks
+const getBackendUrl = () => {
+  // Check for environment variable first
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  
+  // Fallback based on environment
+  if (import.meta.env.MODE === 'production') {
+    // Production fallback - you should set VITE_API_URL in production
+    console.warn('⚠️ VITE_API_URL not set in production. Using localhost fallback.');
+    return 'http://localhost:3001';
+  }
+  
+  // Development fallback
+  return 'http://localhost:3001';
+};
+
 export const ENV_CONFIG = {
-  // Backend API URL - defaults to localhost:3001
-  API_URL: import.meta.env.VITE_API_URL || 'http://localhost:3001',
+  // Backend API URL with smart fallbacks
+  API_URL: getBackendUrl(),
 
   // Environment
   NODE_ENV: import.meta.env.MODE || 'development',
 
   // API timeout in milliseconds
   API_TIMEOUT: parseInt(import.meta.env.VITE_API_TIMEOUT || '10000'),
+
+  // Debug mode
+  DEBUG: import.meta.env.VITE_DEBUG === 'true' || import.meta.env.MODE === 'development',
 
   // Feature flags
   FEATURES: {
@@ -36,4 +57,34 @@ export const getApiUrl = () => {
     throw new Error('API_URL is not configured');
   }
   return ENV_CONFIG.API_URL;
+};
+
+// Helper function to check if using local backend
+export const isLocalBackend = () => {
+  return ENV_CONFIG.API_URL.includes('localhost') || ENV_CONFIG.API_URL.includes('127.0.0.1');
+};
+
+// Helper function to check if using remote backend
+export const isRemoteBackend = () => {
+  return !isLocalBackend();
+};
+
+// Helper function to get backend type for debugging
+export const getBackendType = () => {
+  if (isLocalBackend()) {
+    return 'local';
+  }
+  return 'remote';
+};
+
+// Debug function to log current configuration
+export const logEnvironmentConfig = () => {
+  if (ENV_CONFIG.DEBUG) {
+    console.log('🌊 Aqua Stark Environment Configuration:');
+    console.log('📍 API URL:', ENV_CONFIG.API_URL);
+    console.log('🌍 Environment:', ENV_CONFIG.NODE_ENV);
+    console.log('🔧 Backend Type:', getBackendType());
+    console.log('⚡ Features:', ENV_CONFIG.FEATURES);
+    console.log('🐛 Debug Mode:', ENV_CONFIG.DEBUG);
+  }
 };
