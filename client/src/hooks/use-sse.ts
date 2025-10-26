@@ -103,8 +103,11 @@ export function useSSE({
 
   // Connect to SSE endpoint
   const connect = useCallback(() => {
-    if (!playerWallet) {
+    if (!playerWallet || playerWallet === '') {
       console.warn('🌊 No player wallet provided for SSE connection');
+      setIsConnected(false);
+      setIsConnecting(false);
+      setError('No wallet connected');
       return;
     }
 
@@ -154,8 +157,11 @@ export function useSSE({
 
   // Auto-connect when playerWallet changes
   useEffect(() => {
-    if (playerWallet) {
+    if (playerWallet && playerWallet !== '') {
       connect();
+    } else {
+      // If no wallet, ensure we're disconnected
+      disconnect();
     }
 
     return () => {

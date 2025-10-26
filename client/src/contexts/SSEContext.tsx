@@ -42,29 +42,6 @@ export function SSEProvider({ children, playerWallet }: SSEProviderProps) {
     () => {}
   );
 
-  // If no wallet, provide a disabled context
-  if (!playerWallet) {
-    const disabledContext: SSEContextType = {
-      isConnected: false,
-      isConnecting: false,
-      lastEvent: null,
-      error: 'No wallet connected',
-      connect: () => {},
-      disconnect: () => {},
-      onFishUpdate: () => {},
-      onAquariumUpdate: () => {},
-      onGameEvent: () => {},
-      eventHistory: [],
-      clearHistory: () => {},
-    };
-
-    return (
-      <SSEContext.Provider value={disabledContext}>
-        {children}
-      </SSEContext.Provider>
-    );
-  }
-
   // Add event to history
   const addToHistory = useCallback((event: any) => {
     setEventHistory(prev => {
@@ -121,9 +98,9 @@ export function SSEProvider({ children, playerWallet }: SSEProviderProps) {
     [addToHistory]
   );
 
-  // Use SSE hook
+  // Use SSE hook only if we have a wallet
   const sse = useSSE({
-    playerWallet,
+    playerWallet: playerWallet || '',
     onFishUpdate: handleFishUpdate,
     onAquariumUpdate: handleAquariumUpdate,
     onGameEvent: handleGameEvent,
