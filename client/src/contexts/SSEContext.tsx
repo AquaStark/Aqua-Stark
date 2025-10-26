@@ -98,9 +98,9 @@ export function SSEProvider({ children, playerWallet }: SSEProviderProps) {
     [addToHistory]
   );
 
-  // Use SSE hook
+  // Use SSE hook only if we have a wallet
   const sse = useSSE({
-    playerWallet,
+    playerWallet: playerWallet || '',
     onFishUpdate: handleFishUpdate,
     onAquariumUpdate: handleAquariumUpdate,
     onGameEvent: handleGameEvent,

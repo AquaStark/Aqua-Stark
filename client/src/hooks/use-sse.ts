@@ -78,33 +78,30 @@ export function useSSE({
     [onFishUpdate, onAquariumUpdate, onGameEvent]
   );
 
-  // Handle connection errors
-  const handleError = useCallback(
-    (event: Event) => {
-      console.error('🌊 SSE Connection error:', event);
-      setIsConnected(false);
-      setError('Connection lost');
+  // Disconnect from SSE
+  const disconnect = useCallback(() => {
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+      eventSourceRef.current = null;
+    }
 
-      if (autoReconnect && reconnectAttempts.current < maxReconnectAttempts) {
-        reconnectAttempts.current++;
-        console.log(
-          `🌊 Attempting to reconnect (${reconnectAttempts.current}/${maxReconnectAttempts})...`
-        );
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
+    }
 
-        reconnectTimeoutRef.current = setTimeout(() => {
-          connect();
-        }, reconnectInterval);
-      } else if (reconnectAttempts.current >= maxReconnectAttempts) {
-        setError('Max reconnection attempts reached');
-      }
-    },
-    [autoReconnect, reconnectInterval]
-  );
+    setIsConnected(false);
+    setIsConnecting(false);
+    onConnectionChange?.(false);
+  }, [onConnectionChange]);
 
   // Connect to SSE endpoint
   const connect = useCallback(() => {
-    if (!playerWallet) {
+    if (!playerWallet || playerWallet === '') {
       console.warn('🌊 No player wallet provided for SSE connection');
+      setIsConnected(false);
+      setIsConnecting(false);
+      setError('No wallet connected');
       return;
     }
 
@@ -127,35 +124,46 @@ export function useSSE({
       };
 
       eventSource.onmessage = handleMessage;
-      eventSource.onerror = handleError;
+      eventSource.onerror = (event: Event) => {
+        console.error('🌊 SSE Connection error:', event);
+        setIsConnected(false);
+        setError('Connection lost');
+
+        if (autoReconnect && reconnectAttempts.current < maxReconnectAttempts) {
+          reconnectAttempts.current++;
+          console.log(
+            `🌊 Attempting to reconnect (${reconnectAttempts.current}/${maxReconnectAttempts})...`
+          );
+
+          reconnectTimeoutRef.current = setTimeout(() => {
+            connect();
+          }, reconnectInterval);
+        } else if (reconnectAttempts.current >= maxReconnectAttempts) {
+          setError('Max reconnection attempts reached');
+        }
+      };
     } catch (err) {
       console.error('🌊 Failed to create SSE connection:', err);
       setError('Failed to connect to server');
       setIsConnecting(false);
     }
-  }, [playerWallet, handleMessage, handleError, onConnectionChange]);
-
-  // Disconnect from SSE
-  const disconnect = useCallback(() => {
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close();
-      eventSourceRef.current = null;
-    }
-
-    if (reconnectTimeoutRef.current) {
-      clearTimeout(reconnectTimeoutRef.current);
-      reconnectTimeoutRef.current = null;
-    }
-
-    setIsConnected(false);
-    setIsConnecting(false);
-    onConnectionChange?.(false);
-  }, [onConnectionChange]);
+  }, [
+    playerWallet,
+    handleMessage,
+    onConnectionChange,
+    disconnect,
+    getApiUrl,
+    autoReconnect,
+    reconnectInterval,
+  ]);
 
   // Auto-connect when playerWallet changes
   useEffect(() => {
-    if (playerWallet) {
+    if (playerWallet && playerWallet !== '') {
       connect();
+    } else {
+      // If no wallet, ensure we're disconnected
+      disconnect();
     }
 
     return () => {
