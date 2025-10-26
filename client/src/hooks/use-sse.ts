@@ -98,7 +98,7 @@ export function useSSE({
         setError('Max reconnection attempts reached');
       }
     },
-    [autoReconnect, reconnectInterval]
+    [autoReconnect, reconnectInterval, connect]
   );
 
   // Connect to SSE endpoint
@@ -136,7 +136,7 @@ export function useSSE({
       setError('Failed to connect to server');
       setIsConnecting(false);
     }
-  }, [playerWallet, handleMessage, handleError, onConnectionChange]);
+  }, [playerWallet, handleMessage, handleError, onConnectionChange, disconnect, getApiUrl]);
 
   // Disconnect from SSE
   const disconnect = useCallback(() => {

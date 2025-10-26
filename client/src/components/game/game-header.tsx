@@ -1,5 +1,5 @@
 import { Fish, Monitor } from 'lucide-react';
-import { GameStatusBar, SSEStatus, BackendStatus } from '@/components';
+import { GameStatusBar } from '@/components';
 import { FullscreenButton } from '@/components/ui/fullscreen-button';
 
 interface GameHeaderProps {
