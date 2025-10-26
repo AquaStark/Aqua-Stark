@@ -7,14 +7,16 @@ const getBackendUrl = () => {
   if (import.meta.env.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
   }
-  
+
   // Fallback based on environment
   if (import.meta.env.MODE === 'production') {
     // Production fallback - you should set VITE_API_URL in production
-    console.warn('⚠️ VITE_API_URL not set in production. Using localhost fallback.');
+    console.warn(
+      '⚠️ VITE_API_URL not set in production. Using localhost fallback.'
+    );
     return 'http://localhost:3001';
   }
-  
+
   // Development fallback
   return 'http://localhost:3001';
 };
@@ -30,7 +32,9 @@ export const ENV_CONFIG = {
   API_TIMEOUT: parseInt(import.meta.env.VITE_API_TIMEOUT || '10000'),
 
   // Debug mode
-  DEBUG: import.meta.env.VITE_DEBUG === 'true' || import.meta.env.MODE === 'development',
+  DEBUG:
+    import.meta.env.VITE_DEBUG === 'true' ||
+    import.meta.env.MODE === 'development',
 
   // Feature flags
   FEATURES: {
@@ -61,7 +65,10 @@ export const getApiUrl = () => {
 
 // Helper function to check if using local backend
 export const isLocalBackend = () => {
-  return ENV_CONFIG.API_URL.includes('localhost') || ENV_CONFIG.API_URL.includes('127.0.0.1');
+  return (
+    ENV_CONFIG.API_URL.includes('localhost') ||
+    ENV_CONFIG.API_URL.includes('127.0.0.1')
+  );
 };
 
 // Helper function to check if using remote backend

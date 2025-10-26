@@ -11,8 +11,6 @@ export function SSEWrapper({ children }: SSEWrapperProps) {
 
   // Always provide SSE context, but with conditional wallet
   return (
-    <SSEProvider playerWallet={account?.address || ''}>
-      {children}
-    </SSEProvider>
+    <SSEProvider playerWallet={account?.address || ''}>{children}</SSEProvider>
   );
 }
