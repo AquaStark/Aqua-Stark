@@ -67,8 +67,6 @@ export function GameHeader({
         </div>
 
         <div className='flex items-center gap-1 sm:gap-2 ml-2 sm:ml-4'>
-          <BackendStatus />
-          <SSEStatus />
           <FullscreenButton />
           {onWallpaperToggle && (
             <button
