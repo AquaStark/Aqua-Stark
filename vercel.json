@@ -1,11 +1,8 @@
 {
   "version": 2,
-  "name": "aqua-stark",
   "buildCommand": "pnpm run build:all",
-  "devCommand": "pnpm run dev",
-  "installCommand": "pnpm install",
-  "framework": null,
   "outputDirectory": "client/dist",
+  "installCommand": "pnpm install",
   "rewrites": [
     {
       "source": "/api/v1/(.*)",
@@ -19,21 +16,5 @@
       "source": "/(.*)",
       "destination": "/client/dist/index.html"
     }
-  ],
-  "functions": {
-    "api/index.js": {
-      "runtime": "nodejs20.x",
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  },
-  "env": {
-    "NODE_ENV": "production",
-    "VERCEL": "1"
-  },
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  }
+  ]
 }
