@@ -230,10 +230,7 @@ async function startServer() {
 // Initialize Redis for both Vercel and local development
 if (process.env.VERCEL) {
   // For Vercel, initialize Redis but don't start server
-  initRedis().catch(error => {
-    console.error('Redis initialization failed:', error.message);
-    console.log('Continuing without Redis...');
-  });
+  initRedis().catch(console.error);
 } else {
   // For local development, start the full server
   startServer();

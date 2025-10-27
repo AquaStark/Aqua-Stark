@@ -12,88 +12,22 @@ export const redisClient = createClient({
   },
 });
 
-// Redis connection state
-let isConnected = false;
-let reconnectAttempts = 0;
-
 // Connect to Redis
 redisClient.on('error', err => {
-  console.error('Redis Client Error:', err.message);
-  isConnected = false;
+  console.error('Redis Client Error:', err);
 });
 
 redisClient.on('connect', () => {
   console.log('Connected to Redis');
-  isConnected = true;
-  reconnectAttempts = 0;
 });
 
-redisClient.on('ready', () => {
-  console.log('Redis connection established');
-  isConnected = true;
-});
-
-redisClient.on('end', () => {
-  console.log('Redis connection ended');
-  isConnected = false;
-});
-
-redisClient.on('reconnecting', () => {
-  reconnectAttempts++;
-  console.log(`Redis: Reconnecting... (attempt ${reconnectAttempts})`);
-});
-
-// Initialize Redis connection with retry logic
+// Initialize Redis connection
 export const initRedis = async () => {
   try {
-    if (!redisClient.isOpen) {
-      await redisClient.connect();
-    }
+    await redisClient.connect();
     console.log('Redis connection established');
-    return true;
   } catch (error) {
-    console.error('Failed to connect to Redis:', error.message);
-    
-    // Don't throw error, just log it and continue without Redis
-    console.log('Continuing without Redis cache...');
-    return false;
-  }
-};
-
-// Safe Redis operations that won't crash the app
-export const safeRedisGet = async (key) => {
-  try {
-    if (!isConnected || !redisClient.isOpen) return null;
-    return await redisClient.get(key);
-  } catch (error) {
-    console.error('Redis GET error:', error.message);
-    return null;
-  }
-};
-
-export const safeRedisSet = async (key, value, ttl = null) => {
-  try {
-    if (!isConnected || !redisClient.isOpen) return false;
-    if (ttl) {
-      await redisClient.setEx(key, ttl, value);
-    } else {
-      await redisClient.set(key, value);
-    }
-    return true;
-  } catch (error) {
-    console.error('Redis SET error:', error.message);
-    return false;
-  }
-};
-
-export const safeRedisDel = async (key) => {
-  try {
-    if (!isConnected || !redisClient.isOpen) return false;
-    await redisClient.del(key);
-    return true;
-  } catch (error) {
-    console.error('Redis DEL error:', error.message);
-    return false;
+    console.error('Failed to connect to Redis:', error);
   }
 };
 
