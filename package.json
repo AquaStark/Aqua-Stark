@@ -1,29 +1,26 @@
 {
-  "name": "aqua-stark-workspace",
-  "private": true,
+  "name": "aqua-stark",
   "version": "1.0.0",
-  "type": "module",
-  "packageManager": "pnpm@10.13.1",
+  "description": "Aqua Stark - Underwater Game Platform",
+  "private": true,
   "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint": "pnpm -r --filter ./client lint",
-    "lint:backend": "pnpm -r --filter ./backend lint",
-    "typecheck": "pnpm -r --filter ./client typecheck",
-    "build": "pnpm -r --filter ./client build",
-    "dev": "pnpm --filter client dev",
-    "test": "pnpm -r --filter ./client test",
-    "test:coverage": "pnpm -r --filter ./client test:coverage"
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm run dev",
+    "build": "cd client && npm run build",
+    "install:all": "npm install && cd backend && npm install && cd ../client && npm install",
+    "lint": "cd backend && npm run lint && cd ../client && npm run lint",
+    "format": "cd backend && npm run format && cd ../client && npm run format"
   },
-  "devDependencies": {
-    "prettier": "^3.4.2"
+  "engines": {
+    "node": ">=16"
   },
-  "pnpm": {
-    "overrides": {
-      "starknet": "6.23.1"
-    },
-    "onlyBuiltDependencies": [
-      "supabase"
-    ]
-  }
+  "keywords": [
+    "aqua-stark",
+    "game",
+    "starknet",
+    "dojo",
+    "blockchain"
+  ],
+  "author": "Aqua Stark Team",
+  "license": "MIT"
 }
