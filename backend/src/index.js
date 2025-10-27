@@ -178,11 +178,8 @@ process.on('SIGINT', () => {
 // Initialize and start server
 async function startServer() {
   try {
-    // Initialize Redis connection (non-blocking)
-    const redisConnected = await initRedis();
-    if (!redisConnected) {
-      console.log('⚠️  Redis not available - continuing without cache');
-    }
+    // Initialize Redis connection
+    await initRedis();
 
     if (process.env.VERCEL) {
       // For Vercel, just export the app

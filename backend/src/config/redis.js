@@ -9,17 +9,6 @@ export const redisClient = createClient({
   socket: {
     tls: process.env.REDIS_URL?.includes('upstash.io') || false,
     rejectUnauthorized: false,
-    connectTimeout: 10000, // 10 seconds
-    lazyConnect: true, // Don't connect immediately
-    reconnectStrategy: (retries) => {
-      if (retries > 10) {
-        console.log('Redis: Max reconnection attempts reached');
-        return false; // Stop trying to reconnect
-      }
-      const delay = Math.min(retries * 100, 3000); // Exponential backoff, max 3s
-      console.log(`Redis: Reconnecting in ${delay}ms (attempt ${retries})`);
-      return delay;
-    },
   },
 });
 
