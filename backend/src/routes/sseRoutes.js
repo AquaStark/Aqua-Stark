@@ -14,16 +14,63 @@ let subscriber;
 // Initialize Redis connection
 async function initRedisSSE() {
   if (!redisClient) {
-    redisClient = createClient({ url: process.env.REDIS_URL });
-    subscriber = createClient({ url: process.env.REDIS_URL });
+    redisClient = createClient({ 
+      url: process.env.REDIS_URL,
+      socket: {
+        connectTimeout: 10000,
+        lazyConnect: true,
+        reconnectStrategy: (retries) => {
+          if (retries > 5) {
+            console.log('SSE Redis: Max reconnection attempts reached');
+            return false;
+          }
+          const delay = Math.min(retries * 200, 2000);
+          console.log(`SSE Redis: Reconnecting in ${delay}ms`);
+          return delay;
+        },
+      },
+    });
 
-    await redisClient.connect();
-    await subscriber.connect();
+    subscriber = createClient({ 
+      url: process.env.REDIS_URL,
+      socket: {
+        connectTimeout: 10000,
+        lazyConnect: true,
+        reconnectStrategy: (retries) => {
+          if (retries > 5) {
+            console.log('SSE Subscriber: Max reconnection attempts reached');
+            return false;
+          }
+          const delay = Math.min(retries * 200, 2000);
+          console.log(`SSE Subscriber: Reconnecting in ${delay}ms`);
+          return delay;
+        },
+      },
+    });
 
-    // Subscribe to game channels
-    await subscriber.subscribe('fish_updates', handleFishUpdate);
-    await subscriber.subscribe('aquarium_updates', handleAquariumUpdate);
-    await subscriber.subscribe('game_events', handleGameEvent);
+    // Add error handlers
+    redisClient.on('error', (err) => {
+      console.error('SSE Redis Client Error:', err.message);
+    });
+
+    subscriber.on('error', (err) => {
+      console.error('SSE Subscriber Error:', err.message);
+    });
+
+    try {
+      await redisClient.connect();
+      await subscriber.connect();
+
+      // Subscribe to game channels
+      await subscriber.subscribe('fish_updates', handleFishUpdate);
+      await subscriber.subscribe('aquarium_updates', handleAquariumUpdate);
+      await subscriber.subscribe('game_events', handleGameEvent);
+      
+      console.log('SSE Redis connections established');
+    } catch (error) {
+      console.error('SSE Redis connection failed:', error.message);
+      console.log('SSE will work without Redis pub/sub');
+    }
   }
 }
 

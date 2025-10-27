@@ -178,8 +178,11 @@ process.on('SIGINT', () => {
 // Initialize and start server
 async function startServer() {
   try {
-    // Initialize Redis connection
-    await initRedis();
+    // Initialize Redis connection (non-blocking)
+    const redisConnected = await initRedis();
+    if (!redisConnected) {
+      console.log('⚠️  Redis not available - continuing without cache');
+    }
 
     if (process.env.VERCEL) {
       // For Vercel, just export the app
@@ -230,7 +233,10 @@ async function startServer() {
 // Initialize Redis for both Vercel and local development
 if (process.env.VERCEL) {
   // For Vercel, initialize Redis but don't start server
-  initRedis().catch(console.error);
+  initRedis().catch(error => {
+    console.error('Redis initialization failed:', error.message);
+    console.log('Continuing without Redis...');
+  });
 } else {
   // For local development, start the full server
   startServer();
