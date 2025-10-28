@@ -1,8 +1,8 @@
 {
-  "version": 2,
-  "buildCommand": "cd client && npm install && npm run build",
+  "buildCommand": "npm install && npm run build",
   "outputDirectory": "client/dist",
-  "installCommand": "echo 'skip'",
+  "installCommand": null,
+  "rootDirectory": "client",
   "framework": null,
   "rewrites": [
     {
@@ -15,7 +15,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/client/dist/index.html"
+      "destination": "/index.html"
     }
   ]
 }
