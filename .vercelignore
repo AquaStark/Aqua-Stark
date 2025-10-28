@@ -5,8 +5,3 @@ aqua_stark/
 contract/
 docs/
 api/
-*.md
-.git/
-.github/
-node_modules/
-

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd client && npm ci && npm run build",
+  "buildCommand": "npm ci --prefix client && npm run build --prefix client",
   "outputDirectory": "client/dist",
   "installCommand": "echo 'Skipping root install, building in client directory'",
   "framework": null,
