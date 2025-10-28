@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "pnpm run build:all",
+  "buildCommand": "cd client && npm ci && npm run build",
   "outputDirectory": "client/dist",
-  "installCommand": "npm install -g pnpm@9.15.0 && pnpm install --no-frozen-lockfile",
+  "installCommand": "echo 'Skipping root install, building in client directory'",
   "framework": null,
   "rewrites": [
     {
