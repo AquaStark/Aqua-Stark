@@ -1,9 +1,8 @@
 {
-  "name": "aqua-stark-workspace",
-  "private": true,
+  "name": "aqua-stark",
   "version": "1.0.0",
-  "type": "module",
-  "packageManager": "pnpm@10.13.1",
+  "description": "Aqua Stark - Underwater Game Platform",
+  "private": true,
   "scripts": {
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -21,15 +20,16 @@
     "test:coverage": "pnpm -r --filter ./client test:coverage",
     "vercel-build": "pnpm run build:all"
   },
-  "devDependencies": {
-    "prettier": "^3.4.2"
+  "engines": {
+    "node": ">=16"
   },
-  "pnpm": {
-    "overrides": {
-      "starknet": "6.23.1"
-    },
-    "onlyBuiltDependencies": [
-      "supabase"
-    ]
-  }
+  "keywords": [
+    "aqua-stark",
+    "game",
+    "starknet",
+    "dojo",
+    "blockchain"
+  ],
+  "author": "Aqua Stark Team",
+  "license": "MIT"
 }
