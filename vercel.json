@@ -2,7 +2,7 @@
   "version": 2,
   "buildCommand": "pnpm run build:all",
   "outputDirectory": "client/dist",
-  "installCommand": "npm install -g pnpm@10.13.1 && pnpm install --frozen-lockfile",
+  "installCommand": "npm install -g pnpm@9.15.0 && pnpm install --no-frozen-lockfile",
   "framework": null,
   "rewrites": [
     {
