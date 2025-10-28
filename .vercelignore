@@ -1,0 +1,12 @@
+pnpm-lock.yaml
+pnpm-workspace.yaml
+backend/
+aqua_stark/
+contract/
+docs/
+api/
+*.md
+.git/
+.github/
+node_modules/
+
