@@ -21,7 +21,8 @@
     "vercel-build": "pnpm run build:all"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=20.0.0",
+    "pnpm": ">=10.0.0"
   },
   "keywords": [
     "aqua-stark",
