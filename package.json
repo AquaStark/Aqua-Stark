@@ -20,6 +20,7 @@
     "test:coverage": "pnpm -r --filter ./client test:coverage",
     "vercel-build": "pnpm run build:all"
   },
+  "packageManager": "pnpm@10.13.1",
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=10.0.0"

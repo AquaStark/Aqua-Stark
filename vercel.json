@@ -2,7 +2,8 @@
   "version": 2,
   "buildCommand": "pnpm run build:all",
   "outputDirectory": "client/dist",
-  "installCommand": "corepack enable; corepack prepare pnpm@10.13.1 --activate; pnpm install",
+  "installCommand": "pnpm install",
+  "framework": null,
   "rewrites": [
     {
       "source": "/api/v1/(.*)",
