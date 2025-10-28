@@ -13,10 +13,10 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { DirtSpot, DirtType } from '@/constants';
+import { ENV_CONFIG } from '@/config/environment';
 
-// API base URL - adjust based on your backend configuration
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
+// API base URL - use centralized environment config
+const API_BASE_URL = `${ENV_CONFIG.API_URL}/v1`;
 
 /**
  * @typedef {Object} DirtSystemState

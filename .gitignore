@@ -79,3 +79,7 @@ temp/
 
 # Claude
 .claude
+
+# Vercel
+.vercel
+.vercel.json.local

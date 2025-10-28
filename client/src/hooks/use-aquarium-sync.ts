@@ -28,7 +28,7 @@ export const useAquariumSync = () => {
         onChainId,
       });
 
-      const response = await fetch(`${API_URL}/api/v1/aquariums/create`, {
+      const response = await fetch(`${API_URL}/v1/aquariums/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ aquariumId, playerId, onChainId }),
@@ -58,7 +58,7 @@ export const useAquariumSync = () => {
       console.log('🏠 Fetching player aquariums from backend:', playerId);
 
       const response = await fetch(
-        `${API_URL}/api/v1/aquariums/player/${playerId}`
+        `${API_URL}/v1/aquariums/player/${playerId}`
       );
 
       if (!response.ok) {

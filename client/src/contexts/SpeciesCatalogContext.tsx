@@ -82,7 +82,7 @@ export const SpeciesCatalogProvider: React.FC<SpeciesCatalogProviderProps> = ({
         }
 
         // Fetch from API
-        const apiUrl = `${API_CONFIG.BASE_URL}/api/v1/species`;
+        const apiUrl = `${API_CONFIG.BASE_URL}/v1/species`;
         console.log('🌐 Fetching species catalog from:', apiUrl);
         const response = await fetch(apiUrl);
 

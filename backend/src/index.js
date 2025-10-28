@@ -63,7 +63,7 @@ app.use(
             'https://aqua-stark-frontend.vercel.app',
             'https://your-frontend-domain.vercel.app',
           ]
-        : ['http://localhost:3000', 'http://localhost:5173'],
+        : ['http://localhost:5173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],

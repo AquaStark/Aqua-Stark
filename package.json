@@ -4,12 +4,21 @@
   "description": "Aqua Stark - Underwater Game Platform",
   "private": true,
   "scripts": {
-    "start": "cd backend && npm start",
-    "dev": "cd backend && npm run dev",
-    "build": "cd client && npm run build",
-    "install:all": "npm install && cd backend && npm install && cd ../client && npm install",
-    "lint": "cd backend && npm run lint && cd ../client && npm run lint",
-    "format": "cd backend && npm run format && cd ../client && npm run format"
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "pnpm -r --filter ./client lint",
+    "lint:backend": "pnpm -r --filter ./backend lint",
+    "lint:all": "pnpm run lint && pnpm run lint:backend",
+    "typecheck": "pnpm -r --filter ./client typecheck",
+    "build": "pnpm -r --filter ./client build",
+    "build:all": "pnpm run build",
+    "dev": "pnpm --filter client dev",
+    "dev:backend": "pnpm --filter backend dev",
+    "dev:all": "concurrently \"pnpm run dev:backend\" \"pnpm run dev\"",
+    "start": "pnpm --filter client preview",
+    "test": "pnpm -r --filter ./client test",
+    "test:coverage": "pnpm -r --filter ./client test:coverage",
+    "vercel-build": "pnpm run build:all"
   },
   "engines": {
     "node": ">=16"
