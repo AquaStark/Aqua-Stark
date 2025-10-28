@@ -31,7 +31,7 @@ export const useFishSync = () => {
         species,
       });
 
-      const response = await fetch(`${API_URL}/api/v1/fish/create`, {
+      const response = await fetch(`${API_URL}/v1/fish/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fishId, playerId, onChainId, species }),
@@ -60,7 +60,7 @@ export const useFishSync = () => {
     try {
       console.log('🐟 Fetching player fish from backend:', playerId);
 
-      const response = await fetch(`${API_URL}/api/v1/fish/player/${playerId}`);
+      const response = await fetch(`${API_URL}/v1/fish/player/${playerId}`);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch player fish: ${response.statusText}`);

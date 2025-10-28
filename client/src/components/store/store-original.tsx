@@ -6,6 +6,7 @@ import { StoreTabs } from './store-tabs';
 import { StoreGrid } from './store-grid';
 import { StoreSearchFilters } from './store-search-filters';
 import { ItemType } from '@/data/mock-game';
+import { ENV_CONFIG } from '@/config/environment';
 
 /**
  * Store Original Component
@@ -32,9 +33,7 @@ export function StoreOriginal() {
     const fetchItems = async () => {
       try {
         setLoading(true);
-        const response = await fetch(
-          'http://localhost:3001/api/v1/store/items'
-        );
+        const response = await fetch(`${ENV_CONFIG.API_URL}/v1/store/items`);
         const data = await response.json();
 
         if (data.success && data.data) {

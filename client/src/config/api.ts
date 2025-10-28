@@ -11,49 +11,49 @@ export const API_CONFIG = {
   // API version
   VERSION: 'v1',
 
-  // Endpoints
+  // Endpoints (without /api prefix - BASE_URL already includes it)
   ENDPOINTS: {
     // Player endpoints
     PLAYERS: {
-      GET_BY_WALLET: '/api/v1/players/wallet/:walletAddress',
-      CREATE: '/api/v1/players/create',
-      PROFILE: '/api/v1/players/:playerId/profile',
-      EXPERIENCE: '/api/v1/players/:playerId/experience',
-      CURRENCY: '/api/v1/players/:playerId/currency',
-      STATS: '/api/v1/players/:playerId/stats',
-      LAST_LOGIN: '/api/v1/players/:playerId/last-login',
-      PREFERENCES: '/api/v1/players/:playerId/preferences',
-      DASHBOARD: '/api/v1/players/:playerId/dashboard',
+      GET_BY_WALLET: '/v1/players/wallet/:walletAddress',
+      CREATE: '/v1/players/create',
+      PROFILE: '/v1/players/:playerId/profile',
+      EXPERIENCE: '/v1/players/:playerId/experience',
+      CURRENCY: '/v1/players/:playerId/currency',
+      STATS: '/v1/players/:playerId/stats',
+      LAST_LOGIN: '/v1/players/:playerId/last-login',
+      PREFERENCES: '/v1/players/:playerId/preferences',
+      DASHBOARD: '/v1/players/:playerId/dashboard',
     },
 
     // Fish endpoints
     FISH: {
-      STATE: '/api/v1/fish/:fishId/state',
-      PLAYER_FISH: '/api/v1/fish/player/:playerId',
-      FEED: '/api/v1/fish/:fishId/feed',
-      PLAY: '/api/v1/fish/:fishId/play',
-      MOOD: '/api/v1/fish/:fishId/mood',
-      CREATE_STATE: '/api/v1/fish/state',
+      STATE: '/v1/fish/:fishId/state',
+      PLAYER_FISH: '/v1/fish/player/:playerId',
+      FEED: '/v1/fish/:fishId/feed',
+      PLAY: '/v1/fish/:fishId/play',
+      MOOD: '/v1/fish/:fishId/mood',
+      CREATE_STATE: '/v1/fish/state',
     },
 
     // Decoration endpoints
     DECORATIONS: {
-      STATE: '/api/v1/decorations/:decorationId/state',
-      PLAYER_DECORATIONS: '/api/v1/decorations/player/:playerId',
-      AQUARIUM_DECORATIONS: '/api/v1/decorations/aquarium/:aquariumId',
-      PLACE: '/api/v1/decorations/:decorationId/place',
-      REMOVE: '/api/v1/decorations/:decorationId',
-      POSITION: '/api/v1/decorations/:decorationId/position',
-      VISIBILITY: '/api/v1/decorations/:decorationId/visibility',
-      MOVE: '/api/v1/decorations/:decorationId/move',
-      STATS: '/api/v1/decorations/player/:playerId/stats',
-      BULK_UPDATE: '/api/v1/decorations/bulk-update',
-      CREATE_STATE: '/api/v1/decorations/state',
+      STATE: '/v1/decorations/:decorationId/state',
+      PLAYER_DECORATIONS: '/v1/decorations/player/:playerId',
+      AQUARIUM_DECORATIONS: '/v1/decorations/aquarium/:aquariumId',
+      PLACE: '/v1/decorations/:decorationId/place',
+      REMOVE: '/v1/decorations/:decorationId',
+      POSITION: '/v1/decorations/:decorationId/position',
+      VISIBILITY: '/v1/decorations/:decorationId/visibility',
+      MOVE: '/v1/decorations/:decorationId/move',
+      STATS: '/v1/decorations/player/:playerId/stats',
+      BULK_UPDATE: '/v1/decorations/bulk-update',
+      CREATE_STATE: '/v1/decorations/state',
     },
 
     // Real-time endpoints
     EVENTS: {
-      SSE: '/api/v1/events/:playerWallet',
+      SSE: '/v1/events/:playerWallet',
       WEBSOCKET_INFO: '/ws',
     },
   },
