@@ -71,7 +71,7 @@ function handleGameEvent(message) {
 }
 
 // Server-Sent Events endpoint for real-time updates
-router.get('/:playerWallet', async (req, res) => {
+router.get('/events/:playerWallet', async (req, res) => {
   const { playerWallet } = req.params;
 
   // Initialize Redis if not already done
