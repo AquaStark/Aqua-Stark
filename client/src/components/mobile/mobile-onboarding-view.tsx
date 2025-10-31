@@ -406,28 +406,6 @@ export function MobileOnboardingView() {
     navigate(`/loading?aquarium=${aquariumId}`);
   };
 
-  // Auto-trigger steps
-  const handleContinue = async () => {
-    if (selectedFish.length !== 2) return;
-
-    // Step 1: Create aquarium if not created
-    if (!aquariumCreated && !isCreatingAquarium) {
-      await handleCreateAquarium();
-      return;
-    }
-
-    // Step 2: Create fish if aquarium is created but fish not created
-    if (aquariumCreated && !fishCreated && !isCreatingFish) {
-      await handleCreateFish();
-      return;
-    }
-
-    // Step 3: Go to game if both are created
-    if (aquariumCreated && fishCreated) {
-      handleGoToGame();
-    }
-  };
-
   return (
     <div className='relative min-h-screen w-full h-screen overflow-hidden flex flex-col'>
       {/* Oceanic background image and gradient overlays - Same as desktop */}
