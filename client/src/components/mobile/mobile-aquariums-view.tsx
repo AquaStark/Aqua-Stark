@@ -89,7 +89,9 @@ export function MobileAquariumsView({
                 alt='Coins'
                 className='w-4 h-4 mr-1.5'
               />
-              <span className='font-bold text-white text-sm'>{coinBalance}</span>
+              <span className='font-bold text-white text-sm'>
+                {coinBalance}
+              </span>
             </div>
           </div>
 
@@ -121,7 +123,9 @@ export function MobileAquariumsView({
                 animate={{ opacity: 1, y: 0 }}
                 className='bg-red-600/40 border border-red-400/50 rounded-xl p-4 backdrop-blur-sm'
               >
-                <div className='text-red-200 text-xs font-medium mb-1'>Error</div>
+                <div className='text-red-200 text-xs font-medium mb-1'>
+                  Error
+                </div>
                 <div className='text-white text-sm'>{error}</div>
               </motion.div>
             )}
@@ -175,7 +179,9 @@ export function MobileAquariumsView({
                   <div className='text-blue-200 text-xs font-medium mb-1'>
                     Total Fish
                   </div>
-                  <div className='text-white text-2xl font-bold'>{totalFish}</div>
+                  <div className='text-white text-2xl font-bold'>
+                    {totalFish}
+                  </div>
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -220,7 +226,8 @@ export function MobileAquariumsView({
                     🐠 No aquariums yet
                   </div>
                   <div className='text-blue-200 text-sm mb-6'>
-                    Create your first aquarium to start your underwater adventure!
+                    Create your first aquarium to start your underwater
+                    adventure!
                   </div>
                   <button
                     onClick={onCreateAquarium}
@@ -283,7 +290,7 @@ export function MobileAquariumsView({
         </div>
 
         {/* Floating Action Button - Create Aquarium - DISABLED */}
-        {false && effectivePlayerAddress && !loading && (
+        {/* {effectivePlayerAddress && !loading && (
           <motion.button
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -295,9 +302,8 @@ export function MobileAquariumsView({
           >
             <Plus className='h-6 w-6' />
           </motion.button>
-        )}
+        )} */}
       </div>
     </OrientationLock>
   );
 }
-
