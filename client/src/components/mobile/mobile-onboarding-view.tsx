@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { BubblesBackground, PageHeader } from '@/components';
 import { FishCard } from '@/components/ui/fish-card/fish-card';
@@ -17,7 +16,6 @@ import { useAccount } from '@starknet-react/core';
 import { toast } from 'sonner';
 import { CairoCustomEnum } from 'starknet';
 import { SpeciesEnum } from '@/typescript/models.gen';
-import { WalletAccount } from '@/types';
 
 // This map connects your frontend IDs to Cairo enum variants
 // Cairo enums use numeric indices, not names
@@ -140,7 +138,7 @@ export function MobileOnboardingView() {
       toast.loading('Creating your aquarium...', { id: 'aquarium' });
 
       const tx = await newAquarium(
-          account as any,
+        account as any,
         account.address,
         10, // maxCapacity
         5 // maxDecorations
@@ -459,16 +457,16 @@ export function MobileOnboardingView() {
           backText='Back'
           className='bg-blue-900/60 backdrop-blur-md border-b border-blue-400/30'
         />
-          </div>
+      </div>
 
       {/* Main content - Scrollable */}
       <main className='flex flex-col items-center gap-4 sm:gap-6 px-3 sm:px-4 py-4 sm:py-6 relative z-30 flex-1 overflow-y-auto overscroll-y-contain scrollbar-thin scrollbar-thumb-blue-400/50 scrollbar-track-blue-900/30'>
         {/* Step 1: Welcome Message + Aquarium Button - CENTERED - same as desktop */}
         {!aquariumCreated && (
           <div className='flex items-center justify-center min-h-[70vh] w-full'>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               className='w-full max-w-2xl'
             >
@@ -509,7 +507,7 @@ export function MobileOnboardingView() {
 
         {/* Step 2: Fish Selection + Fish Button - Optimized for Mobile */}
         {aquariumCreated && !fishCreated && (
-        <motion.div
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
@@ -560,12 +558,12 @@ export function MobileOnboardingView() {
                 </motion.div>
               ))}
             </div>
-        </motion.div>
+          </motion.div>
         )}
 
         {/* Step 3: Success + Dive In Button - same as desktop */}
         {fishCreated && (
-        <motion.div
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
@@ -589,13 +587,12 @@ export function MobileOnboardingView() {
                   className='w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-bold text-base sm:text-lg md:text-xl py-6 sm:py-8 shadow-lg shadow-cyan-500/30 animate-pulse touch-manipulation'
                 >
                   🌊 Dive Into AquaStark
-          </Button>
+                </Button>
               </div>
             </div>
-        </motion.div>
+          </motion.div>
         )}
       </main>
-
     </div>
   );
 }
