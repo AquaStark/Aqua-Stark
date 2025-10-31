@@ -406,7 +406,6 @@ export function MobileOnboardingView() {
     navigate(`/loading?aquarium=${aquariumId}`);
   };
 
-
   return (
     <div className='relative min-h-screen w-full h-screen overflow-hidden flex flex-col'>
       {/* Oceanic background image and gradient overlays - Same as desktop */}
