@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Search, ArrowLeft, Plus } from 'lucide-react';
+import { Search, ArrowLeft } from 'lucide-react';
 import { BubblesBackground } from '@/components';
 import { AquariumCard } from '@/components';
 import { OrientationLock } from '@/components/ui';
