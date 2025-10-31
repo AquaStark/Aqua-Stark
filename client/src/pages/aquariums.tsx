@@ -36,7 +36,7 @@ export default function AquariumsPage() {
   const { getFish } = useFishSystemEnhanced();
   const { getPlayerAquariums: getPlayerAquariumsBackend } = useAquariumSync();
   const { getSpeciesImage, getSpeciesDisplayName } = useSpeciesCatalog();
-  
+
   // Mobile detection
   const { isMobile } = useMobileDetection();
 
@@ -491,11 +491,11 @@ export default function AquariumsPage() {
             )}
 
             {/* Create Aquarium Button - DISABLED */}
-            {false && account?.address && (
+            {/* {account?.address && (
               <CreateAquariumButton
                 onClick={() => setShowPurchaseModal(true)}
               />
-            )}
+            )} */}
           </main>
 
           <LayoutFooter />
