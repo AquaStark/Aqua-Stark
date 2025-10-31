@@ -50,12 +50,18 @@ export default function LandingMobilePage() {
       {/* Main content - Mobile optimized */}
       <div className='relative z-20 flex flex-col justify-center items-center px-3 pt-1 pb-16 min-h-[calc(100vh-4rem)]'>
         {/* Hero section - Mobile optimized */}
-        <div className='flex items-center justify-center pt-0 pb-0 sm:py-1 md:py-2 flex-1'>
+        <div
+          className='flex items-center justify-center flex-1'
+          style={{ paddingTop: '0', paddingBottom: '0' }}
+        >
           <HeroSection onTriggerPulse={triggerPulse} />
         </div>
 
         {/* Featured fish section - Mobile optimized */}
-        <div className='flex items-center justify-center pt-0 pb-2 flex-1 -mt-24 sm:-mt-12 md:-mt-6 lg:mt-0'>
+        <div
+          className='flex items-center justify-center pb-2 flex-1'
+          style={{ paddingTop: '0', marginTop: '-96px' }}
+        >
           <FeaturedFishMobile />
         </div>
       </div>
