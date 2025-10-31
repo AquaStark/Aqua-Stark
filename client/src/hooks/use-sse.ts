@@ -133,7 +133,7 @@ export function useSSE({
       eventSource.onerror = () => {
         // Silently handle connection errors without showing 404s
         setIsConnected(false);
-        
+
         // Stop reconnection attempts immediately to prevent 404 errors
         // If connection fails (like 404), don't retry
         if (eventSource.readyState === EventSource.CLOSED) {
