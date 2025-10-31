@@ -5,7 +5,6 @@ import { LayoutFooter } from '@/components';
 import { AquariumStats } from '@/components';
 import { AquariumList } from '@/components';
 import { PurchaseModal } from '@/components';
-import { CreateAquariumButton } from '@/components';
 import { BubblesBackground } from '@/components';
 import { OrientationLock } from '@/components/ui';
 import { useBubbles } from '@/hooks';
