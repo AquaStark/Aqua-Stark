@@ -108,19 +108,19 @@ export function MobileGameView() {
     if (!effectivePlayerAddress) return;
 
     // Subscribe to fish updates
-    subscribeToFishUpdates((data: any) => {
+    subscribeToFishUpdates(() => {
       // Update fish states in real-time
       // You can trigger re-fetch of fish data or update local state
     });
 
     // Subscribe to aquarium updates
-    subscribeToAquariumUpdates((data: any) => {
+    subscribeToAquariumUpdates(() => {
       // Update aquarium states in real-time
       // You can trigger re-fetch of aquarium data or update local state
     });
 
     // Subscribe to game events
-    subscribeToGameEvents((data: any) => {
+    subscribeToGameEvents(() => {
       // Handle game events like achievements, notifications, etc.
     });
   }, [
@@ -249,7 +249,7 @@ export function MobileGameView() {
             } else {
               setPlayerFishes([]);
             }
-          } catch (aquariumError) {
+          } catch {
             setPlayerFishes([]);
           }
         } else {
@@ -308,7 +308,7 @@ export function MobileGameView() {
             }
           }
         }
-      } catch (err) {
+      } catch {
         setPlayerFishes([]);
       }
     };
