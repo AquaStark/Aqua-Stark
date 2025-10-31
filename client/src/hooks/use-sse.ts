@@ -68,9 +68,9 @@ export function useSSE({
             // Keep-alive ping, no action needed
             break;
           default:
-            // Unknown event type, ignore silently
+          // Unknown event type, ignore silently
         }
-      } catch (err) {
+      } catch {
         // Silently handle parse errors
         setError('Failed to parse server message');
       }
@@ -130,7 +130,7 @@ export function useSSE({
       };
 
       eventSource.onmessage = handleMessage;
-      eventSource.onerror = (event: Event) => {
+      eventSource.onerror = () => {
         // Silently handle connection errors without showing 404s
         setIsConnected(false);
         
@@ -144,7 +144,11 @@ export function useSSE({
         }
 
         // Only attempt reconnection if connection is still open but errored
-        if (autoReconnect && reconnectAttempts.current < maxReconnectAttempts && eventSource.readyState === EventSource.CONNECTING) {
+        if (
+          autoReconnect &&
+          reconnectAttempts.current < maxReconnectAttempts &&
+          eventSource.readyState === EventSource.CONNECTING
+        ) {
           reconnectAttempts.current++;
           reconnectTimeoutRef.current = setTimeout(() => {
             connect();
@@ -154,7 +158,7 @@ export function useSSE({
           disconnect();
         }
       };
-    } catch (err) {
+    } catch {
       // Silently handle connection failures
       setIsConnecting(false);
       disconnect();
