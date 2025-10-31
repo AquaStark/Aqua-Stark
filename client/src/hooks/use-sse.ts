@@ -62,16 +62,16 @@ export function useSSE({
             onGameEvent?.(data.data);
             break;
           case 'connection':
-            console.log('🌊 SSE Connected:', data.message);
+            // Connection established silently
             break;
           case 'ping':
             // Keep-alive ping, no action needed
             break;
           default:
-            console.log('🌊 Unknown SSE event:', data.type);
+          // Unknown event type, ignore silently
         }
-      } catch (err) {
-        console.error('🌊 Error parsing SSE message:', err);
+      } catch {
+        // Silently handle parse errors
         setError('Failed to parse server message');
       }
     },
@@ -97,8 +97,15 @@ export function useSSE({
 
   // Connect to SSE endpoint
   const connect = useCallback(() => {
+    // Check if real-time updates are enabled
+    if (!ENV_CONFIG.FEATURES.REALTIME_UPDATES) {
+      // Silently disable SSE if feature is disabled
+      setIsConnected(false);
+      setIsConnecting(false);
+      return;
+    }
+
     if (!playerWallet || playerWallet === '') {
-      console.warn('🌊 No player wallet provided for SSE connection');
       setIsConnected(false);
       setIsConnecting(false);
       setError('No wallet connected');
@@ -116,7 +123,6 @@ export function useSSE({
       eventSourceRef.current = eventSource;
 
       eventSource.onopen = () => {
-        console.log('🌊 SSE Connection opened');
         setIsConnected(true);
         setIsConnecting(false);
         reconnectAttempts.current = 0;
@@ -124,28 +130,38 @@ export function useSSE({
       };
 
       eventSource.onmessage = handleMessage;
-      eventSource.onerror = (event: Event) => {
-        console.error('🌊 SSE Connection error:', event);
+      eventSource.onerror = () => {
+        // Silently handle connection errors without showing 404s
         setIsConnected(false);
-        setError('Connection lost');
 
-        if (autoReconnect && reconnectAttempts.current < maxReconnectAttempts) {
+        // Stop reconnection attempts immediately to prevent 404 errors
+        // If connection fails (like 404), don't retry
+        if (eventSource.readyState === EventSource.CLOSED) {
+          // Connection closed, likely 404 or server unavailable
+          // Disconnect and stop trying to prevent repeated 404 errors
+          disconnect();
+          return;
+        }
+
+        // Only attempt reconnection if connection is still open but errored
+        if (
+          autoReconnect &&
+          reconnectAttempts.current < maxReconnectAttempts &&
+          eventSource.readyState === EventSource.CONNECTING
+        ) {
           reconnectAttempts.current++;
-          console.log(
-            `🌊 Attempting to reconnect (${reconnectAttempts.current}/${maxReconnectAttempts})...`
-          );
-
           reconnectTimeoutRef.current = setTimeout(() => {
             connect();
           }, reconnectInterval);
-        } else if (reconnectAttempts.current >= maxReconnectAttempts) {
-          setError('Max reconnection attempts reached');
+        } else {
+          // Stop trying after max attempts or if connection is closed
+          disconnect();
         }
       };
-    } catch (err) {
-      console.error('🌊 Failed to create SSE connection:', err);
-      setError('Failed to connect to server');
+    } catch {
+      // Silently handle connection failures
       setIsConnecting(false);
+      disconnect();
     }
   }, [
     playerWallet,
@@ -157,8 +173,14 @@ export function useSSE({
     reconnectInterval,
   ]);
 
-  // Auto-connect when playerWallet changes
+  // Auto-connect when playerWallet changes, but only if feature is enabled
   useEffect(() => {
+    // Only attempt connection if real-time updates are enabled
+    if (!ENV_CONFIG.FEATURES.REALTIME_UPDATES) {
+      disconnect();
+      return;
+    }
+
     if (playerWallet && playerWallet !== '') {
       connect();
     } else {

@@ -2,30 +2,31 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import { useAccount } from '@starknet-react/core';
 import { useActiveAquarium } from '../../store/active-aquarium';
 import { useFishStats } from '@/hooks';
 import { useBubbles } from '@/hooks';
 import { useFeedingSystem } from '@/systems/feeding-system';
-import { FishSpecies } from '@/types';
-import { useFish } from '@/hooks';
+import { useSpeciesCatalog } from '@/hooks/use-species-catalog';
+import { useFishSync } from '@/hooks/use-fish-sync';
+import { useFishUpdates, useAquariumUpdates, useGameEvents } from '@/hooks';
+import { useFishSystemEnhanced } from '@/hooks/dojo';
+import { useAquarium as useAquariumDojo } from '@/hooks/dojo';
 import { fishCollection as fullFishList } from '@/constants';
 import {
   Monitor,
-  Fish,
-  Grid,
-  Utensils,
-  Timer,
-  ShoppingBag,
-  Package,
-  Gamepad2,
-  Trophy,
-  HelpCircle,
-  Camera,
-  Home,
+  ArrowLeft,
+  TrendingUp,
+  Heart,
   Settings,
-  Sparkles,
+  Users,
+  User,
+  BookOpen,
+  Calendar,
+  Award,
+  HelpCircle,
+  Fish,
 } from 'lucide-react';
 import { useAquarium } from '@/hooks';
 import { useSimpleDirtSystem } from '@/hooks/use-simple-dirt-system';
@@ -33,6 +34,7 @@ import { SimpleDirtSpot } from '@/components/simple-dirt-spot';
 import { FeedingAquarium } from '@/components';
 import { BubblesBackground } from '@/components';
 import { GameStatusBar } from '@/components';
+import { AquariumTabs } from '@/components/game/aquarium-tabs';
 import { OrientationLock } from '@/components/ui';
 import { INITIAL_GAME_STATE } from '@/constants';
 import { initialAquariums } from '@/data/mock-aquarium';
@@ -40,6 +42,13 @@ import { initialAquariums } from '@/data/mock-aquarium';
 export function MobileGameView() {
   // Get account info first
   const { account } = useAccount();
+  const location = useLocation();
+
+  // Species catalog for image mapping
+  const { getSpeciesImage, getSpeciesDisplayName } = useSpeciesCatalog();
+
+  // Backend sync hooks
+  const { getPlayerFish } = useFishSync();
 
   // All state hooks first
   const [showMenu, setShowMenu] = useState(false);
@@ -48,8 +57,31 @@ export function MobileGameView() {
   const [isCleaningMode, setIsCleaningMode] = useState(false);
   const [playerFishes, setPlayerFishes] = useState<unknown[]>([]);
 
-  // Other hooks
-  const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
+  // Get aquarium ID from URL
+  const [searchParams] = useSearchParams();
+  const aquariumIdFromUrl = searchParams.get('aquarium');
+
+  // Get pre-loaded fish from navigation state
+  const preloadedFish = (location.state as any)?.preloadedFish;
+
+  // Persistent aquarium store
+  const {
+    activeAquariumId: storedAquariumId,
+    playerAddress: storedPlayerAddress,
+    setActiveAquariumId,
+  } = useActiveAquarium();
+
+  // Determine which aquarium ID to use (URL > stored)
+  const activeAquariumId = aquariumIdFromUrl || storedAquariumId;
+
+  // Use stored player address if account is not connected yet
+  const effectivePlayerAddress = account?.address || storedPlayerAddress;
+
+  // SSE Real-time updates
+  const { subscribeToFishUpdates } = useFishUpdates();
+  const { subscribeToAquariumUpdates } = useAquariumUpdates();
+  const { subscribeToGameEvents } = useGameEvents();
+
   const aquarium =
     initialAquariums.find(a => a.id.toString() === activeAquariumId) ||
     initialAquariums[0];
@@ -57,10 +89,51 @@ export function MobileGameView() {
   const { selectedAquarium, handleAquariumChange, aquariums } = useAquarium();
   const navigate = useNavigate();
 
+  // CRITICAL: Save aquarium ID from URL immediately on page load
+  useEffect(() => {
+    if (aquariumIdFromUrl && effectivePlayerAddress) {
+      if (aquariumIdFromUrl !== storedAquariumId) {
+        setActiveAquariumId(aquariumIdFromUrl, effectivePlayerAddress);
+      }
+    }
+  }, [
+    aquariumIdFromUrl,
+    effectivePlayerAddress,
+    setActiveAquariumId,
+    storedAquariumId,
+  ]);
+
+  // SSE Event Handlers
+  useEffect(() => {
+    if (!effectivePlayerAddress) return;
+
+    // Subscribe to fish updates
+    subscribeToFishUpdates(() => {
+      // Update fish states in real-time
+      // You can trigger re-fetch of fish data or update local state
+    });
+
+    // Subscribe to aquarium updates
+    subscribeToAquariumUpdates(() => {
+      // Update aquarium states in real-time
+      // You can trigger re-fetch of aquarium data or update local state
+    });
+
+    // Subscribe to game events
+    subscribeToGameEvents(() => {
+      // Handle game events like achievements, notifications, etc.
+    });
+  }, [
+    effectivePlayerAddress,
+    subscribeToFishUpdates,
+    subscribeToAquariumUpdates,
+    subscribeToGameEvents,
+  ]);
+
   // Initialize simple dirt system with backend
   const dirtSystem = useSimpleDirtSystem(
     activeAquariumId || '1',
-    account?.address || 'demo-player'
+    effectivePlayerAddress || 'demo-player'
   );
 
   const bubbles = useBubbles({
@@ -99,104 +172,161 @@ export function MobileGameView() {
     setIsCleaningMode(!isCleaningMode);
   };
 
-  const { getPlayerFishes } = useFish();
+  const { getFish } = useFishSystemEnhanced();
+  const {
+    getAquarium: getAquariumData,
+    getPlayerAquariums: getPlayerAquariumsList,
+  } = useAquariumDojo();
 
   useEffect(() => {
     const fetchFishes = async () => {
-      try {
-        const mockFishes = aquarium.fishes.slice(0, 6).map(fish => ({
-          id: fish.id,
-          species: `Fish${fish.id}`,
-          generation: fish.generation,
-          age: 100,
-          health: 100,
-          hunger_level: 50,
-          size: 1,
-          color: fish.traits.color,
-          pattern: fish.traits.pattern,
-        }));
+      // Check if we have pre-loaded fish data from loading page
+      if (preloadedFish && preloadedFish.length > 0) {
+        setPlayerFishes(preloadedFish);
+        return;
+      }
 
-        setPlayerFishes(mockFishes);
-      } catch (err) {
-        console.error('Error fetching fishes:', err);
+      if (!effectivePlayerAddress) {
+        setPlayerFishes([]);
+        return;
+      }
+
+      // Wait a bit for the page to fully load and account to be ready
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      try {
+        // Persist aquarium ID and player address to store
+        if (activeAquariumId && effectivePlayerAddress) {
+          if (
+            activeAquariumId !== storedAquariumId ||
+            effectivePlayerAddress !== storedPlayerAddress
+          ) {
+            setActiveAquariumId(activeAquariumId, effectivePlayerAddress);
+          }
+        }
+
+        // If aquarium ID is available (URL or stored), load fish from that aquarium
+        if (activeAquariumId) {
+          try {
+            // Retry logic for loading aquarium with fish
+            let aquariumData: any = null;
+            let attempts = 0;
+            const maxAttempts = 3;
+
+            while (attempts < maxAttempts) {
+              aquariumData = await getAquariumData(BigInt(activeAquariumId));
+
+              // Check if aquarium has fish
+              if (
+                aquariumData?.housed_fish &&
+                aquariumData.housed_fish.length > 0
+              ) {
+                break;
+              }
+
+              if (attempts < maxAttempts - 1) {
+                await new Promise(resolve => setTimeout(resolve, 2000));
+              }
+              attempts++;
+            }
+
+            if (aquariumData?.housed_fish) {
+              const housedFishArray = Array.isArray(aquariumData.housed_fish)
+                ? aquariumData.housed_fish
+                : [aquariumData.housed_fish];
+
+              if (housedFishArray.length > 0) {
+                const fishPromises = housedFishArray.map((fishId: any) => {
+                  const id =
+                    typeof fishId === 'bigint' ? fishId : BigInt(fishId);
+                  return getFish(id);
+                });
+                const fishData = await Promise.all(fishPromises);
+                setPlayerFishes(fishData.filter(Boolean));
+              } else {
+                setPlayerFishes([]);
+              }
+            } else {
+              setPlayerFishes([]);
+            }
+          } catch {
+            setPlayerFishes([]);
+          }
+        } else {
+          // Load fish from backend (new approach)
+          try {
+            const backendFish = await getPlayerFish(effectivePlayerAddress);
+
+            if (
+              backendFish.success &&
+              backendFish.data &&
+              backendFish.data.length > 0
+            ) {
+              // Use backend fish IDs to load details from blockchain
+              const fishPromises = backendFish.data.map((fish: any) => {
+                const onChainId = fish.on_chain_id;
+                return getFish(BigInt(onChainId));
+              });
+
+              const fishDetails = await Promise.all(fishPromises);
+              setPlayerFishes(fishDetails.filter(Boolean));
+            } else {
+              setPlayerFishes([]);
+            }
+          } catch {
+            // Fallback to blockchain if backend fails
+            const playerAquariums = await getPlayerAquariumsList(
+              effectivePlayerAddress
+            );
+
+            if (playerAquariums && playerAquariums.length > 0) {
+              const lastAquarium = playerAquariums[playerAquariums.length - 1];
+              const lastAquariumId =
+                typeof lastAquarium === 'object' && lastAquarium.id
+                  ? lastAquarium.id
+                  : lastAquarium;
+
+              const aquariumData = await getAquariumData(lastAquariumId);
+              if (
+                aquariumData?.housed_fish &&
+                aquariumData.housed_fish.length > 0
+              ) {
+                const housedFishArray = Array.isArray(aquariumData.housed_fish)
+                  ? aquariumData.housed_fish
+                  : [aquariumData.housed_fish];
+
+                const fishPromises = housedFishArray.map((fishId: any) =>
+                  getFish(typeof fishId === 'bigint' ? fishId : BigInt(fishId))
+                );
+                const fishData = await Promise.all(fishPromises);
+                setPlayerFishes(fishData.filter(Boolean));
+              } else {
+                setPlayerFishes([]);
+              }
+            } else {
+              setPlayerFishes([]);
+            }
+          }
+        }
+      } catch {
+        setPlayerFishes([]);
       }
     };
 
     fetchFishes();
-  }, [account, navigate, getPlayerFishes, aquarium.fishes]);
-
-  const speciesToFishData = {
-    Fish1: {
-      image: '/fish/fish1.png',
-      name: 'Azure Stripe',
-      rarity: 'Common',
-      generation: 1,
-    },
-    Fish2: {
-      image: '/fish/fish2.png',
-      name: 'Coral Beauty',
-      rarity: 'Uncommon',
-      generation: 1,
-    },
-    Fish3: {
-      image: '/fish/fish3.png',
-      name: 'Royal Angel',
-      rarity: 'Rare',
-      generation: 1,
-    },
-    Fish4: {
-      image: '/fish/fish4.png',
-      name: 'Neon Tetra',
-      rarity: 'Epic',
-      generation: 1,
-    },
-    Fish5: {
-      image: '/fish/fish5.png',
-      name: 'Golden Scale',
-      rarity: 'Rare',
-      generation: 2,
-    },
-    Fish6: {
-      image: '/fish/fish6.png',
-      name: 'Deep Sea Glow',
-      rarity: 'Epic',
-      generation: 1,
-    },
-  } as const;
-
-  function getSpeciesFromCairoEnum(species: unknown): FishSpecies | null {
-    if (typeof species === 'string' && species in speciesToFishData) {
-      return species as FishSpecies;
-    }
-    if (species && typeof species === 'object') {
-      const obj = species as Record<string, unknown>;
-      if ('variant' in obj && obj.variant && typeof obj.variant === 'object') {
-        for (const [key, value] of Object.entries(
-          obj.variant as Record<string, unknown>
-        )) {
-          if (value !== undefined && key in speciesToFishData) {
-            return key as FishSpecies;
-          }
-        }
-      }
-      if ('activeVariant' in obj && typeof obj.activeVariant === 'string') {
-        const variantName = obj.activeVariant;
-        if (variantName in speciesToFishData) {
-          return variantName as FishSpecies;
-        }
-      }
-      for (const [key, value] of Object.entries(obj)) {
-        if (
-          value !== undefined &&
-          typeof value === 'object' &&
-          key in speciesToFishData
-        ) {
-          return key as FishSpecies;
-        }
-      }
-    }
-    return null;
-  }
+  }, [
+    effectivePlayerAddress,
+    aquariumIdFromUrl,
+    preloadedFish,
+    activeAquariumId,
+    getAquariumData,
+    getFish,
+    getPlayerAquariumsList,
+    getPlayerFish,
+    setActiveAquariumId,
+    storedAquariumId,
+    storedPlayerAddress,
+  ]);
 
   function bigIntToNumber(value: unknown): number {
     if (typeof value === 'bigint') return Number(value);
@@ -205,56 +335,47 @@ export function MobileGameView() {
   }
 
   const displayFish = playerFishes
-    .map((fishId: unknown, index: number) => {
-      const mockFish = {
-        id: typeof fishId === 'number' ? fishId : index,
-        species: null,
-        generation: 1,
-        age: 0,
-        health: 100,
-        hunger_level: 0,
-        size: 1,
-        color: 'blue',
-        pattern: 'striped',
-      };
-      let speciesKey: keyof typeof speciesToFishData | null = null;
-      if (mockFish.species) {
-        const cairoSpecies = getSpeciesFromCairoEnum(mockFish.species);
-        speciesKey =
-          cairoSpecies && cairoSpecies in speciesToFishData
-            ? (cairoSpecies as keyof typeof speciesToFishData)
-            : null;
-      }
-      if (!speciesKey) {
-        const fishId = mockFish.id ? bigIntToNumber(mockFish.id) : index;
-        const speciesNumber = (fishId % 6) + 1;
-        speciesKey = `Fish${speciesNumber}` as keyof typeof speciesToFishData;
+    .map((fish: any, index: number) => {
+      if (!fish) return null;
+
+      // Extract species name from CairoCustomEnum (same logic as desktop)
+      let speciesName = 'AngelFish'; // default
+      if (fish.species?.variant) {
+        // Handle CairoCustomEnum variant extraction
+        const variantEntries = Object.entries(fish.species.variant);
+        const activeVariant = variantEntries.find(
+          ([, value]) => value !== undefined
+        );
+        if (activeVariant) {
+          speciesName = activeVariant[0];
+        }
       }
 
-      const data = speciesKey ? speciesToFishData[speciesKey] : null;
-      if (!data) return null;
+      // Use species catalog for image (centralized, scalable)
+      const fishImage = getSpeciesImage(speciesName);
+      const displayName = getSpeciesDisplayName(speciesName);
+
+      // Generate random position within aquarium bounds
+      const randomX = Math.random() * 80 + 10; // 10% to 90% of width
+      const randomY = Math.random() * 70 + 15; // 15% to 85% of height
 
       return {
-        id: mockFish.id ? bigIntToNumber(mockFish.id) : index,
-        name: data.name,
-        image: data.image,
-        rarity: data.rarity,
+        id: bigIntToNumber(fish.id) || index,
+        name: displayName,
+        image: fishImage,
+        rarity: 'Common',
         habitat: 'Ocean',
-        description: 'A beautiful fish',
+        description: `A beautiful ${speciesName}`,
         price: 100,
-        generation: mockFish.generation
-          ? bigIntToNumber(mockFish.generation)
-          : data.generation,
-        position: { x: 0, y: 0 },
-        species: speciesKey,
-        age: mockFish.age ? bigIntToNumber(mockFish.age) : 0,
-        health: mockFish.health ? bigIntToNumber(mockFish.health) : 100,
-        hunger_level: mockFish.hunger_level
-          ? bigIntToNumber(mockFish.hunger_level)
-          : 0,
-        size: mockFish.size ? bigIntToNumber(mockFish.size) : 1,
-        color: mockFish.color,
-        pattern: mockFish.pattern,
+        generation: bigIntToNumber(fish.generation) || 1,
+        position: { x: randomX, y: randomY },
+        species: speciesName,
+        age: bigIntToNumber(fish.age) || 0,
+        health: bigIntToNumber(fish.health) || 100,
+        hunger_level: bigIntToNumber(fish.hunger_level) || 50,
+        size: bigIntToNumber(fish.size) || 1,
+        color: fish.color || 'blue',
+        pattern: fish.pattern || 'striped',
       };
     })
     .filter((fish): fish is NonNullable<typeof fish> => fish !== null);
@@ -379,154 +500,28 @@ export function MobileGameView() {
           />
         ))}
 
-        {/* Mobile Bottom Navigation - Similar to original */}
-        <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/90 to-transparent z-40 p-2'>
-          <div className='flex justify-between items-end gap-2'>
-            {/* Left side - Aquarium tabs */}
-            <div className='flex gap-1 overflow-x-auto scrollbar-hide'>
-              {aquariums.slice(0, 3).map(aquarium => (
-                <button
-                  key={aquarium.id}
-                  onClick={() => handleAquariumChange(aquarium)}
-                  className={`game-button px-3 py-2 rounded-t-xl font-bold transition-all duration-200 flex items-center text-xs ${
-                    selectedAquarium?.id === aquarium.id
-                      ? 'bg-gradient-to-b from-blue-400 to-blue-600 text-white translate-y-0'
-                      : 'bg-blue-800/50 text-white/70 hover:bg-blue-700/50 translate-y-2'
-                  }`}
-                >
-                  {aquarium.name.split(' ')[0]}
-                </button>
-              ))}
-              <button
-                className={`game-button px-3 py-2 rounded-t-xl font-bold transition-all duration-200 flex items-center text-xs ${
-                  selectedAquarium?.id === 0
-                    ? 'bg-gradient-to-b from-blue-400 to-blue-600 text-white translate-y-0'
-                    : 'bg-blue-800/50 text-white/70 hover:bg-blue-700/50 translate-y-2'
-                }`}
-                onClick={() => handleAquariumChange()}
-              >
-                <Grid className='h-3 w-3 mr-1' />
-                All
-              </button>
-            </div>
-
-            {/* Right side - Action buttons */}
-            <div className='flex items-center gap-1'>
-              {/* Feed button */}
-              <div className='relative group'>
-                <button
-                  onClick={e => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (feedingSystem.isFeeding) {
-                      feedingSystem.stopFeeding();
-                    } else {
-                      feedingSystem.startFeeding(30000);
-                    }
-                  }}
-                  className={`game-button bg-gradient-to-b text-white rounded-xl relative group cursor-pointer w-10 h-10 ${
-                    feedingSystem.isFeeding
-                      ? 'from-orange-400 to-orange-600'
-                      : 'from-green-400 to-green-600'
-                  }`}
-                >
-                  <div className='flex items-center justify-center gap-2 w-full h-full'>
-                    {feedingSystem.isFeeding ? (
-                      <Timer className='h-4 w-4' />
-                    ) : (
-                      <Utensils className='h-4 w-4' />
-                    )}
-                  </div>
-                </button>
-              </div>
-
-              {/* Clean Button */}
-              <div className='relative group'>
-                <button
-                  onClick={handleToggleCleaningMode}
-                  className={`game-button bg-gradient-to-b text-white rounded-xl relative group cursor-pointer w-10 h-10 ${
-                    isCleaningMode
-                      ? 'from-yellow-400 to-yellow-600'
-                      : 'from-purple-400 to-purple-600'
-                  }`}
-                >
-                  <div className='flex items-center justify-center gap-2 w-full h-full'>
-                    🧽
-                  </div>
-                </button>
-              </div>
-
-              {/* Other action buttons */}
-              {[
-                {
-                  id: 'shop',
-                  label: 'Shop',
-                  icon: <ShoppingBag className='h-4 w-4' />,
-                  color: 'from-blue-400 to-blue-600',
-                },
-                {
-                  id: 'collection',
-                  label: 'Collection',
-                  icon: <Package className='h-4 w-4' />,
-                  color: 'from-teal-400 to-teal-600',
-                },
-                {
-                  id: 'games',
-                  label: 'Games',
-                  icon: <Gamepad2 className='h-4 w-4' />,
-                  color: 'from-pink-400 to-pink-600',
-                },
-                {
-                  id: 'rewards',
-                  label: 'Rewards',
-                  icon: <Trophy className='h-4 w-4' />,
-                  color: 'from-yellow-400 to-yellow-600',
-                },
-              ].map(item => (
-                <div key={item.id} className='relative group'>
-                  <button
-                    onClick={e => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      // Handle different actions
-                      switch (item.id) {
-                        case 'shop':
-                          navigate('/store');
-                          break;
-                        case 'collection':
-                          navigate('/my-profile');
-                          break;
-                        case 'games':
-                          navigate('/mini-games');
-                          break;
-                        case 'rewards':
-                          navigate('/achievements');
-                          break;
-                      }
-                    }}
-                    className={`game-button bg-gradient-to-b text-white rounded-xl relative group cursor-pointer w-10 h-10 ${item.color}`}
-                  >
-                    <div className='flex items-center justify-center gap-2 w-full h-full'>
-                      {item.icon}
-                    </div>
-                  </button>
-                </div>
-              ))}
-
-              {/* Tips button */}
-              <div className='relative group'>
-                <button
-                  onClick={handleTipsToggle}
-                  className='game-button bg-gradient-to-b from-yellow-400 to-yellow-600 text-white rounded-xl relative group cursor-pointer w-10 h-10'
-                >
-                  <div className='flex items-center justify-center gap-2 w-full h-full'>
-                    💡
-                  </div>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Mobile Bottom Navigation - Use same AquariumTabs component as desktop */}
+        <AquariumTabs
+          aquariums={aquariums}
+          selectedAquarium={selectedAquarium}
+          onAquariumSelect={handleAquariumChange}
+          feedingSystem={{
+            isFeeding: feedingSystem.isFeeding,
+            startFeeding: feedingSystem.startFeeding,
+            stopFeeding: feedingSystem.stopFeeding,
+          }}
+          dirtSystem={{
+            dirtLevel: dirtSystem.dirtLevel,
+            isDirty: dirtSystem.dirtLevel > 10,
+            needsCleaning: dirtSystem.dirtLevel > 30,
+          }}
+          isCleaningMode={isCleaningMode}
+          onToggleCleaningMode={handleToggleCleaningMode}
+          showTips={showTips}
+          onTipsToggle={handleTipsToggle}
+          onTipsClose={() => setShowTips(false)}
+          realAquariumId={activeAquariumId}
+        />
 
         {/* Mobile Menu - Sidebar Style */}
         {showMenu && (
@@ -543,79 +538,43 @@ export function MobileGameView() {
                 </button>
               </div>
 
-              {/* Scrollable menu items */}
+              {/* Scrollable menu items - Same options as desktop GameMenu */}
               <div className='flex-1 overflow-y-auto py-4 px-4'>
                 <div className='flex flex-col gap-2'>
+                  {/* Back to home */}
                   <button
                     onClick={() => {
-                      navigate('/store');
+                      navigate('/');
                       setShowMenu(false);
                     }}
                     className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                   >
-                    <ShoppingBag className='h-5 w-5' />
-                    <span className='font-medium'>Store</span>
+                    <ArrowLeft className='h-5 w-5' />
+                    <span className='font-medium'>Back to Home</span>
                   </button>
+                  {/* Trading Market */}
                   <button
                     onClick={() => {
-                      navigate('/community');
+                      navigate('/trading-market');
                       setShowMenu(false);
                     }}
                     className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                   >
-                    <Home className='h-5 w-5' />
-                    <span className='font-medium'>Community</span>
+                    <TrendingUp className='h-5 w-5' />
+                    <span className='font-medium'>Trading Market</span>
                   </button>
+                  {/* Breeding Laboratory */}
                   <button
                     onClick={() => {
-                      navigate('/my-profile');
+                      navigate('/breeding-laboratory');
                       setShowMenu(false);
                     }}
                     className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                   >
-                    <Fish className='h-5 w-5' />
-                    <span className='font-medium'>Profile</span>
+                    <Heart className='h-5 w-5' />
+                    <span className='font-medium'>Breeding Lab</span>
                   </button>
-                  <button
-                    onClick={() => {
-                      navigate('/achievements');
-                      setShowMenu(false);
-                    }}
-                    className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
-                  >
-                    <Trophy className='h-5 w-5' />
-                    <span className='font-medium'>Achievements</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      navigate('/mini-games');
-                      setShowMenu(false);
-                    }}
-                    className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
-                  >
-                    <Gamepad2 className='h-5 w-5' />
-                    <span className='font-medium'>Mini Games</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      navigate('/encyclopedia');
-                      setShowMenu(false);
-                    }}
-                    className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
-                  >
-                    <Package className='h-5 w-5' />
-                    <span className='font-medium'>Encyclopedia</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      navigate('/help-center');
-                      setShowMenu(false);
-                    }}
-                    className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
-                  >
-                    <HelpCircle className='h-5 w-5' />
-                    <span className='font-medium'>Help Center</span>
-                  </button>
+                  {/* Settings */}
                   <button
                     onClick={() => {
                       navigate('/settings');
@@ -626,57 +585,71 @@ export function MobileGameView() {
                     <Settings className='h-5 w-5' />
                     <span className='font-medium'>Settings</span>
                   </button>
+                  {/* Community */}
                   <button
                     onClick={() => {
-                      handleWallpaperToggle();
+                      navigate('/community');
                       setShowMenu(false);
                     }}
                     className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                   >
-                    <Monitor className='h-5 w-5' />
-                    <span className='font-medium'>Wallpaper Mode</span>
+                    <Users className='h-5 w-5' />
+                    <span className='font-medium'>Community</span>
                   </button>
-
-                  {/* Additional menu items for better scrolling */}
+                  {/* My Profile */}
                   <button
                     onClick={() => {
-                      navigate('/leaderboard');
+                      navigate('/my-profile');
                       setShowMenu(false);
                     }}
                     className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                   >
-                    <Trophy className='h-5 w-5' />
-                    <span className='font-medium'>Leaderboard</span>
+                    <User className='h-5 w-5' />
+                    <span className='font-medium'>My Profile</span>
                   </button>
+                  {/* Encyclopedia */}
                   <button
                     onClick={() => {
-                      navigate('/events');
+                      navigate('/encyclopedia');
                       setShowMenu(false);
                     }}
                     className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                   >
-                    <Sparkles className='h-5 w-5' />
-                    <span className='font-medium'>Events</span>
+                    <BookOpen className='h-5 w-5' />
+                    <span className='font-medium'>Encyclopedia</span>
                   </button>
+                  {/* Help Center */}
                   <button
                     onClick={() => {
-                      navigate('/tutorial');
+                      navigate('/help-center');
                       setShowMenu(false);
                     }}
                     className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                   >
                     <HelpCircle className='h-5 w-5' />
-                    <span className='font-medium'>Tutorial</span>
+                    <span className='font-medium'>Help Center</span>
                   </button>
+                  {/* Events Calendar */}
                   <button
                     onClick={() => {
-                      navigate('/about');
+                      navigate('/events-calendar');
                       setShowMenu(false);
                     }}
                     className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
                   >
-                    <Camera className='h-5 w-5' />
-                    <span className='font-medium'>About</span>
+                    <Calendar className='h-5 w-5' />
+                    <span className='font-medium'>Events</span>
+                  </button>
+                  {/* Achievements */}
+                  <button
+                    onClick={() => {
+                      navigate('/achievements');
+                      setShowMenu(false);
+                    }}
+                    className='flex items-center gap-4 px-4 py-3 text-white text-base hover:bg-white/10 rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]'
+                  >
+                    <Award className='h-5 w-5' />
+                    <span className='font-medium'>Achievements</span>
                   </button>
                 </div>
               </div>

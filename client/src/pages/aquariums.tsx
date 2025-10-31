@@ -5,10 +5,10 @@ import { LayoutFooter } from '@/components';
 import { AquariumStats } from '@/components';
 import { AquariumList } from '@/components';
 import { PurchaseModal } from '@/components';
-import { CreateAquariumButton } from '@/components';
 import { BubblesBackground } from '@/components';
 import { OrientationLock } from '@/components/ui';
 import { useBubbles } from '@/hooks';
+import { useMobileDetection } from '@/hooks';
 import { Search } from 'lucide-react';
 import { useActiveAquarium } from '../store/active-aquarium';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +20,7 @@ import { useAquarium } from '@/hooks/dojo';
 import { useAquariumSync } from '@/hooks/use-aquarium-sync';
 import { useFishSystemEnhanced } from '@/hooks/dojo';
 import { useSpeciesCatalog } from '@/hooks/use-species-catalog';
+import { MobileAquariumsView } from '@/components/mobile/mobile-aquariums-view';
 
 export default function AquariumsPage() {
   const [aquariums, setAquariums] = useState<Aquarium[]>([]);
@@ -34,6 +35,9 @@ export default function AquariumsPage() {
   const { getFish } = useFishSystemEnhanced();
   const { getPlayerAquariums: getPlayerAquariumsBackend } = useAquariumSync();
   const { getSpeciesImage, getSpeciesDisplayName } = useSpeciesCatalog();
+
+  // Mobile detection
+  const { isMobile } = useMobileDetection();
 
   // Get stored player address from persisted store
   const {
@@ -302,16 +306,60 @@ export default function AquariumsPage() {
   }, [aquariums, searchQuery]);
 
   const handleBackToGame = () => {
-    console.log('🔙 BACK BUTTON - storedAquariumId:', storedAquariumId);
     // Navigate back to game with stored aquarium ID
     if (storedAquariumId) {
-      console.log('✅ Navigating to /game?aquarium=' + storedAquariumId);
       navigate(`/game?aquarium=${storedAquariumId}`);
     } else {
-      console.log('⚠️ No storedAquariumId, going to /game');
       navigate('/game');
     }
   };
+
+  // Calculate stats for mobile view
+  const totalFish = useMemo(() => {
+    return aquariums.reduce((acc, curr) => acc + curr.fishes.length, 0);
+  }, [aquariums]);
+
+  const premiumAquariumsCount = useMemo(() => {
+    return aquariums.filter(a => a.isPremium).length;
+  }, [aquariums]);
+
+  const avgHealth = useMemo(() => {
+    if (aquariums.length === 0) return 0;
+    return Math.round(
+      aquariums.reduce((acc, curr) => acc + curr.health, 0) / aquariums.length
+    );
+  }, [aquariums]);
+
+  // Render mobile view if mobile device detected
+  if (isMobile) {
+    return (
+      <>
+        <MobileAquariumsView
+          aquariums={aquariums}
+          filteredAquariums={filteredAquariums}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          onSelectAquarium={handleSelectAquarium}
+          onBackToGame={handleBackToGame}
+          onCreateAquarium={() => setShowPurchaseModal(true)}
+          coinBalance={coinBalance}
+          loading={loading}
+          error={error}
+          effectivePlayerAddress={effectivePlayerAddress}
+          totalFish={totalFish}
+          premiumAquariums={premiumAquariumsCount}
+          averageHealth={avgHealth}
+        />
+        {showPurchaseModal && (
+          <PurchaseModal
+            onClose={() => setShowPurchaseModal(false)}
+            onPurchase={handleAddAquarium}
+            coinBalance={coinBalance}
+          />
+        )}
+      </>
+    );
+  }
 
   return (
     <OrientationLock>
@@ -424,9 +472,10 @@ export default function AquariumsPage() {
                     </div>
                     <button
                       onClick={() => setShowPurchaseModal(true)}
-                      className='bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors'
+                      disabled
+                      className='bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-colors opacity-50 cursor-not-allowed'
                     >
-                      Create First Aquarium
+                      Create First Aquarium (Disabled)
                     </button>
                   </div>
                 ) : (
@@ -440,11 +489,12 @@ export default function AquariumsPage() {
               </>
             )}
 
-            {account?.address && (
+            {/* Create Aquarium Button - DISABLED */}
+            {/* {account?.address && (
               <CreateAquariumButton
                 onClick={() => setShowPurchaseModal(true)}
               />
-            )}
+            )} */}
           </main>
 
           <LayoutFooter />

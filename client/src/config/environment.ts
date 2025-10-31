@@ -41,8 +41,8 @@ export const ENV_CONFIG = {
     // Enable/disable player validation
     PLAYER_VALIDATION: import.meta.env.VITE_PLAYER_VALIDATION !== 'false',
 
-    // Enable/disable real-time updates
-    REALTIME_UPDATES: import.meta.env.VITE_REALTIME_UPDATES !== 'false',
+    // Enable/disable real-time updates (disabled by default to prevent 404 errors)
+    REALTIME_UPDATES: import.meta.env.VITE_REALTIME_UPDATES === 'true',
   },
 };
 

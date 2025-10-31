@@ -3,71 +3,84 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronRight, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { BubblesBackground } from '@/components';
+import { BubblesBackground, PageHeader } from '@/components';
+import { FishCard } from '@/components/ui/fish-card/fish-card';
 import { useBubbles } from '@/hooks';
 import { useAquarium } from '@/hooks/dojo';
+import { useAquaStarkEnhanced } from '@/hooks/dojo/useAquaStarkEnhanced';
+import { useAquariumSync } from '@/hooks/use-aquarium-sync';
+import { useFishSync } from '@/hooks/use-fish-sync';
+import { useActiveAquarium } from '@/store/active-aquarium';
 import { useAccount } from '@starknet-react/core';
 import { toast } from 'sonner';
-import { useFish } from '@/hooks';
 import { CairoCustomEnum } from 'starknet';
 import { SpeciesEnum } from '@/typescript/models.gen';
-import { WalletAccount } from '@/types';
 
 // This map connects your frontend IDs to Cairo enum variants
+// Cairo enums use numeric indices, not names
 const fishEnumMap: Record<number, SpeciesEnum> = {
-  1: new CairoCustomEnum({ AngelFish: 'AngelFish' }),
-  2: new CairoCustomEnum({ GoldFish: 'GoldFish' }),
-  3: new CairoCustomEnum({ Betta: 'Betta' }),
-  4: new CairoCustomEnum({ NeonTetra: 'NeonTetra' }),
-  5: new CairoCustomEnum({ Corydoras: 'Corydoras' }),
-  6: new CairoCustomEnum({ Hybrid: 'Hybrid' }),
+  1: new CairoCustomEnum({ AngelFish: {} }), // index 0
+  2: new CairoCustomEnum({ GoldFish: {} }), // index 1
+  3: new CairoCustomEnum({ Betta: {} }), // index 2
+  4: new CairoCustomEnum({ NeonTetra: {} }), // index 3
+  5: new CairoCustomEnum({ Corydoras: {} }), // index 4
+  6: new CairoCustomEnum({ Hybrid: {} }), // index 5
 };
 
+// Map frontend IDs to species names for backend
+const fishSpeciesMap: Record<number, string> = {
+  1: 'AngelFish',
+  2: 'GoldFish',
+  3: 'Betta',
+  4: 'NeonTetra',
+  5: 'Corydoras',
+  6: 'Hybrid',
+};
+
+// Use EXACT same starterFish as desktop version
 const starterFish = [
   {
     id: 1,
-    name: 'REDGLOW',
-    image: '/fish/fish3.png',
-    description: 'A vibrant and energetic fish, ideal for combat.',
-    color: 'orange-red',
-  },
-  {
-    id: 2,
-    name: 'BLUESHINE',
+    name: 'AngelFish',
     image: '/fish/fish1.png',
-    description: 'A calm and elegant fish, perfect for exploration.',
+    description: 'A calm and elegant fish.',
     color: 'blue',
   },
   {
-    id: 3,
-    name: 'TROPICORAL',
+    id: 2,
+    name: 'GoldFish',
     image: '/fish/fish2.png',
-    description: 'An exotic and mysterious fish, with unique abilities.',
-    color: 'orange-pink',
+    description: 'A vibrant golden fish.',
+    color: 'gold',
+  },
+  {
+    id: 3,
+    name: 'Betta',
+    image: '/fish/fish3.png',
+    description: 'A colorful fighting fish.',
+    color: 'red',
   },
   {
     id: 4,
-    name: 'SHADOWFIN',
+    name: 'NeonTetra',
     image: '/fish/fish4.png',
-    description: 'A stealthy and elusive fish, master of disguise.',
-    color: 'purple',
+    description: 'A bright neon fish.',
+    color: 'neon',
   },
   {
     id: 5,
-    name: 'SUNBURST',
-    image: '/fish/fish1.png',
-    description:
-      'A radiant and cheerful fish, bringing light to your aquarium.',
-    color: 'golden',
+    name: 'Corydoras',
+    image: '/fish/fish5.png',
+    description: 'A bottom-dwelling fish.',
+    color: 'silver',
   },
   {
     id: 6,
-    name: 'DEEPSCALE',
-    image: '/fish/fish2.png',
-    description: 'A resilient and ancient fish, with deep-sea wisdom.',
-    color: 'deep-blue',
+    name: 'Hybrid',
+    image: '/fish/fish6.png',
+    description: 'A unique hybrid fish.',
+    color: 'mixed',
   },
 ];
 
@@ -76,277 +89,488 @@ export function MobileOnboardingView() {
   const bubbles = useBubbles({ initialCount: 8, maxBubbles: 20 });
   const { account } = useAccount();
   const [selectedFish, setSelectedFish] = useState<number[]>([]);
-  const { getPlayerAquariums } = useAquarium();
-  const { newFish } = useFish();
+  const { getPlayerAquariums, newAquarium } = useAquarium();
+  const { newFish } = useAquaStarkEnhanced();
+  const { syncAquarium } = useAquariumSync();
+  const { syncFish } = useFishSync();
+  const { setActiveAquariumId } = useActiveAquarium();
+
+  // Step states
+  const [aquariumId, setAquariumId] = useState<bigint | null>(null);
+  const [aquariumCreated, setAquariumCreated] = useState(false);
+  const [fishCreated, setFishCreated] = useState(false);
+  const [isCreatingAquarium, setIsCreatingAquarium] = useState(false);
+  const [isCreatingFish, setIsCreatingFish] = useState(false);
 
   const handleFishSelect = (fishId: number) => {
     setSelectedFish(prev => {
-      const newSelection = prev.includes(fishId)
-        ? prev.filter(id => id !== fishId)
-        : prev.length < 2
-          ? [...prev, fishId]
-          : [prev[1], fishId];
-      return newSelection;
+      if (prev.includes(fishId)) {
+        return prev.filter(id => id !== fishId);
+      }
+      if (prev.length >= 2) {
+        return prev; // Max 2 fish
+      }
+      return [...prev, fishId];
     });
-  };
-
-  //  Create Aquarium
-  const createNewAquarium = async (account: WalletAccount) => {
-    toast.success('Aquarium created successfully!');
-
-    const aquariums = await getPlayerAquariums(account.address);
-
-    return aquariums[0]?.id;
-  };
-
-  const createNewFish = async (
-    account: WalletAccount,
-    aquariumId: bigint,
-    fishId: number,
-    order: string
-  ) => {
-    try {
-      const speciesenum = fishEnumMap[fishId];
-      if (!speciesenum) {
-        toast.error(`${order} fish not selected`);
-        return null;
-      }
-
-      const tx = await newFish(account as any, aquariumId, speciesenum);
-
-      return { success: true, transactionHash: tx.transaction_hash };
-    } catch (error: unknown) {
-      const err = error as Error;
-      if (err.message?.includes('USER_REFUSED_OP')) {
-        toast.error(
-          `You rejected the ${order} fish transaction in your wallet.`
-        );
-        return null;
-      }
-      console.error(`Error while creating ${order} fish:`, error);
-      toast.error(`Something went wrong while creating ${order} fish.`);
-      return null;
-    }
   };
 
   const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-  const handleContinue = async () => {
-    if (selectedFish.length !== 2) return;
+  // Step 1: Create Aquarium
+  const handleCreateAquarium = async () => {
     if (!account) {
       toast.error('Wallet not connected!');
       return;
     }
 
+    if (isCreatingAquarium) {
+      console.log('⏳ Already creating aquarium, ignoring duplicate call');
+      return;
+    }
+
     try {
-      const aquariumId = await createNewAquarium(account as any);
-      if (!aquariumId) throw new Error("Couldn't create aquarium");
+      setIsCreatingAquarium(true);
+      console.log('🏗️ Creating aquarium with params:', {
+        owner: account.address,
+        maxCapacity: 10,
+        maxDecorations: 5,
+      });
+      toast.loading('Creating your aquarium...', { id: 'aquarium' });
 
-      for (let i = 0; i < 2; i++) {
-        const order = i === 0 ? 'First' : 'Second';
+      const tx = await newAquarium(
+        account as any,
+        account.address,
+        10, // maxCapacity
+        5 // maxDecorations
+      );
 
-        const result = await createNewFish(
-          account as any,
-          BigInt(aquariumId),
-          selectedFish[i],
-          order
+      console.log('✅ Aquarium created, tx:', tx.transaction_hash);
+      console.log('📋 Full tx object:', tx);
+
+      // Extract aquarium ID from transaction events if available
+      let extractedAquariumId: bigint | null = null;
+
+      if (tx.events && Array.isArray(tx.events)) {
+        console.log('📋 Transaction events:', tx.events);
+        // Look for AquariumCreated event
+        const aquariumEvent = tx.events.find(
+          (e: any) =>
+            e.keys && e.keys[0] && e.keys[0].includes('AquariumCreated')
         );
-
-        if (result) {
-          toast.success(`${order} fish created successfully in aquarium`);
+        if (aquariumEvent && aquariumEvent.data && aquariumEvent.data[0]) {
+          extractedAquariumId = BigInt(aquariumEvent.data[0]);
+          console.log('🎯 Aquarium ID from event:', extractedAquariumId);
         }
-
-        if (i < selectedFish.length - 1) {
-          await delay(5000);
-        }
+      } else {
+        console.log('⚠️ No events in transaction response');
       }
 
-      navigate(`/game?aquarium=${BigInt(aquariumId)}`);
-    } catch (err) {
-      console.error('Error during onboarding:', err);
-      toast.error('Something went wrong while creating your aquarium.');
+      if (extractedAquariumId) {
+        // Sync aquarium to backend immediately
+        try {
+          await syncAquarium(
+            extractedAquariumId.toString(),
+            account.address, // player_id
+            extractedAquariumId.toString() // on_chain_id
+          );
+          console.log('✅ Aquarium synced to backend');
+        } catch (syncError) {
+          console.error('⚠️ Failed to sync aquarium to backend:', syncError);
+          // Continue anyway, not critical for onboarding
+        }
+
+        toast.success('Aquarium created successfully!', { id: 'aquarium' });
+        setAquariumId(extractedAquariumId);
+        setAquariumCreated(true);
+      } else {
+        // Fallback: Query for aquariums
+        toast.loading('Searching for your aquarium...', { id: 'aquarium' });
+
+        // Get aquariums BEFORE to compare
+        const aquariumsBefore = await getPlayerAquariums(account.address);
+        console.log('🏠 Aquariums before creation:', aquariumsBefore);
+
+        let aquariums: any[] = [];
+        let attempts = 0;
+        const maxAttempts = 5;
+
+        while (attempts < maxAttempts) {
+          await delay(3000);
+          aquariums = await getPlayerAquariums(account.address);
+          console.log(`🔍 Attempt ${attempts + 1}: All aquariums:`, aquariums);
+
+          // Check if new aquarium appeared
+          if (aquariums && aquariums.length > (aquariumsBefore?.length || 0)) {
+            console.log(
+              '✅ New aquarium detected! Before:',
+              aquariumsBefore?.length,
+              'After:',
+              aquariums.length
+            );
+            break;
+          }
+          attempts++;
+        }
+
+        // Get the NEWEST aquarium (highest ID)
+        let newAquariumId: bigint | null = null;
+        if (aquariums && aquariums.length > 0) {
+          // Sort by ID descending and take the first (highest ID = newest)
+          const sortedAquariums = [...aquariums].sort((a, b) => {
+            const idA =
+              typeof a === 'object' && a.id ? BigInt(a.id) : BigInt(a);
+            const idB =
+              typeof b === 'object' && b.id ? BigInt(b.id) : BigInt(b);
+            return idA > idB ? -1 : 1;
+          });
+          const newestAquarium = sortedAquariums[0];
+          newAquariumId =
+            typeof newestAquarium === 'object' && newestAquarium.id
+              ? newestAquarium.id
+              : newestAquarium;
+          console.log('🎯 Newest aquarium ID:', newAquariumId);
+        }
+
+        if (!newAquariumId) {
+          console.error(
+            '❌ Aquarium ID not found after',
+            maxAttempts,
+            'attempts'
+          );
+          throw new Error('Aquarium created but ID not found');
+        }
+
+        // Sync aquarium to backend
+        try {
+          await syncAquarium(
+            newAquariumId.toString(),
+            account.address,
+            newAquariumId.toString()
+          );
+          console.log('✅ Aquarium synced to backend (fallback)');
+        } catch (syncError) {
+          console.error(
+            '⚠️ Failed to sync aquarium to backend (fallback):',
+            syncError
+          );
+          // Continue anyway
+        }
+
+        toast.success('Aquarium found!', { id: 'aquarium' });
+        setAquariumId(newAquariumId);
+        setAquariumCreated(true);
+      }
+    } catch (error) {
+      console.error('❌ Error creating aquarium:', error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      toast.error(
+        errorMessage.includes('User canceled')
+          ? 'You cancelled the transaction'
+          : 'Failed to create aquarium',
+        { id: 'aquarium' }
+      );
+    } finally {
+      setIsCreatingAquarium(false);
     }
   };
 
+  // Step 2: Create Fish (2 fish)
+  const handleCreateFish = async () => {
+    if (!account || !aquariumId || selectedFish.length !== 2) return;
+
+    if (isCreatingFish) {
+      console.log('⏳ Already creating fish, ignoring duplicate call');
+      return;
+    }
+
+    try {
+      setIsCreatingFish(true);
+      toast.loading('Creating your first fish...', { id: 'fish' });
+
+      // Create first fish
+      const species1 = fishEnumMap[selectedFish[0]];
+      if (!species1) {
+        toast.error('First fish not selected');
+        return;
+      }
+
+      console.log(`🐟 Creating fish 1:`, {
+        selectedFishId: selectedFish[0],
+        speciesEnum: species1,
+        aquariumId: aquariumId.toString(),
+      });
+      const tx1 = await newFish(account as any, aquariumId, species1);
+      console.log(`✅ Fish 1 created, tx:`, tx1.transaction_hash);
+      console.log('📋 Fish 1 tx object:', tx1);
+
+      // Extract fish ID from transaction events or generate
+      let fishId1: string | null = null;
+      if (tx1.events && Array.isArray(tx1.events)) {
+        const fishEvent = tx1.events.find((e: any) =>
+          e.keys?.[0]?.includes('FishCreated')
+        );
+        if (fishEvent?.data?.[0]) {
+          fishId1 = String(fishEvent.data[0]);
+          console.log('🎯 Fish 1 ID from event:', fishId1);
+        }
+      }
+
+      // Sync fish 1 to backend
+      if (fishId1) {
+        try {
+          const speciesName1 = fishSpeciesMap[selectedFish[0]];
+          await syncFish(fishId1, account.address, fishId1, speciesName1);
+          console.log('✅ Fish 1 synced to backend');
+        } catch (syncError) {
+          console.error('⚠️ Failed to sync fish 1 to backend:', syncError);
+          // Continue anyway
+        }
+      } else {
+        console.warn('⚠️ Could not extract fish 1 ID from transaction');
+      }
+
+      // Small delay between creations
+      await delay(1000);
+
+      // Create second fish
+      toast.loading('Creating your second fish...', { id: 'fish' });
+      const species2 = fishEnumMap[selectedFish[1]];
+      if (!species2) {
+        toast.error('Second fish not selected');
+        return;
+      }
+
+      console.log(`🐟 Creating fish 2:`, {
+        selectedFishId: selectedFish[1],
+        speciesEnum: species2,
+        aquariumId: aquariumId.toString(),
+      });
+      const tx2 = await newFish(account as any, aquariumId, species2);
+      console.log(`✅ Fish 2 created, tx:`, tx2.transaction_hash);
+      console.log('📋 Fish 2 tx object:', tx2);
+
+      // Extract fish ID from transaction events or generate
+      let fishId2: string | null = null;
+      if (tx2.events && Array.isArray(tx2.events)) {
+        const fishEvent = tx2.events.find((e: any) =>
+          e.keys?.[0]?.includes('FishCreated')
+        );
+        if (fishEvent?.data?.[0]) {
+          fishId2 = String(fishEvent.data[0]);
+          console.log('🎯 Fish 2 ID from event:', fishId2);
+        }
+      }
+
+      // Sync fish 2 to backend
+      if (fishId2) {
+        try {
+          const speciesName2 = fishSpeciesMap[selectedFish[1]];
+          await syncFish(fishId2, account.address, fishId2, speciesName2);
+          console.log('✅ Fish 2 synced to backend');
+        } catch (syncError) {
+          console.error('⚠️ Failed to sync fish 2 to backend:', syncError);
+          // Continue anyway
+        }
+      } else {
+        console.warn('⚠️ Could not extract fish 2 ID from transaction');
+      }
+
+      toast.success('Both fish created successfully!', { id: 'fish' });
+      setFishCreated(true);
+    } catch (error) {
+      console.error('❌ Error creating fish:', error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      toast.error(
+        errorMessage.includes('User canceled')
+          ? 'You cancelled the transaction'
+          : 'Failed to create fish',
+        { id: 'fish' }
+      );
+    } finally {
+      setIsCreatingFish(false);
+    }
+  };
+
+  // Step 3: Go to Loading (then Game)
+  const handleGoToGame = () => {
+    if (!aquariumId || !account) return;
+    console.log('🎉 Navigating to loading with aquarium:', aquariumId);
+    console.log('🎉 Aquarium ID type:', typeof aquariumId);
+    console.log('🎉 Aquarium ID toString:', aquariumId.toString());
+
+    // Persist aquarium ID to store
+    setActiveAquariumId(aquariumId.toString(), account.address);
+
+    navigate(`/loading?aquarium=${aquariumId}`);
+  };
+
   return (
-    <div className='relative w-full h-screen overflow-y-auto bg-gradient-to-b from-blue-400 via-blue-600 to-blue-800'>
-      {/* Ambient lights - mobile optimized */}
-      <div className='absolute top-10 left-1/2 -translate-x-1/2 w-80 h-80 bg-cyan-300/10 rounded-full blur-2xl' />
-      <div className='absolute bottom-10 right-10 w-60 h-60 bg-yellow-300/10 rounded-full blur-2xl' />
-
-      <BubblesBackground bubbles={bubbles} />
-
-      {/* Mobile header */}
-      <div className='relative z-30 p-2 bg-blue-900/60 backdrop-blur-md border-b border-blue-400/30'>
-        <div className='flex items-center justify-between max-w-7xl mx-auto'>
-          <button
-            onClick={() => window.history.back()}
-            className='flex items-center text-white text-xs touch-manipulation hover:bg-blue-500/50 px-1 py-0.5 rounded transition-colors'
-          >
-            <span className='mr-0.5'>←</span>
-            Back
-          </button>
-          <h1 className='text-xs font-bold text-white'>Choose Your Fish</h1>
-          <div className='w-8' /> {/* Spacer */}
-        </div>
+    <div className='relative min-h-screen w-full h-screen overflow-hidden flex flex-col'>
+      {/* Oceanic background image and gradient overlays - Same as desktop */}
+      <div className='fixed inset-0 -z-10'>
+        <img
+          src='/backgrounds/initaial-background.webp'
+          alt='Ocean Background'
+          className='absolute inset-0 w-full h-full object-cover object-center select-none pointer-events-none'
+          draggable='false'
+          role='presentation'
+        />
+        <div className='absolute inset-0 bg-gradient-to-b from-[#001a2e] via-[#021d3b] to-[#000d1a] opacity-95' />
+        {/* Glow spots for dynamic lighting - same as desktop */}
+        <div className='absolute top-10 left-1/4 w-72 h-40 bg-cyan-400/10 blur-3xl rounded-full' />
+        <div className='absolute bottom-20 right-1/5 w-80 h-32 bg-purple-400/10 blur-3xl rounded-full' />
+        <div className='absolute top-1/2 right-10 w-40 h-40 bg-blue-300/10 blur-2xl rounded-full' />
       </div>
 
-      {/* Mobile main content */}
-      <main className='flex flex-col items-center px-2 py-3 relative z-30 min-h-[100vh] pb-16'>
-        {/* Welcome section - responsive */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className='text-center mb-4'
-        >
-          <h1 className='text-sm font-extrabold uppercase tracking-wide text-white drop-shadow-lg mb-1'>
-            Welcome to Aqua Stark!
-          </h1>
-          <div className='bg-white/10 backdrop-blur-sm border border-white/20 px-2 py-1 rounded-lg text-white/90 shadow-md max-w-xs mx-auto'>
-            <p className='text-xs leading-relaxed'>
-              Choose 2 fish to start your aquatic adventure. Each fish has
-              unique abilities and characteristics.
-            </p>
-          </div>
-        </motion.div>
+      {/* Bubbles animation overlay */}
+      <BubblesBackground bubbles={bubbles} className='fixed z-10' />
 
-        {/* Fish selection - responsive grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className='grid grid-cols-2 gap-3 w-full max-w-sm auto-rows-fr'
-        >
-          {starterFish.map((fish, index) => (
+      {/* Page header - Fixed */}
+      <div className='sticky top-0 z-30'>
+        <PageHeader
+          title='Your First Steps'
+          backTo='/start'
+          backText='Back'
+          className='bg-blue-900/60 backdrop-blur-md border-b border-blue-400/30'
+        />
+      </div>
+
+      {/* Main content - Scrollable */}
+      <main className='flex flex-col items-center gap-4 sm:gap-6 px-3 sm:px-4 py-4 sm:py-6 relative z-30 flex-1 overflow-y-auto overscroll-y-contain scrollbar-thin scrollbar-thumb-blue-400/50 scrollbar-track-blue-900/30'>
+        {/* Step 1: Welcome Message + Aquarium Button - CENTERED - same as desktop */}
+        {!aquariumCreated && (
+          <div className='flex items-center justify-center min-h-[70vh] w-full'>
             <motion.div
-              key={fish.id}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-              className='h-full'
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className='w-full max-w-2xl'
             >
-              <div
-                className={`relative bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 cursor-pointer overflow-hidden transition-all duration-300 shadow-md h-full flex flex-col ${
-                  selectedFish.includes(fish.id)
-                    ? 'ring-2 ring-blue-300 scale-[1.02]'
-                    : 'hover:scale-[1.015]'
-                }`}
-                onClick={() => handleFishSelect(fish.id)}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleFishSelect(fish.id);
-                  }
-                }}
-                role='button'
-                tabIndex={0}
-              >
-                {selectedFish.includes(fish.id) && (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className='absolute top-0.5 right-0.5 bg-blue-500 rounded-full p-0.5 z-20'
-                  >
-                    <Check className='w-2 h-2 text-white' />
-                  </motion.div>
-                )}
+              <div className='relative bg-gradient-to-b from-blue-900/70 to-blue-800/60 backdrop-blur-lg rounded-3xl px-6 sm:px-8 py-8 sm:py-10 border border-blue-400/30 shadow-[0_0_30px_5px_rgba(0,0,50,0.2)] overflow-hidden'>
+                {/* Top highlight strip */}
+                <div className='absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-cyan-400/20 via-blue-300/30 to-purple-500/20' />
 
-                <div className='p-2 text-center flex flex-col h-full'>
-                  <h3 className='text-xs font-bold text-white mb-2 uppercase tracking-wide'>
-                    {fish.name}
-                  </h3>
-
-                  <div className='relative w-16 h-16 mx-auto mb-2 flex-shrink-0 flex items-center justify-center'>
-                    <div className='relative w-full h-full flex items-center justify-center'>
-                      <div className='relative w-full h-full flex items-center justify-center'>
-                        <img
-                          src='/fish/fish-tank.svg'
-                          alt='Fish Tank Background'
-                          className='absolute inset-0 w-full h-full object-contain opacity-50'
-                        />
-                        <div className='relative z-10 w-4/5 h-4/5 flex items-center justify-center'>
-                          <img
-                            src={fish.image}
-                            alt={fish.name}
-                            className='w-10 h-10 object-contain'
-                            style={{
-                              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
-                            }}
-                          />
-                        </div>
-                        <img
-                          src='/fish/fish-tank.svg'
-                          alt='Fish Tank Overlay'
-                          className='absolute inset-0 w-full h-full object-contain z-20 pointer-events-none mix-blend-overlay'
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className='text-xs text-white/80 leading-relaxed flex-grow'>
-                    {fish.description}
+                <div className='text-center space-y-4 sm:space-y-6'>
+                  <h2 className='text-2xl sm:text-3xl md:text-4xl font-extrabold text-cyan-300 drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]'>
+                    Welcome to Aqua Stark!
+                  </h2>
+                  <p className='text-sm sm:text-base md:text-lg text-blue-100/90 leading-relaxed px-2'>
+                    To begin your journey in this aquatic world, we're gifting
+                    you your very first aquarium. This will be your underwater
+                    sanctuary where you can nurture and grow your fish
+                    collection.
                   </p>
-                </div>
 
-                <motion.div
-                  className='absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300'
-                  initial={false}
-                />
+                  <Button
+                    onClick={handleCreateAquarium}
+                    disabled={isCreatingAquarium}
+                    className='w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold text-base sm:text-lg py-4 sm:py-6 shadow-lg shadow-cyan-500/20 transition-all duration-200 disabled:opacity-50 touch-manipulation'
+                  >
+                    {isCreatingAquarium ? (
+                      <div className='flex items-center gap-2 justify-center'>
+                        <div className='w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin' />
+                        Creating Your Aquarium...
+                      </div>
+                    ) : (
+                      'Claim Your First Aquarium'
+                    )}
+                  </Button>
+                </div>
               </div>
             </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Selection status - responsive */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
-          className='mt-2 text-center'
-        >
-          <p className='text-white/90 text-xs'>
-            {selectedFish.length === 0 && 'Select 2 fish to continue'}
-            {selectedFish.length === 1 && 'Select 1 more fish'}
-            {selectedFish.length === 2 && 'Perfect! You can now continue'}
-          </p>
-        </motion.div>
-
-        {/* Continue button - responsive */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 1.0 }}
-          className='mt-2 w-full max-w-xs'
-        >
-          <Button
-            onClick={handleContinue}
-            disabled={selectedFish.length !== 2}
-            className='w-full bg-green-500 hover:bg-green-600 text-white font-bold px-3 py-2 rounded-lg flex items-center justify-center gap-1 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation h-8 text-xs'
-          >
-            Continue
-            <ChevronRight className='w-3 h-3' />
-          </Button>
-        </motion.div>
-      </main>
-
-      {/* Mobile footer - at end of scroll */}
-      <div className='relative z-30 p-1 bg-blue-900/90 backdrop-blur-md border-t border-blue-400/50'>
-        <div className='text-center text-blue-100 text-xs'>
-          <p className='mb-1'>© 2025 Aqua Stark - All rights reserved</p>
-          <div className='flex flex-wrap justify-center gap-1 text-xs'>
-            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 py-0.5 rounded hover:bg-blue-500/20 transition-colors'>
-              Polity and Privacy
-            </span>
-            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 py-0.5 rounded hover:bg-blue-500/20 transition-colors'>
-              Terms of Service
-            </span>
-            <span className='hover:text-blue-200 cursor-pointer touch-manipulation px-1 py-0.5 rounded hover:bg-blue-500/20 transition-colors'>
-              Contact
-            </span>
           </div>
-        </div>
-      </div>
+        )}
+
+        {/* Step 2: Fish Selection + Fish Button - Optimized for Mobile */}
+        {aquariumCreated && !fishCreated && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className='w-full max-w-5xl space-y-3 sm:space-y-4'
+          >
+            {/* Header with button side by side - Mobile optimized */}
+            <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 bg-gradient-to-b from-blue-900/70 to-blue-800/60 backdrop-blur-lg rounded-xl px-3 sm:px-6 py-3 sm:py-4 border border-blue-400/30'>
+              <div className='text-left flex-1'>
+                <h3 className='text-base sm:text-xl md:text-2xl font-bold text-cyan-300 mb-1'>
+                  Choose Your First Fish
+                </h3>
+                <p className='text-blue-100/90 text-xs sm:text-sm'>
+                  Select two fish to begin your adventure!
+                </p>
+              </div>
+              <Button
+                onClick={handleCreateFish}
+                disabled={selectedFish.length !== 2 || isCreatingFish}
+                className='bg-purple-500 hover:bg-purple-600 text-white font-bold text-xs sm:text-base px-4 sm:px-8 py-2 sm:py-4 shadow-lg shadow-purple-500/20 transition-all duration-200 disabled:opacity-50 whitespace-nowrap touch-manipulation w-full sm:w-auto'
+              >
+                {isCreatingFish ? (
+                  <div className='flex items-center gap-2'>
+                    <div className='w-3 h-3 sm:w-4 sm:h-4 border-2 border-white border-t-transparent rounded-full animate-spin' />
+                    Creating...
+                  </div>
+                ) : (
+                  'Welcome Your Fish'
+                )}
+              </Button>
+            </div>
+
+            {/* Fish selection - Optimized grid for mobile (2 cols on mobile, 3 on desktop) */}
+            <div className='grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 max-w-4xl mx-auto w-full pb-2'>
+              {starterFish.map((fish, index) => (
+                <motion.div
+                  key={fish.id}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                  className='w-full'
+                >
+                  <FishCard
+                    fish={fish}
+                    isSelected={selectedFish.includes(fish.id)}
+                    onSelect={() => handleFishSelect(fish.id)}
+                    variant='onboarding'
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Step 3: Success + Dive In Button - same as desktop */}
+        {fishCreated && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className='w-full max-w-2xl text-center'
+          >
+            <div className='relative bg-gradient-to-b from-blue-900/70 to-blue-800/60 backdrop-blur-lg rounded-3xl px-6 sm:px-8 py-8 sm:py-12 border border-blue-400/30 shadow-[0_0_30px_5px_rgba(0,0,50,0.2)] overflow-hidden'>
+              <div className='absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-cyan-400/20 via-blue-300/30 to-purple-500/20' />
+
+              <div className='space-y-4 sm:space-y-6 text-center'>
+                <h2 className='text-2xl sm:text-3xl md:text-4xl font-extrabold text-cyan-300 drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]'>
+                  You're All Set!
+                </h2>
+                <p className='text-sm sm:text-base md:text-lg text-blue-100/90 leading-relaxed px-2'>
+                  Your aquarium is ready and your first two fish are swimming
+                  happily. It's time to dive into the depths of AquaStark and
+                  discover everything this aquatic world has to offer!
+                </p>
+
+                <Button
+                  onClick={handleGoToGame}
+                  className='w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-bold text-base sm:text-lg md:text-xl py-6 sm:py-8 shadow-lg shadow-cyan-500/30 animate-pulse touch-manipulation'
+                >
+                  🌊 Dive Into AquaStark
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </main>
     </div>
   );
 }

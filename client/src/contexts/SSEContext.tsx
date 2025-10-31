@@ -54,7 +54,7 @@ export function SSEProvider({ children, playerWallet }: SSEProviderProps) {
   // Fish update handler
   const handleFishUpdate = useCallback(
     (data: any) => {
-      console.log('🐟 Fish update received:', data);
+      // Silently handle fish updates
       addToHistory({ type: 'fish_update', data });
       fishUpdateHandler(data);
     },
@@ -64,7 +64,7 @@ export function SSEProvider({ children, playerWallet }: SSEProviderProps) {
   // Aquarium update handler
   const handleAquariumUpdate = useCallback(
     (data: any) => {
-      console.log('🏠 Aquarium update received:', data);
+      // Silently handle aquarium updates
       addToHistory({ type: 'aquarium_update', data });
       aquariumUpdateHandler(data);
     },
@@ -74,7 +74,7 @@ export function SSEProvider({ children, playerWallet }: SSEProviderProps) {
   // Game event handler
   const handleGameEvent = useCallback(
     (data: any) => {
-      console.log('🎮 Game event received:', data);
+      // Silently handle game events
       addToHistory({ type: 'game_event', data });
       gameEventHandler(data);
     },
@@ -84,10 +84,7 @@ export function SSEProvider({ children, playerWallet }: SSEProviderProps) {
   // Connection change handler
   const handleConnectionChange = useCallback(
     (connected: boolean) => {
-      console.log(
-        '🌊 SSE Connection status:',
-        connected ? 'Connected' : 'Disconnected'
-      );
+      // Silently handle connection changes
       if (connected) {
         addToHistory({
           type: 'connection',
@@ -150,11 +147,27 @@ export function SSEProvider({ children, playerWallet }: SSEProviderProps) {
   );
 }
 
+// Default SSE context value when provider is not available
+const defaultSSEContext: SSEContextType = {
+  isConnected: false,
+  isConnecting: false,
+  lastEvent: null,
+  error: null,
+  connect: () => {},
+  disconnect: () => {},
+  onFishUpdate: () => {},
+  onAquariumUpdate: () => {},
+  onGameEvent: () => {},
+  eventHistory: [],
+  clearHistory: () => {},
+};
+
 // Hook to use SSE context
 export function useSSEContext() {
   const context = useContext(SSEContext);
+  // Return default context if provider is not available (SSE disabled)
   if (context === undefined) {
-    throw new Error('useSSEContext must be used within an SSEProvider');
+    return defaultSSEContext;
   }
   return context;
 }
