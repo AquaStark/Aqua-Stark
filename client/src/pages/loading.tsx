@@ -6,8 +6,11 @@ import { LoadingScreen } from '@/components';
 import { OrientationLock } from '@/components/ui';
 import { useAquarium as useAquariumDojo } from '@/hooks/dojo';
 import { useFishSystemEnhanced } from '@/hooks/dojo';
+import { useMobileDetection } from '@/hooks';
 
 export default function LoadingPage() {
+  // Mobile detection
+  const { isMobile } = useMobileDetection();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const aquariumIdFromUrl = searchParams.get('aquarium');
@@ -89,11 +92,12 @@ export default function LoadingPage() {
   };
 
   return (
-    <OrientationLock>
+    <OrientationLock forcePortrait={isMobile}>
       <LoadingScreen
         onComplete={handleComplete}
         duration={5000}
         showTips={true}
+        // Pass mobile flag if needed for mobile-specific styling
       />
     </OrientationLock>
   );
