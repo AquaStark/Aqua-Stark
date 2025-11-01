@@ -32,7 +32,7 @@ export function FishCardMobileComponent({
 
         <div
           className='relative w-full aspect-square bg-gradient-to-b from-blue-600/30 to-blue-900/80 rounded-md flex items-center justify-center overflow-hidden mb-0.5'
-          style={{ minHeight: '50px' }}
+          style={{ minHeight: '56px' }}
         >
           <div className='absolute inset-0 border border-blue-300/50 rounded-md' />
           <FishTank>
@@ -40,7 +40,7 @@ export function FishCardMobileComponent({
               src={image || '/placeholder.svg'}
               alt={name}
               className='object-contain transition-transform duration-500 hover:scale-110'
-              style={{ width: '44px', height: '44px' }}
+              style={{ width: '52px', height: '52px' }}
             />
           </FishTank>
         </div>
