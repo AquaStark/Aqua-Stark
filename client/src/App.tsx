@@ -1,20 +1,22 @@
 import { Route, Routes } from 'react-router-dom';
 import { StarknetProvider } from './providers/StarknetProvider';
+import { SpeciesCatalogProvider } from './contexts/SpeciesCatalogContext';
+import { SSEWrapper } from './components/sse-wrapper';
 import { ErrorBoundary } from './components';
-import { FullscreenModal } from './components/ui/fullscreen-modal';
-import { useFullscreenPrompt } from './hooks/use-fullscreen-prompt';
 
 // Landing & Onboarding Pages
-import LandingPage from './pages/landing';
+import { useResponsiveLanding } from './hooks/use-responsive-landing';
+import { useResponsiveStore } from './hooks/use-responsive-store';
+import { useResponsiveMiniGames } from './hooks/use-responsive-mini-games';
+import { useResponsiveFloppyFish } from './hooks/use-responsive-floppy-fish';
+import { ResponsiveBubbleJumper } from './hooks/use-responsive-bubble-jumper';
 import OnboardingPage from './pages/onboarding/onboarding';
 import StartPage from './pages/onboarding/start';
-import CreateAquariumPage from './pages/onboarding/create-aquarium';
 import LoadingPage from './pages/loading';
 
 // Main Game Pages
 import GamePage from './pages/game';
 import AquariumsPage from './pages/aquariums';
-import StorePage from './pages/store';
 import TradingMarketPage from './pages/trading-market';
 import BreedingLaboratoryPage from './pages/breeding-laboratory';
 import SettingsPage from './pages/settings';
@@ -29,10 +31,6 @@ import HelpCenterPage from './pages/help-center';
 import EventsCalendarPage from './pages/events-calendar';
 import AchievementsPage from './pages/achievements';
 
-// Mini Games Pages
-import MiniGamesPage from './pages/mini-games';
-import FloppyFishGamePage from './pages/floppy-fish';
-
 // Utility Pages
 import CreditsPage from './pages/credits';
 import Error404Page from './pages/404';
@@ -41,71 +39,68 @@ import Error404Page from './pages/404';
 import { Game } from './Game';
 import AquariumDemo from './pages/demo';
 
-// Debug Component
-import { FullscreenDebug } from './components/debug/fullscreen-debug';
-
 function App() {
-  const { showPrompt, hidePrompt, acceptFullscreen } = useFullscreenPrompt();
+  const ResponsiveLanding = useResponsiveLanding();
+  const ResponsiveStore = useResponsiveStore();
+  const ResponsiveMiniGames = useResponsiveMiniGames();
+  const ResponsiveFloppyFish = useResponsiveFloppyFish();
 
   return (
     <ErrorBoundary>
       <StarknetProvider>
-        <Routes>
-          {/* Landing & Onboarding Routes */}
-          <Route path='/' element={<LandingPage />} />
-          <Route path='/onboarding' element={<OnboardingPage />} />
-          <Route path='/start' element={<StartPage />} />
-          <Route path='/create-aquarium' element={<CreateAquariumPage />} />
-          <Route path='/loading' element={<LoadingPage />} />
+        <SpeciesCatalogProvider>
+          <SSEWrapper>
+            <Routes>
+              {/* Landing & Onboarding Routes */}
+              <Route path='/' element={ResponsiveLanding} />
+              <Route path='/onboarding' element={<OnboardingPage />} />
+              <Route path='/start' element={<StartPage />} />
+              <Route path='/loading' element={<LoadingPage />} />
 
-          {/* Main Game Routes */}
-          <Route path='/game' element={<GamePage />} />
-          <Route path='/aquariums' element={<AquariumsPage />} />
-          <Route path='/store' element={<StorePage />} />
-          <Route path='/trading-market' element={<TradingMarketPage />} />
-          <Route
-            path='/breeding-laboratory'
-            element={<BreedingLaboratoryPage />}
-          />
+              {/* Main Game Routes */}
+              <Route path='/game' element={<GamePage />} />
+              <Route path='/aquariums' element={<AquariumsPage />} />
+              <Route path='/store' element={ResponsiveStore} />
+              <Route path='/trading-market' element={<TradingMarketPage />} />
+              <Route
+                path='/breeding-laboratory'
+                element={<BreedingLaboratoryPage />}
+              />
 
-          {/* Settings Route */}
-          <Route path='/settings' element={<SettingsPage />} />
+              {/* Settings Route */}
+              <Route path='/settings' element={<SettingsPage />} />
 
-          {/* Community & Social Routes */}
-          <Route path='/community' element={<CommunityPage />} />
-          <Route path='/my-profile' element={<MyProfilePage />} />
+              {/* Community & Social Routes */}
+              <Route path='/community' element={<CommunityPage />} />
+              <Route path='/my-profile' element={<MyProfilePage />} />
 
-          {/* Information & Help Routes */}
-          <Route path='/encyclopedia' element={<EncyclopediaPage />} />
-          <Route path='/help-center' element={<HelpCenterPage />} />
-          <Route path='/events-calendar' element={<EventsCalendarPage />} />
-          <Route path='/achievements' element={<AchievementsPage />} />
+              {/* Information & Help Routes */}
+              <Route path='/encyclopedia' element={<EncyclopediaPage />} />
+              <Route path='/help-center' element={<HelpCenterPage />} />
+              <Route path='/events-calendar' element={<EventsCalendarPage />} />
+              <Route path='/achievements' element={<AchievementsPage />} />
 
-          {/* Mini Games Routes */}
-          <Route path='/mini-games' element={<MiniGamesPage />} />
-          <Route
-            path='/mini-games/floppy-fish'
-            element={<FloppyFishGamePage />}
-          />
+              {/* Mini Games Routes */}
+              <Route path='/mini-games' element={ResponsiveMiniGames} />
+              <Route
+                path='/mini-games/floppy-fish'
+                element={ResponsiveFloppyFish}
+              />
+              <Route
+                path='/mini-games/bubble-jumper'
+                element={<ResponsiveBubbleJumper />}
+              />
 
-          {/* Utility Routes */}
-          <Route path='/credits' element={<CreditsPage />} />
-          <Route path='/test-game' element={<Game />} />
-          <Route path='*' element={<Error404Page />} />
+              {/* Utility Routes */}
+              <Route path='/credits' element={<CreditsPage />} />
+              <Route path='/test-game' element={<Game />} />
+              <Route path='*' element={<Error404Page />} />
 
-          {/* test page */}
-          <Route path='/demo' element={<AquariumDemo />} />
-        </Routes>
-
-        {/* Fullscreen Modal */}
-        <FullscreenModal
-          isOpen={showPrompt}
-          onClose={hidePrompt}
-          onAccept={acceptFullscreen}
-        />
-
-        {/* Debug Component - Remove in production */}
-        <FullscreenDebug />
+              {/* test page */}
+              <Route path='/demo' element={<AquariumDemo />} />
+            </Routes>
+          </SSEWrapper>
+        </SpeciesCatalogProvider>
       </StarknetProvider>
     </ErrorBoundary>
   );

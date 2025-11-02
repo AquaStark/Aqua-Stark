@@ -1,74 +1,65 @@
 'use client';
 
-import { useState } from 'react';
-import { LaboratoryTabs } from '@/components/laboratory/laboratory-tabs';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { OrientationLock } from '@/components/ui';
-import { Beaker, Search } from 'lucide-react';
-import { BubblesBackground } from '@/components';
-import { fishCollection } from '@/data/fish-data';
-import '@/styles/laboratory.css';
-import { LayoutFooter } from '@/components';
+import { UnderConstruction } from '@/components/ui/under-construction';
 import { PageHeader } from '@/components';
-import { useBubbles } from '@/hooks';
+import { Heart, Plus } from 'lucide-react';
 
-export default function LaboratoryPage() {
-  const [activeTab, setActiveTab] = useState('breeding');
-  const [searchQuery, setSearchQuery] = useState('');
-  const bubbles = useBubbles();
-
-  const filteredFish = searchQuery
-    ? fishCollection.filter(
-        fish =>
-          fish.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          fish.rarity.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : fishCollection;
-
+export default function BreedingLaboratoryPage() {
   return (
-    <OrientationLock>
-      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background flex flex-col'>
-        <BubblesBackground bubbles={bubbles} />
-
+    <UnderConstruction
+      pageName='Breeding Laboratory'
+      description="We're creating an amazing underwater breeding facility! Soon you'll be able to breed unique fish combinations and discover new species."
+    >
+      <div className='min-h-screen bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900'>
         <PageHeader
           title='Breeding Laboratory'
           backTo='/game'
           backText='Back to Game'
-          rightContent={
-            <div className='flex items-center gap-2'>
-              <div className='relative w-64 hidden md:block'>
-                <Input
-                  type='text'
-                  placeholder='Search fish...'
-                  className='pl-10 bg-blue-800 border-blue-700 text-white placeholder:text-blue-300'
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                />
-                <Search className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400' />
-              </div>
-              <Button className='bg-purple-600 hover:bg-purple-700 text-white font-semibold'>
-                <Beaker className='h-4 w-4 mr-2' />
-                <span className='hidden md:inline'>Lab Status</span>
-              </Button>
-            </div>
-          }
         />
 
-        <main className='relative z-20 flex flex-col items-center px-4 py-8 mx-auto max-w-7xl flex-grow w-full'>
-          <div className='w-full max-w-4xl mx-auto lg:max-w-7xl'>
-            <LaboratoryTabs
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              filteredFish={filteredFish}
-            />
+        <div className='container mx-auto px-4 py-8'>
+          {/* Breeding Slots */}
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
+            <div className='bg-blue-800/30 border border-blue-600/30 rounded-lg p-6 text-center'>
+              <div className='w-32 h-32 mx-auto bg-blue-700/30 rounded-lg mb-4'></div>
+              <button className='px-4 py-2 bg-blue-600 text-white rounded-lg'>
+                Select Parent 1
+              </button>
+            </div>
+            <div className='flex items-center justify-center'>
+              <Plus className='w-12 h-12 text-blue-400' />
+            </div>
+            <div className='bg-blue-800/30 border border-blue-600/30 rounded-lg p-6 text-center'>
+              <div className='w-32 h-32 mx-auto bg-blue-700/30 rounded-lg mb-4'></div>
+              <button className='px-4 py-2 bg-blue-600 text-white rounded-lg'>
+                Select Parent 2
+              </button>
+            </div>
           </div>
-        </main>
 
-        <div className='relative z-10 mt-auto'>
-          <LayoutFooter />
+          {/* Breed Button */}
+          <div className='text-center mb-8'>
+            <button className='px-8 py-3 bg-pink-600 text-white rounded-lg flex items-center gap-2 mx-auto'>
+              <Heart className='w-5 h-5' />
+              Start Breeding
+            </button>
+          </div>
+
+          {/* Previous Breeds */}
+          <h3 className='text-xl font-bold text-white mb-4'>Previous Breeds</h3>
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+            {[1, 2, 3].map(i => (
+              <div
+                key={i}
+                className='bg-blue-800/30 border border-blue-600/30 rounded-lg p-4'
+              >
+                <div className='w-full h-40 bg-blue-700/30 rounded-lg mb-3'></div>
+                <div className='h-4 bg-blue-700/30 rounded mb-2'></div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </OrientationLock>
+    </UnderConstruction>
   );
 }

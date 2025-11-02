@@ -6,11 +6,13 @@ import { RotateCcw } from 'lucide-react';
 interface OrientationLockProps {
   children: React.ReactNode;
   className?: string;
+  forcePortrait?: boolean; // Nueva prop para forzar modo portrait
 }
 
 export function OrientationLock({
   children,
   className = '',
+  forcePortrait = false,
 }: OrientationLockProps) {
   const [isPortrait, setIsPortrait] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -40,9 +42,18 @@ export function OrientationLock({
     };
   }, []);
 
-  // If not mobile or already in landscape, show children
-  if (!isMobile || !isPortrait) {
-    return <div className={className}>{children}</div>;
+  // Si forcePortrait es true, solo mostrar children en portrait
+  // Si forcePortrait es false, mostrar children en landscape (comportamiento original)
+  if (forcePortrait) {
+    // Forzar portrait: mostrar children solo si está en portrait
+    if (isMobile && isPortrait) {
+      return <div className={className}>{children}</div>;
+    }
+  } else {
+    // Comportamiento original: mostrar children solo si está en landscape
+    if (!isMobile || !isPortrait) {
+      return <div className={className}>{children}</div>;
+    }
   }
 
   // Show orientation lock screen for mobile portrait
@@ -65,21 +76,32 @@ export function OrientationLock({
 
         {/* Title */}
         <h1 className='text-2xl font-bold text-white mb-4 select-none'>
-          Rotate your device
+          {forcePortrait ? 'Rotate to portrait' : 'Rotate your device'}
         </h1>
 
         {/* Description */}
         <p className='text-white/90 text-lg mb-6 select-none'>
-          For the best gaming experience, please rotate your device to landscape
-          mode
+          {forcePortrait
+            ? 'For the best experience, please rotate your device to portrait mode'
+            : 'For the best gaming experience, please rotate your device to landscape mode'}
         </p>
 
         {/* Instructions */}
         <div className='bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20'>
           <p className='text-white/80 text-sm select-none'>
-            📱 → 📱
-            <br />
-            Rotate your phone 90° to the left or right
+            {forcePortrait ? (
+              <>
+                📱 → 📱
+                <br />
+                Rotate your phone to portrait mode
+              </>
+            ) : (
+              <>
+                📱 → 📱
+                <br />
+                Rotate your phone 90° to the left or right
+              </>
+            )}
           </p>
         </div>
 

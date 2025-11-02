@@ -8,6 +8,12 @@ const router = express.Router();
 // Apply rate limiting to all fish routes
 router.use(rateLimitPresets.authenticated);
 
+// Fish creation route (for onboarding sync)
+router.post('/create', FishController.createFish);
+
+// Player fish collection route (public for onboarding)
+router.get('/player/:playerId', FishController.getPlayerFishPublic);
+
 // Fish state routes (require authentication)
 router.get(
   '/:fishId',
@@ -38,9 +44,6 @@ router.post(
   validateOwnership('fish'),
   FishController.breedFish
 );
-
-// Player fish collection routes (require authentication)
-router.get('/player/:playerId', FishController.getPlayerFish);
 
 // Fish needing attention route
 router.get(

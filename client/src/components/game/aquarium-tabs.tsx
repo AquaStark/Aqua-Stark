@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Grid,
   Utensils,
@@ -12,6 +13,8 @@ import { cn } from '@/lib/utils';
 import { MOCK_AQUARIUMS } from '@/constants';
 import { CleanButton } from '../dirt/clean-button';
 import { TipsPopup } from './tips-popup';
+import { useActiveAquarium } from '@/store/active-aquarium';
+import { useAccount } from '@starknet-react/core';
 
 interface AquariumTabProps {
   name: string;
@@ -65,6 +68,7 @@ interface AquariumTabsProps {
   showTips?: boolean;
   onTipsToggle?: () => void;
   onTipsClose?: () => void;
+  realAquariumId?: string | null;
 }
 
 export function AquariumTabs({
@@ -78,13 +82,32 @@ export function AquariumTabs({
   showTips,
   onTipsToggle,
   onTipsClose,
+  realAquariumId,
 }: AquariumTabsProps) {
+  const navigate = useNavigate();
+  const { account } = useAccount();
+  const { setActiveAquariumId, playerAddress: storedPlayerAddress } =
+    useActiveAquarium();
+
+  const handleViewAllClick = () => {
+    // CRITICAL: Save REAL aquarium ID (not mock ID) before navigating
+    const aquariumToSave = realAquariumId || selectedAquarium.id.toString();
+    const playerAddress = account?.address || storedPlayerAddress;
+
+    if (aquariumToSave && playerAddress) {
+      console.log('💾 Saving REAL aquarium before navigation:', aquariumToSave);
+      setActiveAquariumId(aquariumToSave, playerAddress);
+    }
+    navigate('/aquariums');
+  };
+
   return (
     <div className='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-900/90 to-transparent z-40 p-2 sm:p-4'>
       <div className='flex justify-between items-end gap-4'>
         {/* Left side - Aquarium tabs */}
         <div className='flex gap-1 sm:gap-2 overflow-x-auto scrollbar-hide'>
-          {aquariums.map(aquarium => (
+          {/* Show only the first aquarium */}
+          {aquariums.slice(0, 1).map(aquarium => (
             <AquariumTab
               key={aquarium.id}
               name={aquarium.name}
@@ -92,11 +115,12 @@ export function AquariumTabs({
               onClick={() => onAquariumSelect(aquarium)}
             />
           ))}
+          {/* View All button - redirects to /aquariums page */}
           <AquariumTab
             name='View All'
-            active={selectedAquarium.id === 0}
+            active={false}
             icon={<Grid className='h-3 w-3 sm:h-4 sm:w-4' />}
-            onClick={() => onAquariumSelect()}
+            onClick={handleViewAllClick}
           />
         </div>
 
@@ -174,8 +198,8 @@ export function AquariumTabs({
               color: 'from-pink-400 to-pink-600',
             },
             {
-              id: 'rewards',
-              label: 'Rewards',
+              id: 'achievements',
+              label: 'Achievements',
               icon: <Trophy className='h-5 w-5' />,
               color: 'from-yellow-400 to-yellow-600',
             },
@@ -188,12 +212,15 @@ export function AquariumTabs({
                   // Handle different actions
                   switch (item.id) {
                     case 'shop':
+                      navigate('/store');
                       break;
                     case 'collection':
                       break;
                     case 'games':
+                      navigate('/mini-games');
                       break;
-                    case 'rewards':
+                    case 'achievements':
+                      navigate('/achievements');
                       break;
                   }
                 }}
@@ -204,7 +231,9 @@ export function AquariumTabs({
                 </div>
               </button>
               {/* Tooltip */}
-              <div className='absolute bottom-16 left-1/2 transform -translate-x-1/2 w-20 bg-blue-600/90 backdrop-blur-md rounded-lg p-2 border border-blue-400/50 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-60'>
+              <div
+                className={`absolute bottom-16 left-1/2 transform -translate-x-1/2 ${item.id === 'achievements' ? 'w-28' : 'w-20'} bg-blue-600/90 backdrop-blur-md rounded-lg p-2 border border-blue-400/50 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-60`}
+              >
                 <div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-600/90 transform rotate-45 border-r border-b border-blue-400/50'></div>
                 <span className='text-white text-xs font-medium text-center block'>
                   {item.label}

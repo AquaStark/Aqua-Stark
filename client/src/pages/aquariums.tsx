@@ -1,25 +1,26 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { PageHeader } from '@/components';
 import { LayoutFooter } from '@/components';
 import { AquariumStats } from '@/components';
 import { AquariumList } from '@/components';
 import { PurchaseModal } from '@/components';
-import { CreateAquariumButton } from '@/components';
 import { BubblesBackground } from '@/components';
 import { OrientationLock } from '@/components/ui';
 import { useBubbles } from '@/hooks';
-import { Search, Filter } from 'lucide-react';
+import { useMobileDetection } from '@/hooks';
+import { Search } from 'lucide-react';
 import { useActiveAquarium } from '../store/active-aquarium';
 import { useNavigate } from 'react-router-dom';
 import type { Aquarium } from '@/types';
 import { useAccount } from '@starknet-react/core';
-import { useFish } from '@/hooks';
 import * as models from '@/typescript/models.gen';
-// Removed unused imports
 import { num, type BigNumberish } from 'starknet';
 import { useAquarium } from '@/hooks/dojo';
+import { useAquariumSync } from '@/hooks/use-aquarium-sync';
+import { useFishSystemEnhanced } from '@/hooks/dojo';
+import { useSpeciesCatalog } from '@/hooks/use-species-catalog';
+import { MobileAquariumsView } from '@/components/mobile/mobile-aquariums-view';
 
 export default function AquariumsPage() {
   const [aquariums, setAquariums] = useState<Aquarium[]>([]);
@@ -31,7 +32,21 @@ export default function AquariumsPage() {
 
   const { account } = useAccount();
   const { getPlayerAquariums, getAquarium, newAquarium } = useAquarium();
-  const { getFish } = useFish();
+  const { getFish } = useFishSystemEnhanced();
+  const { getPlayerAquariums: getPlayerAquariumsBackend } = useAquariumSync();
+  const { getSpeciesImage, getSpeciesDisplayName } = useSpeciesCatalog();
+
+  // Mobile detection
+  const { isMobile } = useMobileDetection();
+
+  // Get stored player address from persisted store
+  const {
+    playerAddress: storedPlayerAddress,
+    activeAquariumId: storedAquariumId,
+  } = useActiveAquarium();
+
+  // Use stored player address if account is not connected yet
+  const effectivePlayerAddress = account?.address || storedPlayerAddress;
 
   const bubbles = useBubbles({
     initialCount: 15,
@@ -53,17 +68,37 @@ export default function AquariumsPage() {
       const aquariumData = await getAquarium(id);
       if (!aquariumData) return null;
 
+      if (!aquariumData.housed_fish || aquariumData.housed_fish.length === 0) {
+        return {
+          aquariumData,
+          fishData: [],
+        };
+      }
+
       const fishPromises = aquariumData.housed_fish.map(
-        (fishId: BigNumberish) => getFish(fishId)
+        async (fishId: BigNumberish) => {
+          try {
+            const fish = await getFish(fishId);
+            console.log('🐟 Fish data from blockchain:', fish);
+            return fish;
+          } catch (err) {
+            console.error('❌ Error loading fish:', err);
+            return null;
+          }
+        }
       );
       const fishData = await Promise.all(fishPromises);
 
+      const validFish = fishData.filter(
+        (fish): fish is models.Fish => fish !== null
+      );
+      console.log('✅ Valid fish loaded:', validFish);
+
       return {
         aquariumData,
-        fishData: fishData.filter((fish): fish is models.Fish => fish !== null),
+        fishData: validFish,
       };
-    } catch (error) {
-      console.error('Error loading aquarium with fishes:', error);
+    } catch {
       return null;
     }
   };
@@ -87,29 +122,55 @@ export default function AquariumsPage() {
         Math.floor(Number(contractAquarium.cleanliness) / 20) + 1
       ),
       isPremium: Number(contractAquarium.max_capacity) > 10,
-      fishes: fishes.map(fish => ({
-        id: Number(fish.id),
-        name: `Fish ${fish.id}`,
-        image: '/fish/fish1.png',
-        rarity: 'Common' as const,
-        generation: Number(fish.generation),
-        level: Math.floor(Number(fish.age) / 100) + 1,
-        traits: {
-          color: 'blue',
-          pattern: 'striped',
-          fins: 'long',
-          size: 'medium',
-        },
-        hunger: (fish as any).hunger ?? 50,
-        state: (fish as any).state ?? 'idle',
-      })),
+      fishes: fishes.map(fish => {
+        console.log('🔍 Processing fish for card:', {
+          fishId: fish.id,
+          species: fish.species,
+          variant: fish.species?.variant,
+        });
+
+        // Extract species name from CairoCustomEnum
+        let speciesName = 'AngelFish'; // Default
+        if (fish.species?.variant) {
+          // Handle CairoCustomEnum variant extraction
+          const variantEntries = Object.entries(fish.species.variant);
+          const activeVariant = variantEntries.find(
+            ([, value]) => value !== undefined
+          );
+          if (activeVariant) {
+            speciesName = activeVariant[0];
+          }
+        }
+
+        // Get correct image and display name from catalog
+        const fishImage = getSpeciesImage(speciesName);
+        const displayName = getSpeciesDisplayName(speciesName);
+
+        return {
+          id: Number(fish.id),
+          name: displayName,
+          image: fishImage,
+          rarity: 'Common' as const,
+          generation: Number(fish.generation),
+          level: Math.floor(Number(fish.age) / 100) + 1,
+          traits: {
+            color: 'blue',
+            pattern: 'striped',
+            fins: 'long',
+            size: 'medium',
+          },
+          hunger: (fish as any).hunger ?? 50,
+          state: (fish as any).state ?? 'idle',
+        };
+      }),
     };
   };
 
-  // Function to load player aquariums
+  // Function to load player aquariums using backend + blockchain sync
   const loadPlayerAquariums = async () => {
-    if (!account?.address) {
+    if (!effectivePlayerAddress) {
       setLoading(false);
+      setError(null);
       return;
     }
 
@@ -117,11 +178,48 @@ export default function AquariumsPage() {
       setLoading(true);
       setError(null);
 
-      const playerAquariums = await getPlayerAquariums(account.address);
+      // Try loading from backend first
+      try {
+        const backendResponse = await getPlayerAquariumsBackend(
+          effectivePlayerAddress
+        );
+
+        if (
+          backendResponse.success &&
+          backendResponse.data &&
+          backendResponse.data.length > 0
+        ) {
+          // Use backend aquarium IDs to load details from blockchain
+          const aquariumPromises = backendResponse.data.map(
+            async (aquariumData: any) => {
+              const onChainId = aquariumData.on_chain_id;
+
+              const result = await loadAquariumWithFishes(BigInt(onChainId));
+              if (result) {
+                return transformAquariumData(
+                  result.aquariumData,
+                  result.fishData
+                );
+              }
+              return null;
+            }
+          );
+
+          const loadedAquariums = (await Promise.all(aquariumPromises)).filter(
+            Boolean
+          ) as Aquarium[];
+          setAquariums(loadedAquariums);
+          return;
+        }
+      } catch {
+        // Fallback to blockchain silently
+      }
+
+      // Fallback: Load directly from blockchain if backend fails
+      const playerAquariums = await getPlayerAquariums(effectivePlayerAddress);
 
       if (!playerAquariums || playerAquariums.length === 0) {
         setAquariums([]);
-        setLoading(false);
         return;
       }
 
@@ -141,8 +239,8 @@ export default function AquariumsPage() {
       ) as Aquarium[];
       setAquariums(loadedAquariums);
     } catch (error) {
-      console.error('Error loading player aquariums:', error);
-      setError('Failed to load aquariums');
+      console.error('❌ Error loading player aquariums:', error);
+      setError('Failed to load aquariums. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -151,28 +249,26 @@ export default function AquariumsPage() {
   // Load aquariums when account changes
   useEffect(() => {
     loadPlayerAquariums();
-  }, [account?.address]);
+  }, [effectivePlayerAddress]);
 
   const handleSelectAquarium = async (aquarium: Aquarium) => {
+    if (!effectivePlayerAddress) {
+      setError('Please connect your wallet first');
+      return;
+    }
+
     try {
-      // Load complete aquarium with fish before navigating
-      const completeAquarium = await loadAquariumWithFishes(aquarium.id);
-      if (completeAquarium) {
-        setActiveAquariumId(aquarium.id.toString());
-        navigate('/game', {
-          state: {
-            aquarium: transformAquariumData(
-              completeAquarium.aquariumData,
-              completeAquarium.fishData
-            ),
-          },
-        });
-      }
-    } catch (error) {
-      console.error('Error loading aquarium for navigation:', error);
-      // Fallback to simple navigation
-      setActiveAquariumId(aquarium.id.toString());
-      navigate('/game');
+      console.log('🎯 Selected aquarium ID:', aquarium.id);
+
+      // Persist aquarium ID to store
+      setActiveAquariumId(aquarium.id.toString(), effectivePlayerAddress);
+      console.log('💾 Saved to store:', aquarium.id.toString());
+
+      // Navigate to game WITH aquarium ID in URL
+      console.log('🎮 Navigating to /game?aquarium=' + aquarium.id);
+      navigate(`/game?aquarium=${aquarium.id}`);
+    } catch {
+      setError('Failed to select aquarium. Please try again.');
     }
   };
 
@@ -209,12 +305,61 @@ export default function AquariumsPage() {
     );
   }, [aquariums, searchQuery]);
 
-  const headerRightContent = (
-    <div className='bg-blue-600/50 px-4 py-2 rounded-full flex items-center'>
-      <span className='text-yellow-300 mr-1'>🪙</span>
-      <span className='text-white font-medium'>{coinBalance}</span>
-    </div>
-  );
+  const handleBackToGame = () => {
+    // Navigate back to game with stored aquarium ID
+    if (storedAquariumId) {
+      navigate(`/game?aquarium=${storedAquariumId}`);
+    } else {
+      navigate('/game');
+    }
+  };
+
+  // Calculate stats for mobile view
+  const totalFish = useMemo(() => {
+    return aquariums.reduce((acc, curr) => acc + curr.fishes.length, 0);
+  }, [aquariums]);
+
+  const premiumAquariumsCount = useMemo(() => {
+    return aquariums.filter(a => a.isPremium).length;
+  }, [aquariums]);
+
+  const avgHealth = useMemo(() => {
+    if (aquariums.length === 0) return 0;
+    return Math.round(
+      aquariums.reduce((acc, curr) => acc + curr.health, 0) / aquariums.length
+    );
+  }, [aquariums]);
+
+  // Render mobile view if mobile device detected
+  if (isMobile) {
+    return (
+      <>
+        <MobileAquariumsView
+          aquariums={aquariums}
+          filteredAquariums={filteredAquariums}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          onSelectAquarium={handleSelectAquarium}
+          onBackToGame={handleBackToGame}
+          onCreateAquarium={() => setShowPurchaseModal(true)}
+          coinBalance={coinBalance}
+          loading={loading}
+          error={error}
+          effectivePlayerAddress={effectivePlayerAddress}
+          totalFish={totalFish}
+          premiumAquariums={premiumAquariumsCount}
+          averageHealth={avgHealth}
+        />
+        {showPurchaseModal && (
+          <PurchaseModal
+            onClose={() => setShowPurchaseModal(false)}
+            onPurchase={handleAddAquarium}
+            coinBalance={coinBalance}
+          />
+        )}
+      </>
+    );
+  }
 
   return (
     <OrientationLock>
@@ -223,39 +368,47 @@ export default function AquariumsPage() {
 
         <div className='relative z-10 flex flex-col min-h-screen w-full'>
           <div className='w-full px-2 sm:px-4'>
-            <PageHeader
-              title='My Aquariums'
-              backTo='/game'
-              backText=''
-              rightContent={
-                <div className='flex gap-32 md:gap-64'>
-                  {headerRightContent}
-                  <div className='flex flex-col sm:flex-row items-center justify-between b-6 gap-4'>
-                    <div className='relative w-full max-w-md'>
-                      <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-                        <Search className='h-5 w-5 text-blue-200' />
-                      </div>
-                      <input
-                        type='text'
-                        placeholder='Search aquariums...'
-                        value={searchQuery}
-                        onChange={e => setSearchQuery(e.target.value)}
-                        className='bg-blue-600/30 border border-blue-400/30 text-white placeholder-blue-200 rounded-lg pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300'
-                        aria-label='Search aquariums'
-                        role='searchbox'
-                      />
-                    </div>
-                    <button
-                      className='bg-blue-600/30 border border-blue-400/30 text-white rounded-lg px-4 py-2 flex items-center w-full sm:w-auto justify-center'
-                      aria-label='Filter Aquariums'
-                    >
-                      <Filter className='h-5 w-5 mr-2' aria-hidden='true' />
-                      Filter
-                    </button>
-                  </div>
+            <div className='flex items-center justify-between py-4'>
+              {/* Back button */}
+              <button
+                onClick={handleBackToGame}
+                className='bg-blue-600/30 hover:bg-blue-600/50 border border-blue-400/30 text-white rounded-lg px-4 py-2 flex items-center transition-colors'
+              >
+                ← Back to Game
+              </button>
+
+              {/* Title */}
+              <h1 className='text-2xl font-bold text-white'>My Aquariums</h1>
+
+              {/* Coins */}
+              <div className='flex items-center px-4 py-2 border rounded-full bg-blue-700/50 border-blue-400/50'>
+                <img
+                  src='/icons/coin.png'
+                  alt='Coins'
+                  className='w-5 h-5 mr-2'
+                />
+                <span className='font-bold text-white'>{coinBalance}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className='w-full px-4 py-4'>
+            <div className='flex flex-col sm:flex-row items-center justify-center gap-4 mb-6'>
+              <div className='relative w-full max-w-md'>
+                <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
+                  <Search className='h-5 w-5 text-blue-200' />
                 </div>
-              }
-            />
+                <input
+                  type='text'
+                  placeholder='Search aquariums...'
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className='bg-blue-600/30 border border-blue-400/30 text-white placeholder-blue-200 rounded-lg pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-300'
+                  aria-label='Search aquariums'
+                  role='searchbox'
+                />
+              </div>
+            </div>
           </div>
 
           <main className='flex-grow mx-auto max-w-7xl px-4 py-8 w-full'>
@@ -266,41 +419,64 @@ export default function AquariumsPage() {
               </div>
             )}
 
-            {loading ? (
-              <div className='flex justify-center items-center py-12'>
-                <div className='text-white text-lg'>Loading aquariums...</div>
+            {!effectivePlayerAddress ? (
+              <div className='text-center py-12'>
+                <div className='text-white text-xl mb-4'>
+                  👋 Welcome to Aqua Stark
+                </div>
+                <div className='text-blue-200 mb-6'>
+                  Connect your wallet to view and manage your aquariums
+                </div>
+              </div>
+            ) : loading ? (
+              <div className='flex flex-col justify-center items-center py-12'>
+                <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-white mb-4'></div>
+                <div className='text-white text-lg'>
+                  Loading your aquariums...
+                </div>
+                <div className='text-blue-200 text-sm mt-2'>
+                  Syncing from backend and blockchain
+                </div>
               </div>
             ) : (
               <>
-                <AquariumStats
-                  totalAquariums={aquariums.length}
-                  totalFish={aquariums.reduce(
-                    (acc, curr) => acc + curr.fishes.length,
-                    0
-                  )}
-                  premiumAquariums={aquariums.filter(a => a.isPremium).length}
-                  averageHealth={
-                    aquariums.length > 0
-                      ? Math.round(
-                          aquariums.reduce(
-                            (acc, curr) => acc + curr.health,
-                            0
-                          ) / aquariums.length
-                        )
-                      : 0
-                  }
-                />
+                {aquariums.length > 0 && (
+                  <AquariumStats
+                    totalAquariums={aquariums.length}
+                    totalFish={aquariums.reduce(
+                      (acc, curr) => acc + curr.fishes.length,
+                      0
+                    )}
+                    premiumAquariums={aquariums.filter(a => a.isPremium).length}
+                    averageHealth={
+                      aquariums.length > 0
+                        ? Math.round(
+                            aquariums.reduce(
+                              (acc, curr) => acc + curr.health,
+                              0
+                            ) / aquariums.length
+                          )
+                        : 0
+                    }
+                  />
+                )}
 
                 {aquariums.length === 0 ? (
                   <div className='text-center py-12'>
                     <div className='text-white text-xl mb-4'>
-                      No aquariums found
+                      🐠 No aquariums yet
                     </div>
                     <div className='text-blue-200 mb-6'>
-                      {account?.address
-                        ? 'Create your first aquarium to get started!'
-                        : 'Connect your wallet to view your aquariums'}
+                      Create your first aquarium to start your underwater
+                      adventure!
                     </div>
+                    <button
+                      onClick={() => setShowPurchaseModal(true)}
+                      disabled
+                      className='bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition-colors opacity-50 cursor-not-allowed'
+                    >
+                      Create First Aquarium (Disabled)
+                    </button>
                   </div>
                 ) : (
                   <AquariumList
@@ -313,11 +489,12 @@ export default function AquariumsPage() {
               </>
             )}
 
-            {account?.address && (
+            {/* Create Aquarium Button - DISABLED */}
+            {/* {account?.address && (
               <CreateAquariumButton
                 onClick={() => setShowPurchaseModal(true)}
               />
-            )}
+            )} */}
           </main>
 
           <LayoutFooter />

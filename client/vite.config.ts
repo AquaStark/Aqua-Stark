@@ -26,6 +26,32 @@ export default defineConfig({
     fs: {
       allow: ['..'],
     },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        secure: false,
+        rewrite: path => path.replace(/^\/api/, '/api'),
+      },
+    },
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          dojo: [
+            '@dojoengine/core',
+            '@dojoengine/sdk',
+            '@dojoengine/torii-client',
+            '@dojoengine/torii-wasm',
+          ],
+          starknet: ['starknet', 'starknetkit', '@starknet-react/core'],
+        },
+      },
+    },
   },
   assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.svg'],
 });

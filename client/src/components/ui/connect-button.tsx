@@ -15,44 +15,44 @@ export function ConnectButton({ className = '' }: ConnectButtonProps) {
   const { address, isConnected } = useAccount();
   const [isConnecting, setIsConnecting] = useState(false);
 
-  // Encontrar el conector de Cartridge Controller
+  // Find the Cartridge Controller connector
   const controller = connectors.find(
     c => c instanceof ControllerConnector
   ) as ControllerConnector;
 
   const handleConnect = useCallback(async () => {
     if (!controller) {
-      toast.error('Cartridge Controller no está disponible');
+      toast.error('Cartridge Controller is not available');
       return;
     }
 
     setIsConnecting(true);
     try {
-      // Esto abrirá el modal de Cartridge con opciones de:
+      // This will open the Cartridge modal with options for:
       // - Google
       // - Discord
       // - WalletConnect
-      // - Wallets nativas (Argent X, Braavos, etc.)
+      // - Native wallets (Argent X, Braavos, etc.)
       await connect({ connector: controller });
-      toast.success('¡Conectado exitosamente! 🎮');
+      toast.success('Connected successfully! 🎮');
     } catch (error) {
       console.error('Error connecting to Cartridge:', error);
 
       if (error instanceof Error) {
         if (error.message.includes('User rejected')) {
-          toast.error('Conexión cancelada por el usuario');
+          toast.error('Connection cancelled by user');
         } else if (
           error.message.includes('account') ||
           error.message.includes('login')
         ) {
-          toast.error('Error de cuenta. Verifica tu login en Cartridge');
+          toast.error('Account error. Verify your login in Cartridge');
         } else if (error.message.includes('network')) {
-          toast.error('Error de red. Verifica tu conexión');
+          toast.error('Network error. Check your connection');
         } else {
-          toast.error('Error al conectar con Cartridge');
+          toast.error('Error connecting to Cartridge');
         }
       } else {
-        toast.error('Error inesperado al conectar');
+        toast.error('Unexpected connection error');
       }
     } finally {
       setIsConnecting(false);
@@ -62,14 +62,14 @@ export function ConnectButton({ className = '' }: ConnectButtonProps) {
   const handleDisconnect = useCallback(async () => {
     try {
       await disconnect();
-      toast.success('Desconectado exitosamente');
+      toast.success('Disconnected successfully');
     } catch (error) {
       console.error('Error disconnecting:', error);
-      toast.error('Error al desconectar');
+      toast.error('Error disconnecting');
     }
   }, [disconnect]);
 
-  // Si está conectado, mostrar información de la cuenta y botón de desconectar
+  // If connected, show account info and disconnect button
   if (isConnected && address) {
     return (
       <div className='flex items-center gap-3'>
@@ -84,13 +84,13 @@ export function ConnectButton({ className = '' }: ConnectButtonProps) {
           className='px-3 py-2 rounded-lg bg-gradient-to-b from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 shadow-lg transform hover:scale-105 transition-all duration-200 border-2 border-red-300 flex items-center justify-center'
         >
           <span>🚪</span>
-          <span>Desconectar</span>
+          <span>Disconnect</span>
         </button>
       </div>
     );
   }
 
-  // Botón de conexión con estilo de Cartridge
+  // Connect button with Cartridge style
   return (
     <button
       onClick={handleConnect}
@@ -100,7 +100,7 @@ export function ConnectButton({ className = '' }: ConnectButtonProps) {
       {isConnecting ? (
         <>
           <div className='w-3 h-3 sm:w-4 sm:h-4 border-2 border-yellow-400 border-t-transparent rounded-full animate-spin'></div>
-          <span className='hidden xs:inline'>Conectando...</span>
+          <span className='hidden xs:inline'>Connecting...</span>
           <span className='xs:hidden'>...</span>
         </>
       ) : (
@@ -111,7 +111,7 @@ export function ConnectButton({ className = '' }: ConnectButtonProps) {
             className='w-5 h-5 sm:w-6 sm:h-6 rounded-sm object-contain'
           />
           <span className='hidden xs:inline font-bold'>Connect</span>
-          <span className='xs:hidden font-bold'>💰</span>
+          <span className='xs:hidden font-bold'>Connect</span>
         </>
       )}
     </button>

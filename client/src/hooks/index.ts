@@ -40,7 +40,6 @@ export { useFoodSystem } from './use-food-system';
 export { useFullscreen } from './use-fullscreen';
 export { useFullscreenConfig } from './use-fullscreen-config';
 export { useFullscreenPrompt } from './use-fullscreen-prompt';
-export { useGames } from './use-games';
 export { useHelpCenter } from './use-help-center';
 export { useLoadingNavigation } from './use-loading-navigation';
 export { useModal, useMultipleModals, useConfirmModal } from './use-modal';
@@ -56,6 +55,12 @@ export { useGameActions } from './useGameActions';
 export { usePlayerValidation } from './usePlayerValidation';
 export { useLocalStorage } from './use-local-storage';
 export { useMobileDetection } from './use-mobile-detection';
+export { useSSE } from './use-sse';
+export {
+  useFishUpdates,
+  useAquariumUpdates,
+  useGameEvents,
+} from '../contexts/SSEContext';
 
 // Dojo hooks
 

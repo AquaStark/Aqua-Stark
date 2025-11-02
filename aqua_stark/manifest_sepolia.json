@@ -1673,12 +1673,7 @@
       "init_calldata": [],
       "tag": "aqua_stark-AquaAuction",
       "selector": "0x1f42f4bf550166ff084d23b65e8e9a0adba70081115dba1647a5f9d4a84177a",
-      "systems": [
-        "start_auction",
-        "place_bid",
-        "end_auction",
-        "upgrade"
-      ]
+      "systems": ["start_auction", "place_bid", "end_auction", "upgrade"]
     },
     {
       "address": "0x64ad1c0c34d3aa03feb1398c96925856165826c5cc44105be29e78bc650eff1",
@@ -4647,15 +4642,10 @@
           ]
         }
       ],
-      "init_calldata": [
-        "0x0"
-      ],
+      "init_calldata": ["0x0"],
       "tag": "aqua_stark-ShopCatalog",
       "selector": "0x2ef14be23e442fea61ae3e68a538bc3f033bd435a3d27c414405e827a0ea1a1",
-      "systems": [
-        "dojo_init",
-        "upgrade"
-      ]
+      "systems": ["dojo_init", "upgrade"]
     },
     {
       "address": "0x4270abe34ac2eca781119edac84946f2a064a918bdb414ce5e46a446ab4f1e9",

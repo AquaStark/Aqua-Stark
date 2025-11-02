@@ -1,6 +1,12 @@
 import { useDojoSDK } from '@dojoengine/sdk/react';
 import { useCallback } from 'react';
-import { Account, AccountInterface, BigNumberish, CairoOption } from 'starknet';
+import {
+  Account,
+  AccountInterface,
+  BigNumberish,
+  CairoOption,
+  CairoCustomEnum,
+} from 'starknet';
 import { DojoClient } from '@/types';
 
 /**
@@ -243,6 +249,19 @@ export const useAquaStarkEnhanced = () => {
     [client, ensureClientReady]
   );
 
+  // Fish Management
+  const newFish = useCallback(
+    async (
+      account: Account | AccountInterface,
+      aquariumId: BigNumberish,
+      species: CairoCustomEnum
+    ) => {
+      ensureClientReady();
+      return await client.FishSystem.newFish(account, aquariumId, species);
+    },
+    [client, ensureClientReady]
+  );
+
   // Decoration Management
   const newDecoration = useCallback(
     async (
@@ -345,6 +364,7 @@ export const useAquaStarkEnhanced = () => {
     getPlayerDecorationCount,
 
     // Fish Management
+    newFish,
     getFishOwnerForAuction,
   };
 };

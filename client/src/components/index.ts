@@ -88,3 +88,10 @@ export { FishStatus } from './FishStatus';
 export { GameStatusBar } from './game-status-bar';
 export { GeneticCombinationsPage } from './genetics';
 export { WalletConnection } from './WalletConnection';
+
+// SSE Components
+export { SSEWrapper } from './sse-wrapper';
+export { SSEStatus } from './sse-status';
+
+// Backend Components
+export { BackendStatus, BackendConnectionStatus } from './backend-status';

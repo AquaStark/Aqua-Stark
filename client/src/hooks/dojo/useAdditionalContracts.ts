@@ -1,6 +1,11 @@
 import { useDojoSDK } from '@dojoengine/sdk/react';
 import { useCallback } from 'react';
-import { Account, AccountInterface, BigNumberish } from 'starknet';
+import {
+  Account,
+  AccountInterface,
+  BigNumberish,
+  CairoCustomEnum,
+} from 'starknet';
 import { DojoClient } from '@/types';
 
 /**
@@ -304,6 +309,19 @@ export const useGameEnhanced = () => {
     [client, ensureClientReady]
   );
 
+  // Game-specific fish creation
+  const newFish = useCallback(
+    async (
+      account: Account | AccountInterface,
+      aquariumId: BigNumberish,
+      species: CairoCustomEnum
+    ) => {
+      ensureClientReady();
+      return await client.Game.newFish(account, aquariumId, species);
+    },
+    [client, ensureClientReady]
+  );
+
   return {
     // Aquarium functions
     getAquarium,
@@ -316,6 +334,7 @@ export const useGameEnhanced = () => {
     getFishOwner,
     getPlayerFishes,
     getPlayerFishCount,
+    newFish,
 
     // Decoration functions
     getDecoration,

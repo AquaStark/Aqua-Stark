@@ -1,5 +1,6 @@
 export { FeatureCards } from './featured-card';
 export { FeaturedFish } from './featured-fish';
+export { FeaturedFishMobile } from './featured-fish-mobile';
 export { FeaturesSection } from './featured-sections';
 export { FishCardComponent } from './fish-card';
 export { FishStatusTips } from './fish-status-tips';

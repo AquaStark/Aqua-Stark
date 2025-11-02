@@ -2,21 +2,24 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { useAccount } from '@starknet-react/core';
 import { useActiveAquarium } from '../store/active-aquarium';
 import { useFishStats } from '@/hooks';
 import { useBubbles } from '@/hooks';
 import { useFeedingSystem } from '@/systems/feeding-system';
-import { FishSpecies } from '@/types';
-import { useFish } from '@/hooks';
+import { useFishSystemEnhanced } from '@/hooks/dojo';
 import { fishCollection as fullFishList } from '@/constants';
 import { Monitor } from 'lucide-react';
 import { useAquarium } from '@/hooks';
+import { useAquarium as useAquariumDojo } from '@/hooks/dojo';
 import { useSimpleDirtSystem } from '@/hooks/use-simple-dirt-system';
 import { SimpleDirtSpot } from '@/components/simple-dirt-spot';
 import { useMobileDetection } from '@/hooks/use-mobile-detection';
 import { MobileGameView } from '@/components/mobile/mobile-game-view';
+import { useSpeciesCatalog } from '@/hooks/use-species-catalog';
+import { useFishSync } from '@/hooks/use-fish-sync';
+import { useFishUpdates, useAquariumUpdates, useGameEvents } from '@/hooks';
 
 // Importar todos los componentes originales
 import { GameHeader } from '@/components';
@@ -32,9 +35,16 @@ import { initialAquariums } from '@/data/mock-aquarium';
 export default function GamePage() {
   // Get account info first
   const { account } = useAccount();
+  const location = useLocation();
 
   // Mobile detection
   const { isMobile } = useMobileDetection();
+
+  // Species catalog for image mapping
+  const { getSpeciesImage, getSpeciesDisplayName } = useSpeciesCatalog();
+
+  // Backend sync hooks
+  const { getPlayerFish } = useFishSync();
 
   // All state hooks first
   const [showMenu, setShowMenu] = useState(false);
@@ -43,19 +53,100 @@ export default function GamePage() {
   const [isCleaningMode, setIsCleaningMode] = useState(false);
   const [playerFishes, setPlayerFishes] = useState<unknown[]>([]);
 
-  // Other hooks
-  const activeAquariumId = useActiveAquarium(s => s.activeAquariumId);
+  // Get aquarium ID from URL
+  const [searchParams] = useSearchParams();
+  const aquariumIdFromUrl = searchParams.get('aquarium');
+
+  // Get pre-loaded fish from navigation state
+  const preloadedFish = (location.state as any)?.preloadedFish;
+
+  // Persistent aquarium store
+  const {
+    activeAquariumId: storedAquariumId,
+    playerAddress: storedPlayerAddress,
+    setActiveAquariumId,
+  } = useActiveAquarium();
+
+  // Determine which aquarium ID to use (URL > stored)
+  const activeAquariumId = aquariumIdFromUrl || storedAquariumId;
+
+  // Use stored player address if account is not connected yet
+  const effectivePlayerAddress = account?.address || storedPlayerAddress;
+
+  // SSE Real-time updates
+  const { subscribeToFishUpdates } = useFishUpdates();
+  const { subscribeToAquariumUpdates } = useAquariumUpdates();
+  const { subscribeToGameEvents } = useGameEvents();
+
+  // CRITICAL: Save aquarium ID from URL immediately on page load
+  useEffect(() => {
+    console.log('🔍 GAME PAGE - Aquarium ID Check:', {
+      aquariumIdFromUrl,
+      storedAquariumId,
+      effectivePlayerAddress,
+      willSave:
+        aquariumIdFromUrl &&
+        effectivePlayerAddress &&
+        aquariumIdFromUrl !== storedAquariumId,
+    });
+
+    if (aquariumIdFromUrl && effectivePlayerAddress) {
+      if (aquariumIdFromUrl !== storedAquariumId) {
+        console.log(
+          '💾 SAVING TO STORE:',
+          aquariumIdFromUrl,
+          effectivePlayerAddress
+        );
+        setActiveAquariumId(aquariumIdFromUrl, effectivePlayerAddress);
+      }
+    }
+  }, [
+    aquariumIdFromUrl,
+    effectivePlayerAddress,
+    setActiveAquariumId,
+    storedAquariumId,
+  ]);
+
+  // SSE Event Handlers
+  useEffect(() => {
+    if (!effectivePlayerAddress) return;
+
+    // Subscribe to fish updates
+    subscribeToFishUpdates((data: any) => {
+      console.log('🐟 Real-time fish update:', data);
+      // Update fish states in real-time
+      // You can trigger re-fetch of fish data or update local state
+    });
+
+    // Subscribe to aquarium updates
+    subscribeToAquariumUpdates((data: any) => {
+      console.log('🏠 Real-time aquarium update:', data);
+      // Update aquarium states in real-time
+      // You can trigger re-fetch of aquarium data or update local state
+    });
+
+    // Subscribe to game events
+    subscribeToGameEvents((data: any) => {
+      console.log('🎮 Real-time game event:', data);
+      // Handle game events like achievements, notifications, etc.
+    });
+  }, [
+    effectivePlayerAddress,
+    subscribeToFishUpdates,
+    subscribeToAquariumUpdates,
+    subscribeToGameEvents,
+  ]);
+
   const aquarium =
     initialAquariums.find(a => a.id.toString() === activeAquariumId) ||
     initialAquariums[0];
   const { happiness, food, energy } = useFishStats(INITIAL_GAME_STATE);
   const { selectedAquarium, handleAquariumChange, aquariums } = useAquarium();
-  const navigate = useNavigate();
 
   // Initialize simple dirt system with backend
   const dirtSystem = useSimpleDirtSystem(
     activeAquariumId || '1',
-    account?.address || 'demo-player'
+    effectivePlayerAddress || 'demo-player'
   );
 
   const bubbles = useBubbles({
@@ -101,153 +192,163 @@ export default function GamePage() {
     setIsCleaningMode(!isCleaningMode);
   };
 
-  const { getPlayerFishes } = useFish();
+  const { getFish } = useFishSystemEnhanced();
+  const {
+    getAquarium: getAquariumData,
+    getPlayerAquariums: getPlayerAquariumsList,
+  } = useAquariumDojo();
 
   useEffect(() => {
     const fetchFishes = async () => {
-      try {
-        // For testing/demo purposes, use mock fishes (limited to 8)
-        const mockFishes = aquarium.fishes.slice(0, 8).map(fish => ({
-          id: fish.id,
-          species: `Fish${fish.id}`,
-          generation: fish.generation,
-          age: 100,
-          health: 100,
-          hunger_level: 50,
-          size: 1,
-          color: fish.traits.color,
-          pattern: fish.traits.pattern,
-        }));
+      // Check if we have pre-loaded fish data from loading page
+      if (preloadedFish && preloadedFish.length > 0) {
+        setPlayerFishes(preloadedFish);
+        return;
+      }
 
-        setPlayerFishes(mockFishes);
+      if (!effectivePlayerAddress) {
+        setPlayerFishes([]);
+        return;
+      }
+
+      // Wait a bit for the page to fully load and account to be ready
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      try {
+        // Persist aquarium ID and player address to store
+        if (activeAquariumId && effectivePlayerAddress) {
+          if (
+            activeAquariumId !== storedAquariumId ||
+            effectivePlayerAddress !== storedPlayerAddress
+          ) {
+            setActiveAquariumId(activeAquariumId, effectivePlayerAddress);
+          }
+        }
+
+        // If aquarium ID is available (URL or stored), load fish from that aquarium
+        if (activeAquariumId) {
+          try {
+            // Retry logic for loading aquarium with fish
+            let aquariumData: any = null;
+            let attempts = 0;
+            const maxAttempts = 3;
+
+            while (attempts < maxAttempts) {
+              aquariumData = await getAquariumData(BigInt(activeAquariumId));
+
+              // Check if aquarium has fish
+              if (
+                aquariumData?.housed_fish &&
+                aquariumData.housed_fish.length > 0
+              ) {
+                break;
+              }
+
+              if (attempts < maxAttempts - 1) {
+                await new Promise(resolve => setTimeout(resolve, 2000));
+              }
+              attempts++;
+            }
+
+            if (aquariumData?.housed_fish) {
+              const housedFishArray = Array.isArray(aquariumData.housed_fish)
+                ? aquariumData.housed_fish
+                : [aquariumData.housed_fish];
+
+              if (housedFishArray.length > 0) {
+                const fishPromises = housedFishArray.map((fishId: any) => {
+                  const id =
+                    typeof fishId === 'bigint' ? fishId : BigInt(fishId);
+                  return getFish(id);
+                });
+                const fishData = await Promise.all(fishPromises);
+                setPlayerFishes(fishData.filter(Boolean));
+              } else {
+                setPlayerFishes([]);
+              }
+            } else {
+              setPlayerFishes([]);
+            }
+          } catch (aquariumError) {
+            console.error('❌ Error loading aquarium:', aquariumError);
+            setPlayerFishes([]);
+          }
+        } else {
+          // Load fish from backend (new approach)
+          try {
+            const backendFish = await getPlayerFish(effectivePlayerAddress);
+
+            if (
+              backendFish.success &&
+              backendFish.data &&
+              backendFish.data.length > 0
+            ) {
+              // Use backend fish IDs to load details from blockchain
+              const fishPromises = backendFish.data.map((fish: any) => {
+                const onChainId = fish.on_chain_id;
+                return getFish(BigInt(onChainId));
+              });
+
+              const fishDetails = await Promise.all(fishPromises);
+              setPlayerFishes(fishDetails.filter(Boolean));
+            } else {
+              setPlayerFishes([]);
+            }
+          } catch {
+            // Fallback to blockchain if backend fails
+            const playerAquariums = await getPlayerAquariumsList(
+              effectivePlayerAddress
+            );
+
+            if (playerAquariums && playerAquariums.length > 0) {
+              const lastAquarium = playerAquariums[playerAquariums.length - 1];
+              const lastAquariumId =
+                typeof lastAquarium === 'object' && lastAquarium.id
+                  ? lastAquarium.id
+                  : lastAquarium;
+
+              const aquariumData = await getAquariumData(lastAquariumId);
+              if (
+                aquariumData?.housed_fish &&
+                aquariumData.housed_fish.length > 0
+              ) {
+                const housedFishArray = Array.isArray(aquariumData.housed_fish)
+                  ? aquariumData.housed_fish
+                  : [aquariumData.housed_fish];
+
+                const fishPromises = housedFishArray.map((fishId: any) =>
+                  getFish(typeof fishId === 'bigint' ? fishId : BigInt(fishId))
+                );
+                const fishData = await Promise.all(fishPromises);
+                setPlayerFishes(fishData.filter(Boolean));
+              } else {
+                setPlayerFishes([]);
+              }
+            } else {
+              setPlayerFishes([]);
+            }
+          }
+        }
       } catch (err) {
-        console.error('Error fetching fishes:', err);
+        console.error('❌ Error fetching fishes:', err);
+        setPlayerFishes([]);
       }
     };
 
     fetchFishes();
-  }, [account, navigate, getPlayerFishes, aquarium.fishes]);
-
-  const speciesToFishData = {
-    Fish1: {
-      image: '/fish/fish1.png',
-      name: 'Azure Stripe',
-      rarity: 'Common',
-      generation: 1,
-    },
-    Fish2: {
-      image: '/fish/fish2.png',
-      name: 'Coral Beauty',
-      rarity: 'Uncommon',
-      generation: 1,
-    },
-    Fish3: {
-      image: '/fish/fish3.png',
-      name: 'Royal Angel',
-      rarity: 'Rare',
-      generation: 1,
-    },
-    Fish4: {
-      image: '/fish/fish4.png',
-      name: 'Neon Tetra',
-      rarity: 'Epic',
-      generation: 1,
-    },
-    Fish5: {
-      image: '/fish/fish5.png',
-      name: 'Golden Scale',
-      rarity: 'Rare',
-      generation: 2,
-    },
-    Fish6: {
-      image: '/fish/fish6.png',
-      name: 'Deep Sea Glow',
-      rarity: 'Epic',
-      generation: 1,
-    },
-    Fish7: {
-      image: '/fish/fish7.png',
-      name: 'Mystic Shadow',
-      rarity: 'Legendary',
-      generation: 1,
-    },
-    Fish8: {
-      image: '/fish/fish1.png',
-      name: 'Azure Stripe Jr',
-      rarity: 'Common',
-      generation: 2,
-    },
-    Fish9: {
-      image: '/fish/fish2.png',
-      name: 'Coral Beauty Jr',
-      rarity: 'Uncommon',
-      generation: 2,
-    },
-    Fish10: {
-      image: '/fish/fish3.png',
-      name: 'Royal Angel Jr',
-      rarity: 'Rare',
-      generation: 2,
-    },
-    Fish11: {
-      image: '/fish/fish4.png',
-      name: 'Neon Tetra Jr',
-      rarity: 'Epic',
-      generation: 2,
-    },
-    Fish12: {
-      image: '/fish/fish5.png',
-      name: 'Golden Scale Jr',
-      rarity: 'Rare',
-      generation: 3,
-    },
-    Fish13: {
-      image: '/fish/fish6.png',
-      name: 'Deep Sea Glow Jr',
-      rarity: 'Epic',
-      generation: 2,
-    },
-    Fish14: {
-      image: '/fish/fish7.png',
-      name: 'Mystic Shadow Jr',
-      rarity: 'Legendary',
-      generation: 2,
-    },
-  } as const;
-
-  function getSpeciesFromCairoEnum(species: unknown): FishSpecies | null {
-    if (typeof species === 'string' && species in speciesToFishData) {
-      return species as FishSpecies;
-    }
-    if (species && typeof species === 'object') {
-      const obj = species as Record<string, unknown>;
-      if ('variant' in obj && obj.variant && typeof obj.variant === 'object') {
-        for (const [key, value] of Object.entries(
-          obj.variant as Record<string, unknown>
-        )) {
-          if (value !== undefined && key in speciesToFishData) {
-            return key as FishSpecies;
-          }
-        }
-      }
-      if ('activeVariant' in obj && typeof obj.activeVariant === 'string') {
-        const variantName = obj.activeVariant;
-        if (variantName in speciesToFishData) {
-          return variantName as FishSpecies;
-        }
-      }
-      for (const [key, value] of Object.entries(obj)) {
-        if (
-          value !== undefined &&
-          typeof value === 'object' &&
-          key in speciesToFishData
-        ) {
-          return key as FishSpecies;
-        }
-      }
-    }
-    return null;
-  }
+  }, [
+    effectivePlayerAddress,
+    aquariumIdFromUrl,
+    preloadedFish,
+    activeAquariumId,
+    getAquariumData,
+    getFish,
+    getPlayerAquariumsList,
+    getPlayerFish,
+    setActiveAquariumId,
+    storedAquariumId,
+    storedPlayerAddress,
+  ]);
 
   function bigIntToNumber(value: unknown): number {
     if (typeof value === 'bigint') return Number(value);
@@ -256,59 +357,47 @@ export default function GamePage() {
   }
 
   const displayFish = playerFishes
-    .map((fishId: unknown, index: number) => {
-      // For now, create a mock fish object since we only have IDs
-      // In a real implementation, you'd fetch the fish data by ID
-      const mockFish = {
-        id: typeof fishId === 'number' ? fishId : index,
-        species: null,
-        generation: 1,
-        age: 0,
-        health: 100,
-        hunger_level: 0,
-        size: 1,
-        color: 'blue',
-        pattern: 'striped',
-      };
-      let speciesKey: keyof typeof speciesToFishData | null = null;
-      if (mockFish.species) {
-        const cairoSpecies = getSpeciesFromCairoEnum(mockFish.species);
-        speciesKey =
-          cairoSpecies && cairoSpecies in speciesToFishData
-            ? (cairoSpecies as keyof typeof speciesToFishData)
-            : null;
-      }
-      if (!speciesKey) {
-        // Use different species based on fish ID (1-11)
-        const fishId = mockFish.id ? bigIntToNumber(mockFish.id) : index;
-        const speciesNumber = (fishId % 11) + 1; // Cycle through Fish1 to Fish11
-        speciesKey = `Fish${speciesNumber}` as keyof typeof speciesToFishData;
+    .map((fish: any, index: number) => {
+      if (!fish) return null;
+
+      // Extract species name from CairoCustomEnum (same logic as aquariums page)
+      let speciesName = 'AngelFish'; // default
+      if (fish.species?.variant) {
+        // Handle CairoCustomEnum variant extraction
+        const variantEntries = Object.entries(fish.species.variant);
+        const activeVariant = variantEntries.find(
+          ([, value]) => value !== undefined
+        );
+        if (activeVariant) {
+          speciesName = activeVariant[0];
+        }
       }
 
-      const data = speciesKey ? speciesToFishData[speciesKey] : null;
-      if (!data) return null;
+      // Use species catalog for image (centralized, scalable)
+      const fishImage = getSpeciesImage(speciesName);
+      const displayName = getSpeciesDisplayName(speciesName);
+
+      // Generate random position within aquarium bounds
+      const randomX = Math.random() * 80 + 10; // 10% to 90% of width
+      const randomY = Math.random() * 70 + 15; // 15% to 85% of height
 
       return {
-        id: mockFish.id ? bigIntToNumber(mockFish.id) : index,
-        name: data.name,
-        image: data.image,
-        rarity: data.rarity,
+        id: bigIntToNumber(fish.id) || index,
+        name: displayName,
+        image: fishImage,
+        rarity: 'Common',
         habitat: 'Ocean',
-        description: 'A beautiful fish',
+        description: `A beautiful ${speciesName}`,
         price: 100,
-        generation: mockFish.generation
-          ? bigIntToNumber(mockFish.generation)
-          : data.generation,
-        position: { x: 0, y: 0 },
-        species: speciesKey,
-        age: mockFish.age ? bigIntToNumber(mockFish.age) : 0,
-        health: mockFish.health ? bigIntToNumber(mockFish.health) : 100,
-        hunger_level: mockFish.hunger_level
-          ? bigIntToNumber(mockFish.hunger_level)
-          : 0,
-        size: mockFish.size ? bigIntToNumber(mockFish.size) : 1,
-        color: mockFish.color,
-        pattern: mockFish.pattern,
+        generation: bigIntToNumber(fish.generation) || 1,
+        position: { x: randomX, y: randomY },
+        species: speciesName,
+        age: bigIntToNumber(fish.age) || 0,
+        health: bigIntToNumber(fish.health) || 100,
+        hunger_level: bigIntToNumber(fish.hunger_level) || 50,
+        size: bigIntToNumber(fish.size) || 1,
+        color: fish.color || 'blue',
+        pattern: fish.pattern || 'striped',
       };
     })
     .filter((fish): fish is NonNullable<typeof fish> => fish !== null);
@@ -383,17 +472,13 @@ export default function GamePage() {
             energy={energy}
             onMenuToggle={() => setShowMenu(!showMenu)}
             isCleaningMode={isCleaningMode}
-          />
-        )}
-
-        {/* Game Menu */}
-        {showMenu && !isWallpaperMode && (
-          <GameMenu
-            show={showMenu}
             onWallpaperToggle={handleWallpaperToggle}
             isWallpaperMode={isWallpaperMode}
           />
         )}
+
+        {/* Game Menu */}
+        {showMenu && !isWallpaperMode && <GameMenu show={showMenu} />}
 
         {/* Debuggers - only shown when explicitly toggled */}
         <div
@@ -424,6 +509,7 @@ export default function GamePage() {
             showTips={showTips}
             onTipsToggle={handleTipsToggle}
             onTipsClose={() => setShowTips(false)}
+            realAquariumId={activeAquariumId}
           />
         )}
 

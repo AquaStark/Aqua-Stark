@@ -19,12 +19,18 @@ class LoggingMiddleware {
     };
 
     this.currentLogLevel = process.env.LOG_LEVEL || 'INFO';
-    this.logDir = process.env.LOG_DIR || './logs';
+    // Check if running on Vercel (serverless environment)
+    this.isVercel = !!process.env.VERCEL;
+    // Use proper path resolution
+    this.logDir = process.env.LOG_DIR || path.join(process.cwd(), 'logs');
     // 10MB default
     this.maxLogSize = parseInt(process.env.MAX_LOG_SIZE) || 10 * 1024 * 1024;
     this.maxLogFiles = parseInt(process.env.MAX_LOG_FILES) || 5;
 
-    this.ensureLogDirectory();
+    // Only create log directory in local development
+    if (!this.isVercel) {
+      this.ensureLogDirectory();
+    }
   }
 
   /**
@@ -32,8 +38,12 @@ class LoggingMiddleware {
    * @private
    */
   ensureLogDirectory() {
-    if (!fs.existsSync(this.logDir)) {
-      fs.mkdirSync(this.logDir, { recursive: true });
+    try {
+      if (!fs.existsSync(this.logDir)) {
+        fs.mkdirSync(this.logDir, { recursive: true });
+      }
+    } catch (error) {
+      console.error('Failed to create log directory:', error.message);
     }
   }
 
@@ -71,6 +81,11 @@ class LoggingMiddleware {
    * @private
    */
   writeToFile(level, message, metadata = {}) {
+    // Skip file operations in serverless environment (Vercel)
+    if (this.isVercel) {
+      return;
+    }
+
     const logFile = path.join(this.logDir, `${level.toLowerCase()}.log`);
     const formattedMessage = this.formatMessage(level, message, metadata);
 
@@ -85,7 +100,7 @@ class LoggingMiddleware {
 
       fs.appendFileSync(logFile, formattedMessage + '\n');
     } catch (error) {
-      console.error('Failed to write to log file:', error);
+      console.error('Failed to write to log file:', error.message);
     }
   }
 
@@ -95,6 +110,11 @@ class LoggingMiddleware {
    * @private
    */
   rotateLogFile(logFile) {
+    // Skip file operations in serverless environment (Vercel)
+    if (this.isVercel) {
+      return;
+    }
+
     try {
       // Remove oldest log file if we have reached max files
       const logFileBase = logFile.replace('.log', '');
@@ -114,7 +134,7 @@ class LoggingMiddleware {
         }
       }
     } catch (error) {
-      console.error('Failed to rotate log file:', error);
+      console.error('Failed to rotate log file:', error.message);
     }
   }
 
@@ -205,7 +225,7 @@ class LoggingMiddleware {
       method: req.method,
       url: req.url,
       userAgent: req.get('User-Agent'),
-      ip: req.ip || req.connection.remoteAddress,
+      ip: req.ip || req.connection?.remoteAddress,
       headers: {
         'content-type': req.get('Content-Type'),
         authorization: req.get('Authorization') ? '[REDACTED]' : undefined,
@@ -214,10 +234,9 @@ class LoggingMiddleware {
 
     // Override res.end to log response
     const originalEnd = res.end;
-    res.end = function (chunk, encoding) {
+    res.end = (...args) => {
       const duration = Date.now() - startTime;
 
-      // Log response
       this.info('Response sent', {
         requestId,
         statusCode: res.statusCode,
@@ -225,9 +244,8 @@ class LoggingMiddleware {
         contentLength: res.get('Content-Length') || 0,
       });
 
-      // Call original end method
-      originalEnd.call(this, chunk, encoding);
-    }.bind(this);
+      return originalEnd.apply(res, args);
+    };
 
     next();
   }

@@ -38,24 +38,24 @@ export function useCartridgeSession(): UseCartridgeSessionReturn {
    */
   const handleCartridgeError = useCallback((error: any): CartridgeError => {
     let errorType: CartridgeErrorType = 'UNKNOWN_ERROR';
-    let message = 'Error inesperado al conectar';
+    let message = 'Unexpected connection error';
 
     if (error instanceof Error) {
       if (error.message.includes('User rejected')) {
         errorType = 'USER_REJECTED';
-        message = 'Conexión cancelada por el usuario';
+        message = 'Connection cancelled by user';
       } else if (
         error.message.includes('account') ||
         error.message.includes('login')
       ) {
         errorType = 'ACCOUNT_NOT_FOUND';
-        message = 'Error de cuenta. Verifica tu login en Cartridge';
+        message = 'Account error. Verify your login in Cartridge';
       } else if (error.message.includes('network')) {
         errorType = 'NETWORK_ERROR';
-        message = 'Error de red. Verifica tu conexión';
+        message = 'Network error. Check your connection';
       } else if (error.message.includes('session')) {
         errorType = 'SESSION_EXPIRED';
-        message = 'Sesión expirada. Reconecta tu cuenta';
+        message = 'Session expired. Reconnect your account';
       }
     }
 
@@ -76,7 +76,7 @@ export function useCartridgeSession(): UseCartridgeSessionReturn {
     if (!controller) {
       const error: CartridgeError = {
         code: 'INVALID_CONFIG',
-        message: 'Cartridge Controller no está disponible',
+        message: 'Cartridge Controller is not available',
       };
       toast.error(error.message);
       return;
@@ -84,22 +84,22 @@ export function useCartridgeSession(): UseCartridgeSessionReturn {
 
     setIsConnecting(true);
     try {
-      // Conectar con Cartridge - esto abrirá el modal con opciones de:
+      // Connect with Cartridge - this will open the modal with options for:
       // - Google
       // - Discord
       // - WalletConnect
-      // - Wallets nativas
+      // - Native wallets
       await connect({ connector: controller });
 
-      // Intentar obtener información adicional de la sesión
+      // Try to get additional session information
       try {
         if (controller.account && address) {
-          // Obtener username usando el método correcto del ControllerConnector
+          // Get username using the correct method from ControllerConnector
           let username: string | undefined;
           try {
             username = await controller.username();
           } catch (usernameError) {
-            console.warn('No se pudo obtener username:', usernameError);
+            console.warn('Could not get username:', usernameError);
           }
 
           const accountData: CartridgeAccount = {
@@ -114,16 +114,16 @@ export function useCartridgeSession(): UseCartridgeSessionReturn {
         }
       } catch (sessionError) {
         console.warn(
-          'No se pudo obtener información adicional de la sesión:',
+          'Could not get additional session information:',
           sessionError
         );
-        // Si no podemos obtener datos adicionales, al menos guardamos la dirección
+        // If we can't get additional data, at least save the address
         if (address) {
           setAccount({ address });
         }
       }
 
-      toast.success('¡Conectado exitosamente! 🎮');
+      toast.success('Connected successfully! 🎮');
     } catch (error) {
       console.error('Error connecting to Cartridge:', error);
       const cartridgeError = handleCartridgeError(error);
@@ -141,10 +141,10 @@ export function useCartridgeSession(): UseCartridgeSessionReturn {
     try {
       await disconnect();
       setAccount(undefined);
-      toast.success('Desconectado exitosamente');
+      toast.success('Disconnected successfully');
     } catch (error) {
       console.error('Error disconnecting:', error);
-      toast.error('Error al desconectar');
+      toast.error('Error disconnecting');
     }
   }, [disconnect]);
 
@@ -157,11 +157,11 @@ export function useCartridgeSession(): UseCartridgeSessionReturn {
     if (!controller || !isConnected) return;
 
     try {
-      // Nota: refreshSession no está disponible en la versión actual del SDK
-      // Esta función se mantiene para compatibilidad futura
-      toast.success('Sesión activa');
+      // Note: refreshSession is not available in the current SDK version
+      // This function is kept for future compatibility
+      toast.success('Active session');
     } catch (error) {
-      console.warn('No se pudo refrescar la sesión:', error);
+      console.warn('Could not refresh session:', error);
       const cartridgeError = handleCartridgeError(error);
       toast.error(cartridgeError.message);
     }
@@ -175,7 +175,7 @@ export function useCartridgeSession(): UseCartridgeSessionReturn {
     if (!isConnected) {
       setAccount(undefined);
     } else if (address && !account) {
-      // Si estamos conectados pero no tenemos datos de cuenta, crear uno básico
+      // If we are connected but don't have account data, create a basic one
       setAccount({ address });
     }
   }, [isConnected, address, account]);

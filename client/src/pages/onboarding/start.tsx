@@ -36,7 +36,7 @@ export default function Start() {
 
   // Redirect if not connected with Cartridge
   useEffect(() => {
-    // Solo redirigir si no hay wallet conectada (Starknet) O no hay Cartridge
+    // Only redirect if no wallet connected (Starknet) OR no Cartridge
     const timer = setTimeout(() => {
       if (!account || !cartridgeAccount) {
         console.log('Redirecting to home - no wallet or Cartridge account');
@@ -135,7 +135,7 @@ export default function Start() {
 
   // Desktop/tablet view
   return (
-    <OrientationLock>
+    <OrientationLock forcePortrait={isMobile}>
       <div className='relative min-h-screen w-full overflow-hidden flex flex-col justify-between'>
         {/* Oceanic background image and gradient overlays */}
         <div className='absolute inset-0 -z-10'>
@@ -215,6 +215,21 @@ export default function Start() {
                 </Button>
               </div>
             </div>
+          </div>
+
+          {/* Glowing tips section */}
+          <div className='max-w-2xl mt-10 text-blue-100/90 text-sm sm:text-base text-center opacity-90 drop-shadow space-y-2'>
+            <p>
+              💡 Choose a memorable name — this will represent you across the
+              aquatic universe.
+            </p>
+            <p>
+              🐠 After registering, you'll unlock your starter aquarium and
+              receive your first fish.
+            </p>
+            <p>
+              🪙 Get started with free coins and discover rare aquatic species!
+            </p>
           </div>
         </main>
 

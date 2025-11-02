@@ -27,15 +27,15 @@ export function PageHeader({
         className
       )}
     >
-      <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between mx-auto font-sans max-w-7xl'>
-        <div className='flex flex-col sm:flex-row sm:items-center'>
+      <div className='flex flex-row items-center justify-between mx-auto font-sans max-w-7xl'>
+        <div className='flex flex-row items-center'>
           <Link
             to={backTo}
-            className='flex items-center mb-1 sm:mb-0 select-none touch-manipulation'
+            className='flex items-center select-none touch-manipulation'
           >
             <Button
               variant='ghost'
-              className='flex items-center mr-0 sm:mr-2 text-xs text-white rounded-full hover:bg-blue-500/50 px-2 sm:px-3 md:px-4 py-1 sm:py-2 select-none touch-manipulation h-8 sm:h-9'
+              className='flex items-center mr-2 text-xs text-white rounded-full hover:bg-blue-500/50 px-2 sm:px-3 md:px-4 py-1 sm:py-2 select-none touch-manipulation h-8 sm:h-9'
             >
               <ArrowLeft className='mr-1 sm:mr-2' width={14} height={14} />
               <span className='text-xs select-none'>{backText}</span>
@@ -47,7 +47,7 @@ export function PageHeader({
         </div>
 
         {rightContent && (
-          <div className='flex items-center gap-1 sm:gap-2 mt-1 sm:mt-0 select-none'>
+          <div className='flex items-center gap-1 sm:gap-2 select-none'>
             {rightContent}
           </div>
         )}

@@ -1,5 +1,6 @@
 import { FishService } from '../services/fishService.js';
 import { loggingMiddleware } from '../middleware/logging.js';
+import { logger } from '../../utils/logger.js';
 
 /**
  * Fish Controller
@@ -14,6 +15,81 @@ import { loggingMiddleware } from '../middleware/logging.js';
  * @class FishController
  */
 export class FishController {
+  /**
+   * Create fish state in backend
+   *
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @param {Function} next - Express next middleware function
+   * @returns {Promise<void>}
+   */
+  static async createFish(req, res, next) {
+    try {
+      const { fishId, playerId, onChainId, species } = req.body;
+
+      logger.info(
+        { fishId, playerId, onChainId, species },
+        'POST /api/v1/fish/create'
+      );
+
+      if (!fishId || !playerId || !species) {
+        return res.status(400).json({
+          success: false,
+          error: 'fishId, playerId, and species are required',
+        });
+      }
+
+      const fish = await FishService.createFishStateSimple(
+        fishId,
+        playerId,
+        onChainId,
+        species
+      );
+
+      res.status(201).json({
+        success: true,
+        data: fish,
+      });
+    } catch (error) {
+      logger.error({ error }, 'Error in createFish controller');
+      next(error);
+    }
+  }
+
+  /**
+   * Get all fish for a player (public endpoint for onboarding)
+   *
+   * @param {Object} req - Express request object
+   * @param {Object} res - Express response object
+   * @param {Function} next - Express next middleware function
+   * @returns {Promise<void>}
+   */
+  static async getPlayerFishPublic(req, res, next) {
+    try {
+      const { playerId } = req.params;
+
+      logger.info({ playerId }, 'GET /api/v1/fish/player/:playerId');
+
+      if (!playerId) {
+        return res.status(400).json({
+          success: false,
+          error: 'playerId is required',
+        });
+      }
+
+      const fish = await FishService.getPlayerFishStates(playerId);
+
+      res.json({
+        success: true,
+        data: fish,
+        count: fish.length,
+      });
+    } catch (error) {
+      logger.error({ error }, 'Error in getPlayerFishPublic controller');
+      next(error);
+    }
+  }
+
   /**
    * Get fish state
    *

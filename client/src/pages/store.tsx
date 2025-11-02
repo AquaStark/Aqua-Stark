@@ -10,7 +10,6 @@ import { CartSidebar } from '@/components/store/cart-sidebar';
 import { CheckoutModal } from '@/components/store/checkout-modal';
 import { useCartStore } from '@/store/use-cart-store';
 import { Button } from '@/components/ui/button';
-import { OrientationLock } from '@/components/ui';
 import { ShoppingCart } from 'lucide-react';
 import { LoadingScreen } from '@/components/loading/loading-screen';
 
@@ -22,6 +21,25 @@ export default function StorePage() {
 
   const bubbles = useBubbles();
   const { toggleCart } = useCartStore();
+
+  // Add store-active class to body, html, and root when component mounts
+  useEffect(() => {
+    document.body.classList.add('store-active');
+    document.documentElement.classList.add('store-active');
+    const rootElement = document.getElementById('root');
+    if (rootElement) {
+      rootElement.classList.add('store-active');
+    }
+
+    // Cleanup function to remove classes when component unmounts
+    return () => {
+      document.body.classList.remove('store-active');
+      document.documentElement.classList.remove('store-active');
+      if (rootElement) {
+        rootElement.classList.remove('store-active');
+      }
+    };
+  }, []);
 
   // Minimum loading time (2.5 seconds)
   const MIN_LOADING_TIME = 2500;
@@ -102,7 +120,22 @@ export default function StorePage() {
             pointerEvents: 'none',
           }}
         >
-          <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
+          <div
+            className='relative bg-gradient-to-b from-blue-500 to-blue-900 animated-background store-scroll-container'
+            style={{
+              height: '100vh',
+              overflowY: 'scroll',
+              overflowX: 'hidden',
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 1,
+              scrollbarWidth: 'none', // Firefox
+              msOverflowStyle: 'none', // IE and Edge
+            }}
+          >
             <BubblesBackground bubbles={bubbles} />
             <PageHeader
               title='Aqua Stark Store'
@@ -129,7 +162,7 @@ export default function StorePage() {
             />
             <CartSidebar />
             <CheckoutModal />
-            <main className='relative z-10'>
+            <main className='relative z-10 pb-4'>
               <div className='px-2 sm:px-4 py-2 sm:py-4 mx-auto max-w-6xl'>
                 <StoreOriginal />
               </div>
@@ -143,8 +176,30 @@ export default function StorePage() {
 
   // Show store once loading is complete
   return (
-    <OrientationLock>
-      <div className='relative min-h-screen overflow-hidden bg-gradient-to-b from-blue-500 to-blue-900 animated-background'>
+    <>
+      <style>
+        {`
+          .store-scroll-container::-webkit-scrollbar {
+            display: none;
+          }
+        `}
+      </style>
+      <div
+        className='relative bg-gradient-to-b from-blue-500 to-blue-900 animated-background store-scroll-container'
+        style={{
+          height: '100vh',
+          overflowY: 'scroll',
+          overflowX: 'hidden',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 1,
+          scrollbarWidth: 'none', // Firefox
+          msOverflowStyle: 'none', // IE and Edge
+        }}
+      >
         <BubblesBackground bubbles={bubbles} />
 
         <PageHeader
@@ -173,7 +228,7 @@ export default function StorePage() {
         <CartSidebar />
         <CheckoutModal />
 
-        <main className='relative z-10'>
+        <main className='relative z-10 pb-4'>
           <div className='px-2 sm:px-4 py-2 sm:py-4 mx-auto max-w-6xl w-full'>
             <StoreOriginal />
           </div>
@@ -181,6 +236,6 @@ export default function StorePage() {
 
         <LayoutFooter />
       </div>
-    </OrientationLock>
+    </>
   );
 }

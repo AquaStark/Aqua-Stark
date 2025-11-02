@@ -1,71 +1,51 @@
 'use client';
 import { FishTank } from '@/components/fish-tank';
-import { useState, useEffect } from 'react';
 
 export function FishCardComponent({
   name,
   image,
   rarity,
+  description,
 }: {
   name: string;
   image: string;
-  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+  rarity: 'common' | 'rare' | 'epic' | 'legendary' | 'mythic';
+  description?: string;
 }) {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      const width = window.innerWidth;
-      const isMobileDevice =
-        width <= 640 ||
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent
-        );
-      setIsMobile(isMobileDevice);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
   const rarityColors: Record<typeof rarity, string> = {
     common: 'text-gray-300',
     rare: 'text-blue-300',
     epic: 'text-purple-300',
     legendary: 'text-yellow-300',
+    mythic: 'text-orange-300',
   };
 
   return (
-    <div className='bg-blue-900/80 backdrop-blur-sm rounded-xs sm:rounded-sm md:rounded-md lg:rounded-lg overflow-hidden shadow-xs sm:shadow-sm md:shadow-md border border-blue-400 transform hover:scale-[1.02] transition-all duration-300 hover:shadow-lg flex flex-col relative z-10 scale-100'>
-      <div className='p-1 sm:p-1 md:p-1.5 lg:p-2 flex flex-col items-center justify-between text-center'>
-        <h3 className='text-[10px] sm:text-xs md:text-sm lg:text-base font-bold text-white mb-0.5 sm:mb-1 drop-shadow-md'>
+    <div className='bg-blue-900/80 backdrop-blur-sm rounded-md sm:rounded-lg md:rounded-xl overflow-hidden shadow-md sm:shadow-lg md:shadow-xl border border-blue-400 transform hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl flex flex-col relative z-10 w-full max-w-[110px] sm:max-w-[150px] md:max-w-[220px]'>
+      <div className='p-0.5 sm:p-1 md:p-2 flex flex-col items-center justify-between text-center'>
+        <h3 className='text-[8px] sm:text-[10px] md:text-sm lg:text-base font-bold text-white mb-0.5 sm:mb-1 drop-shadow-md'>
           {name}
         </h3>
 
-        <div className='relative w-full aspect-square bg-gradient-to-b from-blue-600/30 to-blue-900/80 rounded-xs sm:rounded-sm md:rounded-md lg:rounded-lg flex items-center justify-center overflow-hidden mb-0.5 sm:mb-1 min-h-[60px] sm:min-h-0'>
-          <div className='absolute inset-0 border border-blue-300/50 rounded-xs sm:rounded-sm md:rounded-md lg:rounded-lg' />
+        <div className='relative w-full aspect-square bg-gradient-to-b from-blue-600/30 to-blue-900/80 rounded-md sm:rounded-lg md:rounded-xl flex items-center justify-center overflow-hidden mb-0.5 sm:mb-1 min-h-[40px] sm:min-h-[50px] md:min-h-[70px]'>
+          <div className='absolute inset-0 border border-blue-300/50 rounded-md sm:rounded-lg md:rounded-xl' />
           <FishTank>
             <img
               src={image || '/placeholder.svg'}
               alt={name}
-              className='object-contain w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 xl:w-20 xl:h-20 transition-transform duration-500 hover:scale-110'
-              style={{
-                width: isMobile ? '64px' : undefined,
-                height: isMobile ? '64px' : undefined,
-              }}
+              className='object-contain w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 transition-transform duration-500 hover:scale-110'
             />
           </FishTank>
         </div>
 
-        <p className='text-[9px] sm:text-xs md:text-sm text-white/80 mb-0.5 sm:mb-1 px-0.5 text-center leading-tight hidden sm:block'>
-          A curious aquatic specimen with unique traits and vibrant colors.
-          Perfect for your aquarium.
+        <p className='text-[6px] sm:text-[8px] md:text-xs lg:text-sm text-white/80 mb-0.5 sm:mb-1 px-0.5 sm:px-1 md:px-2 text-center leading-tight sm:leading-relaxed line-clamp-2'>
+          {description ||
+            'A curious aquatic specimen with unique traits and vibrant colors. Perfect for your aquarium.'}
         </p>
       </div>
 
       <div
-        className={`w-full p-0.5 sm:p-0.5 md:p-1 text-center text-[9px] sm:text-xs md:text-sm font-bold ${rarityColors[rarity]} bg-blue-200/10 rounded-b-xs sm:rounded-b-sm md:rounded-b-md lg:rounded-b-lg`}
+        className={`w-full p-0.5 sm:p-1 md:p-2 text-center text-[7px] sm:text-[9px] md:text-xs lg:text-sm font-bold ${rarityColors[rarity]} bg-blue-200/10 rounded-b-md sm:rounded-b-lg md:rounded-b-xl`}
       >
         <span className='capitalize'>{rarity}</span>
       </div>

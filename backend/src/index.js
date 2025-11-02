@@ -18,6 +18,9 @@ import dirtRoutes from './routes/dirtRoutes.js';
 import storeRoutes from './routes/storeRoutes.js';
 import shopRouter from './routes/shopRoutes.js';
 import transactionRouter from './routes/transactionRoutes.js';
+import speciesRouter from './routes/species.js';
+import aquariumRouter from './routes/aquariumRoutes.js';
+import sseRoutes from './routes/sseRoutes.js';
 
 // Import WebSocket
 import { GameWebSocket } from './websocket/gameWebSocket.js';
@@ -28,11 +31,23 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Create HTTP server for WebSocket
-const server = http.createServer(app);
+// Create HTTP server for WebSocket (only if not in Vercel)
+let server;
+let gameWebSocket;
 
-// Initialize WebSocket server
-const gameWebSocket = new GameWebSocket(server);
+if (process.env.VERCEL) {
+  // Vercel doesn't support persistent WebSocket connections
+  console.log(
+    '🌊 Running on Vercel - WebSocket disabled, using polling fallback'
+  );
+} else {
+  // Create HTTP server for WebSocket (local development)
+  server = http.createServer(app);
+
+  // Initialize WebSocket server
+  gameWebSocket = new GameWebSocket(server);
+  console.log('🌊 WebSocket enabled for real-time updates');
+}
 
 // Middleware
 app.use(helmet()); // Security headers
@@ -44,8 +59,11 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === 'production'
-        ? ['https://yourdomain.com']
-        : ['http://localhost:3000', 'http://localhost:5173'],
+        ? [
+            'https://aqua-stark-frontend.vercel.app',
+            'https://your-frontend-domain.vercel.app',
+          ]
+        : ['http://localhost:5173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -73,10 +91,12 @@ app.get('/api/v1', (req, res) => {
     endpoints: {
       players: '/api/v1/players',
       fish: '/api/v1/fish',
+      aquariums: '/api/v1/aquariums',
       decorations: '/api/v1/decorations',
       minigames: '/api/v1/minigames',
       dirt: '/api/v1/dirt',
       store: '/api/v1/store',
+      species: '/api/v1/species',
       websocket: '/ws',
     },
   });
@@ -84,6 +104,7 @@ app.get('/api/v1', (req, res) => {
 
 // API routes
 app.use('/api/v1/fish', fishRoutes);
+app.use('/api/v1/aquariums', aquariumRouter);
 app.use('/api/v1/minigames', minigameRoutes);
 app.use('/api/v1/players', playerRoutes);
 app.use('/api/v1/decorations', decorationRoutes);
@@ -91,15 +112,28 @@ app.use('/api/v1/dirt', dirtRoutes);
 app.use('/api/v1/store', storeRoutes);
 app.use('/api/v1/shop', shopRouter);
 app.use('/api/transaction/', transactionRouter);
+app.use('/api/v1/species', speciesRouter);
+app.use('/api/v1/events', sseRoutes);
 
-// WebSocket endpoint info
+// Real-time endpoint info
 app.get('/ws', (req, res) => {
-  res.json({
-    message: 'WebSocket endpoint',
-    url: `ws://${req.get('host')}/ws`,
-    authentication: 'Send JWT token in authenticate message',
-    channels: ['fish_updates', 'aquarium_updates', 'game_events'],
-  });
+  if (process.env.VERCEL) {
+    res.json({
+      message: 'Server-Sent Events endpoint (Vercel compatible)',
+      url: `${req.protocol}://${req.get('host')}/api/v1/events/{playerWallet}`,
+      method: 'GET',
+      format: 'text/event-stream',
+      channels: ['fish_updates', 'aquarium_updates', 'game_events'],
+      example: '/api/v1/events/0x123...abc',
+    });
+  } else {
+    res.json({
+      message: 'WebSocket endpoint',
+      url: `ws://${req.get('host')}/ws`,
+      authentication: 'Send JWT token in authenticate message',
+      channels: ['fish_updates', 'aquarium_updates', 'game_events'],
+    });
+  }
 });
 
 // Error handling middleware
@@ -147,7 +181,13 @@ async function startServer() {
     // Initialize Redis connection
     await initRedis();
 
-    // Start server
+    if (process.env.VERCEL) {
+      // For Vercel, just export the app
+      console.log('Server ready for Vercel deployment');
+      return;
+    }
+
+    // Start server (only for non-Vercel environments)
     server.listen(PORT, () => {
       console.log('');
       console.log(
@@ -187,8 +227,14 @@ async function startServer() {
   }
 }
 
-// Start the server
-startServer();
+// Initialize Redis for both Vercel and local development
+if (process.env.VERCEL) {
+  // For Vercel, initialize Redis but don't start server
+  initRedis().catch(console.error);
+} else {
+  // For local development, start the full server
+  startServer();
+}
 
-// Export for testing
-export { app, server, gameWebSocket };
+// Export for Vercel - must be the default export
+export default app;
