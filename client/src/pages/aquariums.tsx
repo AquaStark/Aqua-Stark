@@ -105,10 +105,7 @@ export default function AquariumsPage() {
 
   // Function to transform contract aquarium data to UI format
   const transformAquariumData = useCallback(
-    (
-      contractAquarium: models.Aquarium,
-      fishes: models.Fish[] = []
-    ): Aquarium => {
+    (contractAquarium: models.Aquarium, fishes: models.Fish[] = []): Aquarium => {
       return {
         id: Number(contractAquarium.id),
         name: `Aquarium ${contractAquarium.id}`,
