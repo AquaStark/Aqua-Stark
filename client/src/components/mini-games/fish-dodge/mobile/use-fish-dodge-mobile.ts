@@ -212,7 +212,8 @@ export function useFishDodgeMobile() {
       resetGame();
     }
     setStarted(true);
-  }, [gameOver, resetGame]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameOver]);
 
   // Calculate scale for mobile - use full viewport width
   // Account for header (40px) and footer (40px) = 80px total

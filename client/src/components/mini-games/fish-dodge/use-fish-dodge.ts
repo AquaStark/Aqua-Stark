@@ -220,7 +220,8 @@ export function useFishDodge() {
       resetGame();
     }
     setStarted(true);
-  }, [gameOver, resetGame]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameOver]);
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 
