@@ -26,6 +26,14 @@ export default function GamesPage() {
       available: true,
     },
     {
+      id: 'fish-dodge',
+      name: 'Fish Dodge',
+      description: 'Dodge falling fish and survive as long as you can!',
+      image: '/mini-games/fish-dodge.png',
+      route: '/mini-games/fish-dodge',
+      available: true,
+    },
+    {
       id: 'treasure-hunt',
       name: 'Treasure Hunt',
       description: 'Explore the ocean depths and find hidden treasures',
@@ -147,6 +155,7 @@ export default function GamesPage() {
                           src={game.image}
                           alt={game.name}
                           className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-110'
+                          style={{ objectPosition: 'center bottom' }}
                         />
                         <div className='absolute inset-0 bg-gradient-to-t from-blue-900/80 to-transparent'></div>
                       </>

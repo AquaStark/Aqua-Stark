@@ -19,6 +19,18 @@ export default defineConfig({
   define: {
     global: 'globalThis',
   },
+  optimizeDeps: {
+    force: true,
+    include: [
+      'react',
+      'react-dom',
+      'react-router-dom',
+      'starknet',
+      '@starknet-react/core',
+      '@dojoengine/core',
+      '@dojoengine/sdk',
+    ],
+  },
   server: {
     // https: true, // Comentado temporalmente
     port: 5173,
@@ -38,6 +50,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: false,
+    assetsDir: 'assets',
     rollupOptions: {
       output: {
         manualChunks: {
@@ -52,6 +65,10 @@ export default defineConfig({
         },
       },
     },
+  },
+  preview: {
+    port: 5173,
+    host: true,
   },
   assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.svg'],
 });
