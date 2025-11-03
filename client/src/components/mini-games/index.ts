@@ -11,3 +11,11 @@ export { GameUI } from './floppy-fish/game-ui';
 export { GameCanvas as BubbleJumperCanvas } from './bubble-jumper/game-canvas';
 export { GameUI as BubbleJumperUI } from './bubble-jumper/game-ui';
 export { GameModals as BubbleJumperModals } from './bubble-jumper/game-modals';
+
+// Fish Dodge exports
+export { FishDodgeGame } from './fish-dodge-game';
+export { FishDodgeCanvas } from './fish-dodge/fish-dodge-canvas';
+export { FallingFish } from './fish-dodge/FallingFish';
+export { PlayerFish } from './fish-dodge/PlayerFish';
+export { FishDodgeUI } from './fish-dodge/fish-dodge-ui';
+export { GameOverScreen as FishDodgeGameOver } from './fish-dodge/game-over-screen';

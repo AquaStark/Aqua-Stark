@@ -10,6 +10,7 @@ import { useResponsiveStore } from './hooks/use-responsive-store';
 import { useResponsiveMiniGames } from './hooks/use-responsive-mini-games';
 import { useResponsiveFloppyFish } from './hooks/use-responsive-floppy-fish';
 import { ResponsiveBubbleJumper } from './hooks/use-responsive-bubble-jumper';
+import { useResponsiveFishDodge } from './hooks/use-responsive-fish-dodge';
 import OnboardingPage from './pages/onboarding/onboarding';
 import StartPage from './pages/onboarding/start';
 import LoadingPage from './pages/loading';
@@ -44,6 +45,7 @@ function App() {
   const ResponsiveStore = useResponsiveStore();
   const ResponsiveMiniGames = useResponsiveMiniGames();
   const ResponsiveFloppyFish = useResponsiveFloppyFish();
+  const ResponsiveFishDodge = useResponsiveFishDodge();
 
   return (
     <ErrorBoundary>
@@ -89,6 +91,10 @@ function App() {
               <Route
                 path='/mini-games/bubble-jumper'
                 element={<ResponsiveBubbleJumper />}
+              />
+              <Route
+                path='/mini-games/fish-dodge'
+                element={ResponsiveFishDodge}
               />
 
               {/* Utility Routes */}
