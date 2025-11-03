@@ -1,6 +1,6 @@
 import { createDojoConfig } from '@dojoengine/core';
 
-import manifest from '../aqua_stark/manifest_sepolia.json';
+import manifest from './manifest_sepolia.json';
 
 export const dojoConfig = createDojoConfig({
   manifest,
