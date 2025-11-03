@@ -26,6 +26,14 @@ export default function GamesPage() {
       available: true,
     },
     {
+      id: 'fish-dodge',
+      name: 'Fish Dodge',
+      description: 'Dodge falling fish and survive as long as you can!',
+      image: '/mini-games/fish-dodge-preview.png',
+      route: '/mini-games/fish-dodge',
+      available: true,
+    },
+    {
       id: 'treasure-hunt',
       name: 'Treasure Hunt',
       description: 'Explore the ocean depths and find hidden treasures',
