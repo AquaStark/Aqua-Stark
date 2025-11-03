@@ -38,9 +38,9 @@ export function useSSE({
   const maxReconnectAttempts = 5;
 
   // Get API base URL from centralized environment config
-  const getApiUrl = () => {
+  const getApiUrl = useCallback(() => {
     return `${ENV_CONFIG.API_URL}/v1/events/${playerWallet}`;
-  };
+  }, [playerWallet]);
 
   // Handle incoming SSE events
   const handleMessage = useCallback(
