@@ -187,13 +187,6 @@ export function useFishDodgeMobile() {
     [started, gameOver]
   );
 
-  const startGame = useCallback(() => {
-    if (gameOver) {
-      resetGame();
-    }
-    setStarted(true);
-  }, [gameOver]);
-
   const resetGame = useCallback(() => {
     setPlayerX(PLAYER_START_X);
     setFallingFishes([]);
@@ -213,6 +206,13 @@ export function useFishDodgeMobile() {
       cancelAnimationFrame(animationRef.current);
     }
   }, []);
+
+  const startGame = useCallback(() => {
+    if (gameOver) {
+      resetGame();
+    }
+    setStarted(true);
+  }, [gameOver, resetGame]);
 
   // Calculate scale for mobile - use full viewport width
   // Account for header (40px) and footer (40px) = 80px total
