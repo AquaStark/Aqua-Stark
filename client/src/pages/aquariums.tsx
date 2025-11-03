@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { LayoutFooter } from '@/components';
 import { AquariumStats } from '@/components';
 import { AquariumList } from '@/components';
@@ -62,7 +62,7 @@ export default function AquariumsPage() {
   const navigate = useNavigate();
 
   // Function to load aquarium with its fish
-  const loadAquariumWithFishes = async (aquariumId: BigNumberish) => {
+  const loadAquariumWithFishes = useCallback(async (aquariumId: BigNumberish) => {
     try {
       const id = num.toBigInt(aquariumId);
       const aquariumData = await getAquarium(id);
@@ -101,10 +101,10 @@ export default function AquariumsPage() {
     } catch {
       return null;
     }
-  };
+  }, [getAquarium, getFish]);
 
   // Function to transform contract aquarium data to UI format
-  const transformAquariumData = (
+  const transformAquariumData = useCallback((
     contractAquarium: models.Aquarium,
     fishes: models.Fish[] = []
   ): Aquarium => {
@@ -164,10 +164,10 @@ export default function AquariumsPage() {
         };
       }),
     };
-  };
+  }, [getSpeciesImage, getSpeciesDisplayName]);
 
   // Function to load player aquariums using backend + blockchain sync
-  const loadPlayerAquariums = async () => {
+  const loadPlayerAquariums = useCallback(async () => {
     if (!effectivePlayerAddress) {
       setLoading(false);
       setError(null);
@@ -244,12 +244,18 @@ export default function AquariumsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [
+    effectivePlayerAddress,
+    getPlayerAquariumsBackend,
+    getPlayerAquariums,
+    loadAquariumWithFishes,
+    transformAquariumData,
+  ]);
 
   // Load aquariums when account changes
   useEffect(() => {
     loadPlayerAquariums();
-  }, [effectivePlayerAddress]);
+  }, [effectivePlayerAddress, loadPlayerAquariums]);
 
   const handleSelectAquarium = async (aquarium: Aquarium) => {
     if (!effectivePlayerAddress) {
