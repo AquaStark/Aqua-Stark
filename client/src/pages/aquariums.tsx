@@ -247,15 +247,15 @@ export default function AquariumsPage() {
   }, [
     effectivePlayerAddress,
     getPlayerAquariumsBackend,
-    getPlayerAquariums,
     loadAquariumWithFishes,
     transformAquariumData,
+    getPlayerAquariums,
   ]);
 
   // Load aquariums when account changes
   useEffect(() => {
     loadPlayerAquariums();
-  }, [effectivePlayerAddress, loadPlayerAquariums]);
+  }, [loadPlayerAquariums]);
 
   const handleSelectAquarium = async (aquarium: Aquarium) => {
     if (!effectivePlayerAddress) {
