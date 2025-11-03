@@ -62,109 +62,118 @@ export default function AquariumsPage() {
   const navigate = useNavigate();
 
   // Function to load aquarium with its fish
-  const loadAquariumWithFishes = useCallback(async (aquariumId: BigNumberish) => {
-    try {
-      const id = num.toBigInt(aquariumId);
-      const aquariumData = await getAquarium(id);
-      if (!aquariumData) return null;
+  const loadAquariumWithFishes = useCallback(
+    async (aquariumId: BigNumberish) => {
+      try {
+        const id = num.toBigInt(aquariumId);
+        const aquariumData = await getAquarium(id);
+        if (!aquariumData) return null;
 
-      if (!aquariumData.housed_fish || aquariumData.housed_fish.length === 0) {
+        if (
+          !aquariumData.housed_fish ||
+          aquariumData.housed_fish.length === 0
+        ) {
+          return {
+            aquariumData,
+            fishData: [],
+          };
+        }
+
+        const fishPromises = aquariumData.housed_fish.map(
+          async (fishId: BigNumberish) => {
+            try {
+              const fish = await getFish(fishId);
+              console.log('🐟 Fish data from blockchain:', fish);
+              return fish;
+            } catch (err) {
+              console.error('❌ Error loading fish:', err);
+              return null;
+            }
+          }
+        );
+        const fishData = await Promise.all(fishPromises);
+
+        const validFish = fishData.filter(
+          (fish): fish is models.Fish => fish !== null
+        );
+        console.log('✅ Valid fish loaded:', validFish);
+
         return {
           aquariumData,
-          fishData: [],
+          fishData: validFish,
         };
+      } catch {
+        return null;
       }
-
-      const fishPromises = aquariumData.housed_fish.map(
-        async (fishId: BigNumberish) => {
-          try {
-            const fish = await getFish(fishId);
-            console.log('🐟 Fish data from blockchain:', fish);
-            return fish;
-          } catch (err) {
-            console.error('❌ Error loading fish:', err);
-            return null;
-          }
-        }
-      );
-      const fishData = await Promise.all(fishPromises);
-
-      const validFish = fishData.filter(
-        (fish): fish is models.Fish => fish !== null
-      );
-      console.log('✅ Valid fish loaded:', validFish);
-
-      return {
-        aquariumData,
-        fishData: validFish,
-      };
-    } catch {
-      return null;
-    }
-  }, [getAquarium, getFish]);
+    },
+    [getAquarium, getFish]
+  );
 
   // Function to transform contract aquarium data to UI format
-  const transformAquariumData = useCallback((
-    contractAquarium: models.Aquarium,
-    fishes: models.Fish[] = []
-  ): Aquarium => {
-    return {
-      id: Number(contractAquarium.id),
-      name: `Aquarium ${contractAquarium.id}`,
-      image: '/items/aquarium.png',
-      level: Math.floor(Number(contractAquarium.cleanliness) / 10) + 1,
-      type: Number(contractAquarium.fish_count) > 5 ? 'Premium' : 'Standard',
-      health: Number(contractAquarium.cleanliness),
-      lastVisited: 'Recently',
-      fishCount: `${contractAquarium.fish_count}/${contractAquarium.max_capacity}`,
-      rating: Math.min(
-        5,
-        Math.floor(Number(contractAquarium.cleanliness) / 20) + 1
-      ),
-      isPremium: Number(contractAquarium.max_capacity) > 10,
-      fishes: fishes.map(fish => {
-        console.log('🔍 Processing fish for card:', {
-          fishId: fish.id,
-          species: fish.species,
-          variant: fish.species?.variant,
-        });
+  const transformAquariumData = useCallback(
+    (
+      contractAquarium: models.Aquarium,
+      fishes: models.Fish[] = []
+    ): Aquarium => {
+      return {
+        id: Number(contractAquarium.id),
+        name: `Aquarium ${contractAquarium.id}`,
+        image: '/items/aquarium.png',
+        level: Math.floor(Number(contractAquarium.cleanliness) / 10) + 1,
+        type: Number(contractAquarium.fish_count) > 5 ? 'Premium' : 'Standard',
+        health: Number(contractAquarium.cleanliness),
+        lastVisited: 'Recently',
+        fishCount: `${contractAquarium.fish_count}/${contractAquarium.max_capacity}`,
+        rating: Math.min(
+          5,
+          Math.floor(Number(contractAquarium.cleanliness) / 20) + 1
+        ),
+        isPremium: Number(contractAquarium.max_capacity) > 10,
+        fishes: fishes.map(fish => {
+          console.log('🔍 Processing fish for card:', {
+            fishId: fish.id,
+            species: fish.species,
+            variant: fish.species?.variant,
+          });
 
-        // Extract species name from CairoCustomEnum
-        let speciesName = 'AngelFish'; // Default
-        if (fish.species?.variant) {
-          // Handle CairoCustomEnum variant extraction
-          const variantEntries = Object.entries(fish.species.variant);
-          const activeVariant = variantEntries.find(
-            ([, value]) => value !== undefined
-          );
-          if (activeVariant) {
-            speciesName = activeVariant[0];
+          // Extract species name from CairoCustomEnum
+          let speciesName = 'AngelFish'; // Default
+          if (fish.species?.variant) {
+            // Handle CairoCustomEnum variant extraction
+            const variantEntries = Object.entries(fish.species.variant);
+            const activeVariant = variantEntries.find(
+              ([, value]) => value !== undefined
+            );
+            if (activeVariant) {
+              speciesName = activeVariant[0];
+            }
           }
-        }
 
-        // Get correct image and display name from catalog
-        const fishImage = getSpeciesImage(speciesName);
-        const displayName = getSpeciesDisplayName(speciesName);
+          // Get correct image and display name from catalog
+          const fishImage = getSpeciesImage(speciesName);
+          const displayName = getSpeciesDisplayName(speciesName);
 
-        return {
-          id: Number(fish.id),
-          name: displayName,
-          image: fishImage,
-          rarity: 'Common' as const,
-          generation: Number(fish.generation),
-          level: Math.floor(Number(fish.age) / 100) + 1,
-          traits: {
-            color: 'blue',
-            pattern: 'striped',
-            fins: 'long',
-            size: 'medium',
-          },
-          hunger: (fish as any).hunger ?? 50,
-          state: (fish as any).state ?? 'idle',
-        };
-      }),
-    };
-  }, [getSpeciesImage, getSpeciesDisplayName]);
+          return {
+            id: Number(fish.id),
+            name: displayName,
+            image: fishImage,
+            rarity: 'Common' as const,
+            generation: Number(fish.generation),
+            level: Math.floor(Number(fish.age) / 100) + 1,
+            traits: {
+              color: 'blue',
+              pattern: 'striped',
+              fins: 'long',
+              size: 'medium',
+            },
+            hunger: (fish as any).hunger ?? 50,
+            state: (fish as any).state ?? 'idle',
+          };
+        }),
+      };
+    },
+    [getSpeciesImage, getSpeciesDisplayName]
+  );
 
   // Function to load player aquariums using backend + blockchain sync
   const loadPlayerAquariums = useCallback(async () => {
