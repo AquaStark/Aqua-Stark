@@ -202,9 +202,9 @@ async function main() {
       <React.StrictMode>
         <Suspense fallback={<LoadingFallback />}>
           <DojoProviderWrapper sdk={sdk}>
-            <BrowserRouter>
-              <App />
-            </BrowserRouter>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
           </DojoProviderWrapper>
         </Suspense>
       </React.StrictMode>
