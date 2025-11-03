@@ -105,29 +105,35 @@ function DojoProviderWrapper({
     );
   }
 
-  if (!dojoConfig.manifest.contracts || !Array.isArray(dojoConfig.manifest.contracts)) {
+  if (
+    !dojoConfig.manifest.contracts ||
+    !Array.isArray(dojoConfig.manifest.contracts)
+  ) {
     console.error('Contracts configuration is missing or invalid');
     return (
       <DojoErrorFallback
-        error={new Error('Contracts configuration is missing or invalid in manifest')}
+        error={
+          new Error('Contracts configuration is missing or invalid in manifest')
+        }
         resetError={() => window.location.reload()}
       />
     );
   }
 
   // Check if ABIs are available
-  const hasAbis = dojoConfig.manifest.abis && Array.isArray(dojoConfig.manifest.abis) && dojoConfig.manifest.abis.length > 0;
+  const hasAbis =
+    dojoConfig.manifest.abis &&
+    Array.isArray(dojoConfig.manifest.abis) &&
+    dojoConfig.manifest.abis.length > 0;
   if (!hasAbis) {
-    console.warn('ABIs not found in manifest. DojoProvider may fail to initialize contracts.');
+    console.warn(
+      'ABIs not found in manifest. DojoProvider may fail to initialize contracts.'
+    );
   }
 
   return (
     <ErrorBoundary fallback={DojoErrorFallback}>
-      <DojoSdkProvider
-        sdk={sdk}
-        dojoConfig={dojoConfig}
-        clientFn={setupWorld}
-      >
+      <DojoSdkProvider sdk={sdk} dojoConfig={dojoConfig} clientFn={setupWorld}>
         {children}
       </DojoSdkProvider>
     </ErrorBoundary>
@@ -202,9 +208,9 @@ async function main() {
       <React.StrictMode>
         <Suspense fallback={<LoadingFallback />}>
           <DojoProviderWrapper sdk={sdk}>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
           </DojoProviderWrapper>
         </Suspense>
       </React.StrictMode>
@@ -212,7 +218,8 @@ async function main() {
   } catch (error) {
     console.error('Failed to initialize Dojo SDK:', error);
     // Render error UI instead of throwing
-    const errorInstance = error instanceof Error ? error : new Error('Unknown error');
+    const errorInstance =
+      error instanceof Error ? error : new Error('Unknown error');
     ReactDOM.createRoot(document.getElementById('root')!).render(
       <DojoErrorFallback
         error={errorInstance}
