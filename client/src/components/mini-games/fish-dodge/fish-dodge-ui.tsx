@@ -12,7 +12,6 @@ export function FishDodgeUI({
   score,
   round,
   lives,
-  started: _started,
   gameOver,
 }: FishDodgeUIProps) {
   if (gameOver) return null;

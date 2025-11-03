@@ -12,9 +12,8 @@ interface FishDodgeGameProps {
   };
 }
 
-export function FishDodgeGame({
-  selectedFish: _selectedFish,
-}: FishDodgeGameProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function FishDodgeGame(_props: FishDodgeGameProps) {
   const {
     playerX,
     playerY,
