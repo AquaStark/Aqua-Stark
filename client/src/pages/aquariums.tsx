@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { LayoutFooter } from '@/components';
 import { AquariumStats } from '@/components';
 import { AquariumList } from '@/components';
@@ -169,7 +169,7 @@ export default function AquariumsPage() {
   };
 
   // Function to load player aquariums using backend + blockchain sync
-  const loadPlayerAquariums = async () => {
+  const loadPlayerAquariums = useCallback(async () => {
     if (!effectivePlayerAddress) {
       setLoading(false);
       setError(null);
@@ -246,12 +246,18 @@ export default function AquariumsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [
+    effectivePlayerAddress,
+    getPlayerAquariumsBackend,
+    loadAquariumWithFishes,
+    transformAquariumData,
+    getPlayerAquariums,
+  ]);
 
   // Load aquariums when account changes
   useEffect(() => {
     loadPlayerAquariums();
-  }, [effectivePlayerAddress]);
+  }, [loadPlayerAquariums]);
 
   const handleSelectAquarium = async (aquarium: Aquarium) => {
     if (!effectivePlayerAddress) {
