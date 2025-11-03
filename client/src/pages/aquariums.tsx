@@ -62,52 +62,46 @@ export default function AquariumsPage() {
   const navigate = useNavigate();
 
   // Function to load aquarium with its fish
-  const loadAquariumWithFishes = useCallback(
-    async (aquariumId: BigNumberish) => {
-      try {
-        const id = num.toBigInt(aquariumId);
-        const aquariumData = await getAquarium(id);
-        if (!aquariumData) return null;
+  const loadAquariumWithFishes = useCallback(async (aquariumId: BigNumberish) => {
+    try {
+      const id = num.toBigInt(aquariumId);
+      const aquariumData = await getAquarium(id);
+      if (!aquariumData) return null;
 
-        if (
-          !aquariumData.housed_fish ||
-          aquariumData.housed_fish.length === 0
-        ) {
-          return {
-            aquariumData,
-            fishData: [],
-          };
-        }
-
-        const fishPromises = aquariumData.housed_fish.map(
-          async (fishId: BigNumberish) => {
-            try {
-              const fish = await getFish(fishId);
-              console.log('🐟 Fish data from blockchain:', fish);
-              return fish;
-            } catch (err) {
-              console.error('❌ Error loading fish:', err);
-              return null;
-            }
-          }
-        );
-        const fishData = await Promise.all(fishPromises);
-
-        const validFish = fishData.filter(
-          (fish): fish is models.Fish => fish !== null
-        );
-        console.log('✅ Valid fish loaded:', validFish);
-
+      if (!aquariumData.housed_fish || aquariumData.housed_fish.length === 0) {
         return {
           aquariumData,
-          fishData: validFish,
+          fishData: [],
         };
-      } catch {
-        return null;
       }
-    },
-    [getAquarium, getFish]
-  );
+
+      const fishPromises = aquariumData.housed_fish.map(
+        async (fishId: BigNumberish) => {
+          try {
+            const fish = await getFish(fishId);
+            console.log('🐟 Fish data from blockchain:', fish);
+            return fish;
+          } catch (err) {
+            console.error('❌ Error loading fish:', err);
+            return null;
+          }
+        }
+      );
+      const fishData = await Promise.all(fishPromises);
+
+      const validFish = fishData.filter(
+        (fish): fish is models.Fish => fish !== null
+      );
+      console.log('✅ Valid fish loaded:', validFish);
+
+      return {
+        aquariumData,
+        fishData: validFish,
+      };
+    } catch {
+      return null;
+    }
+  }, [getAquarium, getFish]);
 
   // Function to transform contract aquarium data to UI format
   const transformAquariumData = useCallback(
@@ -133,20 +127,22 @@ export default function AquariumsPage() {
           console.log('🔍 Processing fish for card:', {
             fishId: fish.id,
             species: fish.species,
-            variant: fish.species?.variant,
           });
 
-          // Extract species name from CairoCustomEnum
+          // Extract species name from BigNumberish species index
+          // Species is stored as a number (BigNumberish), not a CairoCustomEnum
           let speciesName = 'AngelFish'; // Default
-          if (fish.species?.variant) {
-            // Handle CairoCustomEnum variant extraction
-            const variantEntries = Object.entries(fish.species.variant);
-            const activeVariant = variantEntries.find(
-              ([, value]) => value !== undefined
-            );
-            if (activeVariant) {
-              speciesName = activeVariant[0];
-            }
+          const speciesIndex = Number(fish.species);
+          const speciesMap: Record<number, string> = {
+            0: 'AngelFish',
+            1: 'GoldFish',
+            2: 'Betta',
+            3: 'NeonTetra',
+            4: 'Corydoras',
+            5: 'Hybrid',
+          };
+          if (speciesMap[speciesIndex]) {
+            speciesName = speciesMap[speciesIndex];
           }
 
           // Get correct image and display name from catalog
