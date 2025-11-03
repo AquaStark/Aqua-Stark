@@ -226,7 +226,7 @@ export const useSettings = () => {
       // Could add user notification for settings load failures
       setIsLoading(false);
     }
-  }, []);
+  }, [get]);
 
   /**
    * Updates a specific setting and saves it to localStorage.
