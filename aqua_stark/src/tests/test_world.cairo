@@ -1,7 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use dojo::world::IWorldDispatcherTrait;
-    use dojo::model::ModelStorage;
+    use aqua_stark::base::events;
     use aqua_stark::interfaces::IAquaStark::{IAquaStarkDispatcher, IAquaStarkDispatcherTrait};
     use aqua_stark::interfaces::IShopCatalog::{
         IShopCatalog, IShopCatalogDispatcher, IShopCatalogDispatcherTrait,
@@ -10,21 +9,21 @@ mod tests {
         ITransactionHistoryDispatcher, ITransactionHistoryDispatcherTrait,
     };
     use aqua_stark::models::aquarium_model::{m_Aquarium, m_AquariumCounter, m_AquariumOwner};
+    use aqua_stark::models::auctions_model::{m_Auction, m_AuctionCounter};
     use aqua_stark::models::decoration_model::{m_Decoration, m_DecorationCounter};
     use aqua_stark::models::fish_model::{
-        FishOwner, Species, Listing, m_Listing, m_Fish, m_FishCounter, m_FishOwner,
+        FishOwner, Listing, Species, m_Fish, m_FishCounter, m_FishOwner, m_Listing,
     };
     use aqua_stark::models::player_model::{
         m_AddressToUsername, m_Player, m_PlayerCounter, m_UsernameToAddress,
     };
+    use aqua_stark::models::session::{m_SessionAnalytics, m_SessionKey, m_SessionOperation};
     use aqua_stark::models::shop_model::{
-        ShopItemModel, ShopCatalogModel, m_ShopItemModel, m_ShopCatalogModel,
+        ShopCatalogModel, ShopItemModel, m_ShopCatalogModel, m_ShopItemModel,
     };
     use aqua_stark::models::transaction_model::{
-        m_TransactionLog, m_EventTypeDetails, m_EventCounter, m_TransactionCounter,
+        m_EventCounter, m_EventTypeDetails, m_TransactionCounter, m_TransactionLog,
     };
-    use aqua_stark::models::auctions_model::{m_Auction, m_AuctionCounter};
-    use aqua_stark::models::session::{m_SessionKey, m_SessionAnalytics, m_SessionOperation};
     // use aqua_stark::models::experience_model::{
     //     m_Experience, m_ExperienceConfig, m_ExperienceCounter,
     // };
@@ -33,14 +32,15 @@ mod tests {
     use aqua_stark::systems::AquaStark::AquaStark;
     use aqua_stark::systems::ShopCatalog::ShopCatalog;
     use aqua_stark::systems::transaction::Transaction;
-    use aqua_stark::base::events;
+    use dojo::model::ModelStorage;
+    use dojo::world::IWorldDispatcherTrait;
     // use dojo::model::{ModelStorageTest};
     use dojo::world::WorldStorageTrait;
     use dojo_cairo_test::{
         ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
         spawn_test_world,
     };
-    use starknet::{contract_address_const, testing, get_block_timestamp, ContractAddress};
+    use starknet::{ContractAddress, contract_address_const, get_block_timestamp, testing};
 
     fn OWNER() -> ContractAddress {
         contract_address_const::<'owner'>()

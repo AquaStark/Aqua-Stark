@@ -1,4 +1,4 @@
-use starknet::{ContractAddress};
+use starknet::ContractAddress;
 // use aqua_stark::base::events::AuctionStarted;
 
 #[derive(Serde, Copy, Drop, Introspect)]

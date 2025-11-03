@@ -10,13 +10,13 @@ pub trait IDailyChallenge<T> {
 //@ryzen-xp
 #[dojo::contract]
 pub mod daily_challenge {
+    use aqua_stark::models::daily_challange::{
+        ChallengeCompleted, ChallengeCreated, ChallengeParticipation, Challenge_Counter,
+        DailyChallenge, DailyChallengeTrait, ParticipantJoined, RewardClaimed,
+    };
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
     use starknet::get_caller_address;
-    use aqua_stark::models::daily_challange::{
-        Challenge_Counter, DailyChallengeTrait, ChallengeParticipation, DailyChallenge,
-        ChallengeCreated, RewardClaimed, ParticipantJoined, ChallengeCompleted,
-    };
     use super::*;
 
 

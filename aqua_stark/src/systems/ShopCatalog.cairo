@@ -1,28 +1,34 @@
 #[dojo::contract]
 pub mod ShopCatalog {
-    use dojo::model::{ModelStorage};
-    use dojo::world::WorldStorageTrait;
-    use starknet::{get_contract_address, get_caller_address, ContractAddress, get_block_timestamp};
-    use aqua_stark::models::shop_model::{ShopItemModel, ShopCatalogModel};
+    use aqua_stark::helpers::session_validation::{
+        AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION, MIN_SESSION_DURATION,
+        SessionValidationImpl,
+    };
     use aqua_stark::interfaces::IShopCatalog::IShopCatalog;
     // Session system imports
     use aqua_stark::models::session::{
-        SessionKey, SessionAnalytics, SESSION_STATUS_ACTIVE, SESSION_STATUS_EXPIRED,
-        SESSION_STATUS_REVOKED, SESSION_TYPE_BASIC, SESSION_TYPE_PREMIUM, SESSION_TYPE_ADMIN,
-        PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, PERMISSION_ADMIN,
+        PERMISSION_ADMIN, PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE,
+        SESSION_STATUS_ACTIVE, SESSION_TYPE_PREMIUM, SessionAnalytics, SessionKey,
     };
-    use aqua_stark::helpers::session_validation::{
-        SessionValidationTrait, SessionValidationImpl, MIN_SESSION_DURATION, MAX_SESSION_DURATION,
-        AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION,
-    };
+    use aqua_stark::models::shop_model::{ShopCatalogModel, ShopItemModel};
+    use dojo::model::ModelStorage;
+    use starknet::{ContractAddress, get_block_timestamp, get_caller_address, get_contract_address};
 
-    fn dojo_init(ref self: ContractState, owner: ContractAddress) {
+    fn dojo_init(ref self: ContractState) {
         let mut world = self.world(@"aqua_stark");
+        let owner = get_caller_address();
         let shop_catalog = ShopCatalogModel {
             id: get_contract_address(), owner: owner, shopItems: 0, latest_item_id: 0,
         };
         world.write_model(@shop_catalog);
     }
+
+//     [[external_contracts]]
+// contract_name = "ShopCatalog"
+// instance_name = "ShopCatalog"
+// salt = "1"
+// constructor_data = ["0x0607Da15044A008A68efaeA6C973187c971453ef7859b3c0F020A1D2f93dBC71"]
+
 
     #[abi(embed_v0)]
     impl ShopCatalogImpl of IShopCatalog<ContractState> {

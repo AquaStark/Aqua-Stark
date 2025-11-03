@@ -1,10 +1,8 @@
 use aqua_stark::models::aquarium_model::Aquarium;
-use aqua_stark::models::decoration_model::Decoration;
-use aqua_stark::models::fish_model::{Fish, FishParents, FishOwner, Species, Listing};
-use aqua_stark::models::player_model::Player;
-use aqua_stark::models::trade_model::{FishLock, MatchCriteria, TradeOffer};
 use aqua_stark::models::auctions_model::*;
-
+use aqua_stark::models::decoration_model::Decoration;
+use aqua_stark::models::fish_model::FishOwner;
+use aqua_stark::models::player_model::Player;
 use starknet::ContractAddress;
 // define the interface
 #[starknet::interface]
@@ -39,5 +37,4 @@ pub trait IAquaStark<T> {
     // Fish breeding and family tree functions moved to IGame interface
     // Marketplace functions moved to IGame interface
     fn get_fish_owner_for_auction(self: @T, fish_id: u256) -> FishOwner;
-   
 }

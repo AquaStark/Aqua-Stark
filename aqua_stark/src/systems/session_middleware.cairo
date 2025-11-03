@@ -1,15 +1,15 @@
-use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
-use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
-use aqua_stark::models::session::{
-    SessionKey, SessionAnalytics, SessionOperation, SESSION_STATUS_ACTIVE, SESSION_STATUS_EXPIRED,
-    SESSION_STATUS_REVOKED, SESSION_TYPE_BASIC, SESSION_TYPE_PREMIUM, SESSION_TYPE_ADMIN,
-    PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, PERMISSION_ADMIN, OPERATION_TYPE_CREATE,
-    OPERATION_TYPE_USE, OPERATION_TYPE_RENEW, OPERATION_TYPE_REVOKE,
-};
 use aqua_stark::helpers::session_validation::{
-    SessionValidationTrait, SessionValidationImpl, MIN_SESSION_DURATION, MAX_SESSION_DURATION,
-    AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION,
+    AUTO_RENEWAL_THRESHOLD, MAX_SESSION_DURATION, MAX_TRANSACTIONS_PER_SESSION,
+    MIN_SESSION_DURATION, SessionValidationImpl, SessionValidationTrait,
 };
+use aqua_stark::models::session::{
+    OPERATION_TYPE_CREATE, OPERATION_TYPE_RENEW, OPERATION_TYPE_REVOKE, OPERATION_TYPE_USE,
+    PERMISSION_ADMIN, PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, SESSION_STATUS_ACTIVE,
+    SESSION_STATUS_EXPIRED, SESSION_STATUS_REVOKED, SESSION_TYPE_ADMIN, SESSION_TYPE_BASIC,
+    SESSION_TYPE_PREMIUM, SessionAnalytics, SessionKey, SessionOperation,
+};
+use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
+use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
 
 #[starknet::interface]
 pub trait ISessionMiddleware<TContractState> {
@@ -51,8 +51,8 @@ pub trait ISessionMiddleware<TContractState> {
 
 #[starknet::contract]
 pub mod SessionMiddleware {
-    use super::*;
     use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
+    use super::*;
 
     #[storage]
     pub struct Storage {

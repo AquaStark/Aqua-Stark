@@ -1,5 +1,4 @@
 use starknet::ContractAddress;
-use aqua_stark::models::fish_model::Species;
 
 // Game-specific fish events (with experience tracking)
 #[derive(Copy, Drop, Serde)]
@@ -10,7 +9,7 @@ pub struct FishGameCreated {
     #[key]
     pub owner: ContractAddress,
     pub aquarium_id: u256,
-    pub species: Species,
+    pub species: felt252,
     pub experience_earned: u256,
     pub timestamp: u64,
 }

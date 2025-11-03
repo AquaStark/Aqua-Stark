@@ -1,34 +1,29 @@
 #[dojo::contract]
 pub mod Trade {
-    use dojo::world::IWorldDispatcherTrait;
-    use aqua_stark::interfaces::ITrade::{ITrade};
-    use aqua_stark::interfaces::IAquaStark::{IAquaStarkDispatcher, IAquaStarkDispatcherTrait};
     use aqua_stark::base::events::{
-        TradeOfferCreated, TradeOfferAccepted, TradeOfferCancelled, FishLocked, FishUnlocked,
+        FishLocked, FishUnlocked, TradeOfferAccepted, TradeOfferCancelled, TradeOfferCreated,
         TradeOfferExpired,
     };
-    use starknet::{
-        ContractAddress, get_caller_address, get_block_timestamp, contract_address_const,
+    use aqua_stark::helpers::session_validation::{
+        AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION, MIN_SESSION_DURATION,
+        SessionValidationImpl,
     };
-
-    use aqua_stark::models::fish_model::{Fish, FishOwner, Species};
-    use aqua_stark::models::trade_model::{
-        TradeOffer, TradeOfferStatus, MatchCriteria, FishLock, TradeOfferCounter, ActiveTradeOffers,
-        TradeOfferTrait, FishLockTrait, trade_offer_id_target,
-    };
+    use aqua_stark::interfaces::ITrade::ITrade;
+    use aqua_stark::models::fish_model::{Fish, FishOwner};
     // Session system imports
     use aqua_stark::models::session::{
-        SessionKey, SessionAnalytics, SESSION_STATUS_ACTIVE, SESSION_STATUS_EXPIRED,
-        SESSION_STATUS_REVOKED, SESSION_TYPE_BASIC, SESSION_TYPE_PREMIUM, SESSION_TYPE_ADMIN,
-        PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE, PERMISSION_ADMIN,
+        PERMISSION_ADMIN, PERMISSION_MOVE, PERMISSION_SPAWN, PERMISSION_TRADE,
+        SESSION_STATUS_ACTIVE, SESSION_TYPE_PREMIUM, SessionAnalytics, SessionKey,
     };
-    use aqua_stark::helpers::session_validation::{
-        SessionValidationTrait, SessionValidationImpl, MIN_SESSION_DURATION, MAX_SESSION_DURATION,
-        AUTO_RENEWAL_THRESHOLD, MAX_TRANSACTIONS_PER_SESSION,
+    use aqua_stark::models::trade_model::{
+        ActiveTradeOffers, FishLock, FishLockTrait, TradeOffer, TradeOfferCounter,
+        TradeOfferTrait, trade_offer_id_target,
     };
-
-    use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
+    use dojo::model::ModelStorage;
+    use starknet::{
+        ContractAddress, contract_address_const, get_block_timestamp, get_caller_address,
+    };
 
 
     #[abi(embed_v0)]
@@ -36,11 +31,10 @@ pub mod Trade {
         fn create_trade_offer(
             ref self: ContractState,
             offered_fish_id: u256,
-            criteria: MatchCriteria,
+            criteria: felt252,
             requested_fish_id: Option<u256>,
             requested_species: Option<u8>,
             requested_generation: Option<u8>,
-            requested_traits: Span<felt252>,
             duration_hours: u64,
         ) -> u256 {
             let mut world = self.world_default();
@@ -49,13 +43,6 @@ pub mod Trade {
             // Get or create unified session
             let session_id = self.get_or_create_session(caller);
             self.validate_and_update_session(session_id, PERMISSION_TRADE);
-
-            // Validate fish ownership through AquaStark contract
-            let aqua_stark_address = self.get_aqua_stark_address();
-            let aqua_stark = IAquaStarkDispatcher { contract_address: aqua_stark_address };
-
-            // Fish verification moved to game contract
-            // let _ = aqua_stark.get_fish(offered_fish_id);
 
             let fish_owner: FishOwner = world.read_model(offered_fish_id);
             assert(fish_owner.owner == caller, 'You do not own this fish');
@@ -77,7 +64,6 @@ pub mod Trade {
                 requested_fish_id,
                 requested_species,
                 requested_generation,
-                requested_traits,
                 duration_hours,
             );
 
@@ -131,14 +117,6 @@ pub mod Trade {
             self.validate_and_update_session(session_id, PERMISSION_TRADE);
 
             let mut trade_offer: TradeOffer = world.read_model(offer_id);
-
-            let aqua_stark_address = self.get_aqua_stark_address();
-            let aqua_stark = IAquaStarkDispatcher { contract_address: aqua_stark_address };
-
-            // Fish verification moved to game contract
-            // let _ = aqua_stark.get_fish(trade_offer.offered_fish_id);
-            // let _ = aqua_stark.get_fish(offered_fish_id);
-
             assert(TradeOfferTrait::is_active(@trade_offer), 'Offer not active');
             assert(trade_offer.creator != caller, 'Cannot accept own offer');
 
@@ -164,16 +142,21 @@ pub mod Trade {
             let acceptor_fish: Fish = world.read_model(offered_fish_id);
 
             // Convert species to u8 for matching
-            let fish_species = match acceptor_fish.species {
-                Species::AngelFish => 0_u8,
-                Species::GoldFish => 1_u8,
-                Species::Betta => 2_u8,
-                Species::NeonTetra => 3_u8,
-                Species::Corydoras => 4_u8,
-                Species::Hybrid => 5_u8,
+            let fish_species = if acceptor_fish.species == 'AngelFish' {
+                0_u8
+            } else if acceptor_fish.species == 'GoldFish' {
+                1_u8
+            } else if acceptor_fish.species == 'Betta' {
+                2_u8
+            } else if acceptor_fish.species == 'NeonTetra' {
+                3_u8
+            } else if acceptor_fish.species == 'Corydoras' {
+                4_u8
+            } else if acceptor_fish.species == 'Hybrid' {
+                5_u8
+            } else {
+                255_u8
             };
-
-            let fish_traits = array![acceptor_fish.color].span();
 
             // Validate matching criteria
             assert(
@@ -182,7 +165,6 @@ pub mod Trade {
                     offered_fish_id,
                     fish_species,
                     acceptor_fish.generation,
-                    fish_traits,
                 ),
                 'Fish does not match criteria',
             );
@@ -262,7 +244,7 @@ pub mod Trade {
             let mut trade_offer: TradeOffer = world.read_model(offer_id);
 
             assert(trade_offer.creator == caller, 'Not offer creator');
-            assert(trade_offer.status == TradeOfferStatus::Active, 'Offer not active');
+            assert(trade_offer.status == 'Active', 'Offer not active');
 
             // Cancel the offer
             trade_offer = TradeOfferTrait::cancel_offer(trade_offer);
@@ -314,7 +296,7 @@ pub mod Trade {
                 }
                 let offer_id = *active_offers.offers.at(i);
                 let offer: TradeOffer = world.read_model(offer_id);
-                if offer.status == TradeOfferStatus::Active
+                if offer.status == 'Active'
                     && !TradeOfferTrait::is_expired(@offer) {
                     offers.append(offer);
                 }
@@ -335,7 +317,7 @@ pub mod Trade {
                     break;
                 }
                 let offer: TradeOffer = world.read_model(i);
-                if offer.status == TradeOfferStatus::Active
+                if offer.status == 'Active'
                     && !TradeOfferTrait::is_expired(@offer) {
                     active_offers.append(offer);
                 }
@@ -356,7 +338,7 @@ pub mod Trade {
                     break;
                 }
                 let offer: TradeOffer = world.read_model(i);
-                if offer.offered_fish_id == fish_id && offer.status == TradeOfferStatus::Active {
+                if offer.offered_fish_id == fish_id && offer.status == 'Active' {
                     matching_offers.append(offer);
                 }
                 i += 1;
@@ -387,7 +369,7 @@ pub mod Trade {
                     break;
                 }
                 let offer: TradeOffer = world.read_model(i);
-                if offer.status == TradeOfferStatus::Active && TradeOfferTrait::is_expired(@offer) {
+                if offer.status == 'Active' && TradeOfferTrait::is_expired(@offer) {
                     self._expire_offer(i);
                     expired_count += 1;
                 }
@@ -592,8 +574,8 @@ pub mod Trade {
             let mut world = self.world_default();
             let mut offer: TradeOffer = world.read_model(offer_id);
 
-            if offer.status == TradeOfferStatus::Active {
-                offer.status = TradeOfferStatus::Expired;
+            if offer.status == 'Active' {
+                offer.status = 'Expired';
 
                 // Unlock the fish
                 let fish_unlock = FishLockTrait::unlock_fish(offer.offered_fish_id);

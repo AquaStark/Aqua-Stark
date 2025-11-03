@@ -1,19 +1,18 @@
 #[cfg(test)]
 mod tests {
-    use starknet::{ContractAddress, contract_address_const, testing, get_block_timestamp};
-    use dojo::world::WorldStorageTrait;
-    use dojo::world::IWorldDispatcher;
+    use aqua_stark::interfaces::IAquaStark::{IAquaStarkDispatcher, IAquaStarkDispatcherTrait};
+    use aqua_stark::interfaces::ITrade::{ITradeDispatcher, ITradeDispatcherTrait};
+    use aqua_stark::models::fish_model::{Fish, FishOwner, Species};
+    use aqua_stark::models::trade_model::{
+        FishLockTrait, MatchCriteria, TradeOffer, TradeOfferCounter, TradeOfferStatus,
+        TradeOfferTrait, m_ActiveTradeOffers, m_FishLock, m_TradeOffer, m_TradeOfferCounter,
+    };
+    use dojo::world::{IWorldDispatcher, WorldStorageTrait};
     use dojo_cairo_test::{
         ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
         spawn_test_world,
     };
-    use aqua_stark::interfaces::ITrade::{ITradeDispatcher, ITradeDispatcherTrait};
-    use aqua_stark::interfaces::IAquaStark::{IAquaStarkDispatcher, IAquaStarkDispatcherTrait};
-    use aqua_stark::models::trade_model::{
-        TradeOffer, TradeOfferStatus, MatchCriteria, TradeOfferTrait, FishLockTrait, m_TradeOffer,
-        m_TradeOfferCounter, m_FishLock, m_ActiveTradeOffers, TradeOfferCounter,
-    };
-    use aqua_stark::models::fish_model::{Species, Fish, FishOwner};
+    use starknet::{ContractAddress, contract_address_const, get_block_timestamp, testing};
 
 
     fn OWNER() -> ContractAddress {

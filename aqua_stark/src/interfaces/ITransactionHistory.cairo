@@ -1,5 +1,5 @@
+use aqua_stark::models::transaction_model::{EventTypeDetails, TransactionLog};
 use starknet::ContractAddress;
-use aqua_stark::models::transaction_model::{TransactionLog, EventTypeDetails};
 
 #[starknet::interface]
 pub trait ITransactionHistory<TContractState> {

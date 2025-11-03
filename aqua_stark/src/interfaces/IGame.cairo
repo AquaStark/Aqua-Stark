@@ -1,6 +1,6 @@
 use aqua_stark::models::aquarium_model::Aquarium;
 use aqua_stark::models::decoration_model::Decoration;
-use aqua_stark::models::fish_model::{Fish, FishParents, Species, Listing};
+use aqua_stark::models::fish_model::{Fish, FishParents, Listing};
 use aqua_stark::models::player_model::Player;
 use starknet::ContractAddress;
 
@@ -8,7 +8,7 @@ use starknet::ContractAddress;
 #[starknet::interface]
 pub trait IGame<T> {
     // Core game mechanics
-    fn new_fish(ref self: T, aquarium_id: u256, species: Species) -> Fish;
+    fn new_fish(ref self: T, aquarium_id: u256, species: felt252) -> Fish;
     fn breed_fishes(ref self: T, parent1_id: u256, parent2_id: u256) -> u256;
     fn move_fish_to_aquarium(ref self: T, fish_id: u256, from: u256, to: u256) -> bool;
     fn move_decoration_to_aquarium(ref self: T, decoration_id: u256, from: u256, to: u256) -> bool;
@@ -30,7 +30,7 @@ pub trait IGame<T> {
     // Fish breeding and family tree
     fn get_parents(self: @T, fish_id: u256) -> (u256, u256);
     fn get_fish_offspring(self: @T, fish_id: u256) -> Array<Fish>;
-    fn get_fish_family_tree(self: @T, fish_id: u256) -> Array<FishParents>;
+    fn get_fish_family_tree(self: @T, fish_id: u256) -> Array<u256>;
     fn get_fish_ancestor(self: @T, fish_id: u256, generation: u32) -> FishParents;
 
     // Ownership queries

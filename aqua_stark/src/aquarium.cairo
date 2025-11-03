@@ -29,19 +29,19 @@ pub trait IAquarium<TContractState> {
 
 #[dojo::contract]
 pub mod Aquarium {
-    use dojo::world::IWorldDispatcherTrait;
+    use aqua_stark::base::events::{
+        AquariumCleaned, AquariumCleanlinessDecayed, AquariumCreated, AquariumUpdated,
+        DecorationAddedToAquarium, DecorationRemovedFromAq, FishAddedToAquarium,
+        FishRemovedFromAquarium,
+    };
     use aqua_stark::models::aquarium_model::{
-        Aquarium as AquariumModel, AquariumTrait, AquariumCounter, AquariumOwner,
+        Aquarium as AquariumModel, AquariumCounter, AquariumOwner, AquariumTrait,
     };
     use aqua_stark::models::player_model::Player;
-    use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
-    use dojo::model::ModelStorage;
     use dojo::event::EventStorage;
-    use aqua_stark::base::events::{
-        AquariumCreated, AquariumUpdated, AquariumCleaned, AquariumCleanlinessDecayed,
-        FishAddedToAquarium, DecorationAddedToAquarium, FishRemovedFromAquarium,
-        DecorationRemovedFromAquarium,
-    };
+    use dojo::model::ModelStorage;
+    use dojo::world::IWorldDispatcherTrait;
+    use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
 
 
     #[abi(embed_v0)]
@@ -239,7 +239,7 @@ pub mod Aquarium {
 
             world
                 .emit_event(
-                    @DecorationRemovedFromAquarium {
+                    @DecorationRemovedFromAq {
                         aquarium_id, decoration_id, timestamp: get_block_timestamp(),
                     },
                 );

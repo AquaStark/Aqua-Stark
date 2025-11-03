@@ -1,18 +1,17 @@
 #[dojo::contract]
 pub mod experience {
-    use dojo::world::{IWorldDispatcherTrait, WorldStorage};
-    use dojo::model::ModelStorage;
-    use dojo::event::EventStorage;
-    use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
-
+    use aqua_stark::base::events::{
+        ExperienceConfigUpdated, ExperienceEarned, LevelUp, RewardClaimed,
+    };
+    use aqua_stark::interfaces::IExperience::IExperience;
     use aqua_stark::models::experience_model::{
         Experience, ExperienceConfig, ExperienceCounter, ExperienceTrait,
     };
     use aqua_stark::models::player_model::Player;
-    use aqua_stark::base::events::{
-        ExperienceEarned, LevelUp, RewardClaimed, ExperienceConfigUpdated,
-    };
-    use aqua_stark::interfaces::IExperience::IExperience;
+    use dojo::event::EventStorage;
+    use dojo::model::ModelStorage;
+    use dojo::world::{IWorldDispatcherTrait, WorldStorage};
+    use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
 
     #[abi(embed_v0)]
     impl ExperienceImpl of IExperience<ContractState> {

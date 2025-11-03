@@ -149,7 +149,7 @@ fn calculate_level_factor(level: u32, config: ExperienceConfig) -> u64 {
     while i != level {
         factor = factor * config.experience_multiplier.into() / 100;
         i += 1;
-    };
+    }
 
     factor.try_into().unwrap()
 }

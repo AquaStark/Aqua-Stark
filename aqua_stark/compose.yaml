@@ -12,7 +12,7 @@ services:
       - 5050:5050
       - 3001:3001
     healthcheck:
-      test: ['CMD', 'curl', '--fail', 'http://localhost:5050']
+      test: ["CMD", "curl", "--fail", "http://localhost:5050"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -29,9 +29,9 @@ services:
         condition: service_healthy
     command:
       [
-        '/bin/sh',
-        '-c',
-        'cd /app && /root/.dojo/bin/sozo migrate --rpc-url http://katana:5050',
+        "/bin/sh",
+        "-c",
+        "cd /app && /root/.dojo/bin/sozo build && /root/.dojo/bin/sozo migrate --rpc-url http://katana:5050",
       ]
     restart: on-failure
 

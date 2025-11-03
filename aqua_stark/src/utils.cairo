@@ -1,49 +1,7 @@
 use aqua_stark::models::daily_challange::DailyChallengeType;
-use aqua_stark::models::fish_model::Pattern;
 use aqua_stark::models::trade_model::{MatchCriteria, TradeOfferStatus};
 use core::traits::Into;
 
-
-// Pattern <-> u8
-pub impl IntoPatternU8 of Into<Pattern, u8> {
-    fn into(self: Pattern) -> u8 {
-        match self {
-            Pattern::Plain => 0,
-            Pattern::Spotted => 1,
-            Pattern::Stripes => 2,
-        }
-    }
-}
-
-pub impl IntoU8Pattern of Into<u8, Pattern> {
-    fn into(self: u8) -> Pattern {
-        match self {
-            0 => Pattern::Plain,
-            1 => Pattern::Spotted,
-            2 => Pattern::Stripes,
-            _ => Pattern::Plain,
-        }
-    }
-}
-
-// Pattern <-> felt252
-pub impl IntoPatternFelt of Into<Pattern, felt252> {
-    fn into(self: Pattern) -> felt252 {
-        let v: u8 = self.into();
-        v.into()
-    }
-}
-
-pub impl IntoFeltPattern of Into<felt252, Pattern> {
-    fn into(self: felt252) -> Pattern {
-        match self {
-            0 => Pattern::Plain,
-            1 => Pattern::Spotted,
-            2 => Pattern::Stripes,
-            _ => Pattern::Plain,
-        }
-    }
-}
 
 // TradeOfferStatus <-> u8
 pub impl IntoTradeOfferStatusU8 of Into<TradeOfferStatus, u8> {
@@ -160,4 +118,3 @@ pub impl IntoFeltDailyChallengeType of Into<felt252, DailyChallengeType> {
         DailyChallengeType::BreedTarget
     }
 }
-

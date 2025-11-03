@@ -1,10 +1,9 @@
 #[cfg(test)]
 mod tests {
-    use starknet::contract_address_const;
-    use starknet::ContractAddress;
-    use starknet::testing::set_caller_address;
+    use aqua_stark::base::events::{AquariumCleaned, AquariumCreated, AquariumUpdated};
     use aqua_stark::models::aquarium_model::{Aquarium, AquariumTrait};
-    use aqua_stark::base::events::{AquariumCreated, AquariumUpdated, AquariumCleaned};
+    use starknet::testing::set_caller_address;
+    use starknet::{ContractAddress, contract_address_const};
 
     fn zero_address() -> ContractAddress {
         contract_address_const::<0>()

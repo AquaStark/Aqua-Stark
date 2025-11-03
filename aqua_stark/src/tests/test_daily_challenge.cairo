@@ -1,20 +1,20 @@
 #[cfg(test)]
 pub mod Test {
-    use super::*;
-    use dojo::world::WorldStorageTrait;
-    use dojo::model::ModelStorage;
     use aqua_stark::models::daily_challange::{
-        e_RewardClaimed, e_ParticipantJoined, e_ChallengeCreated, m_DailyChallenge,
-        m_Challenge_Counter, m_ChallengeParticipation, e_ChallengeCompleted, Challenge_Counter,
-        DailyChallenge, ChallengeParticipation,
-    };
-    use dojo_cairo_test::{
-        ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
-        spawn_test_world,
+        ChallengeParticipation, Challenge_Counter, DailyChallenge, e_ChallengeCompleted,
+        e_ChallengeCreated, e_ParticipantJoined, e_RewardClaimed, m_ChallengeParticipation,
+        m_Challenge_Counter, m_DailyChallenge,
     };
     use aqua_stark::systems::daily_challenge::{
         IDailyChallengeDispatcher, IDailyChallengeDispatcherTrait, daily_challenge,
     };
+    use dojo::model::ModelStorage;
+    use dojo::world::WorldStorageTrait;
+    use dojo_cairo_test::{
+        ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
+        spawn_test_world,
+    };
+    use super::*;
 
     fn namespace_def() -> NamespaceDef {
         NamespaceDef {

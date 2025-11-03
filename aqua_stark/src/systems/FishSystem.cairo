@@ -1,32 +1,24 @@
 // dojo decorator
 #[dojo::contract]
 pub mod FishSystem {
-    // use dojo::world::IWorldDispatcherTrait;
-    // use dojo::world::WorldStorageTrait;
-    use aqua_stark::interfaces::IFishSystem::IFishSystem;
-    use aqua_stark::base::game_events::{
-        GameStateChanged, FishGameCreated, FishGameMoved, FishGameBred, DecorationGameMoved,
-        FishGameListed, FishGamePurchased, GameExperienceEarned, GameLevelUp,
-        GameOperationCompleted,
-    };
     use aqua_stark::base::events::{
-        FishCreated, FishBred, FishMoved, DecorationMoved, FishAddedToAquarium,
-        DecorationAddedToAquarium, FishPurchased,
+        FishAddedToAquarium, FishBred, FishCreated, FishMoved, FishPurchased,
     };
-    use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
-    use aqua_stark::models::player_model::{Player};
+    use aqua_stark::base::game_events::{FishGameListed, FishGameMoved};
+    use aqua_stark::interfaces::IFishSystem::IFishSystem;
     use aqua_stark::models::aquarium_model::{Aquarium, AquariumTrait};
-    use aqua_stark::models::decoration_model::{Decoration, DecorationTrait};
     use aqua_stark::models::fish_model::{
-        Fish, FishCounter, FishOwner, FishParents, FishTrait, Listing, Species,
+        Fish, FishCounter, FishOwner, FishParents, FishTrait, Listing,
     };
+    use aqua_stark::models::player_model::Player;
     use core::traits::Into;
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
+    use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
 
     #[abi(embed_v0)]
     impl FishSystemImpl of IFishSystem<ContractState> {
-        fn new_fish(ref self: ContractState, aquarium_id: u256, species: Species) -> Fish {
+        fn new_fish(ref self: ContractState, aquarium_id: u256, species: felt252) -> Fish {
             let caller = get_caller_address();
 
             let mut world = self.world_default();
@@ -45,14 +37,21 @@ pub mod FishSystem {
             player.fish_count += 1;
             player.player_fishes.append(fish_id);
 
-            let experience_earned = if player.daily_fish_creations < 5 {
-                let experience = match species {
-                    Species::GoldFish => 3,
-                    Species::AngelFish => 5,
-                    Species::Betta => 7,
-                    Species::NeonTetra => 7,
-                    Species::Corydoras => 7,
-                    Species::Hybrid => 10,
+            let _experience_earned = if player.daily_fish_creations < 5 {
+                let experience = if species == 'GoldFish' {
+                    3
+                } else if species == 'AngelFish' {
+                    5
+                } else if species == 'Betta' {
+                    7
+                } else if species == 'NeonTetra' {
+                    7
+                } else if species == 'Corydoras' {
+                    7
+                } else if species == 'Hybrid' {
+                    10
+                } else {
+                    0
                 };
                 player.experience_points += experience;
                 player.daily_fish_creations += 1;
@@ -105,22 +104,32 @@ pub mod FishSystem {
             parent1.offspings.append(new_fish.id);
             parent2.offspings.append(new_fish.id);
 
-            let fish_parents = FishParents { parent1: parent1.id, parent2: parent2.id };
+            let mut fish_parents = ArrayTrait::new();
+            fish_parents.append(parent1.id);
+            fish_parents.append(parent2.id);
 
             let mut offspring_tree = parent1.family_tree.clone();
-            offspring_tree.append(fish_parents);
+            offspring_tree.append(parent1.id);
+            offspring_tree.append(parent2.id);
             new_fish.family_tree = offspring_tree;
 
             aquarium.fish_count += 1;
             aquarium.housed_fish.append(new_fish.id);
 
-            let experience_earned = match new_fish.species {
-                Species::GoldFish => 15,
-                Species::AngelFish => 15,
-                Species::Betta => 20,
-                Species::NeonTetra => 20,
-                Species::Corydoras => 20,
-                Species::Hybrid => 25,
+            let experience_earned = if new_fish.species == 'GoldFish' {
+                15
+            } else if new_fish.species == 'AngelFish' {
+                15
+            } else if new_fish.species == 'Betta' {
+                20
+            } else if new_fish.species == 'NeonTetra' {
+                20
+            } else if new_fish.species == 'Corydoras' {
+                20
+            } else if new_fish.species == 'Hybrid' {
+                25
+            } else {
+                0
             };
             player.experience_points += experience_earned;
 
@@ -190,8 +199,6 @@ pub mod FishSystem {
         }
 
         fn add_fish_to_aquarium(ref self: ContractState, mut fish: Fish, aquarium_id: u256) {
-            let caller = get_caller_address();
-
             let mut world = self.world_default();
             let mut aquarium: Aquarium = world.read_model(aquarium_id);
             assert(aquarium.housed_fish.len() < aquarium.max_capacity, 'Aquarium full');
@@ -251,7 +258,7 @@ pub mod FishSystem {
             let fish = self.get_fish(id);
             fish.owner
         }
-        fn get_fish_family_tree(self: @ContractState, fish_id: u256) -> Array<FishParents> {
+        fn get_fish_family_tree(self: @ContractState, fish_id: u256) -> Array<u256> {
             let mut world = self.world_default();
             let fish: Fish = world.read_model(fish_id);
             fish.family_tree
@@ -260,8 +267,11 @@ pub mod FishSystem {
         fn get_fish_ancestor(self: @ContractState, fish_id: u256, generation: u32) -> FishParents {
             let mut world = self.world_default();
             let fish: Fish = world.read_model(fish_id);
-            assert(generation < fish.family_tree.len(), 'Generation out of bounds');
-            let fish_parent: FishParents = *fish.family_tree[generation];
+            let gen = generation * 2;
+            assert(gen < fish.family_tree.len(), 'Generation out of bounds');
+            let parent1 = *fish.family_tree[gen];
+            let parent2 = *fish.family_tree[gen + 1];
+            let fish_parent: FishParents = FishParents { parent1, parent2 };
             fish_parent
         }
 
@@ -325,6 +335,10 @@ pub mod FishSystem {
                 10
             }; // Scale based on price
             buyer.experience_points += experience_earned;
+
+            let mut fish_owner: FishOwner = world.read_model(listing.fish_id);
+            fish_owner.owner = caller;
+            world.write_model(@fish_owner);
 
             world.write_model(@fish);
             world.write_model(@buyer);
