@@ -30,7 +30,7 @@ pub trait IGame<T> {
     // Fish breeding and family tree
     fn get_parents(self: @T, fish_id: u256) -> (u256, u256);
     fn get_fish_offspring(self: @T, fish_id: u256) -> Array<Fish>;
-    fn get_fish_family_tree(self: @T, fish_id: u256) -> Array<FishParents>;
+    fn get_fish_family_tree(self: @T, fish_id: u256) -> Array<u256>;
     fn get_fish_ancestor(self: @T, fish_id: u256, generation: u32) -> FishParents;
 
     // Ownership queries

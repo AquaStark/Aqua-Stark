@@ -104,10 +104,13 @@ pub mod FishSystem {
             parent1.offspings.append(new_fish.id);
             parent2.offspings.append(new_fish.id);
 
-            let fish_parents = FishParents { parent1: parent1.id, parent2: parent2.id };
+            let mut fish_parents = ArrayTrait::new();
+            fish_parents.append(parent1.id);
+            fish_parents.append(parent2.id);
 
             let mut offspring_tree = parent1.family_tree.clone();
-            offspring_tree.append(fish_parents);
+            offspring_tree.append(parent1.id);
+            offspring_tree.append(parent2.id);
             new_fish.family_tree = offspring_tree;
 
             aquarium.fish_count += 1;
@@ -255,7 +258,7 @@ pub mod FishSystem {
             let fish = self.get_fish(id);
             fish.owner
         }
-        fn get_fish_family_tree(self: @ContractState, fish_id: u256) -> Array<FishParents> {
+        fn get_fish_family_tree(self: @ContractState, fish_id: u256) -> Array<u256> {
             let mut world = self.world_default();
             let fish: Fish = world.read_model(fish_id);
             fish.family_tree
@@ -264,8 +267,11 @@ pub mod FishSystem {
         fn get_fish_ancestor(self: @ContractState, fish_id: u256, generation: u32) -> FishParents {
             let mut world = self.world_default();
             let fish: Fish = world.read_model(fish_id);
-            assert(generation < fish.family_tree.len(), 'Generation out of bounds');
-            let fish_parent: FishParents = *fish.family_tree[generation];
+            let gen = generation * 2;
+            assert(gen < fish.family_tree.len(), 'Generation out of bounds');
+            let parent1 = *fish.family_tree[gen];
+            let parent2 = *fish.family_tree[gen + 1];
+            let fish_parent: FishParents = FishParents { parent1, parent2 };
             fish_parent
         }
 

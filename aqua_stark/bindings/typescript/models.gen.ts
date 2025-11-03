@@ -1,6 +1,6 @@
 import type { SchemaType as ISchemaType } from "@dojoengine/sdk";
 
-import { CairoCustomEnum, CairoOption, CairoOptionVariant, BigNumberish } from 'starknet';
+import { CairoOption, CairoOptionVariant, BigNumberish } from 'starknet';
 
 // Type definition for `aqua_stark::models::aquarium_model::Aquarium` struct
 export interface Aquarium {
@@ -128,7 +128,7 @@ export interface Fish {
 	can_grow: boolean;
 	aquarium_id: BigNumberish;
 	offspings: Array<BigNumberish>;
-	family_tree: Array<FishParents>;
+	family_tree: Array<BigNumberish>;
 }
 
 // Type definition for `aqua_stark::models::fish_model::FishCounter` struct
@@ -142,12 +142,6 @@ export interface FishOwner {
 	id: BigNumberish;
 	owner: string;
 	locked: boolean;
-}
-
-// Type definition for `aqua_stark::models::fish_model::FishParents` struct
-export interface FishParents {
-	parent1: BigNumberish;
-	parent2: BigNumberish;
 }
 
 // Type definition for `aqua_stark::models::fish_model::Listing` struct
@@ -279,12 +273,11 @@ export interface TradeOffer {
 	id: BigNumberish;
 	creator: string;
 	offered_fish_id: BigNumberish;
-	requested_fish_criteria: MatchCriteriaEnum;
+	requested_fish_criteria: BigNumberish;
 	requested_fish_id: CairoOption<BigNumberish>;
 	requested_species: CairoOption<BigNumberish>;
 	requested_generation: CairoOption<BigNumberish>;
-	requested_traits: Array<BigNumberish>;
-	status: TradeOfferStatusEnum;
+	status: BigNumberish;
 	created_at: BigNumberish;
 	expires_at: BigNumberish;
 	is_locked: boolean;
@@ -380,8 +373,8 @@ export interface DecorationMoved {
 	timestamp: BigNumberish;
 }
 
-// Type definition for `aqua_stark::base::events::DecorationRemovedFromAquarium` struct
-export interface DecorationRemovedFromAquarium {
+// Type definition for `aqua_stark::base::events::DecorationRemovedFromAq` struct
+export interface DecorationRemovedFromAq {
 	aquarium_id: BigNumberish;
 	decoration_id: BigNumberish;
 	timestamp: BigNumberish;
@@ -521,7 +514,7 @@ export interface TradeOfferCreated {
 	offer_id: BigNumberish;
 	creator: string;
 	offered_fish_id: BigNumberish;
-	criteria: MatchCriteriaEnum;
+	criteria: BigNumberish;
 	requested_fish_id: CairoOption<BigNumberish>;
 	requested_species: CairoOption<BigNumberish>;
 	requested_generation: CairoOption<BigNumberish>;
@@ -744,25 +737,11 @@ export interface SessionPerformanceMetrics {
 	last_activity: BigNumberish;
 }
 
-// Type definition for `aqua_stark::models::trade_model::MatchCriteria` enum
-export const matchCriteria = [
-	'ExactId',
-	'Species',
-	'SpeciesAndGen',
-	'Traits',
-] as const;
-export type MatchCriteria = { [key in typeof matchCriteria[number]]: string };
-export type MatchCriteriaEnum = CairoCustomEnum;
-
-// Type definition for `aqua_stark::models::trade_model::TradeOfferStatus` enum
-export const tradeOfferStatus = [
-	'Active',
-	'Completed',
-	'Cancelled',
-	'Expired',
-] as const;
-export type TradeOfferStatus = { [key in typeof tradeOfferStatus[number]]: string };
-export type TradeOfferStatusEnum = CairoCustomEnum;
+// Type definition for `aqua_stark::models::fish_model::FishParents` struct
+export interface FishParents {
+	parent1: BigNumberish;
+	parent2: BigNumberish;
+}
 
 export interface SchemaType extends ISchemaType {
 	aqua_stark: {
@@ -781,7 +760,6 @@ export interface SchemaType extends ISchemaType {
 		Fish: Fish,
 		FishCounter: FishCounter,
 		FishOwner: FishOwner,
-		FishParents: FishParents,
 		Listing: Listing,
 		GameCounter: GameCounter,
 		AddressToUsername: AddressToUsername,
@@ -807,7 +785,7 @@ export interface SchemaType extends ISchemaType {
 		DecorationAddedToAquarium: DecorationAddedToAquarium,
 		DecorationCreated: DecorationCreated,
 		DecorationMoved: DecorationMoved,
-		DecorationRemovedFromAquarium: DecorationRemovedFromAquarium,
+		DecorationRemovedFromAq: DecorationRemovedFromAq,
 		EventTypeRegistered: EventTypeRegistered,
 		ExperienceConfigUpdated: ExperienceConfigUpdated,
 		ExperienceEarned: ExperienceEarned,
@@ -850,6 +828,7 @@ export interface SchemaType extends ISchemaType {
 		SessionKeyUsed: SessionKeyUsed,
 		SessionOperationTracked: SessionOperationTracked,
 		SessionPerformanceMetrics: SessionPerformanceMetrics,
+		FishParents: FishParents,
 	},
 }
 export const schema: SchemaType = {
@@ -887,7 +866,7 @@ export const schema: SchemaType = {
 			end_time: 0,
 		reserve_price: 0,
 		highest_bid: 0,
-		highest_bidder: new CairoOption(CairoOptionVariant.None),
+			highest_bidder: new CairoOption(CairoOptionVariant.None),
 			active: false,
 		},
 		AuctionCounter: {
@@ -955,7 +934,7 @@ export const schema: SchemaType = {
 			can_grow: false,
 		aquarium_id: 0,
 			offspings: [0],
-			family_tree: [{ parent1: 0, parent2: 0, }],
+			family_tree: [0],
 		},
 		FishCounter: {
 			id: 0,
@@ -965,10 +944,6 @@ export const schema: SchemaType = {
 		id: 0,
 			owner: "",
 			locked: false,
-		},
-		FishParents: {
-		parent1: 0,
-		parent2: 0,
 		},
 		Listing: {
 			id: 0,
@@ -1044,7 +1019,7 @@ export const schema: SchemaType = {
 			timestamp: 0,
 			gas_used: 0,
 			success: false,
-		error_code: new CairoOption(CairoOptionVariant.None),
+			error_code: new CairoOption(CairoOptionVariant.None),
 		},
 		ShopCatalogModel: {
 			id: "",
@@ -1072,20 +1047,11 @@ export const schema: SchemaType = {
 		id: 0,
 			creator: "",
 		offered_fish_id: 0,
-		requested_fish_criteria: new CairoCustomEnum({ 
-					ExactId: "",
-				Species: undefined,
-				SpeciesAndGen: undefined,
-				Traits: undefined, }),
-		requested_fish_id: new CairoOption(CairoOptionVariant.None),
-		requested_species: new CairoOption(CairoOptionVariant.None),
-		requested_generation: new CairoOption(CairoOptionVariant.None),
-			requested_traits: [0],
-		status: new CairoCustomEnum({ 
-					Active: "",
-				Completed: undefined,
-				Cancelled: undefined,
-				Expired: undefined, }),
+			requested_fish_criteria: 0,
+			requested_fish_id: new CairoOption(CairoOptionVariant.None),
+			requested_species: new CairoOption(CairoOptionVariant.None),
+			requested_generation: new CairoOption(CairoOptionVariant.None),
+			status: 0,
 			created_at: 0,
 			expires_at: 0,
 			is_locked: false,
@@ -1158,7 +1124,7 @@ export const schema: SchemaType = {
 		to: 0,
 			timestamp: 0,
 		},
-		DecorationRemovedFromAquarium: {
+		DecorationRemovedFromAq: {
 		aquarium_id: 0,
 		decoration_id: 0,
 			timestamp: 0,
@@ -1264,14 +1230,10 @@ export const schema: SchemaType = {
 		offer_id: 0,
 			creator: "",
 		offered_fish_id: 0,
-		criteria: new CairoCustomEnum({ 
-					ExactId: "",
-				Species: undefined,
-				SpeciesAndGen: undefined,
-				Traits: undefined, }),
-		requested_fish_id: new CairoOption(CairoOptionVariant.None),
-		requested_species: new CairoOption(CairoOptionVariant.None),
-		requested_generation: new CairoOption(CairoOptionVariant.None),
+			criteria: 0,
+			requested_fish_id: new CairoOption(CairoOptionVariant.None),
+			requested_species: new CairoOption(CairoOptionVariant.None),
+			requested_generation: new CairoOption(CairoOptionVariant.None),
 			expires_at: 0,
 		},
 		TradeOfferExpired: {
@@ -1377,7 +1339,7 @@ export const schema: SchemaType = {
 		},
 		AuctionEnded: {
 		auction_id: 0,
-		winner: new CairoOption(CairoOptionVariant.None),
+			winner: new CairoOption(CairoOptionVariant.None),
 		final_price: 0,
 		},
 		BidPlaced: {
@@ -1440,6 +1402,10 @@ export const schema: SchemaType = {
 			success_rate: 0,
 			last_activity: 0,
 		},
+		FishParents: {
+		parent1: 0,
+		parent2: 0,
+		},
 	},
 };
 export enum ModelsMapping {
@@ -1458,7 +1424,6 @@ export enum ModelsMapping {
 	Fish = 'aqua_stark-Fish',
 	FishCounter = 'aqua_stark-FishCounter',
 	FishOwner = 'aqua_stark-FishOwner',
-	FishParents = 'aqua_stark-FishParents',
 	Listing = 'aqua_stark-Listing',
 	GameCounter = 'aqua_stark-GameCounter',
 	AddressToUsername = 'aqua_stark-AddressToUsername',
@@ -1472,10 +1437,8 @@ export enum ModelsMapping {
 	ShopItemModel = 'aqua_stark-ShopItemModel',
 	ActiveTradeOffers = 'aqua_stark-ActiveTradeOffers',
 	FishLock = 'aqua_stark-FishLock',
-	MatchCriteria = 'aqua_stark-MatchCriteria',
 	TradeOffer = 'aqua_stark-TradeOffer',
 	TradeOfferCounter = 'aqua_stark-TradeOfferCounter',
-	TradeOfferStatus = 'aqua_stark-TradeOfferStatus',
 	EventCounter = 'aqua_stark-EventCounter',
 	EventTypeDetails = 'aqua_stark-EventTypeDetails',
 	TransactionCounter = 'aqua_stark-TransactionCounter',
@@ -1486,7 +1449,7 @@ export enum ModelsMapping {
 	DecorationAddedToAquarium = 'aqua_stark-DecorationAddedToAquarium',
 	DecorationCreated = 'aqua_stark-DecorationCreated',
 	DecorationMoved = 'aqua_stark-DecorationMoved',
-	DecorationRemovedFromAquarium = 'aqua_stark-DecorationRemovedFromAquarium',
+	DecorationRemovedFromAq = 'aqua_stark-DecorationRemovedFromAq',
 	EventTypeRegistered = 'aqua_stark-EventTypeRegistered',
 	ExperienceConfigUpdated = 'aqua_stark-ExperienceConfigUpdated',
 	ExperienceEarned = 'aqua_stark-ExperienceEarned',
@@ -1529,4 +1492,5 @@ export enum ModelsMapping {
 	SessionKeyUsed = 'aqua_stark-SessionKeyUsed',
 	SessionOperationTracked = 'aqua_stark-SessionOperationTracked',
 	SessionPerformanceMetrics = 'aqua_stark-SessionPerformanceMetrics',
+	FishParents = 'aqua_stark-FishParents',
 }

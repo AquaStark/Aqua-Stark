@@ -31,7 +31,7 @@ pub trait IAquarium<TContractState> {
 pub mod Aquarium {
     use aqua_stark::base::events::{
         AquariumCleaned, AquariumCleanlinessDecayed, AquariumCreated, AquariumUpdated,
-        DecorationAddedToAquarium, DecorationRemovedFromAquarium, FishAddedToAquarium,
+        DecorationAddedToAquarium, DecorationRemovedFromAq, FishAddedToAquarium,
         FishRemovedFromAquarium,
     };
     use aqua_stark::models::aquarium_model::{
@@ -239,7 +239,7 @@ pub mod Aquarium {
 
             world
                 .emit_event(
-                    @DecorationRemovedFromAquarium {
+                    @DecorationRemovedFromAq {
                         aquarium_id, decoration_id, timestamp: get_block_timestamp(),
                     },
                 );

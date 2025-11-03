@@ -201,7 +201,7 @@ pub struct TradeOfferCreated {
     #[key]
     pub creator: ContractAddress,
     pub offered_fish_id: u256,
-    pub criteria: MatchCriteria,
+    pub criteria: felt252,
     pub requested_fish_id: Option<u256>,
     pub requested_species: Option<u8>,
     pub requested_generation: Option<u8>,
@@ -359,7 +359,7 @@ pub struct FishRemovedFromAquarium {
 
 #[derive(Copy, Drop, Serde)]
 #[dojo::event]
-pub struct DecorationRemovedFromAquarium {
+pub struct DecorationRemovedFromAq {
     #[key]
     pub aquarium_id: u256,
     #[key]

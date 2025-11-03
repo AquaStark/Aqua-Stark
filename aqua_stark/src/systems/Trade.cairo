@@ -16,8 +16,8 @@ pub mod Trade {
         SESSION_STATUS_ACTIVE, SESSION_TYPE_PREMIUM, SessionAnalytics, SessionKey,
     };
     use aqua_stark::models::trade_model::{
-        ActiveTradeOffers, FishLock, FishLockTrait, MatchCriteria, TradeOffer, TradeOfferCounter,
-        TradeOfferStatus, TradeOfferTrait, trade_offer_id_target,
+        ActiveTradeOffers, FishLock, FishLockTrait, TradeOffer, TradeOfferCounter,
+        TradeOfferTrait, trade_offer_id_target,
     };
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
@@ -31,11 +31,10 @@ pub mod Trade {
         fn create_trade_offer(
             ref self: ContractState,
             offered_fish_id: u256,
-            criteria: MatchCriteria,
+            criteria: felt252,
             requested_fish_id: Option<u256>,
             requested_species: Option<u8>,
             requested_generation: Option<u8>,
-            requested_traits: Span<felt252>,
             duration_hours: u64,
         ) -> u256 {
             let mut world = self.world_default();
@@ -65,7 +64,6 @@ pub mod Trade {
                 requested_fish_id,
                 requested_species,
                 requested_generation,
-                requested_traits,
                 duration_hours,
             );
 
@@ -160,8 +158,6 @@ pub mod Trade {
                 255_u8
             };
 
-            let fish_traits = array![acceptor_fish.color].span();
-
             // Validate matching criteria
             assert(
                 TradeOfferTrait::matches_criteria(
@@ -169,7 +165,6 @@ pub mod Trade {
                     offered_fish_id,
                     fish_species,
                     acceptor_fish.generation,
-                    fish_traits,
                 ),
                 'Fish does not match criteria',
             );
@@ -249,7 +244,7 @@ pub mod Trade {
             let mut trade_offer: TradeOffer = world.read_model(offer_id);
 
             assert(trade_offer.creator == caller, 'Not offer creator');
-            assert(trade_offer.status == TradeOfferStatus::Active, 'Offer not active');
+            assert(trade_offer.status == 'Active', 'Offer not active');
 
             // Cancel the offer
             trade_offer = TradeOfferTrait::cancel_offer(trade_offer);
@@ -301,7 +296,7 @@ pub mod Trade {
                 }
                 let offer_id = *active_offers.offers.at(i);
                 let offer: TradeOffer = world.read_model(offer_id);
-                if offer.status == TradeOfferStatus::Active
+                if offer.status == 'Active'
                     && !TradeOfferTrait::is_expired(@offer) {
                     offers.append(offer);
                 }
@@ -322,7 +317,7 @@ pub mod Trade {
                     break;
                 }
                 let offer: TradeOffer = world.read_model(i);
-                if offer.status == TradeOfferStatus::Active
+                if offer.status == 'Active'
                     && !TradeOfferTrait::is_expired(@offer) {
                     active_offers.append(offer);
                 }
@@ -343,7 +338,7 @@ pub mod Trade {
                     break;
                 }
                 let offer: TradeOffer = world.read_model(i);
-                if offer.offered_fish_id == fish_id && offer.status == TradeOfferStatus::Active {
+                if offer.offered_fish_id == fish_id && offer.status == 'Active' {
                     matching_offers.append(offer);
                 }
                 i += 1;
@@ -374,7 +369,7 @@ pub mod Trade {
                     break;
                 }
                 let offer: TradeOffer = world.read_model(i);
-                if offer.status == TradeOfferStatus::Active && TradeOfferTrait::is_expired(@offer) {
+                if offer.status == 'Active' && TradeOfferTrait::is_expired(@offer) {
                     self._expire_offer(i);
                     expired_count += 1;
                 }
@@ -579,8 +574,8 @@ pub mod Trade {
             let mut world = self.world_default();
             let mut offer: TradeOffer = world.read_model(offer_id);
 
-            if offer.status == TradeOfferStatus::Active {
-                offer.status = TradeOfferStatus::Expired;
+            if offer.status == 'Active' {
+                offer.status = 'Expired';
 
                 // Unlock the fish
                 let fish_unlock = FishLockTrait::unlock_fish(offer.offered_fish_id);

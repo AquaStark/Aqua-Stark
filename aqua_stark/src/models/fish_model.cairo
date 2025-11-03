@@ -28,7 +28,7 @@ pub struct FishCounter {
     pub current_val: u256,
 }
 
-#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
+#[derive(Serde, Copy, Drop, Introspect)]
 pub struct FishParents {
     pub parent1: u256,
     pub parent2: u256,
@@ -43,7 +43,7 @@ pub struct FishOwner {
     pub locked: bool,
 }
 
-#[derive(Clone, Drop, Introspect, Serde)]
+#[derive(Clone, Drop, Introspect, Serde, DojoStore)]
 #[dojo::model]
 pub struct Fish {
     #[key]
@@ -68,7 +68,7 @@ pub struct Fish {
     pub can_grow: bool,
     pub aquarium_id: u256,
     pub offspings: Array<u256>,
-    pub family_tree: Array<FishParents>,
+    pub family_tree: Array<u256>,
 }
 
 pub trait FishTrait {

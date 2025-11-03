@@ -6,11 +6,10 @@ pub trait ITrade<T> {
     fn create_trade_offer(
         ref self: T,
         offered_fish_id: u256,
-        criteria: MatchCriteria,
+        criteria: felt252,
         requested_fish_id: Option<u256>,
         requested_species: Option<u8>,
         requested_generation: Option<u8>,
-        requested_traits: Span<felt252>,
         duration_hours: u64,
     ) -> u256;
 

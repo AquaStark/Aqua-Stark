@@ -360,7 +360,7 @@ export function setupWorld(provider: DojoProvider) {
 		}
 	};
 
-	const build_AquaStark_getTransactionHistory_calldata = (player: CairoOption<string>, eventTypeId: CairoOption<string>, start: CairoOption<string>, limit: CairoOption<string>, startTimestamp: CairoOption<string>, endTimestamp: CairoOption<string>): DojoCall => {
+	const build_AquaStark_getTransactionHistory_calldata = (player: CairoOption<string>, eventTypeId: CairoOption<BigNumberish>, start: CairoOption<BigNumberish>, limit: CairoOption<BigNumberish>, startTimestamp: CairoOption<BigNumberish>, endTimestamp: CairoOption<BigNumberish>): DojoCall => {
 		return {
 			contractName: "AquaStark",
 			entrypoint: "get_transaction_history",
@@ -368,7 +368,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const AquaStark_getTransactionHistory = async (player: CairoOption<string>, eventTypeId: CairoOption<string>, start: CairoOption<string>, limit: CairoOption<string>, startTimestamp: CairoOption<string>, endTimestamp: CairoOption<string>) => {
+	const AquaStark_getTransactionHistory = async (player: CairoOption<string>, eventTypeId: CairoOption<BigNumberish>, start: CairoOption<BigNumberish>, limit: CairoOption<BigNumberish>, startTimestamp: CairoOption<BigNumberish>, endTimestamp: CairoOption<BigNumberish>) => {
 		try {
 			return await provider.call("dojo_starter", build_AquaStark_getTransactionHistory_calldata(player, eventTypeId, start, limit, startTimestamp, endTimestamp));
 		} catch (error) {
@@ -1468,19 +1468,19 @@ export function setupWorld(provider: DojoProvider) {
 		}
 	};
 
-	const build_Trade_createTradeOffer_calldata = (offeredFishId: BigNumberish, criteria: CairoCustomEnum, requestedFishId: CairoOption<BigNumberish>, requestedSpecies: CairoOption<BigNumberish>, requestedGeneration: CairoOption<BigNumberish>, requestedTraits: Array<BigNumberish>, durationHours: BigNumberish): DojoCall => {
+	const build_Trade_createTradeOffer_calldata = (offeredFishId: BigNumberish, criteria: BigNumberish, requestedFishId: CairoOption<BigNumberish>, requestedSpecies: CairoOption<BigNumberish>, requestedGeneration: CairoOption<BigNumberish>, durationHours: BigNumberish): DojoCall => {
 		return {
 			contractName: "Trade",
 			entrypoint: "create_trade_offer",
-			calldata: [offeredFishId, criteria, requestedFishId, requestedSpecies, requestedGeneration, requestedTraits, durationHours],
+			calldata: [offeredFishId, criteria, requestedFishId, requestedSpecies, requestedGeneration, durationHours],
 		};
 	};
 
-	const Trade_createTradeOffer = async (snAccount: Account | AccountInterface, offeredFishId: BigNumberish, criteria: CairoCustomEnum, requestedFishId: CairoOption<BigNumberish>, requestedSpecies: CairoOption<BigNumberish>, requestedGeneration: CairoOption<BigNumberish>, requestedTraits: Array<BigNumberish>, durationHours: BigNumberish) => {
+	const Trade_createTradeOffer = async (snAccount: Account | AccountInterface, offeredFishId: BigNumberish, criteria: BigNumberish, requestedFishId: CairoOption<BigNumberish>, requestedSpecies: CairoOption<BigNumberish>, requestedGeneration: CairoOption<BigNumberish>, durationHours: BigNumberish) => {
 		try {
 			return await provider.execute(
 				snAccount,
-				build_Trade_createTradeOffer_calldata(offeredFishId, criteria, requestedFishId, requestedSpecies, requestedGeneration, requestedTraits, durationHours),
+				build_Trade_createTradeOffer_calldata(offeredFishId, criteria, requestedFishId, requestedSpecies, requestedGeneration, durationHours),
 				"dojo_starter",
 			);
 		} catch (error) {
@@ -1714,7 +1714,7 @@ export function setupWorld(provider: DojoProvider) {
 		}
 	};
 
-	const build_Transaction_getTransactionHistory_calldata = (player: CairoOption<string>, eventTypeId: CairoOption<string>, start: CairoOption<string>, limit: CairoOption<string>, startTimestamp: CairoOption<string>, endTimestamp: CairoOption<string>): DojoCall => {
+	const build_Transaction_getTransactionHistory_calldata = (player: CairoOption<string>, eventTypeId: CairoOption<BigNumberish>, start: CairoOption<BigNumberish>, limit: CairoOption<BigNumberish>, startTimestamp: CairoOption<BigNumberish>, endTimestamp: CairoOption<BigNumberish>): DojoCall => {
 		return {
 			contractName: "Transaction",
 			entrypoint: "get_transaction_history",
@@ -1722,7 +1722,7 @@ export function setupWorld(provider: DojoProvider) {
 		};
 	};
 
-	const Transaction_getTransactionHistory = async (player: CairoOption<string>, eventTypeId: CairoOption<string>, start: CairoOption<string>, limit: CairoOption<string>, startTimestamp: CairoOption<string>, endTimestamp: CairoOption<string>) => {
+	const Transaction_getTransactionHistory = async (player: CairoOption<string>, eventTypeId: CairoOption<BigNumberish>, start: CairoOption<BigNumberish>, limit: CairoOption<BigNumberish>, startTimestamp: CairoOption<BigNumberish>, endTimestamp: CairoOption<BigNumberish>) => {
 		try {
 			return await provider.call("dojo_starter", build_Transaction_getTransactionHistory_calldata(player, eventTypeId, start, limit, startTimestamp, endTimestamp));
 		} catch (error) {

@@ -14,13 +14,21 @@ pub mod ShopCatalog {
     use dojo::model::ModelStorage;
     use starknet::{ContractAddress, get_block_timestamp, get_caller_address, get_contract_address};
 
-    fn dojo_init(ref self: ContractState, owner: ContractAddress) {
+    fn dojo_init(ref self: ContractState) {
         let mut world = self.world(@"aqua_stark");
+        let owner = get_caller_address();
         let shop_catalog = ShopCatalogModel {
             id: get_contract_address(), owner: owner, shopItems: 0, latest_item_id: 0,
         };
         world.write_model(@shop_catalog);
     }
+
+//     [[external_contracts]]
+// contract_name = "ShopCatalog"
+// instance_name = "ShopCatalog"
+// salt = "1"
+// constructor_data = ["0x0607Da15044A008A68efaeA6C973187c971453ef7859b3c0F020A1D2f93dBC71"]
+
 
     #[abi(embed_v0)]
     impl ShopCatalogImpl of IShopCatalog<ContractState> {

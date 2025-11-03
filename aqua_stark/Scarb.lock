@@ -3,7 +3,7 @@ version = 1
 
 [[package]]
 name = "aqua_stark"
-version = "1.6.0"
+version = "1.8.0"
 dependencies = [
  "dojo",
  "dojo_cairo_test",
@@ -11,21 +11,24 @@ dependencies = [
 
 [[package]]
 name = "dojo"
-version = "1.6.2"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.6.2#d6e847c51ecd0121a43c2a17b96dbca936604764"
+version = "1.8.0"
+source = "registry+https://scarbs.xyz/"
+checksum = "sha256:a9c35305a81e68a49de85b8f07c1f8a93e27492c6b16c304d1f7961dcd5d350f"
 dependencies = [
- "dojo_plugin",
+ "dojo_cairo_macros",
 ]
+
+[[package]]
+name = "dojo_cairo_macros"
+version = "1.8.0"
+source = "registry+https://scarbs.xyz/"
+checksum = "sha256:c4aa04037a0c5029b05b78229dae22bf02269b9912e8a8c12f8af34aa6b72051"
 
 [[package]]
 name = "dojo_cairo_test"
-version = "1.6.2"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.6.2#d6e847c51ecd0121a43c2a17b96dbca936604764"
+version = "1.8.0"
+source = "registry+https://scarbs.xyz/"
+checksum = "sha256:0cab4c86390b6ee9c3969b82d27f46ecd7f14e686b9868528506103944638465"
 dependencies = [
  "dojo",
 ]
-
-[[package]]
-name = "dojo_plugin"
-version = "2.10.1"
-source = "git+https://github.com/dojoengine/dojo?tag=v1.6.2#d6e847c51ecd0121a43c2a17b96dbca936604764"
