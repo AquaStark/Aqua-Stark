@@ -126,20 +126,22 @@ export default function AquariumsPage() {
         console.log('🔍 Processing fish for card:', {
           fishId: fish.id,
           species: fish.species,
-          variant: fish.species?.variant,
         });
 
-        // Extract species name from CairoCustomEnum
+        // Extract species name from BigNumberish species index
+        // Species is stored as a number (BigNumberish), not a CairoCustomEnum
         let speciesName = 'AngelFish'; // Default
-        if (fish.species?.variant) {
-          // Handle CairoCustomEnum variant extraction
-          const variantEntries = Object.entries(fish.species.variant);
-          const activeVariant = variantEntries.find(
-            ([, value]) => value !== undefined
-          );
-          if (activeVariant) {
-            speciesName = activeVariant[0];
-          }
+        const speciesIndex = Number(fish.species);
+        const speciesMap: Record<number, string> = {
+          0: 'AngelFish',
+          1: 'GoldFish',
+          2: 'Betta',
+          3: 'NeonTetra',
+          4: 'Corydoras',
+          5: 'Hybrid',
+        };
+        if (speciesMap[speciesIndex]) {
+          speciesName = speciesMap[speciesIndex];
         }
 
         // Get correct image and display name from catalog
