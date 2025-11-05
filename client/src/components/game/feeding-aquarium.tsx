@@ -179,13 +179,15 @@ export function FeedingAquarium({
         } as any;
       }
 
-      // Try to consume food with satiety logic
-      tryConsumeFood(
-        foodId,
-        targetFish,
-        updateFishState ?? (() => {}),
-        increaseHunger ?? (() => {})
-      );
+      // Try to consume food with satiety logic (targetFish is guaranteed to be defined at this point)
+      if (targetFish) {
+        tryConsumeFood(
+          foodId,
+          targetFish,
+          updateFishState ?? (() => {}),
+          increaseHunger ?? (() => {})
+        );
+      }
 
       // Always call handleFoodConsumed to:
       // 1. Remove food from array (if not already removed by tryConsumeFood)
