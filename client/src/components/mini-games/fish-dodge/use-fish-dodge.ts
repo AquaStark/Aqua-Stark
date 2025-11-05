@@ -195,13 +195,6 @@ export function useFishDodge() {
     [started, gameOver]
   );
 
-  const startGame = useCallback(() => {
-    if (gameOver) {
-      resetGame();
-    }
-    setStarted(true);
-  }, [gameOver]);
-
   const resetGame = useCallback(() => {
     setPlayerX(PLAYER_START_X);
     setFallingFishes([]);
@@ -221,6 +214,14 @@ export function useFishDodge() {
       cancelAnimationFrame(animationRef.current);
     }
   }, []);
+
+  const startGame = useCallback(() => {
+    if (gameOver) {
+      resetGame();
+    }
+    setStarted(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameOver]);
 
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
 

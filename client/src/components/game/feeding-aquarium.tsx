@@ -6,7 +6,6 @@ import { useFishMovement } from '@/hooks';
 import { FishDisplay } from './fish-display';
 import { Food } from '@/components';
 import { FoodParticles } from '@/components';
-import { useFoodSystem } from '@/hooks';
 
 interface FeedingSystemProps {
   isFeeding: boolean;
@@ -21,11 +20,17 @@ interface FeedingSystemProps {
     clientY: number,
     containerRect: DOMRect | undefined
   ) => boolean;
-  handleFoodConsumed: (foodId: number, fish: Fish) => void;
+  handleFoodConsumed: (foodId: number) => void;
   handleParticleComplete: (foodId: number) => void;
   updateAquariumBounds: (bounds: { width: number; height: number }) => void;
   updateFishState?: (id: string, newState: Partial<Fish>) => void;
   increaseHunger?: (id: string) => void;
+  tryConsumeFood: (
+    foodId: number,
+    fish: Fish,
+    setFishState: (id: string, newState: Partial<Fish>) => void,
+    increaseHunger: (id: string) => void
+  ) => boolean;
 }
 
 interface FeedingAquariumProps {
@@ -52,8 +57,6 @@ export function FeedingAquarium({
     width: containerWidth,
     height: containerHeight,
   });
-  // use food system for spawning+consumption rules
-  const { tryConsumeFood } = useFoodSystem({ aquariumBounds: dimensions });
   // Destructure frequent fields to avoid object dependency pitfalls and satisfy lint
   const {
     updateAquariumBounds,
@@ -65,6 +68,7 @@ export function FeedingAquarium({
     handleFeedClick,
     updateFishState,
     increaseHunger,
+    tryConsumeFood, // Use tryConsumeFood from the same food system instance
   } = feedingSystem;
 
   // Handle container resizing
@@ -91,7 +95,7 @@ export function FeedingAquarium({
       const rect = containerRef.current?.getBoundingClientRect();
       handleFeedClick(event.clientX, event.clientY, rect);
     },
-    [handleFeedClick, isFeeding]
+    [handleFeedClick]
   );
 
   // Handle touch events for mobile
@@ -103,7 +107,7 @@ export function FeedingAquarium({
         handleFeedClick(touch.clientX, touch.clientY, rect);
       }
     },
-    [handleFeedClick, isFeeding]
+    [handleFeedClick]
   );
 
   // Keyboard accessibility: drop food at container center on Enter/Space
@@ -144,19 +148,52 @@ export function FeedingAquarium({
   const fishWithMovement = useFishMovement(fish, {
     aquariumBounds: dimensions,
     foods,
-    onFoodConsumed: (foodId: number, fishTypeId?: number) => {
-      const targetFish = fullFishList.find(f => f.id === fishTypeId);
-      if (!targetFish) return;
-      tryConsumeFood(
-        foodId,
-        targetFish,
-        updateFishState ?? (() => {}),
-        increaseHunger ?? (() => {})
+    onFoodConsumed: (foodId: number, fishId: number) => {
+      // First try to find the fish instance in the current fish array
+      const fishInstance = fish.find(f => f.id === fishId);
+      if (!fishInstance) {
+        console.warn(`Fish instance ${fishId} not found`);
+        // Still consume the food even if fish not found
+        handleFoodConsumed(foodId);
+        return;
+      }
+
+      // Try to find the fish type in fullFishList (catalog) by matching name or ID
+      // The fish instance ID might match the type ID, or we might need to match by name
+      let targetFish = fullFishList.find(
+        f => f.id === fishId || f.name === fishInstance.name
       );
 
-      // instead of always consuming, delegate to tryConsumeFood
+      // If fish not found in catalog, create a mock fish for consumption
+      if (!targetFish) {
+        targetFish = {
+          id: fishInstance.id,
+          name: fishInstance.name,
+          hunger: 50, // Default hunger level
+          traits: {
+            color: 'blue',
+            pattern: 'plain',
+            fins: 'normal',
+            size: 'medium',
+          },
+        } as any;
+      }
 
-      handleFoodConsumed(foodId, targetFish);
+      // Try to consume food with satiety logic (targetFish is guaranteed to be defined at this point)
+      if (targetFish) {
+        tryConsumeFood(
+          foodId,
+          targetFish,
+          updateFishState ?? (() => {}),
+          increaseHunger ?? (() => {})
+        );
+      }
+
+      // Always call handleFoodConsumed to:
+      // 1. Remove food from array (if not already removed by tryConsumeFood)
+      // 2. Trigger particle effects
+      // handleFoodConsumed checks if food exists before consuming, so it's safe to call
+      handleFoodConsumed(foodId);
     },
   }).map(state => ({
     ...state,
@@ -183,9 +220,11 @@ export function FeedingAquarium({
         cleanlinessScore={cleanlinessScore}
         isMobile={isMobile}
       />
-      {foods.map((food: FoodItem) => (
-        <Food key={food.id} food={food} aquariumBounds={dimensions} />
-      ))}
+      {foods
+        .filter((food: FoodItem) => !food.consumed)
+        .map((food: FoodItem) => (
+          <Food key={food.id} food={food} aquariumBounds={dimensions} />
+        ))}
       {particleEffects.map(effect => (
         <FoodParticles
           key={effect.id}
