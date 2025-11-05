@@ -186,7 +186,7 @@ export function FeedingAquarium({
       // 1. Remove food from array (if not already removed by tryConsumeFood)
       // 2. Trigger particle effects
       // handleFoodConsumed checks if food exists before consuming, so it's safe to call
-      handleFoodConsumed(foodId, targetFish);
+      handleFoodConsumed(foodId);
     },
   }).map(state => ({
     ...state,

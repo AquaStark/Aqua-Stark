@@ -121,7 +121,7 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
 
   // Handle food consumption with particle effects
   const handleFoodConsumed = useCallback(
-    (foodId: number, fish?: any) => {
+    (foodId: number) => {
       const consumedFood = foods.find(f => f.id === foodId);
 
       // Always add particle effect if food exists (even if about to be consumed)

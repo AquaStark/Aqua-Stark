@@ -826,12 +826,14 @@ export function useFishMovement(
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialFish, foods]);
 
   useEffect(() => {
     if (initialFish.length > 0) {
       setFishStates(initialFish.map(fish => initializeFishState(fish)));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialFish.length]);
 
   return fishStates.map((state: FishMovementState) => ({
