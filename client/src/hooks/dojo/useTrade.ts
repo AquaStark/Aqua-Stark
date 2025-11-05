@@ -1,4 +1,3 @@
-import * as models from '@/typescript/models.gen';
 import { useDojoSDK } from '@dojoengine/sdk/react';
 import { useCallback } from 'react';
 import { Account, AccountInterface, BigNumberish } from 'starknet';
@@ -46,7 +45,7 @@ export const useTrade = () => {
    * Creates a new trade offer for a fish.
    * @param {Account | AccountInterface} account - User account instance.
    * @param {BigNumberish} offeredFishId - ID of the fish being offered.
-   * @param {models.MatchCriteria} criteria - Matching criteria for the trade.
+   * @param {BigNumberish} criteria - Matching criteria for the trade.
    * @param {BigNumberish | null} requestedFishId - Optional requested fish ID.
    * @param {number | null} requestedSpecies - Optional requested species (u8).
    * @param {number | null} requestedGeneration - Optional requested generation (u8).
@@ -58,7 +57,7 @@ export const useTrade = () => {
     async (
       account: Account | AccountInterface,
       offeredFishId: BigNumberish,
-      criteria: models.MatchCriteria,
+      criteria: BigNumberish,
       requestedFishId: BigNumberish | null,
       requestedSpecies: number | null,
       requestedGeneration: number | null,
@@ -117,7 +116,7 @@ export const useTrade = () => {
   /**
    * Retrieves a specific trade offer by ID.
    * @param {BigNumberish} offerId - Offer ID.
-   * @returns {Promise<models.TradeOffer>} Trade offer data.
+   * @returns {Promise<Object>} Trade offer data.
    */
   const getTradeOffer = useCallback(
     async (offerId: BigNumberish) => {
@@ -129,7 +128,7 @@ export const useTrade = () => {
   /**
    * Retrieves all active trade offers created by a user.
    * @param {string} creator - Address of the offer creator.
-   * @returns {Promise<models.TradeOffer[]>} Array of active offers.
+   * @returns {Promise<Object[]>} Array of active offers.
    */
   const getActiveTradeOffers = useCallback(
     async (creator: string) => {
@@ -140,7 +139,7 @@ export const useTrade = () => {
 
   /**
    * Retrieves all active trade offers globally.
-   * @returns {Promise<models.TradeOffer[]>} Array of all active offers.
+   * @returns {Promise<Object[]>} Array of all active offers.
    */
   const getAllActiveOffers = useCallback(async () => {
     return await client.Trade.get_all_active_offers();
@@ -149,7 +148,7 @@ export const useTrade = () => {
   /**
    * Retrieves all active offers related to a specific fish.
    * @param {BigNumberish} fishId - Fish ID.
-   * @returns {Promise<models.TradeOffer[]>} Array of related offers.
+   * @returns {Promise<Object[]>} Array of related offers.
    */
   const getOffersForFish = useCallback(
     async (fishId: BigNumberish) => {
@@ -161,7 +160,7 @@ export const useTrade = () => {
   /**
    * Retrieves the lock status for a fish.
    * @param {BigNumberish} fishId - Fish ID.
-   * @returns {Promise<models.FishLock>} Fish lock data.
+   * @returns {Promise<Object>} Fish lock data.
    */
   const getFishLockStatus = useCallback(
     async (fishId: BigNumberish) => {

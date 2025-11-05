@@ -15,11 +15,10 @@ import { useActiveAquarium } from '@/store/active-aquarium';
 import { useAccount } from '@starknet-react/core';
 import { toast } from 'sonner';
 import { CairoCustomEnum } from 'starknet';
-import { SpeciesEnum } from '@/typescript/models.gen';
 
 // This map connects your frontend IDs to Cairo enum variants
 // Cairo enums use numeric indices, not names
-const fishEnumMap: Record<number, SpeciesEnum> = {
+const fishEnumMap: Record<number, CairoCustomEnum> = {
   1: new CairoCustomEnum({ AngelFish: {} }), // index 0
   2: new CairoCustomEnum({ GoldFish: {} }), // index 1
   3: new CairoCustomEnum({ Betta: {} }), // index 2

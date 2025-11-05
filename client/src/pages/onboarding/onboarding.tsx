@@ -15,14 +15,13 @@ import { useAquaStarkEnhanced } from '@/hooks/dojo/useAquaStarkEnhanced';
 import { useMobileDetection } from '@/hooks/use-mobile-detection';
 import { MobileOnboardingView } from '@/components/mobile/mobile-onboarding-view';
 import { CairoCustomEnum } from 'starknet';
-import { SpeciesEnum } from '@/typescript/models.gen';
 import { useAquariumSync } from '@/hooks/use-aquarium-sync';
 import { useFishSync } from '@/hooks/use-fish-sync';
 import { useActiveAquarium } from '@/store/active-aquarium';
 
 // This map connects your frontend IDs to Cairo enum variants
 // Cairo enums use numeric indices, not names
-const fishEnumMap: Record<number, SpeciesEnum> = {
+const fishEnumMap: Record<number, CairoCustomEnum> = {
   1: new CairoCustomEnum({ AngelFish: {} }), // index 0
   2: new CairoCustomEnum({ GoldFish: {} }), // index 1
   3: new CairoCustomEnum({ Betta: {} }), // index 2

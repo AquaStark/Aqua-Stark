@@ -266,7 +266,7 @@ export function useNotifications(): UseNotificationsReturn {
     } catch (error) {
       console.error('Failed to load stored notifications:', error);
     }
-  }, []);
+  }, [get]);
 
   /**
    * Save notifications to localStorage with automatic cleanup.
@@ -274,16 +274,19 @@ export function useNotifications(): UseNotificationsReturn {
    *
    * @param notifications - Array of notifications to save
    */
-  const saveToStorage = useCallback((notifications: StoredNotification[]) => {
-    try {
-      // Keep only the most recent notifications
-      const limited = notifications.slice(-MAX_STORED_NOTIFICATIONS);
-      set(STORAGE_KEY, limited, { forceJsonStringify: true });
-      setStoredNotifications(limited);
-    } catch (error) {
-      console.error('Failed to save notifications to storage:', error);
-    }
-  }, []);
+  const saveToStorage = useCallback(
+    (notifications: StoredNotification[]) => {
+      try {
+        // Keep only the most recent notifications
+        const limited = notifications.slice(-MAX_STORED_NOTIFICATIONS);
+        set(STORAGE_KEY, limited, { forceJsonStringify: true });
+        setStoredNotifications(limited);
+      } catch (error) {
+        console.error('Failed to save notifications to storage:', error);
+      }
+    },
+    [set]
+  );
 
   /**
    * Generate a unique identifier for notifications.
@@ -553,7 +556,7 @@ export function useNotifications(): UseNotificationsReturn {
   const clearStored = useCallback(() => {
     setStoredNotifications([]);
     remove(STORAGE_KEY);
-  }, []);
+  }, [remove]);
 
   /**
    * Calculate the number of unread notifications.
