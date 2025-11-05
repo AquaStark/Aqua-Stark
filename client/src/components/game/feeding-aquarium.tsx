@@ -20,11 +20,17 @@ interface FeedingSystemProps {
     clientY: number,
     containerRect: DOMRect | undefined
   ) => boolean;
-  handleFoodConsumed: (foodId: number, fish: Fish) => void;
+  handleFoodConsumed: (foodId: number) => void;
   handleParticleComplete: (foodId: number) => void;
   updateAquariumBounds: (bounds: { width: number; height: number }) => void;
   updateFishState?: (id: string, newState: Partial<Fish>) => void;
   increaseHunger?: (id: string) => void;
+  tryConsumeFood: (
+    foodId: number,
+    fish: Fish,
+    setFishState: (id: string, newState: Partial<Fish>) => void,
+    increaseHunger: (id: string) => void
+  ) => boolean;
 }
 
 interface FeedingAquariumProps {
