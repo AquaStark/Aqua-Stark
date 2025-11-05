@@ -6,7 +6,6 @@ import { useFishMovement } from '@/hooks';
 import { FishDisplay } from './fish-display';
 import { Food } from '@/components';
 import { FoodParticles } from '@/components';
-import { useFoodSystem } from '@/hooks';
 
 interface FeedingSystemProps {
   isFeeding: boolean;
@@ -90,7 +89,7 @@ export function FeedingAquarium({
       const rect = containerRef.current?.getBoundingClientRect();
       handleFeedClick(event.clientX, event.clientY, rect);
     },
-    [handleFeedClick, isFeeding]
+    [handleFeedClick]
   );
 
   // Handle touch events for mobile
@@ -102,7 +101,7 @@ export function FeedingAquarium({
         handleFeedClick(touch.clientX, touch.clientY, rect);
       }
     },
-    [handleFeedClick, isFeeding]
+    [handleFeedClick]
   );
 
   // Keyboard accessibility: drop food at container center on Enter/Space
@@ -175,7 +174,7 @@ export function FeedingAquarium({
       }
 
       // Try to consume food with satiety logic
-      const wasConsumed = tryConsumeFood(
+      tryConsumeFood(
         foodId,
         targetFish,
         updateFishState ?? (() => {}),
