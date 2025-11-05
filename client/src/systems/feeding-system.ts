@@ -35,13 +35,19 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
   const [aquariumBounds, setAquariumBounds] = useState(initialBounds);
 
   // Initialize food system with tracked bounds
-  const { foods, spawnFood, consumeFood, updateFoodAnimations, canSpawnFood } =
-    useFoodSystem({
-      aquariumBounds,
-      maxFoodsPerSecond,
-      foodLifetime,
-      attractionRadius,
-    });
+  const {
+    foods,
+    spawnFood,
+    consumeFood,
+    updateFoodAnimations,
+    canSpawnFood,
+    tryConsumeFood,
+  } = useFoodSystem({
+    aquariumBounds,
+    maxFoodsPerSecond,
+    foodLifetime,
+    attractionRadius,
+  });
 
   // Feeding state management
   const [feedingState, setFeedingState] = useState<FeedingSystemState>({
@@ -115,34 +121,28 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
 
   // Handle food consumption with particle effects
   const handleFoodConsumed = useCallback(
-    (foodId: number) => {
+    (foodId: number, fish?: any) => {
       const consumedFood = foods.find(f => f.id === foodId);
-      if (consumedFood) {
-        // Validate food is still available before consuming
-        if (!consumedFood.consumed) {
-          // Add particle effect
-          setFeedingState(prev => ({
-            ...prev,
-            particleEffects: [
-              ...prev.particleEffects,
-              {
-                id: foodId,
-                position: consumedFood.position,
-                trigger: true,
-              },
-            ],
-          }));
 
-          // Consume the food
-          consumeFood(foodId);
-        } else {
-          console.warn(
-            `⚠️ Food ${foodId} was already consumed, skipping particle effect`
-          );
-        }
-      } else {
-        console.warn(`⚠️ Food ${foodId} not found in foods array`);
+      // Always add particle effect if food exists (even if about to be consumed)
+      if (consumedFood && !consumedFood.consumed) {
+        // Add particle effect
+        setFeedingState(prev => ({
+          ...prev,
+          particleEffects: [
+            ...prev.particleEffects,
+            {
+              id: foodId,
+              position: consumedFood.position,
+              trigger: true,
+            },
+          ],
+        }));
       }
+
+      // Always try to consume the food - consumeFood will handle if it's already consumed
+      // This ensures food is removed even if tryConsumeFood didn't consume it (fish was full)
+      consumeFood(foodId);
     },
     [foods, consumeFood]
   );
@@ -223,6 +223,7 @@ export function useFeedingSystem(options: FeedingSystemOptions) {
     // Food system
     foods,
     canSpawnFood,
+    tryConsumeFood,
 
     // Feeding system
     feedingState,

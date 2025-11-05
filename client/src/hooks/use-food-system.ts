@@ -172,8 +172,11 @@ export function useFoodSystem(options: UseFoodSystemOptions) {
             lastRejection: now,
           });
         }
+        // Don't consume food if fish is full, but food will still be removed
+        // by handleFoodConsumed in feeding-aquarium
         return false;
       }
+      // Fish can eat - consume the food
       consumeFood(foodId);
       increaseHunger(String(fish.id));
       setFishState(String(fish.id), { state: 'eating' });

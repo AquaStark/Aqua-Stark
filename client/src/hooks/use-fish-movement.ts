@@ -111,7 +111,7 @@ interface UseFishMovementOptions {
   /** Current food items in the aquarium */
   foods?: FoodItem[];
   /** Callback function invoked when a fish consumes food */
-  onFoodConsumed?: (foodId: number) => void;
+  onFoodConsumed?: (foodId: number, fishId: number) => void;
 }
 
 /**
@@ -132,7 +132,7 @@ interface UseFishMovementOptions {
  * @param {UseFishMovementOptions} options - Configuration options for the simulation.
  * @param {Object} options.aquariumBounds - Dimensions of the aquarium container.
  * @param {FoodItem[]} [options.foods=[]] - Current food items available in the aquarium.
- * @param {(foodId: number) => void} [options.onFoodConsumed] - Callback when food is consumed.
+ * @param {(foodId: number, fishId: number) => void} [options.onFoodConsumed] - Callback when food is consumed.
  *
  * @returns {Array<{ id: number; position: { x: number; y: number }; facingLeft: boolean; behaviorState: string }>}
  * An array of fish movement states with positions normalized to percentages (0-100).
@@ -142,9 +142,10 @@ interface UseFishMovementOptions {
  * const fishMovement = useFishMovement(fishData, {
  *   aquariumBounds: { width: 800, height: 600 },
  *   foods: currentFoods,
- *   onFoodConsumed: (foodId) => {
+ *   onFoodConsumed: (foodId, fishId) => {
  *     // Update food state or player stats
  *     removeFood(foodId);
+ *     updateFishHunger(fishId);
  *   }
  * });
  *
@@ -175,6 +176,7 @@ export function useFishMovement(
   const fishParamsRef = useRef<Map<number, MovementParams>>(new Map());
   const lastUpdateTimeRef = useRef<number>(Date.now());
   const animationFrameRef = useRef<number | null>(null);
+  const foodsRef = useRef<FoodItem[]>(foods);
 
   /**
    * Initializes the movement state for a new fish based on its type and aquarium bounds.
@@ -255,7 +257,7 @@ export function useFishMovement(
         intensity: 1.5,
       },
       boundaryPadding: 30,
-      foodDetectionRadius: 140,
+      foodDetectionRadius: 250, // Increased from 140 to make food detection more aggressive
       feedingSpeed: isExotic ? 120 : 100,
       minTargetDistance: 80,
       directionChangeCooldown: 0.3,
@@ -278,8 +280,9 @@ export function useFishMovement(
   ): FoodItem | null {
     let nearestFood: FoodItem | null = null;
     let nearestDistance = Number.POSITIVE_INFINITY;
+    const currentFoods = foodsRef.current;
 
-    for (const food of foods) {
+    for (const food of currentFoods) {
       if (food.consumed) continue;
 
       const foodPixelPos = {
@@ -309,7 +312,7 @@ export function useFishMovement(
   function checkFoodReached(fishState: FishMovementState): boolean {
     if (!fishState.targetFoodId) return false;
 
-    const targetFood = foods.find(
+    const targetFood = foodsRef.current.find(
       f => f.id === fishState.targetFoodId && !f.consumed
     );
     if (!targetFood) return false;
@@ -481,15 +484,18 @@ export function useFishMovement(
       }
 
       // Enhanced food consumption logic with loop prevention
-      if (newState.behaviorState === 'feeding' && checkFoodReached(newState)) {
-        const targetFood = foods.find(
+      if (
+        newState.behaviorState === 'feeding' &&
+        newState.targetFoodId &&
+        checkFoodReached(newState)
+      ) {
+        const targetFood = foodsRef.current.find(
           f => f.id === newState.targetFoodId && !f.consumed
         );
 
-        if (targetFood) {
-          if (onFoodConsumed && newState.targetFoodId) {
-            onFoodConsumed(newState.targetFoodId);
-          }
+        if (targetFood && onFoodConsumed && newState.targetFoodId) {
+          // Call onFoodConsumed immediately to remove food from array
+          onFoodConsumed(newState.targetFoodId, newState.id);
 
           // Dispatch a global event so listeners (e.g., per-fish indicator hooks) can react
           try {
@@ -533,7 +539,16 @@ export function useFishMovement(
       }
 
       // Enhanced food targeting logic with loop prevention
-      if (newState.feedingCooldown <= 0) {
+      // Always check for food if not currently feeding a valid target, or if cooldown expired
+      const hasValidTarget =
+        newState.targetFoodId &&
+        foodsRef.current.find(
+          f => f.id === newState.targetFoodId && !f.consumed
+        );
+
+      const canSearchForFood = newState.feedingCooldown <= 0 && !hasValidTarget;
+
+      if (canSearchForFood) {
         const nearestFood = findNearestFood(
           newState.position,
           params.foodDetectionRadius
@@ -545,16 +560,15 @@ export function useFishMovement(
           nearestFood.id !== newState.lastFoodConsumedId && // Don't target recently consumed food
           newState.feedingAttempts < newState.maxFeedingAttempts
         ) {
-          // Limit attempts
-
-          const foodExists = foods.find(
+          const foodExists = foodsRef.current.find(
             f => f.id === nearestFood.id && !f.consumed
           );
 
           if (foodExists) {
+            // Always switch to feeding state when food is detected
             newState.behaviorState = 'feeding';
             newState.targetFoodId = nearestFood.id;
-            newState.behaviorTimer = 6;
+            newState.behaviorTimer = 10; // Increased timer to give more time to reach food
             newState.feedingAttempts++;
 
             const foodPixelPos = {
@@ -568,7 +582,7 @@ export function useFishMovement(
 
       // Reset feeding state if target food no longer exists or max attempts reached
       if (newState.targetFoodId) {
-        const targetFood = foods.find(
+        const targetFood = foodsRef.current.find(
           f => f.id === newState.targetFoodId && !f.consumed
         );
         if (
@@ -587,7 +601,15 @@ export function useFishMovement(
       }
 
       // Enhanced behavior state management
-      if (newState.behaviorTimer <= 0 && newState.behaviorState !== 'feeding') {
+      // Only change behavior if not feeding or if feeding timer expired
+      if (
+        newState.behaviorTimer <= 0 &&
+        (newState.behaviorState !== 'feeding' ||
+          !newState.targetFoodId ||
+          !foodsRef.current.find(
+            f => f.id === newState.targetFoodId && !f.consumed
+          ))
+      ) {
         const rand = Math.random();
 
         if (newState.energyLevel > 0.8 && rand < 0.3) {
@@ -613,6 +635,19 @@ export function useFishMovement(
           newState.position,
           params.minTargetDistance
         );
+      }
+
+      // Update target position if feeding and food still exists
+      if (newState.behaviorState === 'feeding' && newState.targetFoodId) {
+        const targetFood = foodsRef.current.find(
+          f => f.id === newState.targetFoodId && !f.consumed
+        );
+        if (targetFood) {
+          newState.targetPosition = {
+            x: (targetFood.position.x / 100) * aquariumBounds.width,
+            y: (targetFood.position.y / 100) * aquariumBounds.height,
+          };
+        }
       }
 
       const dx = newState.targetPosition.x - newState.position.x;
@@ -642,7 +677,12 @@ export function useFishMovement(
           break;
       }
 
-      speed *= 1 + (Math.random() - 0.5) * params.swimmingVariation;
+      // Apply less variation when feeding to make movement more direct
+      if (newState.behaviorState === 'feeding') {
+        speed *= 1 + (Math.random() - 0.5) * 0.1; // Very low variation when feeding
+      } else {
+        speed *= 1 + (Math.random() - 0.5) * params.swimmingVariation;
+      }
 
       let desiredVelocity = { x: 0, y: 0 };
       if (distToTarget > 5) {
@@ -652,13 +692,15 @@ export function useFishMovement(
         };
       }
 
+      // Don't apply swimming patterns when feeding - go straight to food
       if (newState.behaviorState !== 'feeding') {
         desiredVelocity = applySwimmingPattern(newState, desiredVelocity);
       }
 
+      // Higher turn rate when feeding to respond faster to food position
       const turnSpeed =
         newState.behaviorState === 'feeding'
-          ? params.turnRate * 2
+          ? params.turnRate * 3 // Increased from 2 to 3 for faster turning
           : params.turnRate * 1.5;
       newState.velocity = {
         x:
@@ -748,6 +790,11 @@ export function useFishMovement(
       return newState;
     });
   }
+
+  // Update foods ref whenever foods array changes
+  useEffect(() => {
+    foodsRef.current = foods;
+  }, [foods]);
 
   useEffect(() => {
     if (initialFish.length !== fishParamsRef.current.size) {
