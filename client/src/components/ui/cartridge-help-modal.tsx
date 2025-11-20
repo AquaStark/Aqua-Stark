@@ -24,6 +24,8 @@ export function CartridgeHelpModal({
       <div
         className='bg-[#1C1D1F] rounded-lg p-6 w-full max-w-md mx-4'
         onClick={e => e.stopPropagation()}
+        onKeyDown={e => e.stopPropagation()}
+        role='dialog'
       >
         <div className='flex justify-between items-center mb-4'>
           <h2 className='text-white text-xl font-bold flex items-center gap-2'>

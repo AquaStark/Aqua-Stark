@@ -18,6 +18,14 @@ export function FeaturedTopics({ topics, onTopicClick }: FeaturedTopicsProps) {
             key={topic.id}
             className={`p-3 rounded-md cursor-pointer ${topic.bgColor} hover:opacity-80 duration-300`}
             onClick={() => onTopicClick(topic.categoryId, topic.id)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onTopicClick(topic.categoryId, topic.id);
+              }
+            }}
+            role='button'
+            tabIndex={0}
           >
             <div className='flex items-start space-x-2'>
               <div className='mt-1 text-white'>

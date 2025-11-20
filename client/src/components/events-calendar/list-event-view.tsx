@@ -345,12 +345,22 @@ function EventCard({ event, onClick, isPast = false }: EventCardProps) {
 
   const tag = getCategoryTag(event.category);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!isPast && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
     <div
       className={`bg-blue-800/40 border border-blue-700/50 rounded-lg overflow-hidden hover:shadow-lg transition-all cursor-pointer ${
         !isPast ? 'hover:transform hover:scale-[1.02]' : ''
       }`}
       onClick={isPast ? undefined : onClick}
+      onKeyDown={handleKeyDown}
+      role={!isPast ? 'button' : undefined}
+      tabIndex={!isPast ? 0 : undefined}
     >
       <div className='relative h-40 bg-gray-200'>
         <div className='absolute top-2 right-2'>

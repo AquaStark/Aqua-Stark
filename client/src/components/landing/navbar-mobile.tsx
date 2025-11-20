@@ -121,6 +121,14 @@ export function NavbarMobile({ isPulsing = false }: NavbarMobileProps) {
           <div
             className='absolute inset-0 bg-black/50 backdrop-blur-sm'
             onClick={() => setIsSidebarOpen(false)}
+            onKeyDown={e => {
+              if (e.key === 'Escape') {
+                setIsSidebarOpen(false);
+              }
+            }}
+            role='button'
+            tabIndex={0}
+            aria-label='Close sidebar'
           />
 
           {/* Sidebar */}

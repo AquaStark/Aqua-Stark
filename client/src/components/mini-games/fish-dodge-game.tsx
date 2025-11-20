@@ -46,6 +46,14 @@ export function FishDodgeGame(_props: FishDodgeGameProps) {
   return (
     <div
       onClick={handleCanvasClick}
+      onKeyDown={e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleCanvasClick();
+        }
+      }}
+      role='button'
+      tabIndex={0}
       className={isMobile ? 'w-screen' : ''}
       style={isMobile ? { width: '100vw', maxWidth: '100vw' } : {}}
     >

@@ -35,6 +35,7 @@ export const WalletModal = ({ isOpen, onClose }: WalletModalProps) => {
         className='bg-[#1C1D1F] rounded-lg p-6 w-full max-w-md mx-4'
         onClick={e => e.stopPropagation()}
         onKeyDown={e => e.stopPropagation()}
+        role='dialog'
       >
         <div className='flex justify-between items-center mb-6'>
           <h2 id='wallet-modal-title' className='text-white text-xl font-bold'>

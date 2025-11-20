@@ -52,6 +52,14 @@ export function FeedingDebugPanel({
         <div
           className='flex items-center justify-between p-3 cursor-pointer hover:bg-blue-900/20 transition-colors'
           onClick={() => setIsExpanded(!isExpanded)}
+          onKeyDown={e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              setIsExpanded(!isExpanded);
+            }
+          }}
+          role='button'
+          tabIndex={0}
         >
           <div className='flex items-center gap-2'>
             <div
