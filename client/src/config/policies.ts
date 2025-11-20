@@ -2,7 +2,8 @@ import { SessionPolicies } from '@cartridge/controller';
 
 // Dirección del mundo Dojo (todos los contratos están en el mundo)
 // Esta es la dirección del mundo en Sepolia
-const WORLD_ADDRESS = '0x3a11f54945c50816a7eb6088fa2dfbeca18e7f97cb0cb8c063505dd08d01c7d';
+const WORLD_ADDRESS =
+  '0x3a11f54945c50816a7eb6088fa2dfbeca18e7f97cb0cb8c063505dd08d01c7d';
 
 // Políticas de sesión para Aqua Stark
 // Define qué acciones puede ejecutar automáticamente sin popups
@@ -12,7 +13,8 @@ export const GAME_POLICIES: SessionPolicies = {
     // Contrato principal del mundo Dojo - incluye todos los sistemas
     [WORLD_ADDRESS]: {
       name: 'Aqua Stark Game World',
-      description: 'Sistema completo del juego de acuario - todos los contratos y métodos',
+      description:
+        'Sistema completo del juego de acuario - todos los contratos y métodos',
       methods: [
         // ===== AquaAuction System =====
         {
@@ -163,7 +165,8 @@ export const GAME_POLICIES: SessionPolicies = {
         {
           name: 'Confirm Transaction (Transaction)',
           entrypoint: 'confirm_transaction',
-          description: 'Confirmar transacción desde el sistema de transacciones',
+          description:
+            'Confirmar transacción desde el sistema de transacciones',
         },
         {
           name: 'Initiate Transaction (Transaction)',
@@ -183,7 +186,8 @@ export const GAME_POLICIES: SessionPolicies = {
         {
           name: 'Register Event Type (Transaction)',
           entrypoint: 'register_event_type',
-          description: 'Registrar tipo de evento desde el sistema de transacciones',
+          description:
+            'Registrar tipo de evento desde el sistema de transacciones',
         },
 
         // ===== Daily Challenge System =====
