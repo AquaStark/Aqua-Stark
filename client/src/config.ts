@@ -34,9 +34,11 @@ export const getWalletConfig = (): WalletConfig => {
 // Importa las políticas completas desde policies.ts que incluyen todos los contratos
 import { GAME_POLICIES } from './config/policies';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getCartridgePolicies = (worldAddress: string) => {
   // Usa las políticas completas que incluyen todos los contratos y métodos
   // Esto evita tener que firmar cada transacción
+  // El parámetro worldAddress se mantiene para compatibilidad con la API existente
   return GAME_POLICIES;
 };
 
