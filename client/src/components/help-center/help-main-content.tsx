@@ -55,6 +55,14 @@ export function HelpMainContent({
                 key={topic.id}
                 className='bg-white/10 rounded-lg p-4 cursor-pointer hover:scale-[1.03] duration-200'
                 onClick={() => onTopicClick(topic.id)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onTopicClick(topic.id);
+                  }
+                }}
+                role='button'
+                tabIndex={0}
               >
                 <div className='flex items-center justify-between space-x-3'>
                   <div className='flex items-start gap-3'>

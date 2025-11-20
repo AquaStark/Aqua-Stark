@@ -50,8 +50,22 @@ export function WaterEffects() {
     }, 4000);
   }, []);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      createRipple(e as any);
+    }
+  };
+
   return (
-    <div className='absolute inset-0' onClick={createRipple}>
+    <div
+      className='absolute inset-0'
+      onClick={createRipple}
+      onKeyDown={handleKeyDown}
+      role='button'
+      tabIndex={0}
+      aria-label='Create water ripple effect'
+    >
       {bubbles.map(bubble => (
         <div
           key={bubble.id}

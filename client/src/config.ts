@@ -31,34 +31,16 @@ export const getWalletConfig = (): WalletConfig => {
 };
 
 // Cartridge Controller policies for your game - using the correct format
-export const getCartridgePolicies = (worldAddress: string) => ({
-  contracts: {
-    [worldAddress]: {
-      methods: [
-        {
-          name: 'create_round',
-          entrypoint: 'create_round',
-          description: 'Create a new game round in LyricsFlip',
-        },
-        {
-          name: 'join_round',
-          entrypoint: 'join_round',
-          description: 'Join an existing game round',
-        },
-        {
-          name: 'start_round',
-          entrypoint: 'start_round',
-          description: 'Start a game round when ready',
-        },
-        {
-          name: 'add_lyrics_card',
-          entrypoint: 'add_lyrics_card',
-          description: 'Add lyrics card to the game collection',
-        },
-      ],
-    },
-  },
-});
+// Importa las políticas completas desde policies.ts que incluyen todos los contratos
+import { GAME_POLICIES } from './config/policies';
+
+export const getCartridgePolicies = (_worldAddress: string) => {
+  // Usa las políticas completas que incluyen todos los contratos y métodos
+  // Esto evita tener que firmar cada transacción
+  // El parámetro _worldAddress se mantiene para compatibilidad con la API existente
+  // pero no se usa porque las políticas ya tienen la dirección del mundo hardcodeada
+  return GAME_POLICIES;
+};
 
 // Cartridge Controller chain configuration
 export const getCartridgeChains = () => [

@@ -148,10 +148,20 @@ export function EventCard({ event, onClick, isPast = false }: EventCardProps) {
     );
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
     <div
       className='bg-blue-800/40 border border-blue-700/50 rounded-lg overflow-hidden hover:shadow-lg transition-all cursor-pointer hover:transform hover:scale-[1.02]'
       onClick={onClick}
+      onKeyDown={handleKeyDown}
+      role='button'
+      tabIndex={0}
     >
       <div className='relative h-40 2xl:h-60 bg-gray-200'>
         <div className='absolute top-2 right-2'>

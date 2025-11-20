@@ -189,8 +189,16 @@ export function ListingModal() {
                   {traits.map(trait => (
                     <span
                       key={trait}
-                      className='text-xs px-2 py-1 bg-blue-700/50 rounded-full text-blue-100 flex items-center'
+                      className='text-xs px-2 py-1 bg-blue-700/50 rounded-full text-blue-100 flex items-center cursor-pointer'
                       onClick={() => handleRemoveTrait(trait)}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleRemoveTrait(trait);
+                        }
+                      }}
+                      role='button'
+                      tabIndex={0}
                     >
                       {trait}
                       <button className='ml-1 text-blue-300 hover:text-blue-100'>

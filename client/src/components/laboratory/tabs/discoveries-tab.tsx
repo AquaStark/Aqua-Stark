@@ -105,6 +105,7 @@ function DiscoveryCard({ result }: { result: BreedingResult }) {
       style={{ transform: 'scale(1)', transition: 'transform 0.2s' }}
       onMouseEnter={e => (e.currentTarget.style.transform = 'scale(1.03)')}
       onMouseLeave={e => (e.currentTarget.style.transform = 'scale(1)')}
+      role='presentation'
     >
       <div className='relative h-40 bg-blue-800/50'>
         <div className='relative mb-4'>
