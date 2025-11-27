@@ -36,13 +36,24 @@ export class MinigameService {
    */
   static async createGameSession(playerWallet, gameType) {
     try {
+      // Get player_id from wallet_address
+      const { data: player, error: playerError } = await supabase
+        .from(TABLES.PLAYERS)
+        .select('player_id')
+        .eq('wallet_address', playerWallet)
+        .single();
+
+      if (playerError || !player) {
+        throw new Error(`Player not found for wallet: ${playerWallet}`);
+      }
+
       const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
       const { data, error } = await supabaseAdmin
         .from(TABLES.MINIGAME_SESSIONS)
         .insert({
           session_id: sessionId,
-          player_wallet: playerWallet,
+          player_id: player.player_id,
           game_type: gameType,
           score: 0,
           xp_earned: 0,
@@ -53,7 +64,9 @@ export class MinigameService {
         .single();
 
       if (error) throw error;
-      return data;
+      
+      // Add wallet address to response for convenience
+      return { ...data, player_wallet: playerWallet };
     } catch (error) {
       console.error('Error creating game session:', error);
       throw error;
@@ -81,8 +94,11 @@ export class MinigameService {
    * console.log(`Session ended with ${session.score} points and ${session.xp_earned} XP`);
    * ```
    */
-  static async endGameSession(sessionId, finalScore, xpEarned) {
+  static async endGameSession(sessionId, finalScore, gameType) {
     try {
+      // Calculate XP based on game type and score
+      const xpEarned = this.calculateXP(gameType, finalScore);
+
       const { data, error } = await supabaseAdmin
         .from(TABLES.MINIGAME_SESSIONS)
         .update({
@@ -124,6 +140,9 @@ export class MinigameService {
   static calculateXP(gameType, score) {
     const baseXP = {
       flappy_fish: 10,
+      floppy_fish: 10, // Alias for frontend
+      bubble_jumper: 12,
+      fish_dodge: 8,
       angry_fish: 15,
       fish_racing: 20,
       bubble_pop: 8,
@@ -158,10 +177,21 @@ export class MinigameService {
    */
   static async getPlayerStats(playerWallet) {
     try {
+      // Get player_id from wallet_address
+      const { data: player, error: playerError } = await supabase
+        .from(TABLES.PLAYERS)
+        .select('player_id')
+        .eq('wallet_address', playerWallet)
+        .single();
+
+      if (playerError || !player) {
+        throw new Error(`Player not found for wallet: ${playerWallet}`);
+      }
+
       const { data, error } = await supabase
         .from(TABLES.MINIGAME_SESSIONS)
         .select('*')
-        .eq('player_wallet', playerWallet);
+        .eq('player_id', player.player_id);
 
       if (error) throw error;
 
@@ -204,13 +234,14 @@ export class MinigameService {
   /**
    * Get leaderboard for a specific game type
    *
-   * Retrieves the top players for a specific game type, sorted by score.
+   * Retrieves the top players for a specific game type, sorted by best score.
+   * Returns the best score per player, not all sessions.
    *
    * @static
    * @async
    * @param {string} gameType - Type of minigame to get leaderboard for
    * @param {number} [limit=10] - Maximum number of players to return
-   * @returns {Promise<Array>} Array of leaderboard entries
+   * @returns {Promise<Array>} Array of leaderboard entries with rank
    * @throws {Error} When database query fails or game type is invalid
    *
    * @example
@@ -218,21 +249,61 @@ export class MinigameService {
    * // Get top 5 flappy fish players
    * const leaderboard = await MinigameService.getLeaderboard('flappy_fish', 5);
    * leaderboard.forEach((entry, index) => {
-   *   console.log(`${index + 1}. ${entry.player_wallet}: ${entry.score}`);
+   *   console.log(`${entry.rank}. ${entry.player_wallet}: ${entry.best_score}`);
    * });
    * ```
    */
   static async getLeaderboard(gameType, limit = 10) {
     try {
-      const { data, error } = await supabase
+      // Get all sessions for this game type
+      const { data: sessions, error: sessionsError } = await supabase
         .from(TABLES.MINIGAME_SESSIONS)
-        .select('session_id, player_wallet, score, xp_earned, created_at')
+        .select('player_id, score')
         .eq('game_type', gameType)
-        .order('score', { ascending: false })
-        .limit(limit);
+        .not('score', 'is', null)
+        .gt('score', 0);
 
-      if (error) throw error;
-      return data;
+      if (sessionsError) throw sessionsError;
+
+      // Group by player and get best score
+      const playerScores = {};
+      sessions.forEach(session => {
+        const playerId = session.player_id;
+        if (!playerScores[playerId] || session.score > playerScores[playerId]) {
+          playerScores[playerId] = session.score;
+        }
+      });
+
+      // Get player wallet addresses
+      const playerIds = Object.keys(playerScores);
+      const { data: players, error: playersError } = await supabase
+        .from(TABLES.PLAYERS)
+        .select('player_id, wallet_address')
+        .in('player_id', playerIds);
+
+      if (playersError) throw playersError;
+
+      // Create wallet mapping
+      const walletMap = {};
+      players.forEach(player => {
+        walletMap[player.player_id] = player.wallet_address;
+      });
+
+      // Convert to array, sort, and add rank
+      const leaderboard = Object.entries(playerScores)
+        .map(([playerId, bestScore]) => ({
+          player_id: playerId,
+          player_wallet: walletMap[playerId] || playerId,
+          best_score: bestScore,
+        }))
+        .sort((a, b) => b.best_score - a.best_score)
+        .slice(0, limit)
+        .map((entry, index) => ({
+          ...entry,
+          rank: index + 1,
+        }));
+
+      return leaderboard;
     } catch (error) {
       console.error('Error getting leaderboard:', error);
       throw error;
@@ -240,49 +311,92 @@ export class MinigameService {
   }
 
   /**
+   * Alias for getLeaderboard to match controller method name
+   */
+  static async getGameLeaderboard(gameType, limit = 10) {
+    return this.getLeaderboard(gameType, limit);
+  }
+
+  /**
    * Get global leaderboard across all games
    *
-   * Retrieves the top players across all minigames, ranked by total XP earned.
+   * Retrieves the top players across all minigames, ranked by total score sum.
+   * Sums the best score from each game type for each player.
    *
    * @static
    * @async
    * @param {number} [limit=20] - Maximum number of players to return
-   * @returns {Promise<Array>} Array of global leaderboard entries
+   * @returns {Promise<Array>} Array of global leaderboard entries with rank
    * @throws {Error} When database query fails
    *
    * @example
    * ```javascript
    * // Get top 10 players globally
    * const globalLeaderboard = await MinigameService.getGlobalLeaderboard(10);
-   * globalLeaderboard.forEach((player, index) => {
-   *   console.log(`${index + 1}. ${player.player_wallet}: ${player.total_xp} XP`);
+   * globalLeaderboard.forEach((player) => {
+   *   console.log(`${player.rank}. ${player.player_wallet}: ${player.total_score} points`);
    * });
    * ```
    */
   static async getGlobalLeaderboard(limit = 20) {
     try {
-      // Get total XP per player
-      const { data, error } = await supabase
+      // Get all sessions with scores
+      const { data: sessions, error: sessionsError } = await supabase
         .from(TABLES.MINIGAME_SESSIONS)
-        .select('player_wallet, xp_earned')
-        .not('xp_earned', 'is', null);
+        .select('player_id, game_type, score')
+        .not('score', 'is', null)
+        .gt('score', 0);
 
-      if (error) throw error;
+      if (sessionsError) throw sessionsError;
 
-      // Group by player and sum XP
-      const playerXP = {};
-      data.forEach(session => {
-        if (!playerXP[session.player_wallet]) {
-          playerXP[session.player_wallet] = 0;
+      // Group by player and game type, keeping best score per game
+      const playerGameScores = {};
+      sessions.forEach(session => {
+        const playerId = session.player_id;
+        const key = `${playerId}_${session.game_type}`;
+        if (!playerGameScores[key] || session.score > playerGameScores[key]) {
+          playerGameScores[key] = session.score;
         }
-        playerXP[session.player_wallet] += session.xp_earned;
       });
 
-      // Convert to array and sort
-      const leaderboard = Object.entries(playerXP)
-        .map(([wallet, xp]) => ({ player_wallet: wallet, total_xp: xp }))
-        .sort((a, b) => b.total_xp - a.total_xp)
-        .slice(0, limit);
+      // Sum best scores from all games for each player
+      const playerTotalScores = {};
+      Object.entries(playerGameScores).forEach(([key, score]) => {
+        const playerId = key.split('_')[0]; // Extract player_id from key
+        if (!playerTotalScores[playerId]) {
+          playerTotalScores[playerId] = 0;
+        }
+        playerTotalScores[playerId] += score;
+      });
+
+      // Get player wallet addresses
+      const playerIds = Object.keys(playerTotalScores);
+      const { data: players, error: playersError } = await supabase
+        .from(TABLES.PLAYERS)
+        .select('player_id, wallet_address')
+        .in('player_id', playerIds);
+
+      if (playersError) throw playersError;
+
+      // Create wallet mapping
+      const walletMap = {};
+      players.forEach(player => {
+        walletMap[player.player_id] = player.wallet_address;
+      });
+
+      // Convert to array, sort, and add rank
+      const leaderboard = Object.entries(playerTotalScores)
+        .map(([playerId, totalScore]) => ({
+          player_id: playerId,
+          player_wallet: walletMap[playerId] || playerId,
+          total_score: totalScore,
+        }))
+        .sort((a, b) => b.total_score - a.total_score)
+        .slice(0, limit)
+        .map((entry, index) => ({
+          ...entry,
+          rank: index + 1,
+        }));
 
       return leaderboard;
     } catch (error) {
@@ -387,13 +501,24 @@ export class MinigameService {
    */
   static async awardBonusXP(playerWallet, achievement, bonusXP) {
     try {
+      // Get player_id from wallet_address
+      const { data: player, error: playerError } = await supabase
+        .from(TABLES.PLAYERS)
+        .select('player_id')
+        .eq('wallet_address', playerWallet)
+        .single();
+
+      if (playerError || !player) {
+        throw new Error(`Player not found for wallet: ${playerWallet}`);
+      }
+
       const sessionId = `bonus_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
       const { data, error } = await supabaseAdmin
         .from(TABLES.MINIGAME_SESSIONS)
         .insert({
           session_id: sessionId,
-          player_wallet: playerWallet,
+          player_id: player.player_id,
           game_type: 'achievement',
           score: 0,
           xp_earned: bonusXP,
@@ -406,10 +531,132 @@ export class MinigameService {
         .single();
 
       if (error) throw error;
-      return data;
+      return { ...data, player_wallet: playerWallet };
     } catch (error) {
       console.error('Error awarding bonus XP:', error);
       throw error;
     }
+  }
+
+  /**
+   * Get game session by ID
+   *
+   * Retrieves a specific game session by its session ID.
+   *
+   * @static
+   * @async
+   * @param {string} sessionId - The unique identifier of the game session
+   * @returns {Promise<Object|null>} Game session object or null if not found
+   * @throws {Error} When database query fails
+   *
+   * @example
+   * ```javascript
+   * // Get session details
+   * const session = await MinigameService.getGameSession('session_123');
+   * if (session) {
+   *   console.log(`Session score: ${session.score}`);
+   * }
+   * ```
+   */
+  static async getGameSession(sessionId) {
+    try {
+      const { data, error } = await supabase
+        .from(TABLES.MINIGAME_SESSIONS)
+        .select('*')
+        .eq('session_id', sessionId)
+        .single();
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // No rows returned
+          return null;
+        }
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error getting game session:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get available game types
+   *
+   * Returns metadata about all available minigame types.
+   *
+   * @static
+   * @async
+   * @returns {Promise<Array>} Array of game type objects with metadata
+   *
+   * @example
+   * ```javascript
+   * // Get all game types
+   * const gameTypes = await MinigameService.getGameTypes();
+   * gameTypes.forEach(type => {
+   *   console.log(`${type.id}: ${type.name}`);
+   * });
+   * ```
+   */
+  static async getGameTypes() {
+    return [
+      {
+        id: 'floppy_fish',
+        name: 'Floppy Fish',
+        description: 'Navigate through obstacles and test your reflexes!',
+        baseXP: 10,
+        difficulty: 'medium',
+      },
+      {
+        id: 'bubble_jumper',
+        name: 'Bubble Jumper',
+        description: 'Jump on platforms and climb to infinity!',
+        baseXP: 12,
+        difficulty: 'medium',
+      },
+      {
+        id: 'fish_dodge',
+        name: 'Fish Dodge',
+        description: 'Dodge falling fish and survive as long as you can!',
+        baseXP: 8,
+        difficulty: 'easy',
+      },
+      {
+        id: 'flappy_fish',
+        name: 'Flappy Fish',
+        description: 'Navigate fish through obstacles',
+        baseXP: 10,
+        difficulty: 'medium',
+      },
+      {
+        id: 'angry_fish',
+        name: 'Angry Fish',
+        description: 'Launch fish to hit targets',
+        baseXP: 15,
+        difficulty: 'hard',
+      },
+      {
+        id: 'fish_racing',
+        name: 'Fish Racing',
+        description: 'Race fish against others',
+        baseXP: 20,
+        difficulty: 'hard',
+      },
+      {
+        id: 'bubble_pop',
+        name: 'Bubble Pop',
+        description: 'Pop bubbles to earn points',
+        baseXP: 8,
+        difficulty: 'easy',
+      },
+      {
+        id: 'fish_memory',
+        name: 'Fish Memory',
+        description: 'Match fish pairs in memory game',
+        baseXP: 12,
+        difficulty: 'medium',
+      },
+    ];
   }
 }
