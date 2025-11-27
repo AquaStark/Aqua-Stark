@@ -52,7 +52,10 @@ export class MinigameController {
       }
 
       const validGameTypes = [
+        'floppy_fish',
         'flappy_fish',
+        'bubble_jumper',
+        'fish_dodge',
         'angry_fish',
         'fish_racing',
         'bubble_pop',
@@ -166,9 +169,15 @@ export class MinigameController {
    */
   static async getPlayerStats(req, res) {
     try {
-      const { playerId } = req.params;
+      // Use wallet address from authenticated user or from params
+      const walletAddress =
+        req.user?.walletAddress || req.params?.playerId || req.query?.wallet;
 
-      const stats = await MinigameService.getPlayerStats(playerId);
+      if (!walletAddress) {
+        return res.status(400).json({ error: 'Wallet address is required' });
+      }
+
+      const stats = await MinigameService.getPlayerStats(walletAddress);
 
       res.json({ success: true, data: stats });
     } catch (error) {
@@ -177,7 +186,7 @@ export class MinigameController {
         'getPlayerStats',
         error,
         {
-          playerId: req.params?.playerId,
+          walletAddress: req.user?.walletAddress || req.params?.playerId,
         }
       );
       res.status(500).json({ error: 'Internal server error' });
@@ -206,8 +215,12 @@ export class MinigameController {
   static async getGameLeaderboard(req, res) {
     try {
       const { gameType } = req.params;
+      const limit = parseInt(req.query.limit) || 10;
 
-      const leaderboard = await MinigameService.getGameLeaderboard(gameType);
+      const leaderboard = await MinigameService.getGameLeaderboard(
+        gameType,
+        limit
+      );
 
       res.json({ success: true, data: leaderboard });
     } catch (error) {
@@ -242,7 +255,9 @@ export class MinigameController {
    */
   static async getGlobalLeaderboard(req, res) {
     try {
-      const leaderboard = await MinigameService.getGlobalLeaderboard();
+      const limit = parseInt(req.query.limit) || 20;
+
+      const leaderboard = await MinigameService.getGlobalLeaderboard(limit);
 
       res.json({ success: true, data: leaderboard });
     } catch (error) {
