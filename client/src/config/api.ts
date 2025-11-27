@@ -56,6 +56,18 @@ export const API_CONFIG = {
       SSE: '/v1/events/:playerWallet',
       WEBSOCKET_INFO: '/ws',
     },
+
+    // Minigame endpoints
+    MINIGAMES: {
+      SESSIONS: '/v1/minigames/sessions',
+      SESSION: '/v1/minigames/sessions/:sessionId',
+      END_SESSION: '/v1/minigames/sessions/:sessionId/end',
+      PLAYER_STATS: '/v1/minigames/player/stats',
+      GAME_LEADERBOARD: '/v1/minigames/leaderboard/:gameType',
+      GLOBAL_LEADERBOARD: '/v1/minigames/leaderboard/global',
+      GAME_TYPES: '/v1/minigames/types',
+      BONUS_XP: '/v1/minigames/achievements/bonus-xp',
+    },
   },
 };
 
