@@ -64,7 +64,7 @@ export class MinigameService {
         .single();
 
       if (error) throw error;
-      
+
       // Add wallet address to response for convenience
       return { ...data, player_wallet: playerWallet };
     } catch (error) {
