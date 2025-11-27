@@ -1,5 +1,6 @@
 import { useGameLogic } from '@/hooks';
 import { useInputHandler } from '@/hooks';
+import { useGameScoreSubmission } from '@/hooks/use-game-score-submission';
 import { Fish } from './Fish';
 import { Obstacles } from './Obstacles';
 import { BottomInfoPanel } from './bottom-info-panel';
@@ -18,6 +19,9 @@ interface FloppyFishGameCanvasProps {
 export function FloppyFishGameCanvas({
   selectedFish,
 }: FloppyFishGameCanvasProps) {
+  // Handle score submission
+  const { handleGameOver } = useGameScoreSubmission('floppy-fish');
+
   const {
     fishY,
     columns,
@@ -33,7 +37,7 @@ export function FloppyFishGameCanvas({
     FISH_X,
     COLUMN_WIDTH,
     GAP_HEIGHT,
-  } = useGameLogic();
+  } = useGameLogic(handleGameOver);
 
   const { gameAreaRef } = useInputHandler(jump, gameOver);
 
