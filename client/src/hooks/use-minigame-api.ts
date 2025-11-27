@@ -79,7 +79,11 @@ export function useMinigameApi() {
         {
           gameType: backendGameType,
         },
-        account.address
+        {
+          headers: {
+            'x-wallet-address': account.address,
+          },
+        }
       );
 
       if (!response.data.success) {
@@ -117,7 +121,11 @@ export function useMinigameApi() {
           finalScore,
           gameType: backendGameType,
         },
-        account.address
+        {
+          headers: {
+            'x-wallet-address': account.address,
+          },
+        }
       );
 
       if (!response.data.success) {

@@ -133,7 +133,10 @@ export default function Start() {
         account: account.address,
         username: cartridgeUsername,
       });
-      const tx = await registerPlayer(account, cartridgeUsername);
+      const tx = await registerPlayer(
+        account,
+        cartridgeUsername || `User_${account.address.slice(-6)}`
+      );
       console.log('✅ On-chain registration successful:', tx);
       toast.success('Registered on blockchain!');
 
