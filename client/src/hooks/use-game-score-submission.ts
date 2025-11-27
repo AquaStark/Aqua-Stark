@@ -1,6 +1,5 @@
 import { useCallback, useRef } from 'react';
 import { useMinigameApi } from './use-minigame-api';
-import { toast } from 'sonner';
 
 /**
  * Hook for automatically submitting game scores when games end

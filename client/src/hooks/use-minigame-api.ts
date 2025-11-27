@@ -10,12 +10,6 @@ const GAME_TYPE_MAP: Record<string, string> = {
   'fish-dodge': 'fish_dodge',
 };
 
-const REVERSE_GAME_TYPE_MAP: Record<string, string> = {
-  floppy_fish: 'floppy-fish',
-  bubble_jumper: 'bubble-jumper',
-  fish_dodge: 'fish-dodge',
-};
-
 export interface GameSession {
   session_id: string;
   player_wallet: string;
