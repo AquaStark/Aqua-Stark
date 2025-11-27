@@ -1,22 +1,34 @@
 import { SessionPolicies } from '@cartridge/controller';
 
-// Dirección del mundo Dojo (todos los contratos están en el mundo)
-// Esta es la dirección del mundo en Sepolia
-const WORLD_ADDRESS =
-  '0x3a11f54945c50816a7eb6088fa2dfbeca18e7f97cb0cb8c063505dd08d01c7d';
+// Direcciones de los contratos del sistema (obtenidas del manifest_sepolia.json)
+const AQUA_AUCTION_ADDRESS =
+  '0x89fdab2ddcd5d0b89a4e259c058336e92ff676df144d15a44bc537126d5151';
+const AQUA_STARK_ADDRESS =
+  '0x64ad1c0c34d3aa03feb1398c96925856165826c5cc44105be29e78bc650eff1';
+const FISH_SYSTEM_ADDRESS =
+  '0x48580459130d534aa2b7472b0e9df4d307e7fc1501dba93bcd9da1299757014';
+const GAME_ADDRESS =
+  '0x4195dc29e1c1ee877446706bd785599bb927d8f91a3499add6a41b54a306219';
+const SHOP_CATALOG_ADDRESS =
+  '0x683640ed180954374a7155b83795f1847a24c1c8824bd5febf58c5a83c8d038';
+const TRADE_ADDRESS =
+  '0x4270abe34ac2eca781119edac84946f2a064a918bdb414ce5e46a446ab4f1e9';
+const TRANSACTION_ADDRESS =
+  '0x5ce5aa9f4fdfbf7315a9e7bceace2c4a10638006c5434fd9488da780f81a66a';
+const DAILY_CHALLENGE_ADDRESS =
+  '0x645239430e89bf1351056f7baa240390da4f76a885b39e34b2a4213a7af09c2';
+const SESSION_ADDRESS =
+  '0x42962c7fe91399a4d3fae13910913b0f9e11e051ee468cd6830cebb41d5253c';
 
 // Políticas de sesión para Aqua Stark
 // Define qué acciones puede ejecutar automáticamente sin popups
-// Incluye TODOS los contratos y métodos para evitar tener que firmar cada transacción
 export const GAME_POLICIES: SessionPolicies = {
   contracts: {
-    // Contrato principal del mundo Dojo - incluye todos los sistemas
-    [WORLD_ADDRESS]: {
-      name: 'Aqua Stark Game World',
-      description:
-        'Sistema completo del juego de acuario - todos los contratos y métodos',
+    // ===== AquaAuction System =====
+    [AQUA_AUCTION_ADDRESS]: {
+      name: 'Aqua Stark Auction',
+      description: 'Sistema de subastas de Aqua Stark',
       methods: [
-        // ===== AquaAuction System =====
         {
           name: 'End Auction',
           entrypoint: 'end_auction',
@@ -32,8 +44,14 @@ export const GAME_POLICIES: SessionPolicies = {
           entrypoint: 'start_auction',
           description: 'Iniciar una nueva subasta',
         },
+      ],
+    },
 
-        // ===== AquaStark System =====
+    // ===== AquaStark System (Core) =====
+    [AQUA_STARK_ADDRESS]: {
+      name: 'Aqua Stark Core',
+      description: 'Funcionalidades principales de Aqua Stark',
+      methods: [
         {
           name: 'Confirm Transaction',
           entrypoint: 'confirm_transaction',
@@ -74,8 +92,14 @@ export const GAME_POLICIES: SessionPolicies = {
           entrypoint: 'register_event_type',
           description: 'Registrar un nuevo tipo de evento',
         },
+      ],
+    },
 
-        // ===== FishSystem =====
+    // ===== FishSystem =====
+    [FISH_SYSTEM_ADDRESS]: {
+      name: 'Aqua Stark Fish System',
+      description: 'Gestión de peces y crianza',
+      methods: [
         {
           name: 'Add Fish to Aquarium',
           entrypoint: 'add_fish_to_aquarium',
@@ -96,25 +120,27 @@ export const GAME_POLICIES: SessionPolicies = {
           entrypoint: 'new_fish',
           description: 'Crear un nuevo pez',
         },
-        {
-          name: 'Purchase Fish',
-          entrypoint: 'purchase_fish',
-          description: 'Comprar un pez del mercado',
-        },
+        // Note: purchase_fish logic might be in Trade or Game, verify if needed here
+      ],
+    },
 
-        // ===== Game System =====
+    // ===== Game System =====
+    [GAME_ADDRESS]: {
+      name: 'Aqua Stark Game',
+      description: 'Mecánicas de juego principales',
+      methods: [
         {
           name: 'Add Decoration to Aquarium',
           entrypoint: 'add_decoration_to_aquarium',
           description: 'Agregar decoración a un acuario',
         },
         {
-          name: 'Add Fish to Aquarium (Game)',
+          name: 'Add Fish to Aquarium',
           entrypoint: 'add_fish_to_aquarium',
           description: 'Agregar pez a acuario desde el sistema de juego',
         },
         {
-          name: 'Breed Fishes (Game)',
+          name: 'Breed Fishes',
           entrypoint: 'breed_fishes',
           description: 'Criar peces desde el sistema de juego',
         },
@@ -124,22 +150,28 @@ export const GAME_POLICIES: SessionPolicies = {
           description: 'Mover decoración entre acuarios',
         },
         {
-          name: 'Move Fish to Aquarium (Game)',
+          name: 'Move Fish to Aquarium',
           entrypoint: 'move_fish_to_aquarium',
           description: 'Mover pez entre acuarios desde el sistema de juego',
         },
         {
-          name: 'New Fish (Game)',
+          name: 'New Fish',
           entrypoint: 'new_fish',
           description: 'Crear nuevo pez desde el sistema de juego',
         },
         {
-          name: 'Purchase Fish (Game)',
+          name: 'Purchase Fish',
           entrypoint: 'purchase_fish',
           description: 'Comprar pez desde el sistema de juego',
         },
+      ],
+    },
 
-        // ===== Trade System =====
+    // ===== Trade System =====
+    [TRADE_ADDRESS]: {
+      name: 'Aqua Stark Trading',
+      description: 'Sistema de intercambio',
+      methods: [
         {
           name: 'Accept Trade Offer',
           entrypoint: 'accept_trade_offer',
@@ -160,37 +192,56 @@ export const GAME_POLICIES: SessionPolicies = {
           entrypoint: 'create_trade_offer',
           description: 'Crear una nueva oferta de intercambio',
         },
+      ],
+    },
 
-        // ===== Transaction System =====
+    // ===== Shop Catalog System =====
+    [SHOP_CATALOG_ADDRESS]: {
+      name: 'Aqua Stark Shop',
+      description: 'Catálogo de la tienda',
+      methods: [
+        // Add methods if players interact with it directly (e.g. buying items not via Game)
+      ],
+    },
+
+    // ===== Transaction System =====
+    [TRANSACTION_ADDRESS]: {
+      name: 'Aqua Stark Transactions',
+      description: 'Sistema de transacciones y eventos',
+      methods: [
         {
-          name: 'Confirm Transaction (Transaction)',
+          name: 'Confirm Transaction',
           entrypoint: 'confirm_transaction',
-          description:
-            'Confirmar transacción desde el sistema de transacciones',
+          description: 'Confirmar transacción',
         },
         {
-          name: 'Initiate Transaction (Transaction)',
+          name: 'Initiate Transaction',
           entrypoint: 'initiate_transaction',
-          description: 'Iniciar transacción desde el sistema de transacciones',
+          description: 'Iniciar transacción',
         },
         {
-          name: 'Log Event (Transaction)',
+          name: 'Log Event',
           entrypoint: 'log_event',
-          description: 'Registrar evento desde el sistema de transacciones',
+          description: 'Registrar evento',
         },
         {
-          name: 'Process Transaction (Transaction)',
+          name: 'Process Transaction',
           entrypoint: 'process_transaction',
-          description: 'Procesar transacción desde el sistema de transacciones',
+          description: 'Procesar transacción',
         },
         {
-          name: 'Register Event Type (Transaction)',
+          name: 'Register Event Type',
           entrypoint: 'register_event_type',
-          description:
-            'Registrar tipo de evento desde el sistema de transacciones',
+          description: 'Registrar tipo de evento',
         },
+      ],
+    },
 
-        // ===== Daily Challenge System =====
+    // ===== Daily Challenge System =====
+    [DAILY_CHALLENGE_ADDRESS]: {
+      name: 'Aqua Stark Daily Challenges',
+      description: 'Desafíos diarios y recompensas',
+      methods: [
         {
           name: 'Claim Reward',
           entrypoint: 'claim_reward',
@@ -211,8 +262,14 @@ export const GAME_POLICIES: SessionPolicies = {
           entrypoint: 'join_challenge',
           description: 'Unirse a un desafío diario',
         },
+      ],
+    },
 
-        // ===== Session System =====
+    // ===== Session System =====
+    [SESSION_ADDRESS]: {
+      name: 'Aqua Stark Session',
+      description: 'Gestión de sesiones',
+      methods: [
         {
           name: 'Create Session Key',
           entrypoint: 'create_session_key',
@@ -274,19 +331,14 @@ export const CARTRIDGE_CONFIG = {
 // Políticas simplificadas para desarrollo/testing
 export const DEV_POLICIES: SessionPolicies = {
   contracts: {
-    '0x0000000000000000000000000000000000000000000000000000000000000001': {
+    [AQUA_STARK_ADDRESS]: {
       name: 'Aqua Stark Dev',
       description: 'Acciones básicas para desarrollo',
       methods: [
         {
-          name: 'Feed Fish',
-          entrypoint: 'feed_fish',
-          description: 'Alimentar peces',
-        },
-        {
-          name: 'Clean Aquarium',
-          entrypoint: 'clean_aquarium',
-          description: 'Limpiar acuario',
+          name: 'New Aquarium',
+          entrypoint: 'new_aquarium',
+          description: 'Crear nuevo acuario',
         },
       ],
     },
