@@ -7,6 +7,7 @@ import { BubblesBackground } from '@/components/bubble-background';
 import { GameCanvas } from '@/components/mini-games/bubble-jumper/game-canvas';
 import { GameUI } from '@/components/mini-games/bubble-jumper/game-ui';
 import { GameModals } from '@/components/mini-games/bubble-jumper/game-modals';
+import { useGameScoreSubmission } from '@/hooks/use-game-score-submission';
 
 interface Platform {
   id: number;
@@ -59,6 +60,9 @@ export default function BubbleJumperPage() {
   const navigate = useNavigate();
   const gameRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>();
+  const { handleGameOver: submitScore } =
+    useGameScoreSubmission('bubble-jumper');
+  const scoreSubmittedRef = useRef(false);
 
   // Fixed fish (no localStorage)
   const selectedFish = useMemo(
@@ -193,6 +197,21 @@ export default function BubbleJumperPage() {
       isPaused: false,
     }));
   };
+
+  // Submit score when game ends
+  useEffect(() => {
+    if (
+      gameState.isGameOver &&
+      gameState.score > 0 &&
+      !scoreSubmittedRef.current
+    ) {
+      scoreSubmittedRef.current = true;
+      submitScore(gameState.score);
+    }
+    if (!gameState.isGameOver) {
+      scoreSubmittedRef.current = false;
+    }
+  }, [gameState.isGameOver, gameState.score, submitScore]);
 
   const initializeGame = useCallback(() => {
     const platforms = generatePlatforms();

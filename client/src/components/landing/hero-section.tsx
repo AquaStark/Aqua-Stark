@@ -4,9 +4,10 @@ import { useAccount } from '@starknet-react/core';
 import { Button } from '@/components/ui/button';
 import { usePlayerValidation, useNotifications } from '@/hooks';
 import { useState } from 'react';
-import { ConnectWalletModal } from '@/components/modal/connect-wallet-modal';
+import { toast } from 'sonner';
 import { useAquariumSync } from '@/hooks/use-aquarium-sync';
 import { useActiveAquarium } from '@/store/active-aquarium';
+import { ConnectWalletModal } from '@/components/modal/connect-wallet-modal';
 
 interface HeroSectionProps {
   onTriggerPulse?: () => void;
@@ -26,9 +27,10 @@ export function HeroSection({ onTriggerPulse }: HeroSectionProps) {
   const handleStartGame = async () => {
     console.log('🎮 handleStartGame called');
     console.log('Account:', account);
+    console.log('Account address:', account?.address);
 
-    if (!account) {
-      console.log('❌ No account, showing connect modal');
+    if (!account?.address) {
+      console.log('❌ No account address, showing connect modal');
       setShowConnectModal(true);
       if (onTriggerPulse) {
         onTriggerPulse();
@@ -51,7 +53,10 @@ export function HeroSection({ onTriggerPulse }: HeroSectionProps) {
         backendData: validation.backendData,
       });
 
-      if (validation.exists) {
+      // If player exists on-chain, treat as existing even if backend check failed
+      const playerExists = validation.exists || validation.isOnChain;
+
+      if (playerExists) {
         console.log('✅ Player exists, fetching aquariums');
 
         // User exists - check if we need to sync to backend
@@ -70,26 +75,48 @@ export function HeroSection({ onTriggerPulse }: HeroSectionProps) {
           success('Welcome back!');
         }
 
-        // Para jugadores existentes, obtener su último acuario desde backend
-        console.log('🏠 Fetching player aquariums from backend...');
-        const response = await getPlayerAquariums(account.address);
-        console.log('🏠 Player aquariums from backend:', response);
+        try {
+          // Para jugadores existentes, obtener su último acuario desde backend
+          console.log('🏠 Fetching player aquariums from backend...');
+          const response = await getPlayerAquariums(account.address);
+          console.log('🏠 Player aquariums from backend:', response);
 
-        if (response.success && response.data && response.data.length > 0) {
-          // Use the first aquarium (most recent)
-          const primaryAquarium = response.data[0];
-          const aquariumId = primaryAquarium.on_chain_id;
-          console.log('🎯 Navigating to loading with aquarium:', aquariumId);
+          if (response.success && response.data && response.data.length > 0) {
+            // Use the first aquarium (most recent)
+            const primaryAquarium = response.data[0];
+            const aquariumId = primaryAquarium.on_chain_id?.toString();
 
-          // Persist aquarium to store immediately
-          setActiveAquariumId(aquariumId, account.address);
+            if (!aquariumId) {
+              console.error(
+                '❌ Aquarium ID missing in response data:',
+                primaryAquarium
+              );
+              toast.error(
+                'Error loading aquarium data. Please contact support.'
+              );
+              return;
+            }
 
-          navigate(`/loading?aquarium=${aquariumId}`);
-        } else {
-          // Sin acuarios, tratar como jugador nuevo
-          console.log('⚠️ No aquariums found, redirecting to /start');
-          info("Welcome! Let's set up your first aquarium.");
-          navigate('/start');
+            console.log('🎯 Navigating to loading with aquarium:', aquariumId);
+
+            // Persist aquarium to store immediately
+            setActiveAquariumId(aquariumId, account.address);
+
+            navigate(`/loading?aquarium=${aquariumId}`);
+          } else {
+            // Sin acuarios, tratar como jugador nuevo o redirigir a onboarding para crear uno
+            console.log('⚠️ No aquariums found, redirecting to /onboarding');
+            info("Welcome! Let's set up your first aquarium.");
+            // Changed from /start to /onboarding because /start tries to register again
+            navigate('/onboarding');
+          }
+        } catch (aqError) {
+          console.error('Failed to fetch aquariums', aqError);
+          // If fetch fails but user exists, don't send to onboarding immediately
+          // Try to sync or verify before redirecting
+          toast.error('Could not load your aquariums. Please try again.');
+          // Optionally stay on page or try to recover
+          // navigate('/onboarding'); // REMOVED to prevent accidental new aquarium creation
         }
       } else {
         console.log('🆕 New player, navigating to /start');

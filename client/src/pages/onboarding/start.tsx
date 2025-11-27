@@ -20,12 +20,14 @@ export default function Start() {
   const { account } = useAccount();
   const { account: cartridgeAccount } = useCartridgeSession();
   const { registerPlayer } = usePlayer();
-  const { createBackendPlayer } = usePlayerValidation();
+  const { createBackendPlayer, validatePlayer, syncPlayerToBackend } =
+    usePlayerValidation();
   const navigate = useNavigate();
 
   // States for registration
   const [isRegistering, setIsRegistering] = useState(false);
   const [registrationStep, setRegistrationStep] = useState<string>('');
+  const [isLoadingAccount, setIsLoadingAccount] = useState(true);
 
   // Extract Cartridge username if available, fallback to address
   const cartridgeUsername =
@@ -34,18 +36,50 @@ export default function Start() {
       ? `User_${cartridgeAccount.address.slice(-6)}`
       : undefined);
 
-  // Redirect if not connected with Cartridge
+  // Wait for account to load after login
   useEffect(() => {
-    // Only redirect if no wallet connected (Starknet) OR no Cartridge
+    // Give time for account to load after Cartridge login
+    const checkAccount = () => {
+      if (account?.address) {
+        console.log('✅ Account loaded:', account.address);
+        setIsLoadingAccount(false);
+      } else {
+        console.log('⏳ Waiting for account to load...');
+        // Keep checking for a bit longer
+        setTimeout(() => {
+          if (!account?.address) {
+            console.log('⚠️ Account still not loaded after timeout');
+            setIsLoadingAccount(false);
+            // Don't redirect immediately, let user see the page
+          }
+        }, 3000);
+      }
+    };
+
+    // Initial check
+    checkAccount();
+
+    // Also check when account changes
+    if (account?.address) {
+      setIsLoadingAccount(false);
+    }
+  }, [account]);
+
+  // Redirect if not connected after giving time to load
+  useEffect(() => {
+    if (isLoadingAccount) return; // Don't redirect while loading
+
     const timer = setTimeout(() => {
-      if (!account || !cartridgeAccount) {
-        console.log('Redirecting to home - no wallet or Cartridge account');
+      if (!account?.address) {
+        console.log(
+          '⚠️ No account address found after loading period, redirecting to home'
+        );
         navigate('/');
       }
-    }, 2000); // Esperar 2 segundos para que se cargue todo
+    }, 2000);
 
     return () => clearTimeout(timer);
-  }, [cartridgeAccount, account, navigate]);
+  }, [account, navigate, isLoadingAccount]);
 
   // Mobile detection
   const { isMobile } = useMobileDetection();
@@ -56,18 +90,42 @@ export default function Start() {
   const handleContinue = async () => {
     console.log('🎯 handleContinue called');
     console.log('Account:', account);
+    console.log('Account address:', account?.address);
     console.log('CartridgeAccount:', cartridgeAccount);
     console.log('CartridgeUsername:', cartridgeUsername);
+    console.log('Is connected:', account ? 'yes' : 'no');
 
-    if (!account || !cartridgeUsername) {
-      console.error('❌ Missing account or username');
-      toast.error('Missing account or username');
+    if (!account?.address) {
+      console.error('❌ Missing account address');
+      toast.error('Please connect your wallet first');
       return;
+    }
+
+    if (!cartridgeUsername) {
+      console.warn('⚠️ No Cartridge username, using fallback');
+      // Continue anyway with fallback username
     }
 
     try {
       setIsRegistering(true);
-      console.log('🚀 Starting registration...');
+      console.log('🚀 Starting registration check...');
+
+      // Step 0: Check if player already exists
+      setRegistrationStep('Checking account status...');
+      const validation = await validatePlayer(account.address);
+      console.log('📊 Pre-registration validation:', validation);
+
+      if (validation.exists) {
+        console.log('✅ Player already exists, redirecting...');
+        if (validation.isOnChain && !validation.isInBackend) {
+          setRegistrationStep('Syncing existing account...');
+          await syncPlayerToBackend(validation.playerData!, account.address);
+        }
+        toast.success('Welcome back!');
+        // Determine redirection based on existing data? For now, onboarding handles aquarium check
+        navigate('/onboarding');
+        return;
+      }
 
       // Step 1: Register on-chain
       setRegistrationStep('Registering on blockchain...');
@@ -75,7 +133,10 @@ export default function Start() {
         account: account.address,
         username: cartridgeUsername,
       });
-      const tx = await registerPlayer(account, cartridgeUsername);
+      const tx = await registerPlayer(
+        account,
+        cartridgeUsername || `User_${account.address.slice(-6)}`
+      );
       console.log('✅ On-chain registration successful:', tx);
       toast.success('Registered on blockchain!');
 
@@ -105,8 +166,25 @@ export default function Start() {
       // Handle specific error types
       const errorMessage = error?.toString() || 'Registration failed';
 
-      if (errorMessage.includes('USERNAME ALREADY TAKEN')) {
-        toast.error('Username is already taken. Please try again.');
+      if (
+        errorMessage.includes('USERNAME ALREADY TAKEN') ||
+        errorMessage.includes('ALREADY REGISTERED')
+      ) {
+        toast.success('Account found! Redirecting...');
+        // Try to sync backend just in case and redirect
+        try {
+          const reValidation = await validatePlayer(account.address);
+          if (reValidation.isOnChain && !reValidation.isInBackend) {
+            await syncPlayerToBackend(
+              reValidation.playerData!,
+              account.address
+            );
+          }
+        } catch (e) {
+          console.warn('Sync failed on fallback', e);
+        }
+
+        navigate('/onboarding');
       } else if (errorMessage.includes('multicall-failed')) {
         toast.error('Transaction failed. Please try again.');
       } else if (errorMessage.includes('User abort')) {
@@ -199,20 +277,27 @@ export default function Start() {
                 <p className='mb-6 text-blue-100/90 text-sm sm:text-base drop-shadow'>
                   You're all set! Let's start your aquatic adventure.
                 </p>
-                <Button
-                  onClick={handleContinue}
-                  className='w-full bg-purple-600 hover:bg-purple-700 text-white font-bold shadow-lg shadow-purple-500/10'
-                  disabled={isRegistering}
-                >
-                  {isRegistering ? (
-                    <div className='flex items-center gap-2'>
-                      <div className='w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin' />
-                      {registrationStep || 'Processing...'}
-                    </div>
-                  ) : (
-                    'Start Adventure'
-                  )}
-                </Button>
+                {isLoadingAccount ? (
+                  <div className='flex items-center justify-center gap-2 text-cyan-300'>
+                    <div className='w-5 h-5 border-2 border-cyan-300 border-t-transparent rounded-full animate-spin' />
+                    <span>Loading account...</span>
+                  </div>
+                ) : (
+                  <Button
+                    onClick={handleContinue}
+                    className='w-full bg-purple-600 hover:bg-purple-700 text-white font-bold shadow-lg shadow-purple-500/10'
+                    disabled={isRegistering || !account?.address}
+                  >
+                    {isRegistering ? (
+                      <div className='flex items-center gap-2'>
+                        <div className='w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin' />
+                        {registrationStep || 'Processing...'}
+                      </div>
+                    ) : (
+                      'Start Adventure'
+                    )}
+                  </Button>
+                )}
               </div>
             </div>
           </div>

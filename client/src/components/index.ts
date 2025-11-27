@@ -48,6 +48,9 @@ export * from './genetics';
 // help-center components
 export * from './help-center';
 
+// leaderboard components
+export * from './leaderboard';
+
 // laboratory components
 export * from './laboratory';
 

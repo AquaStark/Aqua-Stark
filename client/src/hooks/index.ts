@@ -81,3 +81,7 @@ export * from './dojo/index';
 
 // minigames hook (floppy fish)
 export * from './minigames/floppy-fish/index';
+
+// Minigame API hooks
+export { useMinigameApi } from './use-minigame-api';
+export { useGameScoreSubmission } from './use-game-score-submission';
