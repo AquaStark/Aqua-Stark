@@ -2,6 +2,8 @@
 
 import { FishDodgeCanvas } from './fish-dodge/fish-dodge-canvas';
 import { useFishDodge } from './fish-dodge/use-fish-dodge';
+import { useGameScoreSubmission } from '@/hooks/use-game-score-submission';
+import { useEffect } from 'react';
 
 interface FishDodgeGameProps {
   selectedFish?: {
@@ -30,6 +32,15 @@ export function FishDodgeGame(_props: FishDodgeGameProps) {
     GAME_HEIGHT,
     scale,
   } = useFishDodge();
+
+  const { handleGameOver } = useGameScoreSubmission('fish-dodge');
+
+  // Submit score when game ends
+  useEffect(() => {
+    if (gameOver && score > 0) {
+      handleGameOver(score);
+    }
+  }, [gameOver, score, handleGameOver]);
 
   const handleBack = () => {
     window.location.href = '/mini-games';
