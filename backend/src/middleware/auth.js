@@ -313,16 +313,14 @@ export const validateOwnership = resourceType => {
           break;
         }
         case 'decoration': {
-          const { DecorationService } = await import(
-            '../services/decorationService.js'
-          );
+          const { DecorationService } =
+            await import('../services/decorationService.js');
           service = DecorationService;
           break;
         }
         case 'player': {
-          const { PlayerService } = await import(
-            '../services/playerService.js'
-          );
+          const { PlayerService } =
+            await import('../services/playerService.js');
           service = PlayerService;
           break;
         }
