@@ -85,11 +85,16 @@ export function HeroSection({ onTriggerPulse }: HeroSectionProps) {
             // Use the first aquarium (most recent)
             const primaryAquarium = response.data[0];
             const aquariumId = primaryAquarium.on_chain_id?.toString();
-            
+
             if (!aquariumId) {
-                console.error("❌ Aquarium ID missing in response data:", primaryAquarium);
-                toast.error("Error loading aquarium data. Please contact support.");
-                return;
+              console.error(
+                '❌ Aquarium ID missing in response data:',
+                primaryAquarium
+              );
+              toast.error(
+                'Error loading aquarium data. Please contact support.'
+              );
+              return;
             }
 
             console.log('🎯 Navigating to loading with aquarium:', aquariumId);
@@ -106,12 +111,12 @@ export function HeroSection({ onTriggerPulse }: HeroSectionProps) {
             navigate('/onboarding');
           }
         } catch (aqError) {
-           console.error("Failed to fetch aquariums", aqError);
-           // If fetch fails but user exists, don't send to onboarding immediately
-           // Try to sync or verify before redirecting
-           toast.error("Could not load your aquariums. Please try again.");
-           // Optionally stay on page or try to recover
-           // navigate('/onboarding'); // REMOVED to prevent accidental new aquarium creation
+          console.error('Failed to fetch aquariums', aqError);
+          // If fetch fails but user exists, don't send to onboarding immediately
+          // Try to sync or verify before redirecting
+          toast.error('Could not load your aquariums. Please try again.');
+          // Optionally stay on page or try to recover
+          // navigate('/onboarding'); // REMOVED to prevent accidental new aquarium creation
         }
       } else {
         console.log('🆕 New player, navigating to /start');

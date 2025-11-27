@@ -71,7 +71,9 @@ export default function Start() {
 
     const timer = setTimeout(() => {
       if (!account?.address) {
-        console.log('⚠️ No account address found after loading period, redirecting to home');
+        console.log(
+          '⚠️ No account address found after loading period, redirecting to home'
+        );
         navigate('/');
       }
     }, 2000);
@@ -161,16 +163,24 @@ export default function Start() {
       // Handle specific error types
       const errorMessage = error?.toString() || 'Registration failed';
 
-      if (errorMessage.includes('USERNAME ALREADY TAKEN') || errorMessage.includes('ALREADY REGISTERED')) {
+      if (
+        errorMessage.includes('USERNAME ALREADY TAKEN') ||
+        errorMessage.includes('ALREADY REGISTERED')
+      ) {
         toast.success('Account found! Redirecting...');
         // Try to sync backend just in case and redirect
         try {
-            const reValidation = await validatePlayer(account.address);
-            if (reValidation.isOnChain && !reValidation.isInBackend) {
-                 await syncPlayerToBackend(reValidation.playerData!, account.address);
-            }
-        } catch (e) { console.warn("Sync failed on fallback", e); }
-        
+          const reValidation = await validatePlayer(account.address);
+          if (reValidation.isOnChain && !reValidation.isInBackend) {
+            await syncPlayerToBackend(
+              reValidation.playerData!,
+              account.address
+            );
+          }
+        } catch (e) {
+          console.warn('Sync failed on fallback', e);
+        }
+
         navigate('/onboarding');
       } else if (errorMessage.includes('multicall-failed')) {
         toast.error('Transaction failed. Please try again.');

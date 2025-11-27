@@ -114,11 +114,16 @@ export default function Onboarding() {
       try {
         console.log('🔍 Checking for existing aquariums on onboarding...');
         const response = await getPlayerAquariums(account.address);
-        if (response && response.success && response.data && response.data.length > 0) {
+        if (
+          response &&
+          response.success &&
+          response.data &&
+          response.data.length > 0
+        ) {
           console.log('✅ Found existing aquarium, redirecting to game...');
           const primaryAquarium = response.data[0];
           const existingId = primaryAquarium.on_chain_id;
-          
+
           setActiveAquariumId(existingId, account.address);
           toast.success('Existing aquarium found! resuming game...');
           navigate(`/loading?aquarium=${existingId}`);
@@ -160,12 +165,7 @@ export default function Onboarding() {
       setIsCreatingAquarium(true);
       toast.loading('Creating your aquarium...', { id: 'aquarium' });
 
-      const tx = await newAquarium(
-        account as any,
-        account.address,
-        10,
-        5
-      );
+      const tx = await newAquarium(account as any, account.address, 10, 5);
 
       let extractedAquariumId: bigint | null = null;
 

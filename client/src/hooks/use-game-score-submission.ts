@@ -29,7 +29,7 @@ export function useGameScoreSubmission(gameType: string) {
       try {
         isSubmittingRef.current = true;
         await submitScore(gameType, finalScore);
-        
+
         // Show success notification (optional, can be removed if too noisy)
         // toast.success(`Score submitted: ${finalScore} points!`);
       } catch (err) {
@@ -49,4 +49,3 @@ export function useGameScoreSubmission(gameType: string) {
     error,
   };
 }
-

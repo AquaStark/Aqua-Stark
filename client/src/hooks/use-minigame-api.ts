@@ -113,10 +113,9 @@ export function useMinigameApi() {
       }
 
       const backendGameType = mapGameType(gameType);
-      const url = buildApiUrl(
-        API_CONFIG.ENDPOINTS.MINIGAMES.END_SESSION,
-        { sessionId }
-      );
+      const url = buildApiUrl(API_CONFIG.ENDPOINTS.MINIGAMES.END_SESSION, {
+        sessionId,
+      });
 
       const response = await put<{ success: boolean; data: GameSession }>(
         url,
@@ -163,14 +162,14 @@ export function useMinigameApi() {
       limit: number = 10
     ): Promise<LeaderboardEntry[]> => {
       const backendGameType = mapGameType(gameType);
-      const url = buildApiUrl(
-        API_CONFIG.ENDPOINTS.MINIGAMES.GAME_LEADERBOARD,
-        { gameType: backendGameType }
-      );
+      const url = buildApiUrl(API_CONFIG.ENDPOINTS.MINIGAMES.GAME_LEADERBOARD, {
+        gameType: backendGameType,
+      });
 
-      const response = await get<{ success: boolean; data: LeaderboardEntry[] }>(
-        `${url}?limit=${limit}`
-      );
+      const response = await get<{
+        success: boolean;
+        data: LeaderboardEntry[];
+      }>(`${url}?limit=${limit}`);
 
       if (!response.data.success) {
         throw new Error('Failed to get leaderboard');
@@ -188,9 +187,10 @@ export function useMinigameApi() {
     async (limit: number = 20): Promise<LeaderboardEntry[]> => {
       const url = API_CONFIG.ENDPOINTS.MINIGAMES.GLOBAL_LEADERBOARD;
 
-      const response = await get<{ success: boolean; data: LeaderboardEntry[] }>(
-        `${url}?limit=${limit}`
-      );
+      const response = await get<{
+        success: boolean;
+        data: LeaderboardEntry[];
+      }>(`${url}?limit=${limit}`);
 
       if (!response.data.success) {
         throw new Error('Failed to get global leaderboard');
@@ -211,18 +211,16 @@ export function useMinigameApi() {
 
     const url = API_CONFIG.ENDPOINTS.MINIGAMES.PLAYER_STATS;
 
-      const response = await get<{ success: boolean; data: PlayerStats }>(
-        `${url}?wallet=${account.address}`
-      );
+    const response = await get<{ success: boolean; data: PlayerStats }>(
+      `${url}?wallet=${account.address}`
+    );
 
-      if (!response.data.success) {
-        throw new Error('Failed to get player stats');
-      }
+    if (!response.data.success) {
+      throw new Error('Failed to get player stats');
+    }
 
-      return response.data.data;
-    },
-    [account, get]
-  );
+    return response.data.data;
+  }, [account, get]);
 
   /**
    * Get available game types
@@ -258,4 +256,3 @@ export function useMinigameApi() {
     mapGameType,
   };
 }
-

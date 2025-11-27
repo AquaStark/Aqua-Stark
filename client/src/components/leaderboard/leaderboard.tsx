@@ -61,7 +61,8 @@ export function Leaderboard({
     return `${wallet.slice(0, 6)}...${wallet.slice(-4)}`;
   };
 
-  const displayTitle = title || (gameType ? `${gameType} Leaderboard` : 'Global Leaderboard');
+  const displayTitle =
+    title || (gameType ? `${gameType} Leaderboard` : 'Global Leaderboard');
 
   if (loading) {
     return (
@@ -95,13 +96,14 @@ export function Leaderboard({
       </h2>
 
       <div className='space-y-2'>
-        {leaderboard.map((entry) => (
+        {leaderboard.map(entry => (
           <div
             key={entry.player_wallet || entry.player_id}
             className={cn(
               'flex items-center gap-4 p-4 rounded-lg bg-white/5 border border-white/10',
               'hover:bg-white/10 transition-colors',
-              entry.rank <= 3 && 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border-blue-400/30'
+              entry.rank <= 3 &&
+                'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border-blue-400/30'
             )}
           >
             {/* Rank */}
@@ -112,14 +114,18 @@ export function Leaderboard({
             {/* Player Info */}
             <div className='flex-1 min-w-0'>
               <p className='text-white font-medium truncate'>
-                {formatWallet(entry.player_wallet || entry.player_id || 'Unknown')}
+                {formatWallet(
+                  entry.player_wallet || entry.player_id || 'Unknown'
+                )}
               </p>
             </div>
 
             {/* Score */}
             <div className='text-right'>
               <p className='text-yellow-400 font-bold text-lg'>
-                {entry.total_score?.toLocaleString() || entry.best_score?.toLocaleString() || 0}
+                {entry.total_score?.toLocaleString() ||
+                  entry.best_score?.toLocaleString() ||
+                  0}
               </p>
               {gameType ? (
                 <p className='text-white/40 text-xs'>Best Score</p>
@@ -133,4 +139,3 @@ export function Leaderboard({
     </div>
   );
 }
-

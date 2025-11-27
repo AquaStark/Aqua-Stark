@@ -11,8 +11,16 @@ export default function LeaderboardPage() {
 
   const gameTypes = [
     { id: undefined, name: 'Global', description: 'All games combined' },
-    { id: 'floppy-fish', name: 'Floppy Fish', description: 'Navigate through obstacles' },
-    { id: 'bubble-jumper', name: 'Bubble Jumper', description: 'Jump on platforms' },
+    {
+      id: 'floppy-fish',
+      name: 'Floppy Fish',
+      description: 'Navigate through obstacles',
+    },
+    {
+      id: 'bubble-jumper',
+      name: 'Bubble Jumper',
+      description: 'Jump on platforms',
+    },
     { id: 'fish-dodge', name: 'Fish Dodge', description: 'Dodge falling fish' },
   ];
 
@@ -29,7 +37,7 @@ export default function LeaderboardPage() {
         {/* Game Type Selector */}
         <div className='mb-6'>
           <div className='flex flex-wrap gap-2'>
-            {gameTypes.map((game) => (
+            {gameTypes.map(game => (
               <button
                 key={game.id || 'global'}
                 onClick={() => setSelectedGame(game.id)}
@@ -59,7 +67,7 @@ export default function LeaderboardPage() {
             limit={50}
             title={
               selectedGame
-                ? `${gameTypes.find((g) => g.id === selectedGame)?.name} Leaderboard`
+                ? `${gameTypes.find(g => g.id === selectedGame)?.name} Leaderboard`
                 : 'Global Leaderboard'
             }
           />
@@ -70,4 +78,3 @@ export default function LeaderboardPage() {
     </div>
   );
 }
-
