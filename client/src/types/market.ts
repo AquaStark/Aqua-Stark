@@ -8,10 +8,11 @@ export interface Bubble {
 
 import type { UIFish } from './fish-types';
 
-export interface Fish extends Pick<
-  UIFish,
-  'id' | 'name' | 'image' | 'rarity' | 'generation' | 'traits'
-> {
+export interface Fish
+  extends Pick<
+    UIFish,
+    'id' | 'name' | 'image' | 'rarity' | 'generation' | 'traits'
+  > {
   id: number;
   name: string;
   image: string;

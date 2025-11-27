@@ -60,7 +60,8 @@ export default function BubbleJumperPage() {
   const navigate = useNavigate();
   const gameRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>();
-  const { handleGameOver: submitScore } = useGameScoreSubmission('bubble-jumper');
+  const { handleGameOver: submitScore } =
+    useGameScoreSubmission('bubble-jumper');
   const scoreSubmittedRef = useRef(false);
 
   // Fixed fish (no localStorage)
@@ -199,7 +200,11 @@ export default function BubbleJumperPage() {
 
   // Submit score when game ends
   useEffect(() => {
-    if (gameState.isGameOver && gameState.score > 0 && !scoreSubmittedRef.current) {
+    if (
+      gameState.isGameOver &&
+      gameState.score > 0 &&
+      !scoreSubmittedRef.current
+    ) {
       scoreSubmittedRef.current = true;
       submitScore(gameState.score);
     }
