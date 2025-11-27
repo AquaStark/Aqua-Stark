@@ -31,6 +31,7 @@ import EncyclopediaPage from './pages/encyclopedia';
 import HelpCenterPage from './pages/help-center';
 import EventsCalendarPage from './pages/events-calendar';
 import AchievementsPage from './pages/achievements';
+import LeaderboardPage from './pages/leaderboard';
 
 // Utility Pages
 import CreditsPage from './pages/credits';
@@ -81,6 +82,7 @@ function App() {
               <Route path='/help-center' element={<HelpCenterPage />} />
               <Route path='/events-calendar' element={<EventsCalendarPage />} />
               <Route path='/achievements' element={<AchievementsPage />} />
+              <Route path='/leaderboard' element={<LeaderboardPage />} />
 
               {/* Mini Games Routes */}
               <Route path='/mini-games' element={ResponsiveMiniGames} />
